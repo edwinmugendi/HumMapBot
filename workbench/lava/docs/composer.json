@@ -1,0 +1,24 @@
+{
+    "name": "lava/docs",
+    "description": "Docs Module",
+    "authors": [
+        {
+            "name": "Edwin Mugendi",
+            "email": "edwinmugendi@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "4.1.*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations",
+            "src/controllers"
+        ],
+        "psr-0": {
+            "Lava\\Docs\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
