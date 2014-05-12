@@ -98,16 +98,6 @@ class UserModel extends \Eloquent {
 //E# logins() function
 
     /**
-     * S# roles() function
-     * Set many to many relationship to Roles Model
-     */
-    public function roles() {
-        return $this->belongsToMany(\Util::buildNamespace('accounts', 'role', 2), 'acc_users_roles', 'role_id', 'user_id');
-    }
-
-//E# roles() function
-
-    /**
      * S# promotions() function
      * Set many to many relationship to Promotion Model
      */

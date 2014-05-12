@@ -259,7 +259,7 @@ class UserController extends AccountsBaseController {
 
         if ($userModel) {//User updated
             //Set parameters
-            $parameters['lazyLoad'] = array('logins', 'roles');
+            $parameters['lazyLoad'] = array('logins');
 
             //Get user by id
             $userModel = $this->getModelByField('id', $this->user['id'], $parameters);
@@ -375,16 +375,10 @@ class UserController extends AccountsBaseController {
         //Get user
         $user = $userModel->toArray();
 
-        //Define user to session and roles
-        $userToSession = $roles = array();
+        //Define user to session
+        $userToSession = array();
 
-        if (array_key_exists('roles', $user)) {
-            foreach ($user['roles'] as $singleRole) {//Loop through the roles
-                array_push($roles, $singleRole['id']);
-            }//E# foreach statement
-        }//E# if statement
         //Set fields of user to session
-        $userToSession['roles'] = $roles;
         $userToSession['name'] = $user['first_name'] . ' ' . $user['last_name'];
         $userToSession['id'] = $user['id'];
         $userToSession['first_name'] = $user['first_name'];
