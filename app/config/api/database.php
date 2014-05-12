@@ -55,9 +55,9 @@ return array(
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
-			'database'  => 'lv',
+			'database'  => 'lava',
 			'username'  => 'root',
-			'password'  => 'lavasapama54321',
+			'password'  => 'lava123',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => 'sp_',
