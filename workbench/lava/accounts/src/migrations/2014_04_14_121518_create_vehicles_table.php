@@ -15,7 +15,6 @@ class CreateVehiclesTable extends Migration {
             $table->increments('id');
             $table->string('vrm', 255);
             $table->string('combined_make', 255);
-            $table->string('combined_make', 255);
             $table->string('model_range_desc', 255);
             $table->string('drive_type', 255);
             $table->integer('status')->unsigned();
