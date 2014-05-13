@@ -49,7 +49,7 @@ class PromotionController extends ProductsBaseController {
         $message = \Lang::get($this->package . '::' . $this->controller . '.api.redeemPromotion',array('code'=>$promotionModel->code));
 
         //Throw new API Success Exception
-        throw new \ApiSuccessException(array_only($promotionModel->toArray(), array('id')),$message);
+        throw new \Api200Exception(array_only($promotionModel->toArray(), array('id')),$message);
     }
 
 //E# claimPromotionCode() function

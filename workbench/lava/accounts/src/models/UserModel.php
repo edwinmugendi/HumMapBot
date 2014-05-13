@@ -110,13 +110,24 @@ class UserModel extends \Eloquent {
 
     /**
      * S# vehicles() function
-     * Set many to many relationship to Vehicles Model
+     * Set many to many relationship to Vehicle Model
      */
     public function vehicles() {
-        return $this->belongsToMany(\Util::buildNamespace('accounts', 'vehicle', 2), 'acc_users_vehicles', 'user_id', 'vehicle_id');
+        return $this->belongsToMany(\Util::buildNamespace('accounts', 'vehicle', 2), 'acc_users_vehicles', 'user_id', 'vehicle_id')
+            ->whereNull('acc_users_vehicles.deleted_at');
     }
 
 //E# vehicles() function
+    
+    /**
+     * S# promotions() function
+     * Set many to many relationship to Promotion Model
+     */
+    public function promotions() {
+        return $this->belongsToMany(\Util::buildNamespace('products', 'promotion', 2), 'pdt_users_promotions', 'user_id', 'promotion_id');
+    }
+
+//E# promotions() function
 
     /**
      * S# cards() function

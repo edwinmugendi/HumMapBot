@@ -21,7 +21,7 @@ class PaymentController extends PaymentsBaseController {
             'card_token' => 'required',
             'amount' => 'required',
             'currency' => 'required',
-            'promotion_ids' => '',
+            'promotion_id' => 'integer',
             'vrm' => 'required|processTransaction',
         );
 

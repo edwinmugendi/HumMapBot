@@ -105,7 +105,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         $parameters = array();
 
         //Set parameters
-        $parameters['lazyLoad'] = array('logins');
+        $parameters['lazyLoad'] = array('logins', 'app55');
 
         //User controller
         $userController = new UserController();
@@ -144,22 +144,8 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
             } else {
 
                 if (\Auth::attempt($credentials)) {//User is logged in
-                    //Update user login details
-                    $userModel->last_login = $now;
-                    $userModel->ip_address = $this->data['ipAddress'];
                     //Generate user token
-                    $userController->generateToken($userModel);
-
-                    //Delete login attempts
-                    $userModel->logins()->delete();
-
-                    //Save this user
-                    $userModel->save();
-
-                    //Session this user
-                    $userController->sessionUser($userModel);
-
-                    $userController->apiLoginSuccess($userModel);
+                    $userController->updateLoginSpecificFields($userController, $userModel);
 
                     return true;
                 } else {//Incorrect credentials
@@ -215,26 +201,23 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         //User controller
         $userController = new UserController();
 
-        //Get user by email
-//        $userModel = $userController->getModelByField('email', $credentials['email'], $parameters);
-
+        //Get FB configs
         $fbConfig = array(
             'appId' => \Config::get($userController->package . '::thirdParty.facebook.appId'),
             'secret' => \Config::get($userController->package . '::thirdParty.facebook.appSecret'),
             'scope' => \Config::get($userController->package . '::thirdParty.facebook.scope'),
             'allowSignedRequest' => false,
         );
+        try {
+            //Call Facebook
+            $fb = new \Facebook($fbConfig);
 
-        //Call Facebook
-        $fb = new \Facebook($fbConfig);
+            $fb->setAccessToken($token);
 
-        $fb->setAccessToken($token);
+            //Try getting user
+            $fbUserId = $fb->getUser();
 
-        //Try getting user
-        $fbUserId = $fb->getUser();
-        //  dd($fbUserId);
-        if ($fbUserId) {//User exists
-            try {
+            if ($fbUserId) {//User exists
                 //Get user profile from facebook
                 $fbUserProfile = $fb->api('/me', 'GET');
 
@@ -266,10 +249,16 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                   }
                  */
                 //  dd($fbUserProfile);
+                $parameters['lazyLoad'] = array('logins', 'app55');
                 //Get user by facebook id
-                $userModel = $userController->getModelByField('fb_uid', $fbUserId);
+                $userModel = $userController->getModelByField('fb_uid', $fbUserId, $parameters);
 
                 if ($userModel) {//User has already signed in facebook
+                    if (!$userModel->app55) {//User does not an app55 account
+                        $userController->createApp55User($userModel->id, $userModel->email, $userModel->first_name, $userModel->last_name, $userModel->phone);
+                    }//E# if statement
+                    //Update user fields
+                    $userController->updateLoginSpecificFields($userController, $userModel);
                 } else {//Register
                     $newUser = array(
                         'fb_uid' => $fbUserId,
@@ -282,30 +271,21 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                         'email' => 'edwinmugendi@gmail.com'//TODO remove this
                     );
 
+                    //Create user
                     $userModel = $userController->createIfValid($newUser, true);
-                    //dd($userModel);
 
                     $userController->afterCreating($userModel);
-                    $userController->generateToken($userModel);
-
-                    $userModel->save();
+                    $userController->updateLoginSpecificFields($userController, $userModel);
                 }//E# if else statement
 
-                $userController->apiLoginSuccess($userModel);
-            } catch (FacebookApiException $e) {
-                // If the user is logged out, you can have a 
-                // user ID even though the access token is invalid.
-                // In this case, we'll get an exception, so we'll
-                // just ask the user to login again here.
-                $login_url = $facebook->getLoginUrl();
-                echo 'Please <a href="' . $login_url . '">login.</a>';
-                error_log($e->getType());
-                error_log($e->getMessage());
-            }
-        } else {
-            //Set validation message
-            $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.validation.facebook.0');
-        }//E# if else statement
+            } else {
+                //Set validation message
+                $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.validation.facebook.noUser');
+            }//E# if else statement
+        } catch (FacebookApiException $e) {
+            dd($e->getMessage());
+            throw new \Api500Exception($e->getMessage());
+        }//E# try catch exception
         return false;
     }
 
@@ -427,9 +407,9 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                 $vehicleController->updatePivotTable($vehicleModel, 'users', $vehicleModel->id, array('is_default' => 0, 'deleted_at' => Carbon::now()));
 
                 //Get success message
-                $message = \Lang::get($vehicleController->package . '::' . $vehicleController->controller . '.api.deleteVehicle', array('vrm'=>$vrm));
+                $message = \Lang::get($vehicleController->package . '::' . $vehicleController->controller . '.api.deleteVehicle', array('vrm' => $vrm));
 
-                throw new \ApiSuccessException(array('id' => $vehicleModel->id, 'vrm' => $vrm), $message);
+                throw new \Api200Exception(array('id' => $vehicleModel->id, 'vrm' => $vrm), $message);
             } else {
                 //Set validation message
                 $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.validation.api');

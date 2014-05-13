@@ -1,27 +1,21 @@
 <?php
 
 /**
- * S# ApiSuccessException() Class
+ * S# API500Exception() Class
  * @author Edwin Mugendi
- * Api Success Exception
+ * Api 500 Exception
  */
-class ApiSuccessException extends \BaseException {
-
-    //Data
-    protected $data;
+class Api500Exception extends \BaseException {
 
     /**
      * S# __contruct() function
      * @author Edwin Mugendi
      * Constructor
-     * @param object $validation a validation object 
-     * @param array $rules validation rules
-     * @param array $replacements Language line replacements
+      @param string $message Message
      */
-    public function __construct($controllerModel = null, $message) {
+    public function __construct($message) {
         parent::__construct();
-        $this->systemCode = 700;
-        $this->data = $controllerModel;
+        $this->systemCode = 1000;
         $this->message = $message;
     }
 
@@ -34,9 +28,8 @@ class ApiSuccessException extends \BaseException {
      * @return mixed json or redirect
      */
     public function thrower() {
-        //dd($this->data); 
         //Get and set notification
-        $this->notification = $this->getNotification($this->systemCode, 'developerMessage');
+        $this->notification = $this->getNotification($this->systemCode, 'developerMessage', $this->data);
 
         //Return nofitication response
         return \Response::make($this->notification['data'], $this->notification['httpStatusCode'])
@@ -46,4 +39,4 @@ class ApiSuccessException extends \BaseException {
 //E# thrower() function
 }
 
-//E# ApiSuccessException() class
+//E# API500Exception() class

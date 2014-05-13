@@ -1,11 +1,11 @@
 <?php
 
 /**
- * S# ValidationException() Class
+ * S# Api400Exception() Class
  * @author Edwin Mugendi
- * Validation Exception
+ * API 400 Exception
  */
-class ValidationException extends \BaseException {
+class Api400Exception extends \BaseException {
 
     //Validation Object
     private $validation;
@@ -58,4 +58,4 @@ class ValidationException extends \BaseException {
 
 }
 
-//E# ValidationException() class
+//E# Api400Exception() class

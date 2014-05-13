@@ -96,7 +96,7 @@ class LocationController extends MerchantsBaseController {
         $message = \Lang::get($this->package . '::' . $this->controller . '.api.feel.' . $this->input['type'], array('field' => 'id', 'value' => $this->input['id']));
 
         //Throw API success Exception
-        throw new \ApiSuccessException(array_only($feelingModel->toArray(), array('id')), $message);
+        throw new \Api200Exception(array_only($feelingModel->toArray(), array('id')), $message);
     }
 
 //E# postFeel() function
@@ -138,7 +138,7 @@ class LocationController extends MerchantsBaseController {
                 //Get success message
                 $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => 'id', 'value' => $id));
 
-                throw new \ApiSuccessException($locationArray, $message);
+                throw new \Api200Exception($locationArray, $message);
 
                 return $locationArray;
             } else {

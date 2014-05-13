@@ -32,7 +32,7 @@ class VehicleController extends AccountsBaseController {
                 //Get success message
                 $message = \Lang::get($this->package . '::' . $this->controller . '.api.getAll');
 
-                throw new \ApiSuccessException($userModel->$pluralController->toArray(), $message);
+                throw new \Api200Exception($userModel->$pluralController->toArray(), $message);
             }//E# if else statement
         } else {//Get a single vehicle
             $this->input['vrm'] = $vrm;
@@ -50,7 +50,7 @@ class VehicleController extends AccountsBaseController {
                     //Get success message
                     $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => 'vrm', 'value' => $this->input['vrm']));
 
-                    throw new \ApiSuccessException($vehicleModel->toArray(), $message);
+                    throw new \Api200Exception($vehicleModel->toArray(), $message);
                 } else {
                     //Set notification
                     $this->notification = array(
@@ -261,7 +261,7 @@ class VehicleController extends AccountsBaseController {
             //Get success message
             $message = \Lang::get($this->package . '::' . $this->controller . '.api.addVehicle', array('vrm' => $controllerModel->vrm));
 
-            throw new \ApiSuccessException(array_only($controllerModel->toArray(), array('id', 'vrm')), $message);
+            throw new \Api200Exception(array_only($controllerModel->toArray(), array('id', 'vrm')), $message);
         }//E# if else statement
 
         return \Redirect::route($this->controller . 'List');

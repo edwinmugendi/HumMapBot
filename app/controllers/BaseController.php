@@ -63,7 +63,7 @@ class BaseController extends Controller {
      * Update a users pivot table
      * @param Model $controllerModel The parent model
      * @param string $relation The relation
-     * @param int $vehicleId The relation's model id 
+     * @param int $relationId The relation's model id 
      * @return none
      */
     public function updatePivotTable(&$controllerModel, $relation, $relationId, $dataToUpdate) {
@@ -96,7 +96,7 @@ class BaseController extends Controller {
             //Get success message
             $message = \Lang::get($this->package . '::' . $this->controller . '.api.getAll');
 
-            throw new ApiSuccessException($userModel->$pluralController->toArray(), $message);
+            throw new Api200Exception($userModel->$pluralController->toArray(), $message);
         }//E# if else statement
     }
 
@@ -128,7 +128,7 @@ class BaseController extends Controller {
                         //Get success message
                         $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => $this->input['field'], 'value' => $this->input['value']));
 
-                        throw new ApiSuccessException($singleRelation->toArray(), $message);
+                        throw new Api200Exception($singleRelation->toArray(), $message);
                     }//E# if else statement
 
                     return $singleRelation;
@@ -249,7 +249,7 @@ class BaseController extends Controller {
 
         if (($this->subdomain == 'api') && $validation->fails()) {//Validation failed
             //Throw a Validation Exception
-            throw new ValidationException($validation, $this->validationRules);
+            throw new Api400Exception($validation, $this->validationRules);
         }//E# if statement
 
         return $validation;
@@ -747,7 +747,7 @@ class BaseController extends Controller {
      * @author Edwin Mugendi
      * Create a model iff array is valid
      * @param array $row the data to be inserted
-     * @throws ValidationException
+     * @throws Api400Exception
      * @return mixed 
      * 1. {oject} the create object
      */
@@ -784,7 +784,7 @@ class BaseController extends Controller {
      * Update a model iff array is valid
      * @param int $id primary key
      * @param array $row the data to be updated
-     * @throws ValidationException
+     * @throws Api400Exception
      * @return mixed 
      * 1. {oject} the updated object
      */
@@ -923,7 +923,7 @@ class BaseController extends Controller {
      */
     public function listRedirect($controllerModel, $crudAction) {
         if ($this->subdomain == 'api') {//From API
-            throw new ApiSuccessException(array_only($controllerModel->toArray(), array('id')));
+            throw new Api200Exception(array_only($controllerModel->toArray(), array('id')));
         }//E# if else statement
 
         return \Redirect::route($this->controller . 'List');

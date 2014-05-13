@@ -79,6 +79,9 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
 
                 if ($this->data['promotion_id']) {//Promotion id
                     $transactionArray['promotion_id'] = $this->data['promotion_id'];
+
+                    //Redeem the promotion
+                    $userController->updatePivotTable($userModel, 'promotions', $this->data['promotion_id'], array('redeemed' => 1));
                 }//E# if statement
 
                 $transactionArray['vrm'] = $this->data['vrm'];
@@ -87,7 +90,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                 $transactionModel = $userController->callController(\Util::buildNamespace('payments', 'transaction', 1), 'createIfValid', array($transactionArray, true));
 
                 if ($transactionModel) {
-                    throw new \ApiSuccessException($transactionModel->toArray(), array('id'));
+                    throw new \Api200Exception($transactionModel->toArray(), array('id'));
                 } else {
                     //TODO 500 error
                 }//E# if else statement
@@ -216,7 +219,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     //Get success message
                     $message = \Lang::get('payments::payment.api.prepareTransaction');
 
-                    throw new \ApiSuccessException($userController->notification, $message);
+                    throw new \Api200Exception($userController->notification, $message);
                 } else {
                     //Set error message
                     $this->message = \Lang::get('payments::payment.validation.prepareTransaction.noCard');

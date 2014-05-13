@@ -153,7 +153,7 @@ class App55Controller extends PaymentsBaseController {
                 //Get success message
                 $message = \Lang::get($this->package . '::' . $this->controller . '.api.sync');
 
-                throw new \ApiSuccessException($app55CardTokens, $message);
+                throw new \Api200Exception($app55CardTokens, $message);
             }//E# if else statement
         } catch (\App55_ApiException $e) {
             $this->notification = array(

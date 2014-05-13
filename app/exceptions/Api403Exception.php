@@ -11,9 +11,7 @@ class Api403Exception extends \BaseException {
      * S# __contruct() function
      * @author Edwin Mugendi
      * Constructor
-     * @param object $validation a validation object 
-     * @param array $rules validation rules
-     * @param array $replacements Language line replacements
+     * @param array $data data array
      */
     public function __construct($data) {
         parent::__construct();

@@ -48,13 +48,13 @@ App::error(function(Exception $exception, $code) {
 });
 
 //Register Validation exception
-App::error(function(ValidationException $exception, $code) {
+App::error(function(Api400Exception $exception, $code) {
 
     return $exception->thrower();
 });
 
 //Register API Success "exception" - Not exception per se but a good way to listen and return 200
-App::error(function(ApiSuccessException $exception, $code) {
+App::error(function(Api200Exception $exception, $code) {
 
     return $exception->thrower();
 });

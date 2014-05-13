@@ -16,7 +16,7 @@ return array(
     'validation' => array(
         'api' => 'Invalid login token',
         'facebook' => array(
-            0 => 'No user found on Facebook with such token'
+            'noUser' => 'No user found on Facebook with such token'
         ),
     ),
     'view' => array(

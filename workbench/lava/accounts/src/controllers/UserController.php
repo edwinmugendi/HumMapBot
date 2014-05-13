@@ -14,7 +14,7 @@ class UserController extends AccountsBaseController {
      * @author Edwin Mugendi
      * Check if Email is available
      * @return json the success or failure notification
-     * @throws \ApiSuccessException if call is from API
+     * @throws \Api200Exception if call is from API
      */
     public function getIsEmailAvailable() {
         //Get POSTed data
@@ -39,7 +39,7 @@ class UserController extends AccountsBaseController {
 
             if ($this->subdomain == 'api') {//From API
                 $userModel = $this->getModelByField('email', $input['email']);
-                throw $userModel ? new \ApiSuccessException(0, '') : new \ApiSuccessException(1, '');
+                throw $userModel ? new \Api200Exception(0, '') : new \Api200Exception(1, '');
             }//E# if statement
             //Set notification
             $this->notification = array(
@@ -126,7 +126,7 @@ class UserController extends AccountsBaseController {
             //Get success message
             $message = \Lang::get($this->package . '::' . $this->controller . '.api.registerUser', array('productName' => \Config::get('product.name')));
 
-            throw new \ApiSuccessException(array_only($controllerModel->toArray(), array('id')), $message);
+            throw new \Api200Exception(array_only($controllerModel->toArray(), array('id')), $message);
         }//E# if else statement
 
         return \Redirect::route($this->controller . 'List');
@@ -146,7 +146,7 @@ class UserController extends AccountsBaseController {
      * @param string $phone phone Optional
      * @return boolean 1 if app55 created 0 otherwise
      */
-    private function createApp55User($userId, $email, $firstName, $lastName, $phone = null) {
+    public function createApp55User($userId, $email, $firstName, $lastName, $phone = null) {
 
         //Generate random password that firsts app55 specs
         //The End User’s password as clear-text. This must be alphanumeric, between 8-15 characters in length, and contain at least one letter and one number.
@@ -180,29 +180,43 @@ class UserController extends AccountsBaseController {
         }//E# if statement
 
         return $app55Response['status'];
-    }
+        }
 
 //E# createApp55User() function
 
-    /**
-     * S# generateToken() function
-     * Generate user token to access the API and set it to the model
-     * 
-     * @param Model $controllerModel User model
-     */
-    public function generateToken(&$controllerModel) {
-        if (!$controllerModel->token) {//Generate token
-            $controllerModel->token = \Str::lower(\Str::random(32));
-        }//E# if statement
+        /**
+         * S# updateLoginSpecificFields() function
+         * Generate user token to access the API and set it to the model
+         * 
+         * @param Model $controllerModel User model
+         */
+        public function updateLoginSpecificFields(&$controller, &$controllerModel) {
+        $controllerModel->token = \Str::lower(\Str::random(32));
+
+        //Update user login details
+        $controllerModel->last_login = Carbon::now();
+        
+        $controllerModel->ip_address = \Request::getClientIp();
+
+        //Delete login attempts
+        $controllerModel->logins()->delete();
+
+        //Save this user
+        $controllerModel->save();
+
+        //Session this user
+        $controller->sessionUser($controllerModel);
+
+        $controller->apiLoginSuccess($controllerModel);
     }
 
-//E# generateToken() function
+//E# updateLoginSpecificFields() function
 
     /**
      * S# apiLoginSuccess() function
      * API login success
      * @param Model $controllerModel User model
-     * @throws \ApiSuccessException
+     * @throws \Api200Exception
      * */
     public function apiLoginSuccess($controllerModel) {
         if ($this->subdomain == 'api') {//From API
@@ -213,7 +227,7 @@ class UserController extends AccountsBaseController {
             //Get success message
             $message = \Lang::get($this->package . '::' . $this->controller . '.api.login');
 
-            throw new \ApiSuccessException($this->notification, $message);
+            throw new \Api200Exception($this->notification, $message);
         }//E# if statement
     }
 
@@ -241,7 +255,7 @@ class UserController extends AccountsBaseController {
                 //Get success message
                 $message = \Lang::get($this->package . '::' . $this->controller . '.api.updateUser');
 
-                throw new \ApiSuccessException($userModel->toArray(), $message);
+                throw new \Api200Exception($userModel->toArray(), $message);
             }//E# if statement
         } else {
             
@@ -384,10 +398,9 @@ class UserController extends AccountsBaseController {
         $userToSession['first_name'] = $user['first_name'];
         $userToSession['last_name'] = $user['last_name'];
         $userToSession['email'] = $user['email'];
-        $userToSession['phone'] = $user['phone'];
+        $userToSession['phone'] = isset($user['phone']) ? $user['phone'] : '';
         $userToSession['token'] = $user['token'];
         $userToSession['default_vrm'] = $user['default_vrm'];
-        $userToSession['card'] = $user['card'];
 
         // $userToSession['api_secret'] = $user['api_secret'];
         //Put the user in session
@@ -403,9 +416,7 @@ class UserController extends AccountsBaseController {
      * @return page redirect to the Dashboard page or page the user was before clicking this link
      */
     public function postLogin() {
-        //Cache ip
-        $this->input['ipAddress'] = \Request::getClientIp();
-
+     
         //Get the validation rules
         $this->validationRules = array(
             'email' => 'required|email',
@@ -427,6 +438,23 @@ class UserController extends AccountsBaseController {
     }
 
 //E# postLogin() function
+
+    /**
+     * S# postFacebookLogin() function
+     * Login with facebook
+     */
+    public function postFacebookLogin() {
+
+        //Get the validation rules
+        $this->validationRules = array(
+            'facebook_token' => 'required|facebookLogin'
+        );
+
+        //Validate row to be inserted
+        $validation = $this->isInputValid();
+    }
+
+//E# postFacebookLogin() function
 
     /**
      * S# authenticateApi() function
@@ -495,7 +523,7 @@ class UserController extends AccountsBaseController {
                 //Get success message
                 $message = \Lang::get($this->package . '::' . $this->controller . '.api.resetPassword');
 
-                throw new \ApiSuccessException(array($userModel->id), $message);
+                throw new \Api200Exception(array($userModel->id), $message);
             }//E# if statement
             //Flash login error code to session
             \Session::flash('loginErrorCode', 4);
@@ -582,87 +610,6 @@ class UserController extends AccountsBaseController {
 //E# getVerify() function
 
     /**
-     * S# postFacebookLogin() function
-     * Login with facebook
-     */
-    public function postFacebookLogin() {
-
-        //Get the validation rules
-        $this->validationRules = array(
-            'facebook_token' => 'required|facebookLogin'
-        );
-
-        //Validate row to be inserted
-        $validation = $this->isInputValid();
-
-        //Get input
-        $fluent = new \Laravel\Fluent(Input::json(true));
-
-        if ($validate->fails()) {//Validation failed
-            return Event::first("app.validationerror", array(400, $validate->errors->messages));
-        }//E# if statement
-
-        $fbConfig = array(
-            'appId' => \Config::get($this->package . '::account.app_id'),
-            'secret' => \Config::get($this->package . '::account.app_secret'),
-            'allowSignedRequest' => false
-        );
-
-        $fb = new Facebook($fbConfig);
-
-        $fbConfig->setAccessToken($this->input['token']);
-
-        $fbUserId = $fb->getUser();
-
-        if ($fbUserId) {
-
-            // We have a user ID, so probably a logged in user.
-            // If not, we'll get an exception, which we handle below.
-            try {
-                $userProfile = $facebook->api('/me', 'GET');
-
-                $user = User::where_fb_uid($fbUserId)->first();
-
-                if ($user) {//User has already signed in facebook
-                    //Bootstrap Oauth
-                    $this->bootstrap_oauth();
-
-                    $token = bin2hex(openssl_random_pseudo_bytes(32));
-
-                    $expires = strtotime("+2 weeks");
-
-                    $this->storage->setAccessToken($token, $fluent->get('client_id'), $user->id, $expires);
-
-                    $response = array(
-                        'access_token' => $token,
-                        'expres_in' => $expires,
-                        'token_type' => 'bearer',
-                        'scope' => null
-                    );
-                    return Response::json($response);
-                } else {//Register
-                }//E# if else statement
-            } catch (FacebookApiException $e) {
-                // If the user is logged out, you can have a 
-                // user ID even though the access token is invalid.
-                // In this case, we'll get an exception, so we'll
-                // just ask the user to login again here.
-                $login_url = $facebook->getLoginUrl();
-                echo 'Please <a href="' . $login_url . '">login.</a>';
-                error_log($e->getType());
-                error_log($e->getMessage());
-            }
-        } else {
-
-            // No user, print a link for the user to login
-            $login_url = $facebook->getLoginUrl();
-            echo 'Please <a href="' . $login_url . '">login.</a>';
-        }
-    }
-
-//E# postFacebookLogin() function
-
-    /**
      * S# postForgotPassword() function
      * @author Edwin Mugendi
      * Send the user email to reset his/her password
@@ -717,7 +664,7 @@ class UserController extends AccountsBaseController {
                     //Get success message
                     $message = \Lang::get($this->package . '::' . $this->controller . '.api.forgotPassword');
 
-                    throw new \ApiSuccessException($this->notification, $message);
+                    throw new \Api200Exception($this->notification, $message);
                 }//E# if statement
                 //Flash forgot status code to session
                 \Session::flash('forgotStatusCode', 1);
@@ -760,7 +707,7 @@ class UserController extends AccountsBaseController {
             //Get user by token
             $userModel = $this->getModelByField('token', $this->input['token']);
             //Return user
-            throw new \ApiSuccessException($userModel->toArray(), '');
+            throw new \Api200Exception($userModel->toArray(), '');
         }//E# if statement
         //Prepare view data
         $viewData = $this->prepareViewData('profile');
