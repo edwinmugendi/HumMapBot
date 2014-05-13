@@ -15,7 +15,7 @@ return array(
             'name' => 'Register User',
             'note' => 'Register a user',
             'filtered' => 1,
-            'endpoint' => 'user/register',
+            'endpoint' => '/pser/register',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -86,9 +86,10 @@ return array(
         array(
             'name' => 'Login',
             'note' => 'Login a user <br>'
+            . '<br> For improved security a new token is generated everytime you login'
             . 'Securely save the returned <i>token</i> that will used to access all endpoints that need the user to be logged in.',
             'filtered' => 0,
-            'endpoint' => 'user/login',
+            'endpoint' => '/pser/login',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -120,10 +121,41 @@ return array(
             )
         ),
         array(
+            'name' => 'Facebook Login',
+            'note' => 'Login a user <br>'
+            . '<br> For improved security a new token is generated everytime you login'
+            . 'Securely save the returned <i>token</i> that will used to access all endpoints that need the user to be logged in.',
+            'filtered' => 0,
+            'endpoint' => '/user/facebook_login',
+            'httpVerb' => 'POST',
+            'parameters' => array(
+                array(
+                    'field' => 'facebook_token',
+                    'dataType' => 'string',
+                    'note' => 'Token from facebook',
+                    'required' => 1,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Logged in',
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Logged in","data":{"token":"l4tjo9l165qx01i3ak8uupmbr6ueaosp"}}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"facebook_token","error":"No user found on Facebook with such token"}]}'
+                ),
+            )
+        ),
+        array(
             'name' => 'Get Profile',
             'note' => 'Get a logged in user\'s profile identified by the token',
             'filtered' => 1,
-            'endpoint' => 'user/profile',
+            'endpoint' => '/pser/profile',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
@@ -152,7 +184,7 @@ return array(
             'name' => 'Update User Profile',
             'note' => 'Update a users profile',
             'filtered' => 1,
-            'endpoint' => 'user/update',
+            'endpoint' => '/pser/update',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -224,7 +256,7 @@ return array(
             'name' => 'Forgot Password',
             'note' => 'Send forgot password email',
             'filtered' => 0,
-            'endpoint' => 'user/forgot_password',
+            'endpoint' => '/pser/forgot_password',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -253,7 +285,7 @@ return array(
             'name' => 'Reset Password',
             'note' => 'Reset a user password',
             'filtered' => 0,
-            'endpoint' => 'user/reset_password',
+            'endpoint' => '/pser/reset_password',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -297,7 +329,7 @@ return array(
             . '<i></i> is 0 if email is not available<br>'
             . '',
             'filtered' => 0,
-            'endpoint' => 'user/is_email_available',
+            'endpoint' => '/pser/is_email_available',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
@@ -326,7 +358,7 @@ return array(
             'name' => 'Add Vehicle',
             'note' => 'Add user vehicle',
             'filtered' => 1,
-            'endpoint' => 'user/vehicle/add',
+            'endpoint' => '/pser/vehicle/add',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -379,7 +411,7 @@ return array(
             'name' => 'Delete Vehicle',
             'note' => 'Delete user vehicle',
             'filtered' => 1,
-            'endpoint' => 'user/vehicle/delete',
+            'endpoint' => '/pser/vehicle/delete',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -420,7 +452,7 @@ return array(
             'name' => 'Get Single Vehicle',
             'note' => 'Get a single vehicle\'s details by vrm',
             'filtered' => 1,
-            'endpoint' => 'user/vehicle/get/{vrm}',
+            'endpoint' => '/pser/vehicle/get/{vrm}',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
@@ -461,7 +493,7 @@ return array(
             'name' => 'Get All Vehicle',
             'note' => 'Get all users vehicles',
             'filtered' => 1,
-            'endpoint' => 'user/vehicle/get',
+            'endpoint' => '/pser/vehicle/get',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(

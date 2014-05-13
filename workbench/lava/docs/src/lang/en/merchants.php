@@ -15,7 +15,7 @@ return array(
             'name' => 'Get Single Location',
             'note' => 'Get a location by id',
             'filtered' => 1,
-            'endpoint' => 'user/vehicle/get/{id}',
+            'endpoint' => '/merchant/location/get/{id}',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(

@@ -15,7 +15,7 @@ return array(
             'name' => 'Sync Cards',
             'note' => 'Sync cards on App55',
             'filtered' => 1,
-            'endpoint' => 'payment/app55/sync',
+            'endpoint' => '/payment/app55/sync',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -44,7 +44,7 @@ return array(
             'name' => 'Prepare Transaction',
             'note' => 'Prepare a transaction',
             'filtered' => 1,
-            'endpoint' => 'payment/transaction/prepare',
+            'endpoint' => '/payment/transaction/prepare',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -91,7 +91,7 @@ return array(
             'name' => 'Process Transaction',
             'note' => 'Process a transaction',
             'filtered' => 1,
-            'endpoint' => 'payment/transaction/process',
+            'endpoint' => '/payment/transaction/process',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
