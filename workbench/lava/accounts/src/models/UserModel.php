@@ -2,6 +2,8 @@
 
 namespace Lava\Accounts;
 
+use Carbon\Carbon;
+
 /**
  * S# UserModel() Class
  * @author Edwin Mugendi
@@ -11,7 +13,6 @@ class UserModel extends \Eloquent {
 
     //Table
     protected $table = 'acc_users';
-    
     //Fillable fields
     protected $fillable = array(
         'first_name',
@@ -35,7 +36,8 @@ class UserModel extends \Eloquent {
     );
     //Appends fields
     protected $appends = array(
-        'default_vrm'
+        'default_vrm',
+        'app55_id'
     );
     protected $hidden = array(
         'reset_code',
@@ -101,9 +103,20 @@ class UserModel extends \Eloquent {
      * S# promotions() function
      * Set many to many relationship to Promotion Model
      */
+    public function promotions() {
+        return $this->belongsToMany(\Util::buildNamespace('products', 'promotion', 2), 'pdt_users_promotions', 'user_id', 'promotion_id');
+    }
+
+//E# promotions() function
+
+    /**
+     * S# promotions() function
+     * Set many to many relationship to Promotion Model
+     */
     public function unredeemedPromotions() {
-        return $this->belongsToMany(\Util::buildNamespace('products', 'promotion', 2), 'pdt_users_promotions', 'user_id', 'promotion_id')
-                        ->whereRedeemed(0);
+        return $this->promotions()
+                        ->whereRedeemed(0)
+                        ->where('expiry_date', '<', Carbon::now());
     }
 
 //E# promotions() function
@@ -114,20 +127,10 @@ class UserModel extends \Eloquent {
      */
     public function vehicles() {
         return $this->belongsToMany(\Util::buildNamespace('accounts', 'vehicle', 2), 'acc_users_vehicles', 'user_id', 'vehicle_id')
-            ->whereNull('acc_users_vehicles.deleted_at');
+                        ->whereNull('acc_users_vehicles.deleted_at');
     }
 
 //E# vehicles() function
-    
-    /**
-     * S# promotions() function
-     * Set many to many relationship to Promotion Model
-     */
-    public function promotions() {
-        return $this->belongsToMany(\Util::buildNamespace('products', 'promotion', 2), 'pdt_users_promotions', 'user_id', 'promotion_id');
-    }
-
-//E# promotions() function
 
     /**
      * S# cards() function
@@ -148,6 +151,24 @@ class UserModel extends \Eloquent {
     }
 
 //E# app55() function
+
+    /**
+     * S# getApp55IdAttribute() function
+     * Get user default vrm
+     */
+    public function getApp55IdAttribute() {
+        //Get app55
+        $app55Model = $this->app55();
+
+        if ($app55Model->count()) {//App55 user exists
+            $app55Id = $app55Model->lists('id');
+            return (int) $app55Id[0];
+        } else {//
+            return -1;
+        }//E# if else statement
+    }
+
+//E# getApp55IdAttribute() function
 }
 
 //E# UserModel() Class

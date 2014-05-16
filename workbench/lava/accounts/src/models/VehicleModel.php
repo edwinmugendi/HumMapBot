@@ -54,7 +54,7 @@ class VehicleModel extends \Eloquent {
      * Does the logged in user own this vehicle
      */
     public function getUserOwnsAttribute() {
-        return $this->belongsToMany(\Util::buildNamespace('accounts', 'user', 2), 'acc_users_vehicles', 'vehicle_id', 'user_id')
+        return $this->users()
                         ->whereUserId(\Auth::user()->id)
                         ->count();
     }

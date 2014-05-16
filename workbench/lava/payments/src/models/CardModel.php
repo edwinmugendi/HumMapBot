@@ -39,6 +39,16 @@ class CardModel extends \Eloquent {
         'updated_by' => 'required|integer',
     );
 
+    /**
+     * S# user() function
+     * Set one to one relationship to User Model
+     */
+    public function user() {
+        return $this->belongsTo(\Util::buildNamespace('accounts', 'user', 2), 'user_id','id');
+    }
+
+//E# user() function
+    
 }
 
 //E# CardModel() Class

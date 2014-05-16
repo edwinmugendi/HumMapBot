@@ -13,10 +13,11 @@ class Api403Exception extends \BaseException {
      * Constructor
      * @param array $data data array
      */
-    public function __construct($data) {
+    public function __construct($data,$message = null) {
         parent::__construct();
         $this->systemCode = 903;
         $this->data = $data;
+        $this->message = $message;
     }
 
 //E# __construct() function

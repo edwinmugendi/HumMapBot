@@ -2,6 +2,8 @@
 
 namespace Lava\Products;
 
+use Carbon\Carbon;
+
 /**
  * S# PromotionModel() Class
  * @author Edwin Mugendi
@@ -19,7 +21,8 @@ class PromotionModel extends \Eloquent {
     );
     //Appends fields
     protected $appends = array(
-        'claimed'
+        'claimed',
+        'user_owns'
     );
     protected $hidden = array(
         'status',
@@ -39,8 +42,7 @@ class PromotionModel extends \Eloquent {
      * Has the customer claimed this promotion
      */
     public function getClaimedAttribute() {
-
-        return $this->belongsToMany(\Util::buildNamespace('accounts', 'user', 2), 'pdt_users_promotions', 'promotion_id','user_id')
+        return $this->users()
                         ->withPivot('redeemed')
                         ->whereUserId(\Auth::user()->id)
                         ->first();
@@ -53,10 +55,22 @@ class PromotionModel extends \Eloquent {
      * Set many to many relationship to User Model
      */
     public function users() {
-        return $this->belongsToMany(\Util::buildNamespace('accounts', 'user', 2), 'pdt_users_promotions', 'promotion_id','user_id');
+        return $this->belongsToMany(\Util::buildNamespace('accounts', 'user', 2), 'pdt_users_promotions', 'promotion_id', 'user_id');
     }
 
 //E# users() function
+
+    /**
+     * S# getUserOwnsAttribute() function
+     * Does the logged in user own this promotion
+     */
+    public function getUserOwnsAttribute() {
+        return $this->users()
+                        ->whereRedeemed(0)
+                        ->count();
+    }
+
+//E# getUserOwnsAttribute() function
 }
 
 //E# PromotionModel() Class

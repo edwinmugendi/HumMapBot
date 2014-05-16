@@ -15,7 +15,7 @@ return array(
             'name' => 'Register User',
             'note' => 'Register a user',
             'filtered' => 1,
-            'endpoint' => '/pser/register',
+            'endpoint' => '/user/register',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -89,7 +89,7 @@ return array(
             . '<br> For improved security a new token is generated everytime you login'
             . 'Securely save the returned <i>token</i> that will used to access all endpoints that need the user to be logged in.',
             'filtered' => 0,
-            'endpoint' => '/pser/login',
+            'endpoint' => '/user/login',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -155,7 +155,7 @@ return array(
             'name' => 'Get Profile',
             'note' => 'Get a logged in user\'s profile identified by the token',
             'filtered' => 1,
-            'endpoint' => '/pser/profile',
+            'endpoint' => '/user/profile',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
@@ -184,7 +184,7 @@ return array(
             'name' => 'Update User Profile',
             'note' => 'Update a users profile',
             'filtered' => 1,
-            'endpoint' => '/pser/update',
+            'endpoint' => '/user/update',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -256,7 +256,7 @@ return array(
             'name' => 'Forgot Password',
             'note' => 'Send forgot password email',
             'filtered' => 0,
-            'endpoint' => '/pser/forgot_password',
+            'endpoint' => '/user/forgot_password',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -285,7 +285,7 @@ return array(
             'name' => 'Reset Password',
             'note' => 'Reset a user password',
             'filtered' => 0,
-            'endpoint' => '/pser/reset_password',
+            'endpoint' => '/user/reset_password',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -329,7 +329,7 @@ return array(
             . '<i></i> is 0 if email is not available<br>'
             . '',
             'filtered' => 0,
-            'endpoint' => '/pser/is_email_available',
+            'endpoint' => '/user/is_email_available',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
@@ -358,7 +358,7 @@ return array(
             'name' => 'Add Vehicle',
             'note' => 'Add user vehicle',
             'filtered' => 1,
-            'endpoint' => '/pser/vehicle/add',
+            'endpoint' => '/user/vehicle/add',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -411,7 +411,7 @@ return array(
             'name' => 'Delete Vehicle',
             'note' => 'Delete user vehicle',
             'filtered' => 1,
-            'endpoint' => '/pser/vehicle/delete',
+            'endpoint' => '/user/vehicle/delete',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -449,10 +449,10 @@ return array(
             )
         ),
         array(
-            'name' => 'Get Single Vehicle',
+            'name' => 'Get Single Vehicle by VRM',
             'note' => 'Get a single vehicle\'s details by vrm',
             'filtered' => 1,
-            'endpoint' => '/pser/vehicle/get/{vrm}',
+            'endpoint' => '/user/vehicle/get/{vrm}',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
@@ -482,6 +482,12 @@ return array(
                     'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"field","error":"The field field is required."}]}'
                 ),
                 array(
+                    'action' => 'Forbidden',
+                    'httpCode' => 403,
+                    'note' => 'Forbidden or Don\'t Own Object',
+                    'example' => '{"httpStatusCode":403,"systemCode":903,"message":"Forbidden or Don\'t own","data":{"field":"vrm","type":"Vehicle","value":"123"}}'
+                ),
+                array(
                     'action' => 'Not found',
                     'httpCode' => 404,
                     'note' => 'Object not found',
@@ -493,7 +499,7 @@ return array(
             'name' => 'Get All Vehicle',
             'note' => 'Get all users vehicles',
             'filtered' => 1,
-            'endpoint' => '/pser/vehicle/get',
+            'endpoint' => '/user/vehicle/get',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(

@@ -8,6 +8,9 @@
     //Sync Card Page
     \Route::post('payment/app55/sync', array('as' => 'paymentApp55Sync', 'uses' => 'Lava\Payments\App55Controller@app55Sync'));
 
+    //Get single or all cards
+    \Route::get('payment/app55/get/{card_token?}', array('as' => 'userVehicle', 'uses' => 'Lava\Payments\CardController@getCard'));
+
     //Create User Page
     \Route::get('payment/app55/test/create/{id}/{email}/{password}', array('as' => 'paymentApp55Create', 'uses' => 'Lava\Payments\App55Controller@createUser'));
 

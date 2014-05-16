@@ -8,8 +8,8 @@ return array(
       |
      */
     'facebook' => array(
-        'appId' => '233151190220674',
-        'appSecret' => '0f38a216af0b8b5ce52fcd89893c1a39',
+        'appId' => '291512857637270',
+        'appSecret' => '1c4a3dcef631bf5104ed9f8239bfb139',
         "scope" => "email,user_birthday"
     ),
     'carweb' => array(

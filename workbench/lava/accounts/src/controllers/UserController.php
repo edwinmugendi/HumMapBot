@@ -180,22 +180,22 @@ class UserController extends AccountsBaseController {
         }//E# if statement
 
         return $app55Response['status'];
-        }
+    }
 
 //E# createApp55User() function
 
-        /**
-         * S# updateLoginSpecificFields() function
-         * Generate user token to access the API and set it to the model
-         * 
-         * @param Model $controllerModel User model
-         */
-        public function updateLoginSpecificFields(&$controller, &$controllerModel) {
+    /**
+     * S# updateLoginSpecificFields() function
+     * Generate user token to access the API and set it to the model
+     * 
+     * @param Model $controllerModel User model
+     */
+    public function updateLoginSpecificFields(&$controller, &$controllerModel) {
         $controllerModel->token = \Str::lower(\Str::random(32));
 
         //Update user login details
         $controllerModel->last_login = Carbon::now();
-        
+
         $controllerModel->ip_address = \Request::getClientIp();
 
         //Delete login attempts
@@ -416,7 +416,7 @@ class UserController extends AccountsBaseController {
      * @return page redirect to the Dashboard page or page the user was before clicking this link
      */
     public function postLogin() {
-     
+
         //Get the validation rules
         $this->validationRules = array(
             'email' => 'required|email',
@@ -657,14 +657,11 @@ class UserController extends AccountsBaseController {
                 $isSent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', 'info@intrapayment.com', $userModel->email, 'reset_password', \Config::get('app.locale'), $parameters));
 
                 if ($this->subdomain == 'api') {//From API
-                    $this->notification = array(
-                        'reset_code' => $resetCode
-                    );
-
+                    
                     //Get success message
                     $message = \Lang::get($this->package . '::' . $this->controller . '.api.forgotPassword');
 
-                    throw new \Api200Exception($this->notification, $message);
+                    throw new \Api200Exception(array(), $message);
                 }//E# if statement
                 //Flash forgot status code to session
                 \Session::flash('forgotStatusCode', 1);
@@ -703,7 +700,7 @@ class UserController extends AccountsBaseController {
      * @return page Profile Page
      */
     public function getProfile() {
-        if ($this->subdomain == 'api') {//From API
+        if ($this->subdomain == 'api') {//From API            
             //Get user by token
             $userModel = $this->getModelByField('token', $this->input['token']);
             //Return user

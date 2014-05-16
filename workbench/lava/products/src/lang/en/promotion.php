@@ -6,6 +6,10 @@ return array(
       | Vehicle Language Lines
       |--------------------------------------------------------------------------
      */
+    'api' => array(
+        'getSingle' => 'Promotion :field :value found.',
+        'getAll' => 'Your promotion\'s list',
+    ),
     'validation' => array(
         "isPromotionCodeValid" => array(
             "expired" => "This promotion code :code does not exist",

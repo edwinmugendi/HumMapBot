@@ -44,9 +44,10 @@ class PaymentController extends PaymentsBaseController {
         return $this->callController(\Util::buildNamespace('payments', $gateway, 1), 'createTransaction', array($paymentInfo));
     }
 
-    public function prepareTransactionArray($gateway,$gatewayTransaction) {
+    public function prepareTransactionArray($gateway, $gatewayTransaction) {
         return $this->callController(\Util::buildNamespace('payments', $gateway, 1), 'prepareTransactionArray', array($gatewayTransaction));
     }
+
 }
 
 //E# PaymentController() function

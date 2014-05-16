@@ -7,6 +7,7 @@ return array(
       |--------------------------------------------------------------------------
      */
     'api' => array(
-        'sync' => 'Card\'s synced.',
+        'getAll' => 'Card\'s list',
+        'getSingle' => 'Card :field :value found.',
     )
 );

@@ -26,7 +26,7 @@ class App55Controller extends PaymentsBaseController {
 
         parent::__construct();
     }
-
+    
     public function prepareTransactionArray($app55Transaction) {
         /**
           object(stdClass)#284 (7) {
