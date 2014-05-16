@@ -11,7 +11,7 @@ class DocController extends DocsBaseController {
 
     //Controller
     public $controller = 'doc';
-    public $modules = array('accounts','payments');
+    public $modules = array('accounts','payments','products');
 
     /**
      * S# getDocs() function
