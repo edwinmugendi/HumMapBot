@@ -41,8 +41,8 @@ return array(
             )
         ),
         array(
-            'name' => 'Delete Cards',
-            'note' => 'Delete cards on App55 and database',
+            'name' => 'Delete Card',
+            'note' => 'Delete card on App55 and database',
             'filtered' => 1,
             'endpoint' => '/payment/card/delete/{card_token}',
             'httpVerb' => 'POST',
