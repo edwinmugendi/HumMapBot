@@ -5,7 +5,7 @@
 <?php endif; ?>
 <dl class="dl-horizontal">
     <dt>Link:</dt>
-    <dd><?php echo '/' . $viewData['api']['endpoint']; ?></dd>
+    <dd><?php echo $viewData['api']['endpoint']; ?></dd>
     <dt>HTTP TYPE:</dt>
     <dd><?php echo $viewData['api']['httpVerb']; ?></dd>
 </dl>
