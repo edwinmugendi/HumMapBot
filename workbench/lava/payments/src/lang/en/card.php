@@ -9,5 +9,6 @@ return array(
     'api' => array(
         'getAll' => 'Card\'s list',
         'getSingle' => 'Card :field :value found.',
+        'delete' => 'Card :field :value deleted'
     )
 );

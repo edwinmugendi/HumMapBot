@@ -18,15 +18,6 @@ class App55Controller extends PaymentsBaseController {
     //Response
     private $response;
 
-    /**
-     * S# __contruct() function
-     * Constructor
-     */
-    public function __construct() {
-
-        parent::__construct();
-    }
-    
     public function prepareTransactionArray($app55Transaction) {
         /**
           object(stdClass)#284 (7) {
@@ -96,7 +87,7 @@ class App55Controller extends PaymentsBaseController {
                 'message' => $e->getMessage(),
                 'code' => 500
             );
-        }
+        }//E# try catch block
 
         return $this->notification;
     }
@@ -104,9 +95,11 @@ class App55Controller extends PaymentsBaseController {
 //E# createTransaction() function
 
     /**
+     * S# sync() function
+     * Sync out local card to those in App55
      * 
      */
-    public function app55Sync() {
+    public function sync() {
         try {
             //Instantiate App55 object
             $this->gateway = new \App55_Gateway(\App55_Environment::$sandbox, trim(\Config::get($this->package . '::thirdParty.app55.apiKey')), trim(\Config::get($this->package . '::thirdParty.app55.apiSecret')));
@@ -165,6 +158,8 @@ class App55Controller extends PaymentsBaseController {
 
         return $this->notification;
     }
+
+//E# sync() function
 
     private function buildCardModelData($userId, $app55Card) {
         $card = array();
@@ -255,6 +250,9 @@ class App55Controller extends PaymentsBaseController {
     public function createCard() {
 
         try {
+            //Instantiate App55 object
+            $this->gateway = new \App55_Gateway(\App55_Environment::$sandbox, trim(\Config::get($this->package . '::thirdParty.app55.apiKey')), trim(\Config::get($this->package . '::thirdParty.app55.apiSecret')));
+
             $this->response = $this->gateway->createCard(
                             new \App55_User(array(
                         'id' => 4733
@@ -279,13 +277,24 @@ class App55Controller extends PaymentsBaseController {
 
 //E# createCard() function
 
-    public function deleteCard($app55UserId, $token) {
+    /**
+     * S# deleteCard() function
+     * Delete card on app55
+     * 
+     * @param array $deleteData Delete data
+     * 
+     */
+    public function deleteCard($deleteData) {
         try {
+            //Instantiate App55 object
+            $this->gateway = new \App55_Gateway(\App55_Environment::$sandbox, trim(\Config::get($this->package . '::thirdParty.app55.apiKey')), trim(\Config::get($this->package . '::thirdParty.app55.apiSecret')));
+
+            //Delete card on app55
             $this->response = $this->gateway->deleteCard(
                             new \App55_User(array(
-                        'id' => $app55UserId
+                        'id' => $deleteData['app55UserId']
                             )), new \App55_Card(array(
-                        'token' => $token
+                        'token' => $deleteData['token']
                             ))
                     )->send();
 

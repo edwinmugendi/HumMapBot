@@ -15,7 +15,7 @@ return array(
             'name' => 'Sync Cards',
             'note' => 'Sync cards on App55',
             'filtered' => 1,
-            'endpoint' => '/payment/app55/sync',
+            'endpoint' => '/payment/card/sync',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -41,6 +41,53 @@ return array(
             )
         ),
         array(
+            'name' => 'Delete Cards',
+            'note' => 'Delete cards on App55 and database',
+            'filtered' => 1,
+            'endpoint' => '/payment/card/delete/{card_token}',
+            'httpVerb' => 'POST',
+            'parameters' => array(
+                array(
+                    'field' => 'card_token',
+                    'dataType' => 'string',
+                    'note' => 'Card token',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'token',
+                    'dataType' => 'string',
+                    'note' => 'User API token',
+                    'required' => 1,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Card deleted',
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Card token Bulan deleted","data":["Bulan"]}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
+                ),
+                array(
+                    'action' => 'Not found',
+                    'httpCode' => 404,
+                    'note' => 'Object not found',
+                    'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Card with token \'Bulan1\' not found.","data":{"field":"token","type":"Card","value":"Bulan1"}}'
+                ),
+                array(
+                    'action' => 'Server Error',
+                    'httpCode' => 500,
+                    'note' => '3rd party or internal server',
+                    'example' => '{"httpStatusCode":400,"systemCode":1000,"message":"No such card found on app55","data":[]}'
+                ),
+            )
+        ),
+        array(
             'name' => 'Prepare Transaction',
             'note' => 'Prepare a transaction',
             'filtered' => 1,
@@ -57,7 +104,7 @@ return array(
                     'field' => 'vrm',
                     'dataType' => 'string',
                     'note' => 'Vehicle Registration Mark',
-                    'required' => 1,
+                    'required' => 0,
                 ),
                 array(
                     'field' => 'token',
@@ -181,7 +228,7 @@ return array(
             'name' => 'Get Single Card by Card Token',
             'note' => 'Get a single card\'s details by card token',
             'filtered' => 1,
-            'endpoint' => '/payment/app55/get/{card_token}',
+            'endpoint' => '/payment/card/get/{card_token}',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
@@ -228,7 +275,7 @@ return array(
             'name' => 'Get All Card',
             'note' => 'Get all users cards',
             'filtered' => 1,
-            'endpoint' => '/payment/app55/get',
+            'endpoint' => '/payment/card/get',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(

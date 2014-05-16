@@ -33,8 +33,8 @@ class PaymentController extends PaymentsBaseController {
      */
     public function prepare() {
         $this->validationRules = array(
-            'product_id' => 'required',
-            'vrm' => 'required|prepareTransaction',
+            'vrm' => 'integer',
+            'product_id' => 'required|prepareTransaction',
         );
 
         $this->isInputValid();
