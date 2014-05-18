@@ -355,8 +355,8 @@ return array(
             )
         ),
         array(
-            'name' => 'Add Vehicle',
-            'note' => 'Add user vehicle',
+            'name' => 'Add or Update Vehicle',
+            'note' => 'Add or update a user\s vehicle',
             'filtered' => 1,
             'endpoint' => '/user/vehicle/add',
             'httpVerb' => 'POST',
