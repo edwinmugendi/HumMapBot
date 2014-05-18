@@ -8,11 +8,14 @@
     //Sync Card Page
     \Route::post('payment/card/sync', array('as' => 'cardSync', 'uses' => 'Lava\Payments\CardController@postSync'));
 
-    //Get single or all cards
-    \Route::get('payment/card/get/{card_token?}', array('as' => 'cardGet', 'uses' => 'Lava\Payments\CardController@getCard'));
+    //Get single cards
+    \Route::get('payment/card/get/{field}/{value}', array('as' => 'cardGetSingle', 'uses' => 'Lava\Payments\CardController@getModelBelongingToUser'));
+
+    //Get all cards
+    \Route::get('payment/card/get', array('as' => 'cardGetAll', 'uses' => 'Lava\Payments\CardController@getAllModelBelongingToUser'));
 
     //Delete Card
-    \Route::post('payment/card/delete/{card_token}', array('as' => 'cardDelete', 'uses' => 'Lava\Payments\CardController@deleteCard'));
+    \Route::post('payment/card/delete/{field}/{value}', array('as' => 'cardDelete', 'uses' => 'Lava\Payments\CardController@postDelete'));
 
     //Create User Page
     \Route::get('payment/card/test/create/{id}/{email}/{password}', array('as' => 'paymentApp55Create', 'uses' => 'Lava\Payments\App55Controller@createUser'));

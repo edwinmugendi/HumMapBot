@@ -20,6 +20,8 @@ class MessagesServiceProvider extends ServiceProvider {
      */
     public function boot() {
         $this->package('lava/messages');
+        //Register routes
+        include __DIR__ . '/../../routes.php';
         //Register extensions
         include __DIR__ . '/../../extensions.php';
     }

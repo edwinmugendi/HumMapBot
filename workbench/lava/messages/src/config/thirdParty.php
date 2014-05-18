@@ -3,11 +3,13 @@
 return array(
     /*
       |--------------------------------------------------------------------------
-      | Product Name
+      | Third Party Credentials
       |--------------------------------------------------------------------------
-      | The name of the product
       |
      */
-    'name' => 'Lava app',
-    'smsSender' => '+254722906835'
+    'clickatell' => array(
+        "apiId" => "3422899",
+        "user" => "lavamsg",
+        "password" => "OEfCOBESeVeBGN",
+    )
 );

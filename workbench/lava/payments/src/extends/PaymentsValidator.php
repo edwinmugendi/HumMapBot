@@ -28,11 +28,12 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
      * @param array $parameters Parameters
      */
     public function validateProcessTransaction($attribute, $vrm, $parameters) {
-        //TODO: 
-        //TODO: Get promotions
-        //TODO: Calculate price
-        //TODO: Check surcharge
-        //Get user model by id
+        //TODO: Send SMS to merchant
+        //TODO: Send email to merchant
+        //TODO: Send SMS to consumer
+        //TODO: Send push to consumer
+        //TODO: Send email to consumer
+        //TODO: Save loyalty stamps by location
         //Product controller
         $productController = new ProductController();
 

@@ -108,20 +108,22 @@ class UserController extends AccountsBaseController {
         );
 
         //Send welcome email
-        $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', \Config::get('product.email'), $controllerModel->email, 'welcome', \Config::get('app.locale'), $parameters));
+        $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $controllerModel->id, $controllerModel->email, 'welcome', \Config::get('app.locale'), $parameters));
     }
 
 //E# afterCreating() function
 
     /**
-     * S# listRedirect() function
+     * S# createRedirect() function
      * @author Edwin Mugendi
-     * Redirect to list
-     * @param array $controller The controller
-     * @param string $crudAction The Crud action
-     * @return \Redirect redirect to list page
+     * Redirect after creating the model
+     * 
+     * @param Model $controllerModel Controller model
+     * 
+     * @return \Redirect if source is web redirect to controller list page
+     * @return \API200Exception if source is "api" throw Success Exception 
      */
-    public function listRedirect($controllerModel, $crudAction) {
+    public function createRedirect($controllerModel) {
         if ($this->subdomain == 'api') {//From API
             //Get success message
             $message = \Lang::get($this->package . '::' . $this->controller . '.api.registerUser', array('productName' => \Config::get('product.name')));
@@ -132,7 +134,7 @@ class UserController extends AccountsBaseController {
         return \Redirect::route($this->controller . 'List');
     }
 
-//E# listRedirect() function
+//E# createRedirect() function
 
     /**
      * S# createApp55User() function
@@ -657,7 +659,6 @@ class UserController extends AccountsBaseController {
                 $isSent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', 'info@intrapayment.com', $userModel->email, 'reset_password', \Config::get('app.locale'), $parameters));
 
                 if ($this->subdomain == 'api') {//From API
-                    
                     //Get success message
                     $message = \Lang::get($this->package . '::' . $this->controller . '.api.forgotPassword');
 

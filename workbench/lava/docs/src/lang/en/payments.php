@@ -41,16 +41,22 @@ return array(
             )
         ),
         array(
-            'name' => 'Delete Card',
+            'name' => 'Delete Card by Id',
             'note' => 'Delete card on App55 and database',
             'filtered' => 1,
-            'endpoint' => '/payment/card/delete/{card_token}',
+            'endpoint' => '/payment/card/delete/{field}/{value}',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
-                    'field' => 'card_token',
+                    'field' => 'field (in the url)',
                     'dataType' => 'string',
-                    'note' => 'Card token',
+                    'note' => 'Must be set to \'id\'',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'value (in the url)',
+                    'dataType' => 'integer',
+                    'note' => 'Actual card\'s id',
                     'required' => 1,
                 ),
                 array(
@@ -74,16 +80,80 @@ return array(
                     'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
                 ),
                 array(
-                    'action' => 'Not found',
-                    'httpCode' => 404,
-                    'note' => 'Object not found',
-                    'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Card with token \'Bulan1\' not found.","data":{"field":"token","type":"Card","value":"Bulan1"}}'
-                ),
-                array(
                     'action' => 'Server Error',
                     'httpCode' => 500,
                     'note' => '3rd party or internal server',
                     'example' => '{"httpStatusCode":400,"systemCode":1000,"message":"No such card found on app55","data":[]}'
+                ),
+            )
+        ),
+        array(
+            'name' => 'Get Single Card by Id',
+            'note' => 'Get a single card\'s details by id',
+            'filtered' => 1,
+            'endpoint' => '/payment/card/get/{field}/{value}',
+            'httpVerb' => 'GET',
+            'parameters' => array(
+                array(
+                    'field' => 'field',
+                    'dataType' => 'string',
+                    'note' => 'Must be set to \'id\'. Set this in the url not query string',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'value',
+                    'dataType' => 'integer',
+                    'note' => 'Actual id. Set this in the url not query string',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'token',
+                    'dataType' => 'string',
+                    'note' => 'User API token',
+                    'required' => 1,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Card found',
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Card token NTQGu found.","data":{"id":"1","user_id":"1","gateway_id":"1","name":"","number":"442244******4444","address_street":"test address","address_city":"manchester","address_postal_code":"m13df","address_country":"GB","token":"NTQGu","expiry":"0000-00-00 00:00:00","created_at":"2014-05-07 17:08:35","updated_at":"2014-05-07 17:08:35"}}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
+                )
+            )
+        ),
+        array(
+            'name' => 'Get All Card',
+            'note' => 'Get all users cards',
+            'filtered' => 1,
+            'endpoint' => '/payment/card/get',
+            'httpVerb' => 'GET',
+            'parameters' => array(
+                array(
+                    'field' => 'token',
+                    'dataType' => 'string',
+                    'note' => 'User API token',
+                    'required' => 1,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Cards found',
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Card\'s list","data":[{"id":"1","user_id":"1","gateway_id":"1","name":"","number":\"442244******4444","address_street":"test address","address_city":"manchester","address_postal_code":"m13df","address_country":"GB","token":"NTQGu","expiry":"0000-00-00 00:00:00","created_at":"2014-05-07 17:08:35","updated_at":"2014-05-07 17:08:35"},{"id":"2","user_id":"1","gateway_id":"1","name":"","number":"447815******2688","address_street":"Nairobi","address_city":"Nairobi","address_postal_code":"00200","address_country":"UG","token":"Bulan","expiry":"0000-00-00 00:00:00","created_at":"2014-05-07 17:08:35","updated_at":"2014-05-07 17:08:35"}]}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
                 ),
             )
         ),
@@ -223,82 +293,6 @@ return array(
                     'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Product with id \'121\' not found.","data":{"field":"id","type":"Product","value":"121"}}'
                 ),
             ),
-        ),
-        array(
-            'name' => 'Get Single Card by Card Token',
-            'note' => 'Get a single card\'s details by card token',
-            'filtered' => 1,
-            'endpoint' => '/payment/card/get/{card_token}',
-            'httpVerb' => 'GET',
-            'parameters' => array(
-                array(
-                    'field' => 'card_token',
-                    'dataType' => 'string',
-                    'note' => 'Card token Set this in the url not query string',
-                    'required' => 1,
-                ),
-                array(
-                    'field' => 'token',
-                    'dataType' => 'string',
-                    'note' => 'User API token',
-                    'required' => 1,
-                )
-            ),
-            'returns' => array(
-                array(
-                    'action' => 'Success',
-                    'httpCode' => 200,
-                    'note' => 'Card found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Card token NTQGu found.","data":{"id":"1","user_id":"1","gateway_id":"1","name":"","number":"442244******4444","address_street":"test address","address_city":"manchester","address_postal_code":"m13df","address_country":"GB","token":"NTQGu","expiry":"0000-00-00 00:00:00","created_at":"2014-05-07 17:08:35","updated_at":"2014-05-07 17:08:35"}}'
-                ),
-                array(
-                    'action' => 'Error',
-                    'httpCode' => 400,
-                    'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
-                ),
-                array(
-                    'action' => 'Forbidden',
-                    'httpCode' => 403,
-                    'note' => 'Forbidden or Don\'t Own Object',
-                    'example' => '{"httpStatusCode":403,"systemCode":903,"message":"Forbidden or Don\'t own","data":{"field":"token","type":"Card","value":"NTQGu"}}'
-                ),
-                array(
-                    'action' => 'Not found',
-                    'httpCode' => 404,
-                    'note' => 'Object not found',
-                    'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Card with token \'XYZ\' not found.","data":{"field":"token","type":"Card","value":"XYZ"}}'
-                ),
-            )
-        ),
-        array(
-            'name' => 'Get All Card',
-            'note' => 'Get all users cards',
-            'filtered' => 1,
-            'endpoint' => '/payment/card/get',
-            'httpVerb' => 'GET',
-            'parameters' => array(
-                array(
-                    'field' => 'token',
-                    'dataType' => 'string',
-                    'note' => 'User API token',
-                    'required' => 1,
-                )
-            ),
-            'returns' => array(
-                array(
-                    'action' => 'Success',
-                    'httpCode' => 200,
-                    'note' => 'Cards found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Card\'s list","data":[{"id":"1","user_id":"1","gateway_id":"1","name":"","number":\"442244******4444","address_street":"test address","address_city":"manchester","address_postal_code":"m13df","address_country":"GB","token":"NTQGu","expiry":"0000-00-00 00:00:00","created_at":"2014-05-07 17:08:35","updated_at":"2014-05-07 17:08:35"},{"id":"2","user_id":"1","gateway_id":"1","name":"","number":"447815******2688","address_street":"Nairobi","address_city":"Nairobi","address_postal_code":"00200","address_country":"UG","token":"Bulan","expiry":"0000-00-00 00:00:00","created_at":"2014-05-07 17:08:35","updated_at":"2014-05-07 17:08:35"}]}'
-                ),
-                array(
-                    'action' => 'Error',
-                    'httpCode' => 400,
-                    'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
-                ),
-            )
         ),
     )
 );

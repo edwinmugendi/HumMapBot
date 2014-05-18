@@ -11,9 +11,12 @@ class VehicleModel extends \Eloquent {
 
     //Table
     protected $table = 'acc_vehicles';
+    //User owned
+    public $userOwned = true;
     //Fillable fields
     protected $fillable = array(
         'vrm',
+        'type',
         'status',
         'created_by',
         'updated_by'
@@ -30,13 +33,30 @@ class VehicleModel extends \Eloquent {
     );
     //Create validation rules
     public $createRules = array(
-        'vrm' => 'required',
         'is_default' => 'required|between:0,1',
         'purpose' => 'required|in:personal,business',
-        'check_registry' => 'required|between:0,1|checkRegistry',
+        'type' => 'required|in:car,4x4',
+        'force' => 'required|between:0,1',
+        'vrm' => 'required|checkRegistry',
         'status' => 'integer',
         'created_by' => 'integer',
         'updated_by' => 'integer',
+    );
+    //Update validation rules
+    public $updateRules = array(
+        'field' => 'required|in:id',
+        'value' => 'required|exists:acc_vehicles,id',
+        'is_default' => 'required|between:0,1',
+        'purpose' => 'required|in:personal,business',
+        'type' => 'required|in:car,4x4',
+        'status' => 'integer',
+        'created_by' => 'integer',
+        'updated_by' => 'integer',
+    );
+    //Select validation rules
+    public $selectRules = array(
+        'field' => 'required|in:vrm',
+        'value' => 'required',
     );
 
     /**

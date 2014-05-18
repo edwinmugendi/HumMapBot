@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateUsersVehiclesTable extends Migration {
+class CreateMessagesTable extends Migration {
 
     /**
      * Run the migrations.
@@ -11,14 +11,16 @@ class CreateUsersVehiclesTable extends Migration {
      * @return void
      */
     public function up() {
-        Schema::create('acc_users_vehicles', function(Blueprint $table) {
+        Schema::create('msg_messages', function(Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
-            $table->integer('vehicle_id')->unsigned();
-            $table->boolean('is_default');
-            $table->boolean('force');
-            $table->string('purpose');
-            $table->datetime('deleted_at');
+            $table->string('type',10);
+            $table->string('code');
+            $table->text('body');
+            $table->integer('sender_id')->unsigned();
+            $table->string('sender', 255);
+            $table->integer('recipient_id')->unsigned();
+            $table->string('recipient', 255);
+            $table->boolean('sent');
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();
@@ -32,7 +34,7 @@ class CreateUsersVehiclesTable extends Migration {
      * @return void
      */
     public function down() {
-        Schema::drop('acc_users_vehicles');
+        Schema::drop('msg_messages');
     }
 
 }

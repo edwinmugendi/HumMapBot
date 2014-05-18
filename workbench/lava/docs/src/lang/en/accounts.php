@@ -374,15 +374,21 @@ return array(
                     'required' => 1,
                 ),
                 array(
-                    'field' => 'check_registry',
+                    'field' => 'force',
                     'dataType' => 'integer boolean',
-                    'note' => '1 to check car registry, 0 if you dont want to',
+                    'note' => '1 to force create, 0 if you dont want to force create',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'type',
+                    'dataType' => 'string',
+                    'note' => 'Set \'car\' or \'4x4\' in lower case',
                     'required' => 1,
                 ),
                 array(
                     'field' => 'purpose',
                     'dataType' => 'string',
-                    'note' => 'Set \'personal\' or \'business\'',
+                    'note' => 'Set \'personal\' or \'business\' in lowercase',
                     'required' => 1,
                 ),
                 array(
@@ -452,13 +458,19 @@ return array(
             'name' => 'Get Single Vehicle by VRM',
             'note' => 'Get a single vehicle\'s details by vrm',
             'filtered' => 1,
-            'endpoint' => '/user/vehicle/get/{vrm}',
+            'endpoint' => '/user/vehicle/get/{field}/{value}',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
-                    'field' => 'vrm',
+                    'field' => 'field',
                     'dataType' => 'string',
-                    'note' => 'VRM Set this in the url not query string',
+                    'note' => 'Must be set to \'vrm\'. Set this in the url not query string',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'value',
+                    'dataType' => 'string',
+                    'note' => 'Actual vrm value. Set this in the url not query string',
                     'required' => 1,
                 ),
                 array(
@@ -521,6 +533,188 @@ return array(
                     'httpCode' => 400,
                     'note' => 'Validation error',
                     'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"vrm","error":"The vrm field is required."}]}'
+                ),
+            )
+        ),
+        array(
+            'name' => 'Add Device',
+            'note' => 'Add user\'s device',
+            'filtered' => 1,
+            'endpoint' => '/user/device/add',
+            'httpVerb' => 'POST',
+            'parameters' => array(
+                array(
+                    'field' => 'os',
+                    'dataType' => 'string',
+                    'note' => 'Operating System',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'manufacturer',
+                    'dataType' => 'string',
+                    'note' => 'Manufacturer',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'model',
+                    'dataType' => 'string',
+                    'note' => 'Model',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'version',
+                    'dataType' => 'string',
+                    'note' => 'Version OS',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'app_version',
+                    'dataType' => 'string',
+                    'note' => 'Installed app version',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'unid',
+                    'dataType' => 'string',
+                    'note' => 'Device\'s Unique Identifier',
+                    'required' => 0,
+                ),
+                array(
+                    'field' => 'push_token',
+                    'dataType' => 'string',
+                    'note' => 'Urban Airship push token',
+                    'required' => 0,
+                ),
+                array(
+                    'field' => 'token',
+                    'dataType' => 'string',
+                    'note' => 'User API token',
+                    'required' => 1,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Device created',
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Device id 7 created","data":{"id":7}}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"unid","error":"The unid field is required."}]}'
+                ),
+            )
+        ),
+        array(
+            'name' => 'Delete Device',
+            'note' => 'Delete user\'s device',
+            'filtered' => 1,
+            'endpoint' => '/user/device/delete/{field}/{value}',
+            'httpVerb' => 'POST',
+            'parameters' => array(
+                array(
+                    'field' => 'field (in the url)',
+                    'dataType' => 'string',
+                    'note' => 'Must be set to \'id\'',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'value (in the url)',
+                    'dataType' => 'integer',
+                    'note' => 'Actual device\'s id',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'token',
+                    'dataType' => 'string',
+                    'note' => 'User API token',
+                    'required' => 1,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Device deleted',
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Device id 3 deleted","data":{"id":"3"}}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"value","error":"The selected value does not exist."}]}'
+                )
+            )
+        ),
+        array(
+            'name' => 'Get Single Device by Id',
+            'note' => 'Get a single user\'s device by id',
+            'filtered' => 1,
+            'endpoint' => '/user/device/get/{field}/{value}',
+            'httpVerb' => 'GET',
+            'parameters' => array(
+                array(
+                    'field' => 'field',
+                    'dataType' => 'string',
+                    'note' => 'Must be set to \'id\'. Set this in the url not query string',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'value',
+                    'dataType' => 'integer',
+                    'note' => 'Actual id. Set this in the url not query string',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'token',
+                    'dataType' => 'string',
+                    'note' => 'User API token',
+                    'required' => 1,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Device found',
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Device id 6 found.","data":{"id":"6","user_id":"1","os":"IO7","manufacturer":"Iphone","model":"Iphone 5","version":"IOS 7","app_version":"1.12","unid":"123","push_token":"1234","created_at":"2014-05-18 22:14:13","updated_at":"2014-05-18 22:14:13"}}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"value","error":"The selected value does not exist."}]}'
+                )
+            )
+        ),
+        array(
+            'name' => 'Get All Devices',
+            'note' => 'Get all user\'s devices',
+            'filtered' => 1,
+            'endpoint' => '/user/device/get',
+            'httpVerb' => 'GET',
+            'parameters' => array(
+                array(
+                    'field' => 'token',
+                    'dataType' => 'string',
+                    'note' => 'User API token',
+                    'required' => 1,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Devices found',
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Your Devices list","data":[{"id":"5","user_id":"1","os":"IO7","manufacturer":"Iphone","model":"Iphone 5","version":"IOS 7","app_version":"1.12","unid":"asdasd","push_token":"1234","created_at":"2014-05-18 09:03:08","updated_at":"2014-05-18 10:02:17"},{"id":"8","user_id":"1","os":"IO7","manufacturer":"Iphone","model":"Iphone 5","version":"IOS 7","app_version":"1.12","unid":"4234234","push_token":"","created_at":"2014-05-18 22:15:57","updated_at":"2014-05-18 22:15:57"}]}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
                 ),
             )
         ),

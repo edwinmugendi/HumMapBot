@@ -83,67 +83,7 @@ class CardController extends PaymentsBaseController {
 
 //E# deleteCard() function
 
-    /**
-     * S# getCard() function
-     * 1. Get card by token
-     * 2. Get all valid users cards
-     * @param string $token Card token
-     * return single promotion or and array of promotions
-     */
-    public function getCard($token = null) {
-        if (is_null($token)) {//Get users cards
-            //Relation
-            $relation = 'cards';
-
-            //Lazy load to load
-            $parameters['lazyLoad'] = array($relation);
-
-            //Get user by token
-            $userModel = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->input['token'], $parameters));
-
-            if ($this->subdomain == 'api') {//From API
-                //Get success message
-                $message = \Lang::get($this->package . '::' . $this->controller . '.api.getAll');
-
-                throw new \Api200Exception($userModel->$relation->toArray(), $message);
-            }//E# if else statement
-        } else {//Get a single card
-            //Get model by token
-            $cardModel = $this->getCardIfItExists($token);
-
-            if ($cardModel) {//Card exists
-                if ($cardModel->user && ($cardModel->user->id == $this->user['id'])) {//User owns this card
-                    //Get success message
-                    $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => 'token', 'value' => $this->input['token']));
-
-                    throw new \Api200Exception(array_except($cardModel->toArray(), array('user')), $message);
-                } else {//Forbidden
-                    //Set notification
-                    $this->notification = array(
-                        'field' => 'token',
-                        'type' => 'Card',
-                        'value' => $this->input['token'],
-                    );
-
-                    //Throw 403 error
-                    throw new \Api403Exception($this->notification);
-                }//E# if else statement
-            } else {//Card does not exists
-                //Set notification
-                $this->notification = array(
-                    'field' => 'token',
-                    'type' => 'Card',
-                    'value' => $this->input['token'],
-                );
-
-                //Throw Locationf not found error
-                throw new \Api404Exception($this->notification);
-            }//E# if else statement
-        }//E# if else statement
-    }
-
-//E# getCard() function
-
+   
     /**
      * S# getCardIfItExists() function
      * Get card by token

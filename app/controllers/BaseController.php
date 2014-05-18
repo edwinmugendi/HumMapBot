@@ -83,6 +83,8 @@ class BaseController extends Controller {
     }
 
 //E# sessionedUser() function
+
+
     public function getAllUsersModelWithMany() {
         //Lazy load to load
         $parameters['lazyLoad'] = $this->userSearchableRelations;
@@ -100,50 +102,206 @@ class BaseController extends Controller {
         }//E# if else statement
     }
 
-    public function getUsersModelWithMany($oneOrAll = 1) {
-        //Build field rule
-        $fieldRule = 'required|in:' . implode(',', $this->searchableFields);
-        dd($fieldRule);
-        //Define validation rules
-        $this->validationRules = array(
-            'value' => 'required',
-            'field' => $fieldRule
-        );
+    public function getSelect() {
+        //Get this controller's model
+        $modelObject = $this->getModelObject();
 
-        //Validate input
+        //Get and set the model's create validation rules
+        $this->validationRules = $modelObject->selectRules;
+
+        //Validate row to be inserted
+        $validation = $this->isInputValid();
+    }
+
+    /**
+     * S# getManyModelBelongingToUser() function
+     * @author Edwin Mugendi
+     * Get model belonging to the logged in user filtered by field
+     * 
+     * @param string $field Field
+     * @param mixed $value Value
+     * 
+     * @return Exception \API200Exption
+     * @return Exception API400Exception
+     * @return Exception API403Exception
+     */
+    public function getManyModelBelongingToUser($field, $value) {
+      
+        //Get this controller's model
+        $modelObject = $this->getModelObject();
+
+        //Add field and value to input
+        $this->addFieldValueToInput($field, $value);
+
+        //Get and set the model's update validation rules
+        $this->validationRules = $modelObject->selectRules;
+
+        //Validate row to be inserted
         $this->isInputValid();
 
+        //Get model by field
         $controllerModel = $this->getModelByField($this->input['field'], $this->input['value']);
 
-        if ($controllerModel) {
-            //Get user by token
-            $relationModel = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelFilteredByPivot', array($this->user['id'], 'vehicles', $this->controller . '_id', $controllerModel->id));
+        if ($controllerModel) {//Model exists
+            if ($controllerModel->user_owns) {//User owns this model
+                //Get success message
+                $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => $this->input['field'], 'value' => $this->input['value']));
+                
+                throw new \Api200Exception($this->prepareRelation($controllerModel->toArray()), $message);
+            } else {//User does not own this model
+                //Set notification
+                $this->notification = array(
+                    'field' => $this->input['field'],
+                    'type' => Str::title($this->controller),
+                    'value' => $this->input['value'],
+                );
 
-            foreach ($relationModel as $singleRelation) {
-                //Field coz object variable throws an exception
-                $field = $this->input['field'];
-                if ($singleRelation->$field == $this->input['value']) {
+                //Throw 403 error
+                throw new \Api403Exception($this->notification);
+            }
+        } else {//Model not found
+            //Set notification
+            $this->notification = array(
+                'field' => $this->input['field'],
+                'type' => Str::title($this->controller),
+                'value' => $this->input['value'],
+            );
 
-                    if ($this->subdomain == 'api') {//From API
-                        //Get success message
-                        $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => $this->input['field'], 'value' => $this->input['value']));
-
-                        throw new Api200Exception($singleRelation->toArray(), $message);
-                    }//E# if else statement
-
-                    return $singleRelation;
-                }
-            }//E# if statement
-        }//E# if statement
-
-        $this->notification = array(
-            'field' => $this->input['field'],
-            'type' => \Str::title($this->controller),
-            'value' => $this->input['value'],
-        );
-
-        throw new Api404Exception($this->notification);
+            //Throw 404 error
+            throw new \Api404Exception($this->notification);
+        }//E# if else statement
     }
+
+//E# getManyModelBelongingToUser() function
+
+    /**
+     * S# getAllManyModelBelongingToUser() function
+     * @author Edwin Mugendi
+     * Get all model belonging to the loggged in user
+
+     * 
+     * @return Exception \API200Exption
+     * @return Exception \API400Exception
+     */
+    public function getAllManyModelBelongingToUser() {
+
+        //Build relation
+        $relation = $this->controller . 's';
+
+        //Lazy load to load
+        $parameters['lazyLoad'] = array($relation);
+
+        //Get user by id
+        $userModel = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('id', $this->user['id'], $parameters));
+
+        if ($this->subdomain == 'api') {//From API
+            //Get success message
+            $message = \Lang::get($this->package . '::' . $this->controller . '.api.getAll');
+
+            foreach ($userModel->$relation->toArray() as $singleRelation) {//Loop through the relations
+                $relationArray[] = $this->prepareRelation($singleRelation);
+            }//E# foreach statement
+            //Throw 200 Exception
+            throw new \Api200Exception($relationArray, $message);
+        }//E# if else statement
+    }
+
+//E# getAllManyModelBelongingToUser() function
+
+    /**
+     * S# prepareRelation() function
+     * Prepare relation
+     * 
+     * @param array $rawRelation Raw relation
+     */
+    public function prepareRelation($rawRelation) {
+        return array_except($rawRelation, array('pivot'));
+    }
+
+//E# prepareRelation() function
+
+    /**
+     * S# getModelBelongingToUser() function
+     * @author Edwin Mugendi
+     * Get model belonging to the logged in user filtered by field
+     * 
+     * @param string $field Field
+     * @param mixed $value Value
+     * 
+     * @return Exception \API200Exption
+     * @return Exception \API400Exception
+     */
+    public function getModelBelongingToUser($field, $value) {
+        //Get this controller's model
+        $modelObject = $this->getModelObject();
+
+        //Add field and value to input
+        $this->addFieldValueToInput($field, $value);
+
+        //Get and set the model's select validation rules
+        $this->validationRules = $modelObject->selectRules;
+
+        //Validate model is owned by a user
+        $this->validateModelIsUserOwned($modelObject);
+
+        //dd($this->validationRules);
+        //Validate row to be inserted
+        $this->isInputValid();
+
+        //Get model by field
+        $controllerModel = $this->getModelByField($this->input['field'], $this->input['value']);
+
+        if ($controllerModel) {//Model exists
+            if ($this->subdomain == 'api') {//From API
+                //Get success message
+                $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => $this->input['field'], 'value' => $this->input['value']));
+
+                //Throw 200 Exception
+                throw new Api200Exception($controllerModel->toArray(), $message);
+            }//E# if else statement
+        } else {
+            //Set notification
+            $this->notification = array(
+                'field' => $this->input['field'],
+                'type' => Str::title($this->controller),
+                'value' => $this->input['value'],
+            );
+
+            //Throw 404 error
+            throw new \Api404Exception($this->notification);
+        }//E# if statement
+    }
+
+//E# getModelBelongingToUser() function
+
+    /**
+     * S# getAllModelBelongingToUser() function
+     * @author Edwin Mugendi
+     * Get all model belonging to the loggged in user
+
+     * 
+     * @return Exception \API200Exption
+     * @return Exception \API400Exception
+     */
+    public function getAllModelBelongingToUser() {
+        //Relation
+        $relation = $this->controller . 's';
+
+        //Lazy load to load
+        $parameters['lazyLoad'] = array($relation);
+
+        //Get user by token
+        $userModel = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->input['token'], $parameters));
+
+        if ($this->subdomain == 'api') {//From API
+            //Get success message
+            $message = \Lang::get($this->package . '::' . $this->controller . '.api.getAll');
+
+            throw new \Api200Exception($userModel->$relation->toArray(), $message);
+        }//E# if else statement
+    }
+
+//E# getAllModelBelongingToUser() function
 
     public function getModelFilteredByPivot($findId, $relation, $whereField, $whereValue) {
 
@@ -818,77 +976,38 @@ class BaseController extends Controller {
     }
 
 //E# updateIfValid() function
-    /**
-     * S# postUpdate() function
-     * @author Edwin Mugendi
-     * Update a post
-     */
-    public function postUpdate() {
 
+    /**
+     * S# getModelObject() function
+     * Get model object associated with this controller that has no data for the purpose of validation
+     * 
+     * @return Object Model Object
+     */
+    private function getModelObject() {
         //Build model namespace
         $modelName = \Util::buildNamespace($this->package, $this->controller, 2);
 
-        //Create a model object
-        $model = new $modelName();
+        //Create a model class
+        $modelObject = new $modelName();
 
-        //Get and set the model's update validation rules
-        $this->validationRules = $model->updateRules;
-
-        //Validate row to be inserted
-        $validation = $this->isInputValid();
-
-        if ($validation->fails()) {//Validation fails
-            //Validation error redirect
-            return $this->failedValidationRedirect($validation, 2, $this->input['id']);
-        } else {//Validation passes
-            //Controller to update
-            $controllerToUpdate = $input['controller'];
-
-            //Update controller model
-            $controllerModel = $this->updateIfValid($this->input['id'], $this->input, true);
-
-            if ($controllerModel) {//Property successfully updated
-                //Fields to select
-                $fields = array('*');
-
-                //Build where clause
-                $whereClause = array(
-                    array(
-                        'where' => 'where',
-                        'column' => 'id',
-                        'operator' => '=',
-                        'operand' => $this->input['id']
-                    )
-                );
-                //Build extra parameters
-                $parameters = array();
-                $parameters['lazyLoad'] = array('media');
-
-                //Select this controller
-                $controllerModel = $this->select($fields, $whereClause, 1, $parameters);
-
-                //Redirect to list
-                return $this->listRedirect($controllerModel, 'update');
-            }//E# if statement
-        }//E# if else statement
+        //Return this controller's model object
+        return $modelObject;
     }
 
-//E# postUpdate() function
+//E# getModelObject() function
 
     /**
      * S# postCreate() function
-     * @author Edwin Mugendi
-     * Create a post
+     * Create model associated with this controller
+     * 
+     * @return function createRedirect
      */
     public function postCreate() {
-        //Build model namespace
-        $modelName = \Util::buildNamespace($this->package, $this->controller, 2);
-
-        //Create a model object
-        $model = new $modelName();
+        //Get this controller's model
+        $modelObject = $this->getModelObject();
 
         //Get and set the model's create validation rules
-        $this->validationRules = $model->createRules;
+        $this->validationRules = $modelObject->createRules;
 
         //Validate row to be inserted
         $validation = $this->isInputValid();
@@ -907,36 +1026,17 @@ class BaseController extends Controller {
             $this->afterCreating($controllerModel);
 
             //Redirect to list
-            return $this->listRedirect($controllerModel, 'create');
+            return $this->createRedirect($controllerModel);
         }//E# if else statement
     }
 
 //E# postCreate() function
 
     /**
-     * S# listRedirect() function
-     * @author Edwin Mugendi
-     * Redirect to list
-     * @param array $controller The controller
-     * @param string $crudAction The Crud action
-     * @return \Redirect redirect to list page
-     */
-    public function listRedirect($controllerModel, $crudAction) {
-        if ($this->subdomain == 'api') {//From API
-            throw new Api200Exception(array_only($controllerModel->toArray(), array('id')));
-        }//E# if else statement
-
-        return \Redirect::route($this->controller . 'List');
-    }
-
-//E# listRedirect() function
-
-    /**
      * S# beforeCreating() function
      * @author Edwin Mugendi
      * Call this just before creating the model
      * Can be used to prepare the inputs
-     * @param array $input The input
      * @return 
      */
     public function beforeCreating() {
@@ -952,9 +1052,7 @@ class BaseController extends Controller {
      * S# afterCreating() function
      * @author Edwin Mugendi
      * Call this just after creating the model
-     * Can be used to prepare the inputs
-     * @param array $input The input
-     * @param object $contollerModel The model created
+     * Can be used to perform post create actions
      * @return 
      */
     public function afterCreating(&$controllerModel) {
@@ -962,6 +1060,247 @@ class BaseController extends Controller {
     }
 
 //E# afterCreating() function
+
+    /**
+     * S# createRedirect() function
+     * @author Edwin Mugendi
+     * Redirect after creating the model
+     * 
+     * @param Model $controllerModel Controller model
+     * 
+     * @return \Redirect if source is web redirect to controller list page
+     * @return \API200Exception if source is "api" throw Success Exception 
+     */
+    public function createRedirect($controllerModel) {
+        if ($this->subdomain == 'api') {//From API
+            //Get success message
+            $message = \Lang::get($this->package . '::' . $this->controller . '.api.create', array('field' => 'id', 'value' => $controllerModel->id));
+
+            throw new \Api200Exception(array_only($controllerModel->toArray(), array('id')), $message);
+        }//E# if else statement
+
+        return \Redirect::route($this->controller . 'List');
+    }
+
+//E# createRedirect() function
+
+    /**
+     * S# postCreate() function
+     * @author Edwin Mugendi
+     * Update model associated with this controller
+     * 
+     * @param string $field Field
+     * @param string $value Value
+     * 
+     * @return function updateRedirect
+     */
+    public function postUpdate($field, $value) {
+
+
+        //Get this controller's model
+        $modelObject = $this->getModelObject();
+
+        //Add field and value to input
+        $this->addFieldValueToInput($field, $value);
+
+        //Get and set the model's update validation rules
+        $this->validationRules = $modelObject->updateRules;
+
+        //Validate model is owned by a user
+        $this->validateModelIsUserOwned($modelObject);
+
+        //Validate row to be updated
+        $validation = $this->isInputValid();
+
+        if ($validation->fails()) {//Validation fails
+            //Validation error redirect
+            return $this->failedValidationRedirect($validation, 2, $this->input['id']);
+        } else {//Validation passes
+            //Just before updating the model
+            $this->beforeUpdating();
+
+            //Update controller model
+            $controllerModel = $this->updateIfValid($value, $this->input, true);
+
+            if ($controllerModel) {//Model updated
+                //Just after updating the model
+                $this->afterUpdating($controllerModel);
+
+                //Redirect to list
+                return $this->updateRedirect($controllerModel);
+            }//E# if statement
+        }//E# if else statement
+    }
+
+//E# postUpdate() function
+
+    /**
+     * S# beforeUpdating() function
+     * @author Edwin Mugendi
+     * Call this just before updating the model
+     * Can be used to prepare the inputs
+     * @return 
+     */
+    public function beforeUpdating() {
+        $this->input['status'] = 1;
+        $this->input['created_by'] = $this->user['id'] ? $this->user['id'] : 1;
+        $this->input['updated_by'] = $this->user['id'] ? $this->user['id'] : 1;
+        return;
+    }
+
+//E# beforeUpdating() function
+
+    /**
+     * S# afterUpdating() function
+     * @author Edwin Mugendi
+     * Call this just after creating the model
+     * Can be used to perform post create actions
+     * @return 
+     */
+    public function afterUpdating(&$controllerModel) {
+        return;
+    }
+
+//E# afterUpdating() function
+
+    /**
+     * S# updateRedirect() function
+     * @author Edwin Mugendi
+     * Redirect after updating the model
+     * 
+     * @param Model $controllerModel Controller model
+     * 
+     * @return \Redirect if source is web redirect to controller list page
+     * @return \API200Exception if source is "api" throw Success Exception 
+     */
+    public function updateRedirect($controllerModel) {
+        if ($this->subdomain == 'api') {//From API
+            //Get success message
+            $message = \Lang::get($this->package . '::' . $this->controller . '.api.update', array('field' => 'id', 'value' => $controllerModel->id));
+
+            throw new \Api200Exception(array_only($controllerModel->toArray(), array('id')), $message);
+        }//E# if else statement
+
+        return \Redirect::route($this->controller . 'List');
+    }
+
+//E# updateRedirect() function
+
+    /**
+     * S# addFieldValueToInput() function
+     * Add field and value to input
+     * 
+     * @param string $field Field
+     * @param string $value Value
+     */
+    private function addFieldValueToInput($field, $value) {
+        //Add field and value to inputs
+        $this->input['field'] = $field;
+        $this->input['value'] = $value;
+    }
+
+//E# addFieldValueToInput() function
+
+    /**
+     * S# validateModelIsUserOwned() function
+     * Append rule to value field that this model should be owned by the this user
+     * 
+     * @param string $model Model
+     */
+    private function validateModelIsUserOwned($model) {
+        if ($model->userOwned) {
+            $this->validationRules['value'] .= ',user_id,' . $this->user['id'];
+        }//E# if statement
+    }
+
+//E# validateModelIsUserOwned() function
+
+    /**
+     * S# postDelete() function
+     * Delete model associated with this controller
+     * 
+     * @param string $field Field
+     * @param string $value Value
+     * 
+     * @return function deleteRedirect
+     */
+    public function postDelete($field, $value) {
+        //Get this controller's model
+        $modelObject = $this->getModelObject();
+
+        //Add field and value to input
+        $this->addFieldValueToInput($field, $value);
+
+        //Get and set the model's delete validation rules
+        $this->validationRules = $modelObject->deleteRules;
+
+        //Validate model is owned by a user
+        $this->validateModelIsUserOwned($modelObject);
+
+        //Validate row to be deleted
+        $validation = $this->isInputValid();
+
+        //Get model by field
+        $controllerModel = $this->getModelByField($field, $value);
+
+        if ($this->beforeDeleting($controllerModel)) {
+            $controllerModel->delete();
+        }//E# if statement
+        //Delete Redirect
+        return $this->deleteRedirect($controllerModel);
+    }
+
+//E# postDelete() function
+
+    /**
+     * S# beforeDeleting() function
+     * @author Edwin Mugendi
+     * Call this just before deleting the model
+     * 
+     * @return boolean true to go aheading with deleting, false not to delete 
+     */
+    public function beforeDeleting($controllerModel) {
+
+        return true;
+    }
+
+//E# beforeDeleting() function
+
+    /**
+     * S# beforeDeleting() function
+     * @author Edwin Mugendi
+     * Call this just after deleting the model
+     * 
+     * @return; 
+     */
+    public function afterDeleting() {
+        return;
+    }
+
+//E# afterDeleting() function
+
+    /**
+     * S# deleteRedirect() function
+     * @author Edwin Mugendi
+     * Redirect after deleting the model
+     * 
+     * @param Model $controllerModel Controller model
+     * 
+     * @return \Redirect if source is web redirect to controller list page
+     * @return \API200Exception if source is "api" throw Success Exception 
+     */
+    public function deleteRedirect($controllerModel) {
+        if ($this->subdomain == 'api') {//From API
+            //Get success message
+            $message = \Lang::get($this->package . '::' . $this->controller . '.api.delete', array('field' => 'id', 'value' => $controllerModel->id));
+
+            throw new \Api200Exception(array_only($controllerModel->toArray(), array('id')), $message);
+        }//E# if else statement
+
+        return \Redirect::route($this->controller . 'List');
+    }
+
+//E# deleteRedirect() function
 
     /**
      * S# failedValidationRedirect() function

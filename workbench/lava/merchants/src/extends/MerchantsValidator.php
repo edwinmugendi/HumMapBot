@@ -18,7 +18,7 @@ class MerchantsValidator extends \Lava\Accounts\AccountsValidator {
 
     /**
      * S# validateBetweenIf() function
-     * Validate that an attribute exists when another attribute has a given value.
+     * Validate that the value of attribute is between min and max when another attribute is equal to a given value
      *
      * @author Edwin Mugendi <edwinmugendi@gmail.com>
      * @param  string  $attribute

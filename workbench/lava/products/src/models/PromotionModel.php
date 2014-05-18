@@ -36,6 +36,11 @@ class PromotionModel extends \Eloquent {
         'created_by' => 'required|integer',
         'updated_by' => 'required|integer',
     );
+    //Select validation rules
+    public $selectRules = array(
+        'field' => 'required|in:id',
+        'value' => 'required|integer|exists:pdt_promotions,id',
+    );
 
     /**
      * S# getClaimedAttribute() function

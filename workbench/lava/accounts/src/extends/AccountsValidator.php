@@ -277,7 +277,6 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                     $userController->afterCreating($userModel);
                     $userController->updateLoginSpecificFields($userController, $userModel);
                 }//E# if else statement
-
             } else {
                 //Set validation message
                 $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.validation.facebook.noUser');
@@ -313,12 +312,10 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
      * @param array $parameters Parameters
      */
     public function validateCheckRegistry($attribute, $checkRegistry, $parameters) {
-        if ($checkRegistry) {//Check Registry
+        if (!$this->data['force']) {//Check Registry
             $this->message = \Lang::get('accounts::vehicle.validation.checkRegistry');
 
             return $this->validateUnique($attribute, $this->data['vrm'], array('acc_vehicles', 'vrm', 'NULL', 'id'));
-        } else {
-            
         }//E# if statement
 
         return true;
@@ -404,10 +401,10 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         if ($vehicleModel) {//Vehicle does not exist
             if ($vehicleModel->user_owns) {
                 //Delete this vehicle in the pivot table
-                $vehicleController->updatePivotTable($vehicleModel, 'users', $vehicleModel->id, array('is_default' => 0, 'deleted_at' => Carbon::now()));
+                $vehicleController->updatePivotTable($vehicleModel, 'users', $vehicleModel->id, array('is_default' => 0, 'dropped_at' => Carbon::now()));
 
                 //Get success message
-                $message = \Lang::get($vehicleController->package . '::' . $vehicleController->controller . '.api.deleteVehicle', array('vrm' => $vrm));
+                $message = \Lang::get($vehicleController->package . '::' . $vehicleController->controller . '.api.delete', array('field' => 'vrm', 'value' => $vrm));
 
                 throw new \Api200Exception(array('id' => $vehicleModel->id, 'vrm' => $vrm), $message);
             } else {

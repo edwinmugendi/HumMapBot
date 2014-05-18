@@ -52,7 +52,7 @@
                                     <div style="float: left"><img src="<?php echo \URL::to('/') . '/img/logo.png'; ?>" title="<?php echo $viewData['productName']; ?>"/></div>
                                 </div>  
                                 <div style="clear:both; width: 100%">&nbsp;</div>
-                                <?php echo $viewData['contentToInject']; ?>
+                                <?php echo $viewData['body']; ?>
                                 <p style="font-weight: bold">
                                     Regards,<br/>
                                     The <?php echo $viewData['productName']; ?> Team.

@@ -9,8 +9,9 @@ return array(
     'api' => array(
         'getSingle' => 'Vehicle :field :value found.',
         'getAll' => 'Your vehicles list',
-        'addVehicle' => 'Vehicle :vrm added.',
-        'deleteVehicle' => 'Vehicle :vrm deleted'
+        'create' => 'Vehicle :field :value created.',
+        'update' => 'Vehicle :field :value updated.',
+        'delete' => 'Vehicle :field :value deleted'
     ),
     'validation' => array(
         'checkRegistry' => 'VRM is in use',

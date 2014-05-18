@@ -14,6 +14,7 @@ class CreateVehiclesTable extends Migration {
         Schema::create('acc_vehicles', function(Blueprint $table) {
             $table->increments('id');
             $table->string('vrm', 255);
+            $table->string('type', 3);
             $table->string('combined_make', 255);
             $table->string('model_range_desc', 255);
             $table->string('drive_type', 255);

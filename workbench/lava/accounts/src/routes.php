@@ -58,13 +58,33 @@
      */
     //Add vehicle
     \Route::post('user/vehicle/add', array('as' => 'userAddVehicle', 'uses' => 'Lava\Accounts\VehicleController@postCreate'));
-
+    
     //Delete vehicle
-    \Route::post('user/vehicle/delete', array('as' => 'userDeleteVehicle', 'uses' => 'Lava\Accounts\VehicleController@postDelete'));
+    \Route::post('user/vehicle/delete', array('as' => 'userVehicleDrop', 'uses' => 'Lava\Accounts\VehicleController@postDrop'));
 
     //Get a single vehicle
-    \Route::get('user/vehicle/get/{vrm?}', array('as' => 'userVehicle', 'uses' => 'Lava\Accounts\VehicleController@getVehicle'));
+    \Route::get('user/vehicle/get/{field}/{value}', array('as' => 'userVehicleGetSingle', 'uses' => 'Lava\Accounts\VehicleController@getManyModelBelongingToUser'));
 
+    //Get users vehicles
+    \Route::get('user/vehicle/get', array('as' => 'userVehicleGetAll', 'uses' => 'Lava\Accounts\VehicleController@getAllManyModelBelongingToUser'));
+
+    /**
+     * DEVICE API's
+     */
+    //Add device
+    \Route::post('user/device/add', array('as' => 'userDeviceAdd', 'uses' => 'Lava\Accounts\DeviceController@postCreate'));
+
+    //Update device
+    \Route::post('user/device/update/{field}/{value}', array('as' => 'userDeviceUpdate', 'uses' => 'Lava\Accounts\DeviceController@postUpdate'));
+
+    //Delete device
+    \Route::post('user/device/delete/{field}/{value}', array('as' => 'userDeleteDevice', 'uses' => 'Lava\Accounts\DeviceController@postDelete'));
+
+    //Get a single device
+    \Route::get('user/device/get/{field}/{value}', array('as' => 'userDeviceGetSingle', 'uses' => 'Lava\Accounts\DeviceController@getModelBelongingToUser'));
+
+    //Get a single device
+    \Route::get('user/device/get', array('as' => 'userDeviceGetAll', 'uses' => 'Lava\Accounts\DeviceController@getAllModelBelongingToUser'));
 });
 
 

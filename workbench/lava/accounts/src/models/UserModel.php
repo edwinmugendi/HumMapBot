@@ -100,6 +100,16 @@ class UserModel extends \Eloquent {
 //E# logins() function
 
     /**
+     * S# devices() function
+     * Set one to many relationship to Device Model
+     */
+    public function devices() {
+        return $this->hasMany(\Util::buildNamespace('accounts', 'device', 2), 'user_id');
+    }
+
+//E# devices() function
+
+    /**
      * S# promotions() function
      * Set many to many relationship to Promotion Model
      */
@@ -127,10 +137,20 @@ class UserModel extends \Eloquent {
      */
     public function vehicles() {
         return $this->belongsToMany(\Util::buildNamespace('accounts', 'vehicle', 2), 'acc_users_vehicles', 'user_id', 'vehicle_id')
-                        ->whereNull('acc_users_vehicles.deleted_at');
+                        ->whereNull('acc_users_vehicles.dropped_at');
     }
 
 //E# vehicles() function
+
+    /**
+     * S# allVehicles() function
+     * Set many to many relationship to Vehicle Model
+     */
+    public function allVehicles() {
+        return $this->belongsToMany(\Util::buildNamespace('accounts', 'vehicle', 2), 'acc_users_vehicles', 'user_id', 'vehicle_id');
+    }
+
+//E# allVehicles() function
 
     /**
      * S# cards() function

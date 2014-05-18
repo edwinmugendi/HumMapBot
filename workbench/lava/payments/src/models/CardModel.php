@@ -11,6 +11,8 @@ class CardModel extends \Eloquent {
 
     //Table
     protected $table = 'fnc_cards';
+    //User owned
+    public $userOwned = true;
     //Fillable fields
     protected $fillable = array(
         'address_city',
@@ -38,17 +40,26 @@ class CardModel extends \Eloquent {
         'created_by' => 'required|integer',
         'updated_by' => 'required|integer',
     );
+    //Delete validation rules
+    public $deleteRules = array(
+        'field' => 'required|in:id',
+        'value' => 'required|integer|exists:fnc_cards,id',
+    );
+    //Select validation rules
+    public $selectRules = array(
+        'field' => 'required|in:id',
+        'value' => 'required|integer|exists:fnc_cards,id',
+    );
 
     /**
      * S# user() function
      * Set one to one relationship to User Model
      */
     public function user() {
-        return $this->belongsTo(\Util::buildNamespace('accounts', 'user', 2), 'user_id','id');
+        return $this->belongsTo(\Util::buildNamespace('accounts', 'user', 2), 'user_id', 'id');
     }
 
 //E# user() function
-    
 }
 
 //E# CardModel() Class

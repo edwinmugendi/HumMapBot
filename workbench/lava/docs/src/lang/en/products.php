@@ -53,16 +53,22 @@ return array(
             )
         ),
         array(
-            'name' => 'Get Single Promotion by Promotion Id',
+            'name' => 'Get Single Promotion by id',
             'note' => 'Get a single promotion\'s details by promotion id',
             'filtered' => 1,
-            'endpoint' => '/product/promotion/get/{promotion_id}',
+            'endpoint' => '/product/promotion/get/{field}/{value}',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
-                    'field' => 'promotion_id',
+                    'field' => 'field',
+                    'dataType' => 'string',
+                    'note' => 'Must be set to \'id\'. Set this in the url not query string',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'value',
                     'dataType' => 'integer',
-                    'note' => 'Promotion id Set this in the url not query string',
+                    'note' => 'Actual id. Set this in the url not query string',
                     'required' => 1,
                 ),
                 array(
@@ -84,26 +90,14 @@ return array(
                     'httpCode' => 400,
                     'note' => 'Validation error',
                     'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"promotion_id","error":"The promotion id must be an integer."}]}'
-                ),
-                array(
-                    'action' => 'Forbidden',
-                    'httpCode' => 403,
-                    'note' => 'Forbidden or Don\'t Own Object',
-                    'example' => '{"httpStatusCode":403,"systemCode":903,"message":"Forbidden or Don\'t own","data":{"field":"id","type":"Promotion","value":"4"}}'
-                ),
-                array(
-                    'action' => 'Not found',
-                    'httpCode' => 404,
-                    'note' => 'Object not found',
-                    'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Promotion with id \'12\' not found.","data":{"field":"id","type":"Promotion","value":"12"}}'
-                ),
+                )
             )
         ),
         array(
             'name' => 'Get All Promotion',
             'note' => 'Get all users promotions',
             'filtered' => 1,
-            'endpoint' => '/payment/app55/get',
+            'endpoint' => '/product/promotion/get',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
