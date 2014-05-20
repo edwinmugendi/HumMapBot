@@ -418,7 +418,7 @@ class UserController extends AccountsBaseController {
      * @return page redirect to the Dashboard page or page the user was before clicking this link
      */
     public function postLogin() {
-
+        
         //Get the validation rules
         $this->validationRules = array(
             'email' => 'required|email',
@@ -464,9 +464,6 @@ class UserController extends AccountsBaseController {
      * Authenticate API
      */
     public function authenticateApi() {
-        //Cache ip
-        $this->input['ipAddress'] = \Request::getClientIp();
-
         //Get the validation rules
         $this->validationRules = array(
             'token' => 'required|api'

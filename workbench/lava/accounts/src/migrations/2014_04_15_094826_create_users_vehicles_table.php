@@ -18,7 +18,7 @@ class CreateUsersVehiclesTable extends Migration {
             $table->boolean('is_default');
             $table->boolean('force');
             $table->string('purpose');
-            $table->datetime('deleted_at');
+            $table->datetime('dropped_at');
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();

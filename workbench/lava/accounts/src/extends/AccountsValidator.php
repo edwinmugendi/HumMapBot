@@ -257,7 +257,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                     if (!$userModel->app55) {//User does not an app55 account
                         $userController->createApp55User($userModel->id, $userModel->email, $userModel->first_name, $userModel->last_name, $userModel->phone);
                     }//E# if statement
-                    //Update user fields
+                    //Update user login specific fields
                     $userController->updateLoginSpecificFields($userController, $userModel);
                 } else {//Register
                     $newUser = array(
@@ -268,13 +268,16 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                         'status' => (int) $fbUserProfile['verified'],
                         'created_by' => 1,
                         'updated_by' => 1,
-                        'email' => 'edwinmugendi@gmail.com'//TODO remove this
+                        'email' => $fbUserProfile['verified']//TODO remove this
                     );
 
                     //Create user
                     $userModel = $userController->createIfValid($newUser, true);
 
+                    //Post create callback
                     $userController->afterCreating($userModel);
+                    
+                    //Update login specific fields
                     $userController->updateLoginSpecificFields($userController, $userModel);
                 }//E# if else statement
             } else {

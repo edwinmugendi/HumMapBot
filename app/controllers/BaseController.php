@@ -40,6 +40,9 @@ class BaseController extends Controller {
         $this->subdomain = \Session::get('subdomain');
         //Get POSTed data
         $this->input = \Input::get();
+
+        //Cache ip
+        $this->input['ipAddress'] = \Request::getClientIp();
     }
 
 //E# __construct() function
@@ -126,7 +129,7 @@ class BaseController extends Controller {
      * @return Exception API403Exception
      */
     public function getManyModelBelongingToUser($field, $value) {
-      
+
         //Get this controller's model
         $modelObject = $this->getModelObject();
 
@@ -146,7 +149,7 @@ class BaseController extends Controller {
             if ($controllerModel->user_owns) {//User owns this model
                 //Get success message
                 $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => $this->input['field'], 'value' => $this->input['value']));
-                
+
                 throw new \Api200Exception($this->prepareRelation($controllerModel->toArray()), $message);
             } else {//User does not own this model
                 //Set notification
@@ -197,7 +200,8 @@ class BaseController extends Controller {
         if ($this->subdomain == 'api') {//From API
             //Get success message
             $message = \Lang::get($this->package . '::' . $this->controller . '.api.getAll');
-
+            //Define relation array
+            $relationArray = array();
             foreach ($userModel->$relation->toArray() as $singleRelation) {//Loop through the relations
                 $relationArray[] = $this->prepareRelation($singleRelation);
             }//E# foreach statement
