@@ -26,11 +26,11 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
      * @param  mixed   $parameters
      * @return bool
      */
-    protected function validateIsPromotionCodeValid($attribute, $code, $parameters) {
+    protected function validateIsPromotionCodeValid($attribute, $id, $parameters) {
         $promotionController = new PromotionController();
 
         //Get promotion model by code
-        $promotionModel = $promotionController->getModelByField('code', $code);
+        $promotionModel = $promotionController->getModelByField('id', $id);
 
         if ($promotionModel) {//Exists
             if ($promotionModel->claimed) {//Redeemed
@@ -83,9 +83,9 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
         } else {//Don't exist
             //Set notification
             $promotionController->notification = array(
-                'field' => 'code',
+                'field' => 'id',
                 'type' => 'Promotion',
-                'value' => $code,
+                'value' => $id,
             );
 
 

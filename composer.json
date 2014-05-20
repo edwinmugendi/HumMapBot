@@ -16,7 +16,8 @@
         "facebook/php-sdk": "*",
         "guzzlehttp/guzzle": "~4.0",
         "app55/app55-php": "*",
-        "bluedogtraining/guzzle-clickatell": "2.0.*@dev"
+        "arcturial/clickatell": "*",
+        "urbanairship/urbanairship": "dev-master"
     },
     "autoload": {
         "classmap": [

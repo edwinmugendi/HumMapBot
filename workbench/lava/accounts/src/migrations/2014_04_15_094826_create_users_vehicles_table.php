@@ -15,7 +15,6 @@ class CreateUsersVehiclesTable extends Migration {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('vehicle_id')->unsigned();
-            $table->boolean('is_default');
             $table->boolean('force');
             $table->string('purpose');
             $table->datetime('dropped_at');

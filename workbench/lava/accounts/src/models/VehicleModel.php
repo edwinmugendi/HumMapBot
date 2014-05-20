@@ -64,7 +64,8 @@ class VehicleModel extends \Eloquent {
      * Set many to many relationship to User Model
      */
     public function users() {
-        return $this->belongsToMany(\Util::buildNamespace('accounts', 'user', 2), 'acc_users_vehicles', 'vehicle_id', 'user_id');
+        return $this->belongsToMany(\Util::buildNamespace('accounts', 'user', 2), 'acc_users_vehicles', 'vehicle_id', 'user_id')
+            ->whereNull('acc_users_vehicles.dropped_at');
     }
 
 //E# users() function

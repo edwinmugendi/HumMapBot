@@ -9,6 +9,7 @@ return array(
     'api' => array(
         'getSingle' => 'Promotion :field :value found.',
         'getAll' => 'Your promotion\'s list',
+        'redeemPromotion'=>'Promotion code :code redeemed.'
     ),
     'validation' => array(
         "isPromotionCodeValid" => array(

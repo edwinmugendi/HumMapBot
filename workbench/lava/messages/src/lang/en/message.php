@@ -7,10 +7,15 @@ return array(
       |--------------------------------------------------------------------------
      */
     'communication' => array(
-        'transaction' => array(
-            'email' => 'Transaction confirmed :productName',
-            'sms' => ':tranId confirmed. :name has purchase :currency :amount of :product - :productId  for :vrm on :day at :time. :productName',
-            'push' => ':tranId confirmed. :name has purchase :currency :amount of :product - :productId  for :vrm on :day at :time. :productName',
+        'transactionUser' => array(
+            'email' => 'Product bought :productName',
+            'sms' => ':tranId confirmed.  You bought :product for :vrm at :location on :day at :time. :productName',
+            'push' => ':tranId confirmed.  You bought :product for :vrm at :location on :day at :time. :productName',
+        ),
+        'transactionMerchant' => array(
+            'email' => ':product - :pdtId purchased by :name :productName',
+            'sms' => ':tranId confirmed. :name has purchased :currency :amount of :product for :vrm on :day at :time. :productName',
+            'push' => ':tranId confirmed. :name has purchased :currency :amount of :product  for :vrm on :day at :time. :productName',
         ),
         'resetPassword' => array(
             'email' => 'Request to change your :productName account password.',

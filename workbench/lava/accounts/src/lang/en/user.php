@@ -9,8 +9,8 @@ return array(
     'api' => array(
         'registerUser' => 'Your account has been created on :productName',
         'updateUser' => 'Your details have been updated',
-        'forgotPassword'=>'We\'ve sent you reset email.',
-        'resetPassword'=>'Your password has been reset',
+        'forgotPassword' => 'We\'ve sent you reset email.',
+        'resetPassword' => 'Your password has been reset',
         'login' => 'Logged in',
     ),
     'validation' => array(
@@ -18,6 +18,9 @@ return array(
         'facebook' => array(
             'noUser' => 'No user found on Facebook with such token'
         ),
+        'updatePassword' => array(
+            'wrongPassword' => 'Wrong password'
+        )
     ),
     'view' => array(
         'name' => 'Name',
@@ -48,7 +51,7 @@ return array(
         ),
         'noSuchUser' => array(
             'type' => 'error',
-            'message' => 'This email is not registered, kindly ',
+            'message' => 'This email is not registered',
             'code' => 3
         )
     ),

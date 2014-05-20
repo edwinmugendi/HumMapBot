@@ -37,25 +37,24 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
         //Product controller
         $productController = new ProductController();
 
-        $parameters = array('merchant');
+        //Location
+        $parameters = array('location');
 
         //Get product by id
-        $productModel = $productController->callController(\Util::buildNamespace('products', 'product', 1), 'getModelByField', array('id', $this->data['product_id']));
+        $productModel = $productController->callController(\Util::buildNamespace('products', 'product', 1), 'getModelByField', array('id', $this->data['product_id'], $parameters));
 
         if ($productModel) {//Product found
             //User controller
             $userController = new UserController();
 
-            $parameters = array('app55');
-
             //Get user model by id
-            $userModel = $userController->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('id', $userController->user['id'], $parameters));
+            $userModel = $userController->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->data['token']));
 
             //Payment controller
             $paymentController = new PaymentController();
 
             $paymentInfo = array(
-                'app55UserId' => $userModel->app55->id,
+                'app55UserId' => $userModel->app55_id,
                 'cardToken' => $this->data['card_token'],
                 'amount' => $this->data['amount'],
                 'currency' => $this->data['currency'],
@@ -72,6 +71,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
 
                 $transactionArray['user_id'] = $userModel->id;
                 $transactionArray['product_id'] = $productModel->id;
+                $transactionArray['location_id'] = $productModel->location->id;
 
                 if ($this->data['location']) {//Set transaction location
                     $transactionArray['lat'] = $this->data['location']['lat'];
@@ -84,13 +84,19 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     //Redeem the promotion
                     $userController->updatePivotTable($userModel, 'promotions', $this->data['promotion_id'], array('redeemed' => 1));
                 }//E# if statement
-
+                //Set transaction vrm
                 $transactionArray['vrm'] = $this->data['vrm'];
+
+                //Set agent
+                $transactionArray['agent'] = \Request::server('HTTP_USER_AGENT');
 
                 //Create transaction
                 $transactionModel = $userController->callController(\Util::buildNamespace('payments', 'transaction', 1), 'createIfValid', array($transactionArray, true));
 
                 if ($transactionModel) {
+                    //After processing
+                    $paymentController->afterProcessing($transactionModel, $productModel, $userModel);
+
                     throw new \Api200Exception($transactionModel->toArray(), array('id'));
                 } else {
                     //TODO 500 error
@@ -136,7 +142,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
      * @param array $value The password
      * @param array $parameters Parameters
      */
-    public function validatePrepareTransaction($attribute, $vrm, $parameters) {
+    public function validatePrepareTransaction($attribute, $productId, $parameters) {
         //TODO: get default card details
         //TODO: Get promotions
         //TODO: Calculate price
@@ -151,7 +157,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
         $productModel = $productController->callController(\Util::buildNamespace('products', 'product', 1), 'getModelByField', array('id', $this->data['product_id']));
 
         if ($productModel) {//Product found
-            $vehicleModel = $this->validateUserOwnsVrm($attribute, $vrm, $parameters);
+            $vehicleModel = $this->validateUserOwnsVrm($attribute, $this->data['vrm'], $parameters);
 
             if ($vehicleModel) {
                 //User controller
@@ -160,7 +166,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                 $parameters = array('cards', 'unredeemed_promotions');
 
                 //Get user model by id
-                $userModel = $userController->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('id', $userController->user['id'], $parameters));
+                $userModel = $userController->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->data['token'], $parameters));
 
                 if ($userModel->cards) {//User has cards
                     $defaultCardFound = false;
@@ -173,7 +179,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     }//E# foreach statement
 
                     if (!$defaultCardFound) {//Set default card as the last added card
-                        $userController->notification = $userModel->card[($userModel->card->count() - 1)];
+                        $userController->notification = $userModel->cards[((int)$userModel->cards->count() - 1)];
                     }//E# if statement
                     //CHECK PROMOTIONS
                     if ($userModel->unredeemed_promotions) {
@@ -194,7 +200,6 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         'price_4X2' => $productModel->price_4X2,
                         'price_4X4' => $productModel->price_4X4
                     );
-
 
                     //GET MERCHANT
                     //Location controller

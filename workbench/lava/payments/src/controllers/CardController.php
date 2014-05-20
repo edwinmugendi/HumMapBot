@@ -15,6 +15,22 @@ class CardController extends PaymentsBaseController {
     public $lazyLoad = array();
 
     /**
+     * S# prepareRelation() function
+     * Prepare relation
+     * 
+     * @param array $rawRelation Raw relation
+     */
+    public function prepareRelation($rawRelation) {
+        array_except($rawRelation, array('pivot'));
+        
+        $rawRelation['app55_id'] = $this->user['app55_id'];
+        
+        return $rawRelation;
+    }
+
+//E# prepareRelation() function
+
+    /**
      * S# postSync() function
      * Sync cards on App55
      */
@@ -45,16 +61,14 @@ class CardController extends PaymentsBaseController {
                 $deleteCardResponse = $this->callController(\Util::buildNamespace('payments', 'app55', 1), 'deleteCard', array($deleteData));
 
                 if ($deleteCardResponse['status']) {//Card deleted
-                    
                     //Delete card on our database
                     $cardModel->delete();
-                    
+
                     //Get success message
                     $message = \Lang::get($this->package . '::' . $this->controller . '.api.delete', array('field' => 'token', 'value' => $this->input['token']));
 
                     throw new \Api200Exception(array($this->input['token']), $message);
                 } else {//Error occur
-
                     throw new \Api500Exception($deleteCardResponse['response']);
                 }//E# if else statemetn
             } else {
@@ -83,7 +97,6 @@ class CardController extends PaymentsBaseController {
 
 //E# deleteCard() function
 
-   
     /**
      * S# getCardIfItExists() function
      * Get card by token

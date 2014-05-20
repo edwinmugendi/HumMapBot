@@ -21,7 +21,7 @@ class PromotionController extends ProductsBaseController {
      * @param array $rawRelation Raw relation
      */
     public function prepareRelation($rawPromotion) {
-        return array_except($rawPromotion, array('pivot','claimed'));
+        return array_except($rawPromotion, array('pivot', 'claimed'));
     }
 
 //E# prepareRelation() function
@@ -33,14 +33,14 @@ class PromotionController extends ProductsBaseController {
      * @param string $code Promotion code
      * @return boolean true if redeemed, false else
      */
-    public function postRedeemPromotion($code) {
+    public function postRedeemPromotion($promotion_id) {
 
         //Add merchant id to inputs for validation
-        $this->input['code'] = $code;
+        $this->input['id'] = $promotion_id;
 
         //Define validation rules
         $this->validationRules = array(
-            'code' => 'required|isPromotionCodeValid'
+            'id' => 'required|integer|isPromotionCodeValid'
         );
         //Validate merchant
         $this->isInputValid();

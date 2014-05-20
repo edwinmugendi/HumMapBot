@@ -114,14 +114,14 @@ class App55Controller extends PaymentsBaseController {
 
             $savedCards = $userModel->cards;
             $dbCardTokens = $userModel->cards->lists('token');
-            $app55user = $userModel->app55;
-            //$service = $this->app55;
 
+            //List cards on app55
             $this->response = $this->gateway->listCards(
                             new \App55_User(
-                            array('id' => $app55user->id)
+                            array('id' => $userModel->app55_id)
                             )
                     )->send();
+
 
             $app55CardTokens = array();
 
@@ -255,7 +255,7 @@ class App55Controller extends PaymentsBaseController {
 
             $this->response = $this->gateway->createCard(
                             new \App55_User(array(
-                        'id' => 4733
+                        'id' => 1484
                             )), new \App55_Card(array(
                         'address' => new \App55_Address(array(
                             'street' => '8 Exchange Quay',

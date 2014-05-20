@@ -13,7 +13,7 @@ class CreateUsersTable extends Migration {
     public function up() {
         Schema::create('acc_users', function(Blueprint $table) {
             $table->increments('id');
-            
+
             $table->integer('role_id');
 
             //About
@@ -40,10 +40,13 @@ class CreateUsersTable extends Migration {
             $table->string('verification_code', 255);
 
             //Token
-            $table->string('token', 255);
+            $table->string('token');
 
             //VRM
-            $table->string('default_vrm', 255);
+            $table->string('vrm', 30);
+
+            //Card
+            $table->string('card', 255);
 
             //Facebook
             $table->integer('fb_uid');
@@ -53,8 +56,18 @@ class CreateUsersTable extends Migration {
             $table->float('lng');
 
             //APP55
-            $table->string('card', 255);
-            
+            $table->integer('app55_id');
+
+            //Notifications
+            $table->boolean('notify_sms');
+            $table->boolean('notify_push');
+            $table->boolean('notify_email');
+
+            //Push
+            $table->string('os');
+            $table->string('push_token');
+            $table->string('app_version');
+
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();

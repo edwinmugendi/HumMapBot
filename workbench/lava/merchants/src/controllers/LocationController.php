@@ -61,15 +61,15 @@ class LocationController extends MerchantsBaseController {
                     'operand' => $this->input['type']
                 )
             );
-            //Get feeling model
-            $feelingModel = $this->callController(\Util::buildNamespace('merchants', 'feel', 1), 'select', array($fields, $whereClause, 1));
+            //Get feel model
+            $feelModel = $this->callController(\Util::buildNamespace('merchants', 'feel', 1), 'select', array($fields, $whereClause, 1));
 
             //Cache feeling
             $feeling = $this->input['type'] == 2 ? $this->input['rate'] : '';
 
-            if ($feelingModel) {//Exists
-                $feelingModel->feeling = $feeling;
-                $feelingModel->save();
+            if ($feelModel) {//Exists
+                $feelModel->feeling = $feeling;
+                $feelModel->save();
             } else {//Create
                 //Define feeling row
                 $feelingRow = array(
@@ -78,8 +78,8 @@ class LocationController extends MerchantsBaseController {
                     'type' => $this->input['type'],
                     'feeling' => $feeling
                 );
-                //Get feeling model
-                $feelingModel = $this->callController(\Util::buildNamespace('merchants', 'feel', 1), 'createIfValid', array($feelingRow, true));
+                //Get feel model
+                $feelModel = $this->callController(\Util::buildNamespace('merchants', 'feel', 1), 'createIfValid', array($feelingRow, true));
             }//E# if statement
         } else {//Review
             //Define feeling row
@@ -89,14 +89,14 @@ class LocationController extends MerchantsBaseController {
                 'type' => $this->input['type'],
                 'feeling' => $this->input['review']
             );
-            //Get feeling model
-            $feelingModel = $this->callController(\Util::buildNamespace('merchants', 'feel', 1), 'createIfValid', array($feelingRow, true));
+            //Get feel model
+            $feelModel = $this->callController(\Util::buildNamespace('merchants', 'feel', 1), 'createIfValid', array($feelingRow, true));
         }//E# if statement
         //Get success message
         $message = \Lang::get($this->package . '::' . $this->controller . '.api.feel.' . $this->input['type'], array('field' => 'id', 'value' => $this->input['id']));
 
         //Throw API success Exception
-        throw new \Api200Exception(array_only($feelingModel->toArray(), array('id')), $message);
+        throw new \Api200Exception(array_only($feelModel->toArray(), array('id')), $message);
     }
 
 //E# postFeel() function
@@ -104,13 +104,59 @@ class LocationController extends MerchantsBaseController {
     public function getLocations($id = null) {
         if (is_null($id)) {//Get List of locations
             $this->validationRules = array(
-                'lat' => 'required|integer',
-                'long' => 'required|integer',
-                'radius' => 'required|integer'
+                'location' => 'required|latLng',
+                'radius' => 'required'
             );
             //Validate location
             $this->isInputValid();
 
+            //Define parameter
+            $parameters = array(
+                floatval($this->input['location']['lat']),
+                floatval($this->input['location']['lng']),
+                floatval($this->input['location']['lat']),
+                floatval($this->input['radius'] / 1000)//Convert to meters
+            );
+
+            //Get locations within radius
+            $fluentLocations = \DB::select(\DB::raw("SELECT *, (6371 * acos(cos(radians(?)) * cos(radians(lat)) * cos( radians(lng) - radians(?)) + sin(radians(?)) * sin(radians(lat)))) AS distance FROM sp_mct_locations Having distance < ? ORDER BY distance"), $parameters);
+
+            if ($fluentLocations) {//Locations found
+                //Get location ids
+                $locationIds = array_fetch($fluentLocations, 'id');
+
+                //Fields to select
+                $fields = array('*');
+
+                //Build where clause
+                $whereClause = array(
+                    array(
+                        'where' => 'whereIn',
+                        'column' => 'id',
+                        'operator' => '=',
+                        'operand' => $locationIds
+                    )
+                );
+
+                //Get location model
+                $locationModel = $this->select($fields, $whereClause, 2);
+
+                //Location array
+                $locationArray = $locationModel->toArray();
+
+                foreach ($locationArray as $singleLocation) {//Loop via the locations
+                    //Prepare Model
+                    $this->prepareModelToReturn($singleLocation);
+                }//E# foreach statement
+                //Get success message
+                $message = \Lang::get($this->package . '::' . $this->controller . '.api.getAll', array('field' => 'id', 'value' => $id));
+
+                //Throw 200 Exception
+                throw new \Api200Exception($locationArray, $message);
+            } else {
+                
+            }//E# if else statement
+            return $results;
             //TODO Radius search
         } else {//Get a single location
             //Add location id to inputs for validation
@@ -132,15 +178,14 @@ class LocationController extends MerchantsBaseController {
                 //$totalReviews =  $locationModel->total_reviews;
                 $locationArray = $locationModel->toArray();
 
-                //Build open times 
-                $this->buildOpenTimes($locationArray);
+                //Prepare model
+                $this->prepareModelToReturn($locationArray);
 
                 //Get success message
                 $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => 'id', 'value' => $id));
 
+                //Throw 200 Exception
                 throw new \Api200Exception($locationArray, $message);
-
-                return $locationArray;
             } else {
                 //Set notification
                 $this->notification = array(
@@ -157,12 +202,12 @@ class LocationController extends MerchantsBaseController {
     }
 
     /**
-     * S# buildOpenTimes() function
+     * S# prepareModelToReturn() function
      * Build locations open times
      * @param array $locationArray Location array
      * 
      */
-    private function buildOpenTimes(&$locationArray) {
+    private function prepareModelToReturn(&$locationArray) {
         //Define days
         $days = array(
             'monday',
@@ -189,7 +234,7 @@ class LocationController extends MerchantsBaseController {
         $locationArray['times'] = $daysArray;
     }
 
-//E#buildOpenTimes() function
+//E#prepareModelToReturn() function
 }
 
 //E# LocationController() function

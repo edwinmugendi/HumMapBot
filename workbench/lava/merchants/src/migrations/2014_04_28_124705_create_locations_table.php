@@ -14,20 +14,24 @@ class CreateLocationsTable extends Migration {
         Schema::create('mct_locations', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('merchant_id')->unsigned();
-            
+
             //About
             $table->string('name', 255);
-            
+
             //Contacts
-            $table->string('mobile', 255);
             $table->string('fax', 255);
-            $table->string('email', 255);
+            $table->string('phone_1', 30);
+            $table->string('phone_2', 30);
+            $table->string('phone_3', 30);
+            $table->string('email_1', 50);
+            $table->string('email_2', 50);
+            $table->string('email_3', 50);
 
             //Location
             $table->string('address', 255);
             $table->string('postal_code', 255);
-            $table->decimal('latitude', 10, 6);
-            $table->decimal('longitude', 10, 6);
+            $table->decimal('lat', 10, 6);
+            $table->decimal('lng', 10, 6);
 
             //Loyalty Scheme
             $table->integer('loyalty_stamps');
@@ -63,10 +67,10 @@ class CreateLocationsTable extends Migration {
             //Public holidays
             $table->string('holiday_open', 255);
             $table->string('holiday_close', 255);
-            
+
             //Image
             $table->text('image');
-            
+
             $table->integer('views')->unsigned();
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();

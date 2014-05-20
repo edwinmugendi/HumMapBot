@@ -18,16 +18,16 @@ class CreateCardsTable extends Migration {
             $table->integer('gateway_id')->unsigned();
 
             //Card
-            $table->string('name', 255);
-            $table->string('number', 255);
-            $table->string('address_street', 255);
-            $table->string('address_city', 255);
-            $table->string('address_postal_code', 255);
-            $table->string('address_country', 255);
-            $table->string('token', 255);
-            $table->datetime('expiry');
+            $table->string('name');
+            $table->string('number');
+            $table->string('address_street');
+            $table->string('address_city');
+            $table->string('address_postal_code');
+            $table->string('address_country');
+            $table->string('token');
+            $table->string('expiry');
 
-            //
+           
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();

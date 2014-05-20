@@ -53,7 +53,7 @@ class VehicleController extends AccountsBaseController {
             }//E# if statement
             //Just after creating the model
             $this->afterCreating($controllerModel);
-            
+
             //Redirect to list
             return $this->createRedirect($controllerModel);
         }//E# if else statement
@@ -70,8 +70,6 @@ class VehicleController extends AccountsBaseController {
      * @return 
      */
     public function beforeCreating() {
-        //TODO call Carweb API
-        //$this->getVrmDetails($this->input['vrm']);
         $this->input['status'] = 1;
         $this->input['created_by'] = $this->user['id'] ? $this->user['id'] : 1;
         $this->input['updated_by'] = $this->user['id'] ? $this->user['id'] : 1;
@@ -92,7 +90,7 @@ class VehicleController extends AccountsBaseController {
     public function afterCreating(&$controllerModel) {
         //Cache relation
         $relation = 'allVehicles';
-        
+
         //Lazy load to load
         $parameters['lazyLoad'] = array($relation);
 
@@ -107,38 +105,43 @@ class VehicleController extends AccountsBaseController {
             $userModel->vehicles()->sync($currentVrmIds);
         }//E# if else statement
         //Get user by token
-        $userModel = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('id', $this->user['id'], $parameters));
+        $userModel = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->input['token'], $parameters));
 
         //Count user vehicles
         $userVehicles = $userModel->$relation->count();
-       
+
         //Data to update
         $dataToUpdate = array();
-        if ($userVehicles == 1) {//Only one vehicle exists
-            //Default
-            $dataToUpdate['is_default'] = 1;
 
-            //Update pivot table
-            $this->updatePivotTable($userModel, 'allVehicles', $userModel->vehicles[0]->id, $dataToUpdate);
+        //Save user
+        $saveUser = false;
+
+        if ($userVehicles == 1) {//Only one vehicle exists
+            //Default this vehicle
+            $userModel->vrm = $userModel->vehicles[0]->vrm;
+
+            //Update save user
+            $saveUser = true;
         }//E# if statement
-        
+
         if ($userVehicles) {//Vehicles exists
-            
             foreach ($userModel->$relation as $singleVehicle) {//Loop via the vehicles
                 //Data to update
                 $dataToUpdate = array();
                 $inputVrm = \Str::lower($this->input['vrm']);
                 $vehicleVrm = \Str::lower($singleVehicle->vrm);
-                
+
                 if ($inputVrm == $vehicleVrm) {
                     $dataToUpdate['dropped_at'] = 'null';
                 }//E# if statement
                 //Set is default
                 if (($this->input['is_default'])) {
                     if ($inputVrm == $vehicleVrm) {
-                        $dataToUpdate['is_default'] = 1;
-                    } else {
-                        $dataToUpdate['is_default'] = 0;
+                        //Default this vehicle
+                        $userModel->vrm = $singleVehicle->vrm;
+
+                        //Update save user
+                        $saveUser = true;
                     }//E# if else statement
                 }//E# if else statement
                 //Set force
@@ -159,6 +162,11 @@ class VehicleController extends AccountsBaseController {
                     $this->updatePivotTable($userModel, $relation, $singleVehicle->id, $dataToUpdate);
                 }//E# if statement
             }//# if else statement
+        }//E# if statement
+
+        if ($saveUser) {
+            //Save model
+            $userModel->save();
         }//E# if statement
     }
 

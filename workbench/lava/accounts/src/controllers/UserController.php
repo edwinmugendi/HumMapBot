@@ -61,6 +61,9 @@ class UserController extends AccountsBaseController {
      * @return 
      */
     public function beforeCreating() {
+        //Notifications
+        $this->input['notify_sms'] = $this->input['notify_email'] = $this->input['notify_push'] = 1;
+
         //Prepare other fields
         $this->input['password'] = \Hash::make($this->input['password']);
         $this->input['verification_code'] = \Str::lower(\Str::random(10));
@@ -88,7 +91,7 @@ class UserController extends AccountsBaseController {
      */
     public function afterCreating(&$controllerModel) {
         //Create app55 user
-        $this->createApp55User($controllerModel->id, $controllerModel->email, $controllerModel->first_name, $controllerModel->last_name, $controllerModel->phone);
+        $this->createApp55User($controllerModel);
 
         // //URL query string array
         $queryStrArray = array(
@@ -140,15 +143,11 @@ class UserController extends AccountsBaseController {
      * S# createApp55User() function
      * Create app55 user
      * 
-     * @param integer $userId User id
-     * @param string $email Email
-     * @param string $firstName First name  
-     * @param string $lastName Last name  
-     * @param string $password Password (This is auto generated) 
-     * @param string $phone phone Optional
+     * @param Model $controllerModel User Model
+     * 
      * @return boolean 1 if app55 created 0 otherwise
      */
-    public function createApp55User($userId, $email, $firstName, $lastName, $phone = null) {
+    public function createApp55User($controllerModel) {
 
         //Generate random password that firsts app55 specs
         //The End User’s password as clear-text. This must be alphanumeric, between 8-15 characters in length, and contain at least one letter and one number.
@@ -156,29 +155,24 @@ class UserController extends AccountsBaseController {
         $password .= rand(100, 999);
 
         $app55User = array(
-            'email' => $email,
+            'email' => $controllerModel->email,
             'password' => $password,
-            'first_name' => $firstName,
-            'last_name' => $lastName,
+            'first_name' => $controllerModel->first_name,
+            'last_name' => $controllerModel->last_name,
         );
 
-        if ($phone) {//Phone
-            $app55User['phone'] = $phone;
+        if ($controllerModel->phone) {//Phone
+            $app55User['phone'] = $controllerModel->phone;
         }//E# if statement
         //Create App55 user
         $app55Response = $this->callController(\Util::buildNamespace('payments', 'app55', 1), 'createUser', array($app55User));
 
         if ($app55Response['status']) {//App55 created
-            //Created app55 user
-            $app55User = array(
-                'id' => $app55Response['response']->user->id,
-                'user_id' => $userId,
-                'sig' => $app55Response['response']->sig,
-                'ts' => $app55Response['response']->ts
-            );
+            //Set app55 id
+            $controllerModel->app55_id = $app55Response['response']->user->id;
 
-            //Create app55 user
-            $app55Model = $this->callController(\Util::buildNamespace('payments', 'app55', 1), 'createIfValid', array($app55User, true));
+            //Save model
+            $controllerModel->save();
         }//E# if statement
 
         return $app55Response['status'];
@@ -233,6 +227,21 @@ class UserController extends AccountsBaseController {
         }//E# if statement
     }
 
+    /**
+     * S# beforeUpdating() function
+     * @author Edwin Mugendi
+     * Call this just before updating the model
+     * Can be used to prepare the inputs
+     * @return 
+     */
+    public function beforeUpdating() {
+        $this->input['password'] = \Hash::make($this->input['new_password']);
+        $this->input['created_by'] = $this->user['id'] ? $this->user['id'] : 1;
+        $this->input['updated_by'] = $this->user['id'] ? $this->user['id'] : 1;
+        return;
+    }
+
+//E# beforeUpdating() function
     /**
      * S# postUpdateUser() function
      * @author Edwin Mugendi
@@ -402,7 +411,8 @@ class UserController extends AccountsBaseController {
         $userToSession['email'] = $user['email'];
         $userToSession['phone'] = isset($user['phone']) ? $user['phone'] : '';
         $userToSession['token'] = $user['token'];
-        $userToSession['default_vrm'] = $user['default_vrm'];
+        $userToSession['vrm'] = $user['vrm'];
+        $userToSession['app55_id'] = $user['app55_id'];
 
         // $userToSession['api_secret'] = $user['api_secret'];
         //Put the user in session
@@ -418,7 +428,7 @@ class UserController extends AccountsBaseController {
      * @return page redirect to the Dashboard page or page the user was before clicking this link
      */
     public function postLogin() {
-        
+
         //Get the validation rules
         $this->validationRules = array(
             'email' => 'required|email',
@@ -653,7 +663,7 @@ class UserController extends AccountsBaseController {
                 );
 
                 //Converse
-                $isSent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', 'info@intrapayment.com', $userModel->email, 'reset_password', \Config::get('app.locale'), $parameters));
+                $isSent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $userModel->id, $userModel->email, 'resetPassword', \Config::get('app.locale'), $parameters));
 
                 if ($this->subdomain == 'api') {//From API
                     //Get success message
@@ -701,6 +711,12 @@ class UserController extends AccountsBaseController {
         if ($this->subdomain == 'api') {//From API            
             //Get user by token
             $userModel = $this->getModelByField('token', $this->input['token']);
+            //Update last login
+            $userModel->last_login = Carbon::now();
+
+            //Save user
+            $userModel->save();
+
             //Return user
             throw new \Api200Exception($userModel->toArray(), '');
         }//E# if statement

@@ -13,29 +13,76 @@ class MessageController extends MessagesBaseController {
     public $controller = 'message';
 
     /**
+     * S# push() function
+     * @author Edwin Mugendi
+     * Send Push
+     * 
+     * @param string $type Message type (email, push, sms)
+     * @param integer $senderId Sender Id
+     * @param string $sender Sender address
+     * @param integer $recipientId Recipient Id
+     * @param mixed $recipient Receipient address, single or multiple
+     * @param string $comCode Commication code
+     * @param string $lang Language code
+     * @param array $parameters Parameters data
+     *
+     * @return boolean 1 if email is sent 0 otherwise
+     */
+    public function push($senderId, $sender, $recipientId, $recipient, $comCode, $lang, $parameters) {
+
+        //Get com code configs
+        $comCodeConfig = \Config::get($this->package . '::' . $this->controller . '.communication.' . $comCode);
+
+        //Build message
+        $parameters['body'] = \Lang::get($this->package . '::' . $this->controller . '.communication.' . $comCode . '.sms', $parameters);
+
+        //Prepare sender
+        $senderId = is_null($senderId) ? 1 : $senderId;
+
+        //Push
+        $sent = $this->callController(\Util::buildNamespace('messages', 'urbanairship', 1), 'push', array($recipient, $parameters['os'], $parameters['body']));
+
+        //Add sent to parameters
+        $parameters['sent'] = $sent;
+
+        if ($comCodeConfig['log']) {//Log this message
+            //Log this email
+            $this->log('push', $senderId, 'system', $recipientId, $recipient, $comCode, $lang, $parameters);
+        }//E# if statement
+    }
+
+//E# push() function
+
+    /**
      * S# sms() function
      * @author Edwin Mugendi
-     * Send email
-     * @param string $sender The sender's email
-     * @param string $recipient The recipient's email
-     * @param string $comCode The communication code
-     * @param array $parameters The parameters 
+     * Send SMS
+     * 
+     * @param string $type Message type (email, push, sms)
+     * @param integer $senderId Sender Id
+     * @param string $sender Sender address
+     * @param integer $recipientId Recipient Id
+     * @param mixed $recipient Receipient address, single or multiple
+     * @param string $comCode Commication code
+     * @param string $lang Language code
+     * @param array $parameters Parameters data
+     *
      * @return boolean 1 if email is sent 0 otherwise
      */
     public function sms($senderId, $sender, $recipientId, $recipient, $comCode, $lang, $parameters) {
-        
+
         //Get com code configs
         $comCodeConfig = \Config::get($this->package . '::' . $this->controller . '.communication.' . $comCode);
-        
+
         //Build message
         $parameters['body'] = \Lang::get($this->package . '::' . $this->controller . '.communication.' . $comCode . '.sms', $parameters);
-        
+
         //Prepare sender
         $senderId = is_null($senderId) ? 1 : $senderId;
-        
+
         //Prepare sender id
         $sender = is_null($sender) ? \Config::get('product.smsSender') : $sender;
-        
+
         //SMS
         $sent = $this->callController(\Util::buildNamespace('messages', 'clickatell', 1), 'sms', array($sender, $recipient, $parameters['body']));
 
@@ -66,7 +113,7 @@ class MessageController extends MessagesBaseController {
      * @param integer $senderId Sender Id
      * @param string $sender Sender address
      * @param integer $recipientId Recipient Id
-     * @param string $recipient Recipient address
+     * @param mixed $recipient Receipient address, single or multiple
      * @param string $comCode Commication code
      * @param string $lang Language code
      * @param array $parameters Parameters data
@@ -74,14 +121,20 @@ class MessageController extends MessagesBaseController {
      * @return integer 1 if message was sent, 0 otherwise
      */
     public function converse($type, $senderId, $sender, $recipientId, $recipient, $comCode, $lang, $parameters = array()) {
+        //Add product name
+        $parameters['productName'] = \Config::get('product.name');
+
         switch ($type) {
             case 'email': {
-
                     return $this->email($senderId, $sender, $recipientId, $recipient, $comCode, $lang, $parameters);
                     break;
                 }//E# case
             case 'sms': {
                     return $this->sms($senderId, $sender, $recipientId, $recipient, $comCode, $lang, $parameters);
+                    break;
+                }//E# case
+            case 'push': {
+                    return $this->push($senderId, $sender, $recipientId, $recipient, $comCode, $lang, $parameters);
                     break;
                 }//E# case
             default:
@@ -142,16 +195,25 @@ class MessageController extends MessagesBaseController {
 
         //Build the template
         $template = array(
-            'html' => $this->package . '::' . $this->controller . '.' . \Config::get('app.locale') . '.emailTemplateView'
+            'html' => $this->package . '::' . $this->controller . '.' . $lang . '.emailTemplateView'
         );
 
         //Send email
-        /* UNCOMMENT
-          $sent = \Mail::send($template, $viewData, function($message) use(&$recipient, &$senderName, &$subject) {
-          $message->to($recipient, $senderName)->subject($subject);
-          });
-         */
-        $sent = 1;
+        $sent = \Mail::send($template, $viewData, function($message) use(&$recipient, &$senderName, &$subject) {
+                    if (is_array($recipient)) {//Send to many
+                        //Set to
+                        $message->to($recipient[0], $senderName)->subject($subject);
+
+                        //Unset first recipient
+                        unset($recipient[0]);
+
+                        foreach ($recipient as $cc) {//Build cc
+                            $message->cc($cc, $senderName);
+                        }//E# foreach statement
+                    } else {//Send to only one
+                        $message->to($recipient, $senderName)->subject($subject);
+                    }//E# if else statement
+                });
 
         if ($comCodeConfig['log']) {//Log this record
             //Add sent to parameters
@@ -179,7 +241,7 @@ class MessageController extends MessagesBaseController {
      * @param integer $senderId Sender Id
      * @param string $sender Sender address
      * @param integer $recipientId Recipient Id
-     * @param string $recipient Recipient address
+     * @param mixed $recipient Receipient address, single or multiple
      * @param string $comCode Commication code
      * @param string $lang Language code
      * @param array $parameters Parameters data
@@ -195,7 +257,7 @@ class MessageController extends MessagesBaseController {
             'sender_id' => $senderId,
             'sender' => $sender,
             'recipient_id' => $recipientId,
-            'recipient' => $recipient,
+            'recipient' => is_array($recipient) ? json_encode($recipient) : $recipient,
             'sent' => $parameters['sent'],
             'status' => 1,
             'created_by' => $senderId,

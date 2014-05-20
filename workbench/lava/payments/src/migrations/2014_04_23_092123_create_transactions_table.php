@@ -16,6 +16,7 @@ class CreateTransactionsTable extends Migration {
             //Relationships
             $table->integer('user_id')->unsigned();
             $table->integer('product_id')->unsigned();
+            $table->integer('location_id')->unsigned();
             $table->integer('promotion_id')->unsigned();
 
             //Payment
@@ -36,6 +37,8 @@ class CreateTransactionsTable extends Migration {
             $table->string('gateway', 255);
             $table->string('gateway_tran_id', 255);
             $table->string('gateway_code', 255); //New
+            //Agent
+            $table->string('agent', 255);
 
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();

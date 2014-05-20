@@ -31,14 +31,14 @@ class ProductModel extends \Eloquent {
     );
 
     /**
-     * S# merchant() function
-     * Set one to one relationship to Merchant Model
+     * S# location() function
+     * Set one to one relationship to Location Model
      */
-    public function merchant() {
-        return $this->belongsTo(\Util::buildNamespace('merchants', 'merchant', 2), 'location_id');
+    public function location() {
+        return $this->belongsTo(\Util::buildNamespace('merchants', 'location', 2), 'location_id');
     }
 
-//E# merchant() function
+//E# location() function
 }
 
 //E# ProductModel() Class

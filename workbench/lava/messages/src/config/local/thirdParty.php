@@ -8,8 +8,8 @@ return array(
       |
      */
     'clickatell' => array(
-        "apiId" => "3422899",
-        "username" => "lavamsg",
-        "password" => "OEfCOBESeVeBGN",
+        "apiId" => "3480294",
+        "username" => "lavasms",
+        "password" => "MBKUAHMRaNTfKD",
     )
 );

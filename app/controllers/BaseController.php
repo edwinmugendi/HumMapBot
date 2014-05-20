@@ -261,7 +261,7 @@ class BaseController extends Controller {
                 $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => $this->input['field'], 'value' => $this->input['value']));
 
                 //Throw 200 Exception
-                throw new Api200Exception($controllerModel->toArray(), $message);
+                throw new Api200Exception($this->prepareRelation($controllerModel->toArray()), $message);
             }//E# if else statement
         } else {
             //Set notification
@@ -301,7 +301,12 @@ class BaseController extends Controller {
             //Get success message
             $message = \Lang::get($this->package . '::' . $this->controller . '.api.getAll');
 
-            throw new \Api200Exception($userModel->$relation->toArray(), $message);
+            //Define relation array
+            $relationArray = array();
+            foreach ($userModel->$relation->toArray() as $singleRelation) {//Loop through the relations
+                $relationArray[] = $this->prepareRelation($singleRelation);
+            }//E# foreach statement
+            throw new \Api200Exception($relationArray, $message);
         }//E# if else statement
     }
 
@@ -1100,7 +1105,6 @@ class BaseController extends Controller {
      */
     public function postUpdate($field, $value) {
 
-
         //Get this controller's model
         $modelObject = $this->getModelObject();
 
@@ -1178,6 +1182,7 @@ class BaseController extends Controller {
      * @return \API200Exception if source is "api" throw Success Exception 
      */
     public function updateRedirect($controllerModel) {
+
         if ($this->subdomain == 'api') {//From API
             //Get success message
             $message = \Lang::get($this->package . '::' . $this->controller . '.api.update', array('field' => 'id', 'value' => $controllerModel->id));

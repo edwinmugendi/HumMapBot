@@ -18,7 +18,7 @@
     \Route::post('payment/card/delete/{field}/{value}', array('as' => 'cardDelete', 'uses' => 'Lava\Payments\CardController@postDelete'));
 
     //Create User Page
-    \Route::get('payment/card/test/create/{id}/{email}/{password}', array('as' => 'paymentApp55Create', 'uses' => 'Lava\Payments\App55Controller@createUser'));
+    \Route::get('payment/card/test/create/{id}/{email}/{password}', array('as' => 'paymentApp55Create', 'uses' => 'Lava\Payments\App55Controller@createCard'));
 
     //Create Card Page
     \Route::get('payment/card/test/create/card', array('as' => 'paymentApp55CreateCard', 'uses' => 'Lava\Payments\App55Controller@createCard'));

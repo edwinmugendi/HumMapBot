@@ -21,28 +21,29 @@ class UserModel extends \Eloquent {
         'password',
         'email',
         'lat',
-        'long',
+        'lng',
         'verification_code',
         'dob',
         'fb_uid',
         'address',
         'postal_code',
         'gender',
-        'card',
+        'notify_sms',
+        'notify_email',
+        'notify_push',
+        'os',
+        'push_token',
+        'app_version',
         'role_id',
         'status',
         'created_by',
         'updated_by',
     );
-    //Appends fields
-    protected $appends = array(
-        'default_vrm',
-        'app55_id'
-    );
     protected $hidden = array(
         'reset_code',
         'reset_time',
         'last_login',
+        'role_id',
         'ip_address',
         'verification_code',
         'username',
@@ -63,6 +64,9 @@ class UserModel extends \Eloquent {
         'email' => 'required|email', //TODO Uncomment above
         'location' => 'latLng',
         'role_id' => 'integer',
+        'notify_sms' => 'integer|between:0,1',
+        'notify_email' => 'integer|between:0,1',
+        'notify_push' => 'integer|between:0,1',
         'status' => 'integer',
         'created_by' => 'integer',
         'updated_by' => 'integer',
@@ -71,23 +75,14 @@ class UserModel extends \Eloquent {
     public $updateRules = array(
         'email' => 'exists:acc_users', //TODO
         'location' => 'latLng',
+        'notify_sms' => 'integer|between:0,1',
+        'notify_email' => 'integer|between:0,1',
+        'notify_push' => 'integer|between:0,1',
+        'push_token' => '',
+        'os' => 'in:ios,android',
+        'old_password' => 'required_with:old_password',
+        'new_password' => 'required_with:new_password|min:6|password',
     );
-
-    /**
-     * S# getDefaultVrmAttribute() function
-     * Get user default vrm
-     */
-    public function getDefaultVrmAttribute() {
-        $defaultVrm = $this->belongsToMany(\Util::buildNamespace('accounts', 'vehicle', 2), 'acc_users_vehicles', 'user_id', 'vehicle_id')
-                        ->whereIsDefault(1)->first();
-        if ($defaultVrm) {//User has default vrm
-            return $defaultVrm->vrm;
-        } else {//User has not set default vrm
-            return 0;
-        }//E# if else statement
-    }
-
-//E# getDefaultVrmAttribute() function
 
     /**
      * S# logins() function
@@ -161,34 +156,6 @@ class UserModel extends \Eloquent {
     }
 
 //E# cards() function
-
-    /**
-     * S# app55() function
-     * Set one to one relationship to App55 Model
-     */
-    public function app55() {
-        return $this->hasOne(\Util::buildNamespace('payments', 'app55', 2), 'user_id');
-    }
-
-//E# app55() function
-
-    /**
-     * S# getApp55IdAttribute() function
-     * Get user default vrm
-     */
-    public function getApp55IdAttribute() {
-        //Get app55
-        $app55Model = $this->app55();
-
-        if ($app55Model->count()) {//App55 user exists
-            $app55Id = $app55Model->lists('id');
-            return (int) $app55Id[0];
-        } else {//
-            return -1;
-        }//E# if else statement
-    }
-
-//E# getApp55IdAttribute() function
 }
 
 //E# UserModel() Class

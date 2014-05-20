@@ -48,7 +48,7 @@
      * 
      */
     //Update User
-    \Route::post('user/update', array('as' => 'userUpdate', 'uses' => 'Lava\Accounts\UserController@postUpdateUser'));
+    \Route::post('user/update/{field}/{value}', array('as' => 'userUpdate', 'uses' => 'Lava\Accounts\UserController@postUpdate'));
 
     //Get Profile Page
     \Route::get('user/profile', array('as' => 'userProfile', 'uses' => 'Lava\Accounts\UserController@getProfile'));
@@ -58,7 +58,7 @@
      */
     //Add vehicle
     \Route::post('user/vehicle/add', array('as' => 'userAddVehicle', 'uses' => 'Lava\Accounts\VehicleController@postCreate'));
-    
+
     //Delete vehicle
     \Route::post('user/vehicle/delete', array('as' => 'userVehicleDrop', 'uses' => 'Lava\Accounts\VehicleController@postDrop'));
 

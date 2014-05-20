@@ -13,6 +13,52 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
     //TODO Set message fro the 2 validators and more accurate
 
     /**
+     * S# validateUpdatePassword() function
+     * Validate update password
+     * @param array $attribute Validation attribute
+     * @param string $newPassword New Password
+     * @param array $parameters Parameters
+     */
+    public function validatePassword($attribute, $newPassword, $parameters) {
+        //Instantiate a new user controller
+        $userController = new UserController();
+
+        //Get user model by token
+        $userModel = $userController->getModelByField('token', $this->data['token']);
+
+        if (\Hash::check($this->data['old_password'], $userModel->password)) {
+            $this->data['password'] = $this->input['password'] = \Hash::make($newPassword);
+            return true;
+        } else {
+            //Set message
+            $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.validation.updatePassword.wrongPassword');
+
+            return false;
+        }
+
+        return false;
+    }
+
+//E# validateUpdatePassword() function
+
+    /**
+     * S# replaceUpdatePassword() function
+     * Replace all place-holders for the  user owns vrm rule.
+     *
+     * @author Edwin Mugendi <edwinmugendi@gmail.com>
+     * @param  string  $message
+     * @param  string  $attribute
+     * @param  string  $rule
+     * @param  array   $parameters
+     * @return string
+     */
+    protected function replacePassword($message, $attribute, $rule, $parameters) {
+        return $message;
+    }
+
+//E# replaceUpdatePassword() function
+
+    /**
      * S# validateLatLng() function
      * Validate latitude and longitude object exists
      * @param array $attribute Validation attribute
@@ -105,7 +151,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         $parameters = array();
 
         //Set parameters
-        $parameters['lazyLoad'] = array('logins', 'app55');
+        $parameters['lazyLoad'] = array('logins');
 
         //User controller
         $userController = new UserController();
@@ -276,7 +322,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
 
                     //Post create callback
                     $userController->afterCreating($userModel);
-                    
+
                     //Update login specific fields
                     $userController->updateLoginSpecificFields($userController, $userModel);
                 }//E# if else statement
@@ -403,9 +449,24 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
 
         if ($vehicleModel) {//Vehicle does not exist
             if ($vehicleModel->user_owns) {
-                //Delete this vehicle in the pivot table
-                $vehicleController->updatePivotTable($vehicleModel, 'users', $vehicleModel->id, array('is_default' => 0, 'dropped_at' => Carbon::now()));
 
+                //Delete this vehicle in the pivot table
+                $vehicleController->updatePivotTable($vehicleModel, 'users', $vehicleModel->id, array('dropped_at' => Carbon::now()));
+
+                //Instantiate a new user controller
+                $userController = new UserController();
+
+                //Get user model by token
+                $userModel = $userController->getModelByField('token', $this->data['token']);
+
+                if ($userModel && \Str::lower($userModel->vrm) == \Str::lower($vrm)) {//User exists
+                    //Clear users default
+                    $userModel->vrm = '';
+
+                    //TODO update default
+                    //Save user
+                    $userModel->save();
+                }//E# if statement
                 //Get success message
                 $message = \Lang::get($vehicleController->package . '::' . $vehicleController->controller . '.api.delete', array('field' => 'vrm', 'value' => $vrm));
 
@@ -460,7 +521,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         $vehicleController = new VehicleController();
 
         $vehicleModel = $vehicleController->getModelByField('vrm', $vrm);
-
+        
         if ($vehicleModel) {//Vehicle exists
             if ($vehicleModel->user_owns) {//Logged in user owns this vehicle
                 return $vehicleModel;

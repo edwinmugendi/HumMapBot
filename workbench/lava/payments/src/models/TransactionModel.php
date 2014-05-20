@@ -16,6 +16,7 @@ class TransactionModel extends \Eloquent {
         'user_id',
         'product_id',
         'promotion_id',
+        'location_id',
         'amount',
         'currency',
         'description',
@@ -26,6 +27,7 @@ class TransactionModel extends \Eloquent {
         'gateway',
         'gateway_tran_id',
         'gateway_code',
+        'agent',
         'status',
         'created_by',
         'updated_by'
