@@ -28,6 +28,12 @@ class LocationModel extends \Eloquent {
     );
     //Hidden fields
     protected $hidden = array(
+        'phone_1',
+        'phone_2',
+        'phone_3',
+        'email_1',
+        'email_2',
+        'email_3',
         'type_id',
         'plan_id',
         'registration_number',
@@ -57,7 +63,7 @@ class LocationModel extends \Eloquent {
         'created_by' => 'required|integer',
         'updated_by' => 'required|integer',
     );
-    
+
     /**
      * S# merchant() function
      * Set one to one relationship to Merchant Model
@@ -67,7 +73,7 @@ class LocationModel extends \Eloquent {
     }
 
 //E# merchant() function
-    
+
     /**
      * S# products() function
      * Set one to many relationship to Product Model

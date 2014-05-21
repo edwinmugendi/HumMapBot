@@ -18,7 +18,7 @@ class CreatePromotionsTable extends Migration {
             $table->string('code', 255);
             $table->string('description', 255);
             $table->integer('type')->unsigned();
-            $table->integer('value')->unsigned();
+            $table->float('value');
 
             $table->boolean('new_customer');
             $table->datetime('expiry_date');

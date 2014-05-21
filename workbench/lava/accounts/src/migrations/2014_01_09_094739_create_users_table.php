@@ -49,7 +49,7 @@ class CreateUsersTable extends Migration {
             $table->string('card', 255);
 
             //Facebook
-            $table->integer('fb_uid');
+            $table->string('fb_uid');
 
             //Location
             $table->float('lat');

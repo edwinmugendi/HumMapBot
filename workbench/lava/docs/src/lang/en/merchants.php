@@ -145,12 +145,6 @@ return array(
                     'dataType' => 'string',
                     'note' => 'User API token',
                     'required' => 1,
-                ),
-                array(
-                    'field' => 'token',
-                    'dataType' => 'string',
-                    'note' => 'User API token',
-                    'required' => 1,
                 )
             ),
             'returns' => array(

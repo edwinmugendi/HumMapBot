@@ -33,14 +33,14 @@ class PromotionController extends ProductsBaseController {
      * @param string $code Promotion code
      * @return boolean true if redeemed, false else
      */
-    public function postRedeemPromotion($promotion_id) {
-
+    public function postRedeemPromotion($code) {
+       
         //Add merchant id to inputs for validation
-        $this->input['id'] = $promotion_id;
+        $this->input['code'] = $code;
 
         //Define validation rules
         $this->validationRules = array(
-            'id' => 'required|integer|isPromotionCodeValid'
+            'code' => 'required|isPromotionCodeValid'
         );
         //Validate merchant
         $this->isInputValid();

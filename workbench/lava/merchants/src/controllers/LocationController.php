@@ -232,6 +232,8 @@ class LocationController extends MerchantsBaseController {
         }//E# foreach statement
         //Set the days array as times key to the location array
         $locationArray['times'] = $daysArray;
+        
+       
     }
 
 //E#prepareModelToReturn() function
