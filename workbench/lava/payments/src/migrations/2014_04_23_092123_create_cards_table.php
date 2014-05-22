@@ -27,7 +27,7 @@ class CreateCardsTable extends Migration {
             $table->string('token');
             $table->string('expiry');
 
-           
+            $table->softDeletes();
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();

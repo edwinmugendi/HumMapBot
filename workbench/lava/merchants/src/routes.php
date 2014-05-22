@@ -7,6 +7,9 @@
 
 \Route::group(array('before' => 'subdomain|api'), function() {
     //Feel location
-    \Route::post('merchant/location/feel/{locationId}', array('as' => 'feelLocation', 'uses' => 'Lava\Merchants\LocationController@postFeel'));
+    \Route::post('merchant/location/feel/{locationId}', array('as' => 'feelLocation', 'uses' => 'Lava\Merchants\FeelController@postFeel'));
+
+    //Get location feel
+    \Route::post('merchant/location/feel/{locationId}/get/{type}', array('as' => 'feelLocationGet', 'uses' => 'Lava\Merchants\LocationController@getFeel'));
 });
 

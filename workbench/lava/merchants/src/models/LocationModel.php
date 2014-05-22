@@ -20,11 +20,10 @@ class LocationModel extends \Eloquent {
     );
     //Appends fields
     protected $appends = array(
-        'total_reviews',
-        'star_rating',
+        'rating',
         'image_url',
-        'is_favourite',
-        'is_rated'
+        'favoured',
+        'rated'
     );
     //Hidden fields
     protected $hidden = array(
@@ -95,16 +94,16 @@ class LocationModel extends \Eloquent {
 //E# ratings() function
 
     /**
-     * S# getStarRatingAttribute() function
+     * S# getRatingAttribute() function
      * Calculate average of the ratings and return the star rating
      */
-    public function getStarRatingAttribute() {
-        return (int) $this->hasMany(\Util::buildNamespace('merchants', 'feel', 2), 'location_id')
+    public function getRatingAttribute() {
+        return (int) $this->ratings()
                         ->whereType(2)
                         ->avg('feeling');
     }
 
-//E# getStarRatingAttribute() function
+//E# getRatingAttribute() function
 
     /**
      * S# getImageUrlAttribute() function
@@ -117,10 +116,10 @@ class LocationModel extends \Eloquent {
 //E# getImageUrlAttribute() function
 
     /**
-     * S# getIsFavouriteAttribute() function
+     * S# getFavouredAttribute() function
      * Is user favourite
      */
-    public function getIsFavouriteAttribute() {
+    public function getFavouredAttribute() {
         if (\Auth::check()) {
             $favouriteModel = $this->hasMany(\Util::buildNamespace('merchants', 'feel', 2), 'location_id')
                     ->whereType(1)
@@ -132,13 +131,13 @@ class LocationModel extends \Eloquent {
         }
     }
 
-//E# getIsFavouriteAttribute() function
+//E# getFavouredAttribute() function
 
     /**
-     * S# getIsRatedAttribute() function
+     * S# getRatedAttribute() function
      * Is user favourite
      */
-    public function getIsRatedAttribute() {
+    public function getRatedAttribute() {
         if (\Auth::check()) {
             $feelingModel = $this->hasMany(\Util::buildNamespace('merchants', 'feel', 2), 'location_id')
                     ->whereType(2)

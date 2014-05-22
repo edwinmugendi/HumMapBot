@@ -133,7 +133,7 @@ return array(
                 ), array(
                     'field' => 'rate',
                     'dataType' => 'integer',
-                    'note' => 'Required if <i>type</i> is 2 & between 1 and 5 inclusive',
+                    'note' => 'Required if <i>type</i> is 2 & between 1 and 5 inclusive.',
                     'required' => 0,
                 ), array(
                     'field' => 'review',

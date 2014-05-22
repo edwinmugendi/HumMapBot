@@ -15,6 +15,57 @@ class CardController extends PaymentsBaseController {
     public $lazyLoad = array();
 
     /**
+     * S# beforeDeleting() function
+     * @author Edwin Mugendi
+     * Call this just after deleting the model
+     * 
+     * @return; 
+     */
+    public function afterDeleting($controllerModel) {
+        
+        //Delete card on app55 and db
+        $this->deleteApp55Card($this->user['app55_id'], $controllerModel->token);
+        return;
+    }
+
+//E# afterDeleting() function
+    
+    /**
+     * S# deleteApp55Card() function
+     * Delete card on app55 and database
+     * 
+     * @param id $app55UserId App55 user id
+     * @param string $token Card token
+     *
+     */
+    public function deleteApp55Card($app55UserId,$token){
+        
+        //Build delete data
+        $deleteData = array(
+            'app55UserId' => $app55UserId,
+            'token' => $token
+        );
+        
+        //Delete card on app55
+        $deleteCardResponse = $this->callController(\Util::buildNamespace('payments', 'app55', 1), 'deleteCard', array($deleteData));
+        
+        if ($deleteCardResponse['status']) {//Card deleted on App55  
+            
+            $parameters = array(
+                'withTrashed'=>true
+            );
+            
+            //Get trashed card
+            $cardModel = $this->getModelByField('token', $token, $parameters);
+            
+            if($cardModel){//Card founds
+                $cardModel->forceDelete();
+            }//E# if statement
+        }//E# if else statement
+        
+    }//E# deleteApp55Card() function
+    
+    /**
      * S# prepareRelation() function
      * Prepare relation
      * 
@@ -22,9 +73,9 @@ class CardController extends PaymentsBaseController {
      */
     public function prepareRelation($rawRelation) {
         array_except($rawRelation, array('pivot'));
-        
+
         $rawRelation['app55_id'] = $this->user['app55_id'];
-        
+
         return $rawRelation;
     }
 

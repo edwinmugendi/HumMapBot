@@ -11,6 +11,10 @@ class CardModel extends \Eloquent {
 
     //Table
     protected $table = 'fnc_cards';
+    
+    //Soft delete
+    protected $softDelete = true;
+    
     //User owned
     public $userOwned = true;
     //Fillable fields

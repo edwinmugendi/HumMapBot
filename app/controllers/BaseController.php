@@ -1252,11 +1252,26 @@ class BaseController extends Controller {
         //Get model by field
         $controllerModel = $this->getModelByField($field, $value);
 
-        if ($this->beforeDeleting($controllerModel)) {
-            $controllerModel->delete();
-        }//E# if statement
-        //Delete Redirect
-        return $this->deleteRedirect($controllerModel);
+        if ($controllerModel) {//Model exists
+            if ($this->beforeDeleting($controllerModel)) {
+                $controllerModel->delete();
+            }//E# if statement
+            //After delete callback
+            $this->afterDeleting($controllerModel);
+
+            //Delete Redirect
+            return $this->deleteRedirect($controllerModel);
+        } else {
+            //Set notification
+            $this->notification = array(
+                'field' => $this->input['field'],
+                'type' => Str::title($this->controller),
+                'value' => $this->input['value'],
+            );
+
+            //Throw 404 error
+            throw new \Api404Exception($this->notification);
+        }//E# if else statement
     }
 
 //E# postDelete() function
@@ -1265,6 +1280,8 @@ class BaseController extends Controller {
      * S# beforeDeleting() function
      * @author Edwin Mugendi
      * Call this just before deleting the model
+     * 
+     * @param Model $controllerModel Controller Model
      * 
      * @return boolean true to go aheading with deleting, false not to delete 
      */
@@ -1279,10 +1296,12 @@ class BaseController extends Controller {
      * S# beforeDeleting() function
      * @author Edwin Mugendi
      * Call this just after deleting the model
+     *
+     * @param Model $controllerModel Controller Model
      * 
      * @return; 
      */
-    public function afterDeleting() {
+    public function afterDeleting($controllerModel) {
         return;
     }
 

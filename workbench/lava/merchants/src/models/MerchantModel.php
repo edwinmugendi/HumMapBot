@@ -13,7 +13,6 @@ class MerchantModel extends \Eloquent {
     protected $table = 'mct_merchants';
     //Fillable fields
     protected $fillable = array(
-        'total_reviews',
         'status',
         'created_by',
         'updated_by'
