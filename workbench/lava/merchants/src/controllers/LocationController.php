@@ -139,7 +139,7 @@ class LocationController extends MerchantsBaseController {
      * @param array $locationArray Location array
      * 
      */
-    private function prepareModelToReturn(&$locationArray) {
+    public function prepareModelToReturn($locationArray) {
         //Define days
         $days = array(
             'monday',
