@@ -60,8 +60,8 @@ class UserModel extends \Eloquent {
         'phone' => 'required',
         'password' => 'required',
         'verification_code' => '',
-        // 'email' => 'required|unique:acc_users',//TODO
-        'email' => 'required|email', //TODO Uncomment above
+         'email' => 'required|unique:acc_users',//TODO
+        //'email' => 'required|email', //TODO Uncomment above
         'location' => 'latLng',
         'role_id' => 'integer',
         'notify_sms' => 'integer|between:0,1',
