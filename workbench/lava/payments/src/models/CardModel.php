@@ -17,6 +17,7 @@ class CardModel extends \Eloquent {
     
     //User owned
     public $userOwned = true;
+    
     //Fillable fields
     protected $fillable = array(
         'address_city',
@@ -49,6 +50,7 @@ class CardModel extends \Eloquent {
         'field' => 'required|in:id',
         'value' => 'required|integer|exists:fnc_cards,id',
     );
+    
     //Select validation rules
     public $selectRules = array(
         'field' => 'required|in:id',

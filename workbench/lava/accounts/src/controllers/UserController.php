@@ -187,7 +187,7 @@ class UserController extends AccountsBaseController {
      * @param Model $controllerModel User model
      */
     public function updateLoginSpecificFields(&$controller, &$controllerModel) {
-        $controllerModel->token = \Str::lower(\Str::random(32));
+        $controllerModel->token = $this->generateUniqueToken();
 
         //Update user login details
         $controllerModel->last_login = Carbon::now();
@@ -207,7 +207,32 @@ class UserController extends AccountsBaseController {
     }
 
 //E# updateLoginSpecificFields() function
-
+    
+    /**
+     * S# generateUniqueToken () function
+     * Generate unique token
+     * 
+     * @return string Token
+     */
+    private function generateUniqueToken(){
+        //Start with not unique
+        $notUnique = true;
+        while ($notUnique) {//While till you get the token is unique
+            //Generate token
+            $token = \Str::lower(\Str::random(32));
+           
+            //Get user model by token
+            $userModel = $this->getModelByField('token', $token);
+            
+            if(!$userModel){//Token Unique
+                break;
+            }//E# if statement        
+                    
+        }//E# while statement
+        
+        return $token;
+    }//E# generateUniqueToken() function
+    
     /**
      * S# apiLoginSuccess() function
      * API login success

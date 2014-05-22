@@ -158,6 +158,88 @@ return array(
             )
         ),
         array(
+            'name' => 'Get Single Transaction by Id',
+            'note' => 'Get a single transaction\'s details by id',
+            'filtered' => 1,
+            'endpoint' => '/payment/transaction/get/{field}/{value}',
+            'httpVerb' => 'GET',
+            'parameters' => array(
+                array(
+                    'field' => 'field',
+                    'dataType' => 'string',
+                    'note' => 'Must be set to \'id\'. Set this in the url not query string',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'value',
+                    'dataType' => 'integer',
+                    'note' => 'Actual id. Set this in the url not query string',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'token',
+                    'dataType' => 'string',
+                    'note' => 'User API token',
+                    'required' => 1,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Transaction found',
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Transaction id 1 found.","data":{"id":"1","user_id":"1","product_id":"1","location_id":"0","promotion_id":"0","amount":"0.00","refund":"0.00","currency":"","description":"","card_used":"","lat":"0.000000","lng":"0.000000","gateway":"","gateway_tran_id":"","gateway_code":"","agent":"","created_at":"0000-00-00 00:00:00","updated_at":"0000-00-00 00:00:00"}}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
+                )
+            )
+        ),
+        array(
+            'name' => 'Get All Transaction',
+            'note' => 'Get all users transactions',
+            'filtered' => 1,
+            'endpoint' => '/payment/transaction/get',
+            'httpVerb' => 'GET',
+            'parameters' => array(
+                array(
+                    'field' => 'page',
+                    'dataType' => 'integer',
+                    'note' => 'Pagination page',
+                    'required' => 0,
+                ),
+                array(
+                    'field' => 'take',
+                    'dataType' => 'integer',
+                    'note' => 'No of transactions to return. Defaults to 30',
+                    'required' => 0,
+                ),
+                array(
+                    'field' => 'token',
+                    'dataType' => 'string',
+                    'note' => 'User API token',
+                    'required' => 1,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Transactions found',
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Transaction\'s list","data":{"list":[{"id":"2","user_id":"1","product_id":"0","location_id":"0","promotion_id":"0","amount":"0.00","refund":"0.00","currency":"","description":"","card_used":"","lat":"0.000000","lng":"0.000000","gateway":"","gateway_tran_id":"","gateway_code":"","agent":"","created_at":"0000-00-00 00:00:00","updated_at":"0000-00-00 00:00:00"},{"id":"1","user_id":"1","product_id":"1","location_id":"0","promotion_id":"0","amount":"0.00","refund":"0.00","currency":"","description":"","card_used":"","lat":"0.000000","lng":"0.000000","gateway":"","gateway_tran_id":"","gateway_code":"","agent":"","created_at":"0000-00-00 00:00:00","updated_at":"0000-00-00 00:00:00"}],"pagination":{"current_page":1,"last_page":1,"per_page":20,"total":2,"from":1,"count":2}}}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
+                ),
+            )
+        ),
+        array(
             'name' => 'Prepare Transaction',
             'note' => 'Prepare a transaction',
             'filtered' => 1,

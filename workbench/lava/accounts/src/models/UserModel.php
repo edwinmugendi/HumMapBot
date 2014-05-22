@@ -95,16 +95,6 @@ class UserModel extends \Eloquent {
 //E# logins() function
 
     /**
-     * S# devices() function
-     * Set one to many relationship to Device Model
-     */
-    public function devices() {
-        return $this->hasMany(\Util::buildNamespace('accounts', 'device', 2), 'user_id');
-    }
-
-//E# devices() function
-
-    /**
      * S# promotions() function
      * Set many to many relationship to Promotion Model
      */
@@ -156,6 +146,16 @@ class UserModel extends \Eloquent {
     }
 
 //E# cards() function
+    
+    /**
+     * S# transactions() function
+     * Set one to many relationship to Card Model
+     */
+    public function transactions() {
+        return $this->hasMany(\Util::buildNamespace('payments', 'transaction', 2), 'user_id');
+    }
+
+//E# transactions() function
 }
 
 //E# UserModel() Class

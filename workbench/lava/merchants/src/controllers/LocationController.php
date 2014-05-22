@@ -12,8 +12,6 @@ class LocationController extends MerchantsBaseController {
     //Controller
     public $controller = 'location';
 
-    
-    
     //TODO Number of loyalty stamps – how many loyalty stamps the user has at that location
     public function getLocations($id = null) {
         if (is_null($id)) {//Get List of locations
@@ -32,6 +30,13 @@ class LocationController extends MerchantsBaseController {
                 floatval($this->input['radius'] / 1000)//Convert to meters
             );
 
+            //Build notification
+            $this->notification = array(
+                'location' => array(
+                    'lat' => floatval($this->input['location']['lat']),
+                    'long' => floatval($this->input['location']['lat']),
+                )
+            );
             //Get locations within radius
             $fluentLocations = \DB::select(\DB::raw("SELECT *, (6371 * acos(cos(radians(?)) * cos(radians(lat)) * cos( radians(lng) - radians(?)) + sin(radians(?)) * sin(radians(lat)))) AS distance FROM sp_mct_locations Having distance < ? ORDER BY distance"), $parameters);
 
@@ -51,9 +56,19 @@ class LocationController extends MerchantsBaseController {
                         'operand' => $locationIds
                     )
                 );
-
+                
+                //Implode the location id's
+                $orderIds = implode(',', $locationIds);
+                
+                //Build parameters
+                $parameters = array(
+                    'orderByRaw'=>array(
+                        "FIELD(id, $orderIds)"
+                    )
+                );
+                
                 //Get location model
-                $locationModel = $this->select($fields, $whereClause, 2);
+                $locationModel = $this->select($fields, $whereClause, 2,$parameters);
 
                 //Location array
                 $locationArray = $locationModel->toArray();
@@ -62,15 +77,18 @@ class LocationController extends MerchantsBaseController {
                     //Prepare Model
                     $this->prepareModelToReturn($singleLocation);
                 }//E# foreach statement
-                //Get success message
-                $message = \Lang::get($this->package . '::' . $this->controller . '.api.getAll', array('field' => 'id', 'value' => $id));
-
-                //Throw 200 Exception
-                throw new \Api200Exception($locationArray, $message);
+                //Set merchants
+                $this->notification['list'] = $locationArray;
             } else {
-                
+                //Set merchants
+                $this->notification['list'] = array();
             }//E# if else statement
-            return $results;
+            //Get success message
+            $message = \Lang::get($this->package . '::' . $this->controller . '.api.getAll', array('field' => 'id', 'value' => $id));
+
+            //Throw 200 Exception
+            throw new \Api200Exception($this->notification, $message);
+
             //TODO Radius search
         } else {//Get a single location
             //Add location id to inputs for validation
@@ -146,8 +164,6 @@ class LocationController extends MerchantsBaseController {
         }//E# foreach statement
         //Set the days array as times key to the location array
         $locationArray['times'] = $daysArray;
-        
-       
     }
 
 //E#prepareModelToReturn() function

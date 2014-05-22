@@ -11,6 +11,10 @@ class TransactionModel extends \Eloquent {
 
     //Table
     protected $table = 'fnc_transactions';
+    
+    //User owned
+    public $userOwned = true;
+    
     //Fillable fields
     protected $fillable = array(
         'user_id',
@@ -43,6 +47,20 @@ class TransactionModel extends \Eloquent {
         'status' => 'required|integer',
         'created_by' => 'required|integer',
         'updated_by' => 'required|integer',
+    );
+    
+    //Select validation rules
+    public $selectRules = array(
+        'field' => 'required|in:id',
+        'value' => 'required|integer|exists:fnc_transactions,id',
+        'take'=>'integer',
+        'page'=>'integer'
+    );
+    
+    //Select all validation rules
+    public $selectAllRules = array(
+        'take'=>'integer',
+        'page'=>'integer'
     );
 
 }

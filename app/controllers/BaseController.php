@@ -87,35 +87,6 @@ class BaseController extends Controller {
 
 //E# sessionedUser() function
 
-
-    public function getAllUsersModelWithMany() {
-        //Lazy load to load
-        $parameters['lazyLoad'] = $this->userSearchableRelations;
-
-        //Get user by token
-        $userModel = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->input['token'], $parameters));
-
-        $pluralController = $this->controller . 's';
-
-        if ($this->subdomain == 'api') {//From API
-            //Get success message
-            $message = \Lang::get($this->package . '::' . $this->controller . '.api.getAll');
-
-            throw new Api200Exception($userModel->$pluralController->toArray(), $message);
-        }//E# if else statement
-    }
-
-    public function getSelect() {
-        //Get this controller's model
-        $modelObject = $this->getModelObject();
-
-        //Get and set the model's create validation rules
-        $this->validationRules = $modelObject->selectRules;
-
-        //Validate row to be inserted
-        $validation = $this->isInputValid();
-    }
-
     /**
      * S# getManyModelBelongingToUser() function
      * @author Edwin Mugendi
@@ -150,7 +121,7 @@ class BaseController extends Controller {
                 //Get success message
                 $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => $this->input['field'], 'value' => $this->input['value']));
 
-                throw new \Api200Exception($this->prepareRelation($controllerModel->toArray()), $message);
+                throw new \Api200Exception($this->prepareModelToReturn($controllerModel->toArray()), $message);
             } else {//User does not own this model
                 //Set notification
                 $this->notification = array(
@@ -203,7 +174,7 @@ class BaseController extends Controller {
             //Define relation array
             $relationArray = array();
             foreach ($userModel->$relation->toArray() as $singleRelation) {//Loop through the relations
-                $relationArray[] = $this->prepareRelation($singleRelation);
+                $relationArray[] = $this->prepareModelToReturn($singleRelation);
             }//E# foreach statement
             //Throw 200 Exception
             throw new \Api200Exception($relationArray, $message);
@@ -213,16 +184,16 @@ class BaseController extends Controller {
 //E# getAllManyModelBelongingToUser() function
 
     /**
-     * S# prepareRelation() function
-     * Prepare relation
+     * S# prepareModelToReturn() function
+     * Prepare model to return
      * 
      * @param array $rawRelation Raw relation
      */
-    public function prepareRelation($rawRelation) {
+    public function prepareModelToReturn($rawRelation) {
         return array_except($rawRelation, array('pivot'));
     }
 
-//E# prepareRelation() function
+//E# prepareModelToReturn() function
 
     /**
      * S# getModelBelongingToUser() function
@@ -236,6 +207,7 @@ class BaseController extends Controller {
      * @return Exception \API400Exception
      */
     public function getModelBelongingToUser($field, $value) {
+
         //Get this controller's model
         $modelObject = $this->getModelObject();
 
@@ -261,7 +233,7 @@ class BaseController extends Controller {
                 $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => $this->input['field'], 'value' => $this->input['value']));
 
                 //Throw 200 Exception
-                throw new Api200Exception($this->prepareRelation($controllerModel->toArray()), $message);
+                throw new Api200Exception($this->prepareModelToReturn($controllerModel->toArray()), $message);
             }//E# if else statement
         } else {
             //Set notification
@@ -288,25 +260,67 @@ class BaseController extends Controller {
      * @return Exception \API400Exception
      */
     public function getAllModelBelongingToUser() {
-        //Relation
-        $relation = $this->controller . 's';
+        
+        //Get this controller's model
+        $modelObject = $this->getModelObject();
 
-        //Lazy load to load
-        $parameters['lazyLoad'] = array($relation);
+        //Get and set the model's select validation rules
+        $this->validationRules = $modelObject->selectAllRules;
+
+        //Validate row to be inserted
+        $this->isInputValid();
 
         //Get user by token
-        $userModel = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->input['token'], $parameters));
+        $userModel = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->input['token']));
+
+        //Fields to select
+        $fields = array('*');
+
+        //Set where clause
+        $whereClause = array(
+            array(
+                'where' => 'where',
+                'column' => 'user_id',
+                'operator' => '=',
+                'operand' => $userModel->id
+            )
+        );
+
+        //Set per page to parameters
+        $parameters['paginate'] = isset($this->input['take']) ? (int)$this->input['take']: 30;
+
+        //Order by id in descending order
+        $parameters['orderBy'][] = array('id' => 'desc');
+
+        //Select this users models
+        $controllerModel = $this->select($fields, $whereClause, 2, $parameters);
 
         if ($this->subdomain == 'api') {//From API
             //Get success message
             $message = \Lang::get($this->package . '::' . $this->controller . '.api.getAll');
-
+            
             //Define relation array
             $relationArray = array();
-            foreach ($userModel->$relation->toArray() as $singleRelation) {//Loop through the relations
-                $relationArray[] = $this->prepareRelation($singleRelation);
+            
+            foreach ($controllerModel as $singleRelation) {//Loop through the relations
+                $relationArray[] = $this->prepareModelToReturn($singleRelation->toArray());
             }//E# foreach statement
-            throw new \Api200Exception($relationArray, $message);
+            
+            //Build notification
+            $this->notification = array(
+                'list'=>$relationArray,
+                'pagination'=>array(
+                    'current_page'=>$controllerModel->getCurrentPage(),
+                    'last_page'=>$controllerModel->getLastPage(),
+                    'per_page'=>$controllerModel->getPerPage(),
+                    'total'=>$controllerModel->getTotal(),
+                    'from'=>$controllerModel->getFrom(),
+                    'count'=>  $controllerModel->count()
+                    
+                )
+            );
+            
+            throw new \Api200Exception($this->notification, $message);
         }//E# if else statement
     }
 
@@ -795,7 +809,11 @@ class BaseController extends Controller {
         }//E# if statement
 
         if (array_key_exists('orderBy', $parameters)) {//Order model
-            $this->buildOrder($selectModel, $parameters['orderBy']);
+            $this->buildOrderBy($selectModel, $parameters['orderBy']);
+        }//E# if statement
+
+        if (array_key_exists('orderByRaw', $parameters)) {//Order model by raw sql
+            $this->buildOrderByRaw($selectModel, $parameters['orderByRaw']);
         }//E# if statement
 
 
@@ -884,20 +902,34 @@ class BaseController extends Controller {
 //E# buildWhereClause() method
 
     /**
-     * S# buildOrder() method
+     * S# buildOrderBy() method
      * @author Edwin Mugendi
      * Build the order the model will be selected
-     * @param model $model the model
      * @param array $orderBy the order
      * @param model an ordered model 
      */
-    private function buildOrder(&$model, $orderBy) {
+    private function buildOrderBy(&$model, $orderBy) {
         foreach ($orderBy as $singleOrder) {//Loop through the order by array
             $model = $model->orderBy(key($singleOrder), current($singleOrder));
         }//E# foreach statement
     }
 
-//E# buildOrder() method
+//E# buildOrderBy() method
+
+    /**
+     * S# buildOrderByRaw() method
+     * @author Edwin Mugendi
+     * Build the order the model will be selected using raw sql
+     * @param array $orderByRaw the order
+     * @param model an ordered model 
+     */
+    private function buildOrderByRaw(&$model, $orderByRaw) {
+        foreach ($orderByRaw as $singleOrder) {//Loop through the order by array
+            $model = $model->orderByRaw(\DB::raw($singleOrder));
+        }//E# foreach statement
+    }
+
+//E# buildOrderByRaw() method
 
     public function find($id) {
         //Cache model namespace

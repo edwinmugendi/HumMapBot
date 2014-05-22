@@ -32,4 +32,11 @@
 
     //Process Transaction
     \Route::post('payment/transaction/process', array('as' => 'paymentTransactionProcess', 'uses' => 'Lava\Payments\PaymentController@process'));
+
+    //Get single transactions
+    \Route::get('payment/transaction/get/{field}/{value}', array('as' => 'cardGetSingle', 'uses' => 'Lava\Payments\TransactionController@getModelBelongingToUser'));
+
+    //Get all transactions
+    \Route::get('payment/transaction/get', array('as' => 'cardGetAll', 'uses' => 'Lava\Payments\TransactionController@getAllModelBelongingToUser'));
+
 });
