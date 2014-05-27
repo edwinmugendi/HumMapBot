@@ -184,9 +184,15 @@ return array(
             'name' => 'Update User Profile',
             'note' => 'Update a users profile',
             'filtered' => 1,
-            'endpoint' => '/user/update',
+            'endpoint' => '/user/update/id/{value}',
             'httpVerb' => 'POST',
             'parameters' => array(
+                array(
+                    'value' => 'User id',
+                    'dataType' => 'integer',
+                    'note' => 'Lava User Id',
+                    'required' => 1,
+                ),
                 array(
                     'field' => 'first_name',
                     'dataType' => 'string',
