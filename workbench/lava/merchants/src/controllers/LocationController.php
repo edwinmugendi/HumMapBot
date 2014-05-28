@@ -71,11 +71,11 @@ class LocationController extends MerchantsBaseController {
                 $locationModel = $this->select($fields, $whereClause, 2,$parameters);
 
                 //Location array
-                $locationArray = $locationModel->toArray();
+                $locationArray = array();
 
-                foreach ($locationArray as $singleLocation) {//Loop via the locations
+                foreach ($locationModel->toArray() as $singleLocation) {//Loop via the locations
                     //Prepare Model
-                    $this->prepareModelToReturn($singleLocation);
+                    $locationArray[] = $this->prepareModelToReturn($singleLocation);
                 }//E# foreach statement
                 //Set merchants
                 $this->notification['list'] = $locationArray;
@@ -106,12 +106,8 @@ class LocationController extends MerchantsBaseController {
             $locationModel = $this->getModelByField('id', $id, $parameters);
 
             if ($locationModel) {
-                //Total reviews
-                //$totalReviews =  $locationModel->total_reviews;
-                $locationArray = $locationModel->toArray();
-
                 //Prepare model
-                $this->prepareModelToReturn($locationArray);
+                $locationArray = $this->prepareModelToReturn($locationModel->toArray());
 
                 //Get success message
                 $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => 'id', 'value' => $id));
@@ -164,6 +160,10 @@ class LocationController extends MerchantsBaseController {
         }//E# foreach statement
         //Set the days array as times key to the location array
         $locationArray['times'] = $daysArray;
+        
+        unset($locationArray['ratings']);
+        
+        return $locationArray;
     }
 
 //E#prepareModelToReturn() function

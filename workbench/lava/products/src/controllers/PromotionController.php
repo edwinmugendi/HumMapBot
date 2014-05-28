@@ -15,16 +15,16 @@ class PromotionController extends ProductsBaseController {
     public $controller = 'promotion';
 
     /**
-     * S# prepareRelation() function
+     * S# prepareModelToReturn() function
      * Prepare relation
      * 
      * @param array $rawRelation Raw relation
      */
-    public function prepareRelation($rawPromotion) {
+    public function prepareModelToReturn($rawPromotion) {
         return array_except($rawPromotion, array('pivot', 'claimed'));
     }
 
-//E# prepareRelation() function
+//E# prepareModelToReturn() function
 
     /**
      * S# postRedeemPromotion() function

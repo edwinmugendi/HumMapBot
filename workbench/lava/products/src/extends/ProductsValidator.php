@@ -42,42 +42,51 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
                     $this->message = \Lang::get($promotionController->package . '::' . $promotionController->controller . '.validation.isPromotionCodeValid.claimed', array('code' => $code));
                 }//E# if else statement
             } else {//Has not redeemed
-                if ($promotionModel->new_customer) {//Only for new customers
-                    //TODO check if customer has a transaction for this location
-                    //Fields to select
-                    $fields = array('*');
+                //Now
+                $now = Carbon::now();
 
-                    //Build where clause
-                    $whereClause = array(
-                        array(
-                            'where' => 'where',
-                            'column' => 'user_id',
-                            'operator' => '=',
-                            'operand' => $promotionController->user['id']
-                        )
-                    );
+                $promoExpiryDate = Carbon::createFromFormat('Y-m-d G:i:s', $promotionModel->expiry_date);
+                if ($promoExpiryDate->gt($now)) {
+                    if ($promotionModel->new_customer) {//Only for new customers
+                        //TODO check if customer has a transaction for this location
+                        //Fields to select
+                        $fields = array('*');
 
-                    if ($promotionModel->type == 2) {
-                        $whereClause[] = array(
-                            'where' => 'where',
-                            'column' => 'location_id',
-                            'operator' => '=',
-                            'operand' => $promotionModel->location_id
+                        //Build where clause
+                        $whereClause = array(
+                            array(
+                                'where' => 'where',
+                                'column' => 'user_id',
+                                'operator' => '=',
+                                'operand' => $promotionController->user['id']
+                            )
                         );
-                    }
-                    //Get user by email and verification code
-                    $transactionModel = $promotionController->callController(\Util::buildNamespace('payments', 'transaction', 1), 'select', array($fields, $whereClause, 1));
 
-                    if ($transactionModel) {//Has a transaction for this location
-                        //Set error message
-                        $this->message = \Lang::get($promotionController->package . '::' . $promotionController->controller . '.validation.isPromotionCodeValid.newCustomers', array('code' => $code));
+                        if ($promotionModel->type == 2) {
+                            $whereClause[] = array(
+                                'where' => 'where',
+                                'column' => 'location_id',
+                                'operator' => '=',
+                                'operand' => $promotionModel->location_id
+                            );
+                        }
+                        //Get user by email and verification code
+                        $transactionModel = $promotionController->callController(\Util::buildNamespace('payments', 'transaction', 1), 'select', array($fields, $whereClause, 1));
+
+                        if ($transactionModel) {//Has a transaction for this location
+                            //Set error message
+                            $this->message = \Lang::get($promotionController->package . '::' . $promotionController->controller . '.validation.isPromotionCodeValid.newCustomers', array('code' => $code));
+                        } else {//Claim
+                            //Claim this promotion code
+                            $promotionController->claimPromotionCode($promotionController, $promotionModel);
+                        }//E# if else statement
                     } else {//Claim
                         //Claim this promotion code
                         $promotionController->claimPromotionCode($promotionController, $promotionModel);
                     }//E# if else statement
-                } else {//Claim
-                    //Claim this promotion code
-                    $promotionController->claimPromotionCode($promotionController, $promotionModel);
+                } else {//Expired
+                    //Set error message
+                    $this->message = \Lang::get($promotionController->package . '::' . $promotionController->controller . '.validation.isPromotionCodeValid.expired', array('code' => $code));
                 }//E# if else statement
             }//E# if else statement
         } else {//Don't exist
