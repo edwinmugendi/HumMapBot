@@ -80,6 +80,7 @@ class DocController extends DocsBaseController {
            
         $tableBody = '';
         foreach ($parameters as $singleParameter) {
+            
             //heading
             $viewData['header'] = $heading? $heading:\Str::title($type);
             
@@ -93,6 +94,7 @@ class DocController extends DocsBaseController {
             
                 $singleParameter['dataType'] = 'array';
             }
+            
             $viewData['tableData'][0] = $type == 'parameters' ? $singleParameter['field'] : $singleParameter['action'];
             $viewData['tableData'][1] = $type == 'parameters' ? $singleParameter['dataType'] : $singleParameter['httpCode'];
             $viewData['tableData'][2] = $type == 'parameters' ? $singleParameter['note'] : $singleParameter['note'];

@@ -188,9 +188,9 @@ return array(
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
-                    'value' => 'User id',
+                    'field' => 'value',
                     'dataType' => 'integer',
-                    'note' => 'Lava User Id',
+                    'note' => 'Lava User Id (Set in the URL)',
                     'required' => 1,
                 ),
                 array(
