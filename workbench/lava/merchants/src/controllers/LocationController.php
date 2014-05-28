@@ -101,7 +101,7 @@ class LocationController extends MerchantsBaseController {
             $this->isInputValid();
 
             //Lazy load
-            $parameters['lazyLoad'] = array('products');
+            $parameters['lazyLoad'] = array('products','ratings');
 
             $locationModel = $this->getModelByField('id', $id, $parameters);
 

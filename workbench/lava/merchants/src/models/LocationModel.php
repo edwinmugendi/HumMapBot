@@ -20,10 +20,11 @@ class LocationModel extends \Eloquent {
     );
     //Appends fields
     protected $appends = array(
-        'rating',
+        'star_rating',
         'image_url',
         'favoured',
-        'rated'
+        'rated',
+        'rating_count'
     );
     //Hidden fields
     protected $hidden = array(
@@ -94,16 +95,26 @@ class LocationModel extends \Eloquent {
 //E# ratings() function
 
     /**
-     * S# getRatingAttribute() function
+     * S# getStarRatingAttribute() function
      * Calculate average of the ratings and return the star rating
      */
-    public function getRatingAttribute() {
+    public function getStarRatingAttribute() {
         return (int) $this->ratings()
-                        ->whereType(2)
                         ->avg('feeling');
     }
 
-//E# getRatingAttribute() function
+//E# getStarRatingAttribute() function
+    
+        /**
+     * S# getRatingCountAttribute() function
+     * Calculate average of the ratings and return the star rating
+     */
+    public function getRatingCountAttribute() {
+        return (int) $this->ratings()
+                        ->count();
+    }
+
+//E# getRatingCountAttribute() function
 
     /**
      * S# getImageUrlAttribute() function
