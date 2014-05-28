@@ -56,6 +56,9 @@ class CardModel extends \Eloquent {
         'field' => 'required|in:id',
         'value' => 'required|integer|exists:fnc_cards,id',
     );
+    
+    //Select validation rules
+    public $selectAllRules = array();
 
     /**
      * S# user() function

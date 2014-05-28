@@ -2,7 +2,7 @@
 
 namespace Lava\Accounts;
 
-use GuzzleHttp\Client;
+use Carbon\Carbon;
 
 /**
  * S# VehicleController() function
@@ -101,9 +101,10 @@ class VehicleController extends AccountsBaseController {
         $currentVrmIds = $userModel->$relation->lists('id');
 
         if (!in_array($controllerModel->id, $currentVrmIds)) {
-            array_push($currentVrmIds, $controllerModel->id);
-            $userModel->vehicles()->sync($currentVrmIds);
+            $now = Carbon::now();
+            $userModel->vehicles()->attach($controllerModel->id,array('created_at'=> $now,'updated_at'=>$now));
         }//E# if else statement
+        
         //Get user by token
         $userModel = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->input['token'], $parameters));
 
@@ -129,11 +130,13 @@ class VehicleController extends AccountsBaseController {
                 //Data to update
                 $dataToUpdate = array();
                 $inputVrm = \Str::lower($this->input['vrm']);
+                
                 $vehicleVrm = \Str::lower($singleVehicle->vrm);
 
                 if ($inputVrm == $vehicleVrm) {
                     $dataToUpdate['dropped_at'] = 'null';
                 }//E# if statement
+                
                 //Set is default
                 if (($this->input['is_default'])) {
                     if ($inputVrm == $vehicleVrm) {
