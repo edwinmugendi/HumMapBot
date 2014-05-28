@@ -25,9 +25,10 @@ class CreateTransactionsTable extends Migration {
             $table->string('currency', 3);
             $table->string('description', 255);
 
-
             //Card Used
             $table->string('card_used', 255);
+            $table->string('card_token', 255);
+            $table->string('vrm', 255);
 
             //Location
             $table->decimal('lat', 10, 6);

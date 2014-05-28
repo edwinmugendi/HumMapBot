@@ -89,7 +89,13 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
 
                 //Set agent
                 $transactionArray['agent'] = \Request::server('HTTP_USER_AGENT');
-
+                
+                //Build card used
+                $transactionArray['card_used'] = $userController->callController(\Util::buildNamespace('payments', 'card', 1), 'getVerbativeCardUsed', array($this->data['card_token']));
+                
+                //Set card token
+                $transactionArray['card_token'] = $this->data['card_token'];
+                
                 //Create transaction
                 $transactionModel = $userController->callController(\Util::buildNamespace('payments', 'transaction', 1), 'createIfValid', array($transactionArray, true));
 

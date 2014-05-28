@@ -174,6 +174,26 @@ class CardController extends PaymentsBaseController {
     }
 
 //E# getCardIfItExists() function
+    
+    
+    /**
+     * S# getVerbativeCardUsed() function
+     * @author Edwin Mugendi
+     * Get the card used
+     * 
+     * @param string $token Card token
+     * 
+     * @return string verbative card
+     */
+    public function getVerbativeCardUsed($token){
+           $cardModel = $this->getModelByField('token', $token);
+           
+           if($cardModel){
+               return $cardModel->number;
+           }else{
+               return '';
+           }
+    }//E# getVerbativeCardUsed() function
 }
 
 //E# CardController() function
