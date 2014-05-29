@@ -108,14 +108,14 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
 
                     //Get loyalty stamps
                     $stampModel = $paymentController->getLocationStamps($transactionModel->location_id, $userModel->id);
-                    
+
                     //Build stamps 
                     $stamps = array(
                         'issued' => (int) $transactionModel->stamps_issued,
                         'user_total' => $stampModel ? (int) $stampModel->feeling : 0,
-                        'location_stamps' => (int)$productModel->location->loyalty_stamps
+                        'location_stamps' => (int) $productModel->location->loyalty_stamps
                     );
-                    
+
                     //Build notification
                     $this->notification = array(
                         'transaction' => $transactionModel->toArray(),
@@ -181,18 +181,32 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
         $productModel = $productController->callController(\Util::buildNamespace('products', 'product', 1), 'getModelByField', array('id', $this->data['product_id']));
 
         if ($productModel) {//Product found
-            $vehicleModel = $this->validateUserOwnsVrm($attribute, $this->data['vrm'], $parameters);
+            //User controller
+            $userController = new UserController();
 
-            if ($vehicleModel) {
-                //User controller
-                $userController = new UserController();
+            //Parameters
+            $parameters = array('cards', 'unredeemed_promotions');
 
-                $parameters = array('cards', 'unredeemed_promotions');
+            //Get user model by id
+            $userModel = $userController->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->data['token'], $parameters));
 
-                //Get user model by id
-                $userModel = $userController->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->data['token'], $parameters));
+            $vrm = '';
+            if (isset($this->data['vrm'])) {
+                //Get vehiclel model
+                $vehicleModel = $this->validateUserOwnsVrm($attribute, $this->data['vrm'], $parameters);
 
-                if ($userModel->cards) {//User has cards
+                //Set vrm
+                $vrm = $this->data['vrm'];
+            } else {
+                //Get vehicle model
+                $vehicleModel = $userController->callController(\Util::buildNamespace('accounts', 'vehicle', 1), 'getModelByField', array('vrm', $userModel->vrm));
+
+                //Set vrm
+                $vrm = $userModel->vrm;
+            }//E# if else statement
+
+            if ($vehicleModel) {//Vehicle exists
+                if ($userModel->cards->count()) {//User has cards
                     $defaultCardFound = false;
                     foreach ($userModel->cards as $singleCard) {
                         if ($singleCard->token == $userModel->card) {//User has specified a default card
@@ -203,7 +217,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     }//E# foreach statement
 
                     if (!$defaultCardFound) {//Set default card as the last added card
-                        $userController->notification = $userModel->cards[((int) $userModel->cards->count() - 1)];
+                        $userController->notification['card'] = $userModel->cards[((int) $userModel->cards->count() - 1)]->toArray();
                     }//E# if statement
                     //CHECK PROMOTIONS
                     if ($userModel->unredeemed_promotions) {
@@ -216,14 +230,24 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     //VRM
                     $userController->notification['vehicle'] = array(
                         'vrm' => $vehicleModel->vrm,
-                        'drive_type' => $vehicleModel->drive_type
+                        'type' => $vehicleModel->type
                     );
+
                     //PRODUCT
                     $userController->notification['product'] = array(
                         'id' => $productModel->id,
                         'price_4X2' => $productModel->price_4X2,
                         'price_4X4' => $productModel->price_4X4
                     );
+
+                    //PROMOTIONS
+                    $promotions = array();
+                    if ($userModel->unredeemed_promotions) {//Promotions exist
+                        foreach ($userModel->unredeemed_promotions->toArray() as $singlePromotion) {
+                            $promotions[] = array_except($singlePromotion, array('claimed','pivot'));
+                        }//E# foreach statement
+                    }//E# if statement
+                    $userController->notification['promotions'] = $promotions;
 
                     //GET MERCHANT
                     //Location controller
@@ -256,7 +280,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                 }
             } else {//User don't own this car
                 //Set message
-                $this->message = \Lang::get('accounts::vehicle.validation.userOwns', array('vrm' => $this->data['vrm']));
+                $this->message = \Lang::get('accounts::vehicle.validation.userOwns', array('vrm' => $vrm));
             }//E# if else statement
         } else {//No such product
             //Set notification
