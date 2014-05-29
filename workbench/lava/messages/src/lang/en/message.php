@@ -14,9 +14,9 @@ return array(
         ),
         'transactionMerchant' => array(
             'email' => ':product - :pdtId purchased by :name :productName',
-            'sms'=>'LAVA TRANSACTION - $vrm Has purchased :product for :currency :amount at :day :time.',
+            'sms'=>'LAVA TRANSACTION - :vrm Has purchased :product for :currency :amount at :day :time.',
 //            'sms' => ':tranId confirmed. :name has purchased :currency :amount of :product for :vrm on :day at :time. :productName',
-            'push'=>'LAVA TRANSACTION - $vrm Has purchased :product for :currency :amount at :day :time.',
+            'push'=>'LAVA TRANSACTION - :vrm Has purchased :product for :currency :amount at :day :time.',
         ),
         'resetPassword' => array(
             'email' => 'Request to change your :productName account password.',
