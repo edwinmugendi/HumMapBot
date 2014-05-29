@@ -28,8 +28,13 @@ class CreateTransactionsTable extends Migration {
             //Card Used
             $table->string('card_used', 255);
             $table->string('card_token', 255);
+            
+            //VRM
             $table->string('vrm', 255);
-
+            
+            //Loyalty Stamps
+            $table->integer('stamps_issued');
+            
             //Location
             $table->decimal('lat', 10, 6);
             $table->decimal('lng', 10, 6);

@@ -23,6 +23,8 @@ class TransactionModel extends \Eloquent {
         'currency',
         'description',
         'card_used',
+        'card_token',
+        'stamps_issued',
         'vrm',
         'lat',
         'lng',

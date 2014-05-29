@@ -267,42 +267,36 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                 //Get user profile from facebook
                 $fbUserProfile = $fb->api('/me', 'GET');
 
-                // dd($fb->api('/permissions','GET'));
-                /*
-                  array(11) {
-                  ["id"]=>
-                  string(15) "100008234582074"
-                  ["first_name"]=>
-                  string(4) "Open"
-                  ["gender"]=>
-                  string(4) "male"
-                  ["last_name"]=>
-                  string(4) "User"
-                  ["link"]=>
-                  string(55) "https://www.facebook.com/profile.php?id=100008234582074"
-                  ["locale"]=>
-                  string(5) "en_US"
-                  ["middle_name"]=>
-                  string(10) "Graph Test"
-                  ["name"]=>
-                  string(20) "Open Graph Test User"
-                  ["timezone"]=>
-                  int(0)
-                  ["updated_time"]=>
-                  string(24) "2014-04-17T12:17:27+0000"
-                  ["verified"]=>
-                  bool(false)
-                  }
-                 */
-                //  dd($fbUserProfile);
-                $parameters['lazyLoad'] = array('logins', 'app55');
+                //Fields to select
+                $fields = array('*');
+
+                //Build where clause
+                $whereClause = array(
+                    array(
+                        'where' => 'whereOr',
+                        'column' => 'email',
+                        'operator' => '=',
+                        'operand' => trim($fbUserProfile['email'])
+                    ),
+                    array(
+                        'where' => 'whereOr',
+                        'column' => 'fb_uid',
+                        'operator' => '=',
+                        'operand' => $fbUserId
+                    )
+                );
+
                 //Get user by facebook id
-                $userModel = $userController->getModelByField('fb_uid', $fbUserId, $parameters);
+                $userModel = $userController->select($fields, $whereClause, 1);
 
                 if ($userModel) {//User has already signed in facebook
-                    if (!$userModel->app55) {//User does not an app55 account
-                        $userController->createApp55User($userModel->id, $userModel->email, $userModel->first_name, $userModel->last_name, $userModel->phone);
+                    if (!$userModel->app55_id) {//User does not an app55 account
+                        $userController->createApp55User($userModel);
                     }//E# if statement
+                    //Update users email and fb uid
+                    $userModel->email = $fbUserProfile['email'];
+                    $userModel->fb_uid = $fbUserId;
+
                     //Update user login specific fields
                     $userController->updateLoginSpecificFields($userController, $userModel);
                 } else {//Register
@@ -314,7 +308,11 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                         'status' => (int) $fbUserProfile['verified'],
                         'created_by' => 1,
                         'updated_by' => 1,
-                        'email' => $fbUserProfile['verified']//TODO remove this
+                        'role_id' => 1,
+                        'notify_sms'=>1,
+                        'notify_push'=>1,
+                        'notify_email'=>1,
+                        'email' => $fbUserProfile['email']//TODO remove this
                     );
 
                     //Create user
@@ -331,7 +329,6 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                 $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.validation.facebook.noUser');
             }//E# if else statement
         } catch (FacebookApiException $e) {
-            dd($e->getMessage());
             throw new \Api500Exception($e->getMessage());
         }//E# try catch exception
         return false;
@@ -521,7 +518,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         $vehicleController = new VehicleController();
 
         $vehicleModel = $vehicleController->getModelByField('vrm', $vrm);
-        
+
         if ($vehicleModel) {//Vehicle exists
             if ($vehicleModel->user_owns) {//Logged in user owns this vehicle
                 return $vehicleModel;

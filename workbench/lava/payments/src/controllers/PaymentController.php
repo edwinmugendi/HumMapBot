@@ -15,16 +15,9 @@ class PaymentController extends PaymentsBaseController {
     public $controller = 'payment';
     //Lazy load
     public $lazyLoad = array();
-
-    /**
-     * S# updateLoyaltyStamp() function
-     * Update users loyalty stamp
-     * 
-     * @param integer $locationId Location id
-     * @param integer $userId User id
-     * 
-     */
-    private function updateLoyaltyStamp($locationId, $userId) {
+    
+    
+    public function getLocationStamps($locationId,$userId){
         //Fields to select
         $fields = array('*');
 
@@ -50,8 +43,21 @@ class PaymentController extends PaymentsBaseController {
             )
         );
         //Get feel model
-        $feelModel = $this->callController(\Util::buildNamespace('merchants', 'feel', 1), 'select', array($fields, $whereClause, 1));
-
+        return $this->callController(\Util::buildNamespace('merchants', 'feel', 1), 'select', array($fields, $whereClause, 1));
+        
+    }
+    /**
+     * S# updateLoyaltyStamp() function
+     * Update users loyalty stamp
+     * 
+     * @param integer $locationId Location id
+     * @param integer $userId User id
+     * 
+     */
+    private function updateLoyaltyStamp($locationId, $userId) {
+        //Get Loyalty stamp
+        $feelModel = $this->getLocationStamps($locationId, $userId);
+        
         if ($feelModel) {//Stamp exists
             //Increment stamp by one
             $feelModel->feeling = ((int) $feelModel->feeling + 1);

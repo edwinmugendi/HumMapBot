@@ -89,13 +89,16 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
 
                 //Set agent
                 $transactionArray['agent'] = \Request::server('HTTP_USER_AGENT');
-                
+
                 //Build card used
                 $transactionArray['card_used'] = $userController->callController(\Util::buildNamespace('payments', 'card', 1), 'getVerbativeCardUsed', array($this->data['card_token']));
-                
+
                 //Set card token
                 $transactionArray['card_token'] = $this->data['card_token'];
-                
+
+                //Set card token
+                $transactionArray['stamps_issued'] = 1;
+
                 //Create transaction
                 $transactionModel = $userController->callController(\Util::buildNamespace('payments', 'transaction', 1), 'createIfValid', array($transactionArray, true));
 
@@ -103,7 +106,22 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     //After processing
                     $paymentController->afterProcessing($transactionModel, $productModel, $userModel);
 
-                    throw new \Api200Exception($transactionModel->toArray(), array('id'));
+                    //Get loyalty stamps
+                    $stampModel = $paymentController->getLocationStamps($transactionModel->location_id, $userModel->id);
+                    
+                    //Build stamps 
+                    $stamps = array(
+                        'issued' => (int) $transactionModel->stamps_issued,
+                        'user_total' => $stampModel ? (int) $stampModel->feeling : 0,
+                        'location_stamps' => (int)$productModel->location->loyalty_stamps
+                    );
+                    
+                    //Build notification
+                    $this->notification = array(
+                        'transaction' => $transactionModel->toArray(),
+                        'stamps' => $stamps
+                    );
+                    throw new \Api200Exception($this->notification, array('id'));
                 } else {
                     //TODO 500 error
                 }//E# if else statement
@@ -185,7 +203,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     }//E# foreach statement
 
                     if (!$defaultCardFound) {//Set default card as the last added card
-                        $userController->notification = $userModel->cards[((int)$userModel->cards->count() - 1)];
+                        $userController->notification = $userModel->cards[((int) $userModel->cards->count() - 1)];
                     }//E# if statement
                     //CHECK PROMOTIONS
                     if ($userModel->unredeemed_promotions) {

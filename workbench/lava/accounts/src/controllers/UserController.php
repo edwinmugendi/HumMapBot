@@ -74,8 +74,7 @@ class UserController extends AccountsBaseController {
         //User the users role
         $this->input['role_id'] = 1;
         $this->input['status'] = 0;
-        $this->input['created_by'] = $this->user['id'] ? $this->user['id'] : 1;
-        $this->input['updated_by'] = $this->user['id'] ? $this->user['id'] : 1;
+        $this->input['created_by'] = $this->input['updated_by'] = 1;
     }
 
 //E# beforeCreating() function
@@ -102,16 +101,18 @@ class UserController extends AccountsBaseController {
         //Build url
         $url = \UtilLibrary::buildUrl('userVerify', $queryStrArray);
 
-        //Message parameters
-        $parameters = array(
-            'name' => $controllerModel->first_name . ' ' . $controllerModel->last_name,
-            'email' => $controllerModel->email,
-            'productName' => \Config::get('product.name'),
-            'url' => $url
-        );
+        if (!$controllerModel->status) {
+            //Message parameters
+            $parameters = array(
+                'name' => $controllerModel->first_name . ' ' . $controllerModel->last_name,
+                'email' => $controllerModel->email,
+                'productName' => \Config::get('product.name'),
+                'url' => $url
+            );
 
-        //Send welcome email
-        $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $controllerModel->id, $controllerModel->email, 'welcome', \Config::get('app.locale'), $parameters));
+            //Send welcome email
+            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $controllerModel->id, $controllerModel->email, 'welcome', \Config::get('app.locale'), $parameters));
+        }//E# if statement
     }
 
 //E# afterCreating() function
@@ -164,6 +165,7 @@ class UserController extends AccountsBaseController {
         if ($controllerModel->phone) {//Phone
             $app55User['phone'] = $controllerModel->phone;
         }//E# if statement
+        
         //Create App55 user
         $app55Response = $this->callController(\Util::buildNamespace('payments', 'app55', 1), 'createUser', array($app55User));
 
@@ -200,39 +202,43 @@ class UserController extends AccountsBaseController {
         //Save this user
         $controllerModel->save();
 
+        //Get user model
+        $userModel = $this->getModelByField('token', $controllerModel->token);
+
         //Session this user
-        $controller->sessionUser($controllerModel);
+        $controller->sessionUser($userModel);
 
         $controller->apiLoginSuccess($controllerModel);
     }
 
 //E# updateLoginSpecificFields() function
-    
+
     /**
      * S# generateUniqueToken () function
      * Generate unique token
      * 
      * @return string Token
      */
-    private function generateUniqueToken(){
+    private function generateUniqueToken() {
         //Start with not unique
         $notUnique = true;
         while ($notUnique) {//While till you get the token is unique
             //Generate token
             $token = \Str::lower(\Str::random(32));
-           
+
             //Get user model by token
             $userModel = $this->getModelByField('token', $token);
-            
-            if(!$userModel){//Token Unique
+
+            if (!$userModel) {//Token Unique
                 break;
             }//E# if statement        
-                    
         }//E# while statement
-        
+
         return $token;
-    }//E# generateUniqueToken() function
-    
+    }
+
+//E# generateUniqueToken() function
+
     /**
      * S# apiLoginSuccess() function
      * API login success
@@ -436,7 +442,7 @@ class UserController extends AccountsBaseController {
         $userToSession['email'] = $user['email'];
         $userToSession['phone'] = isset($user['phone']) ? $user['phone'] : '';
         $userToSession['token'] = $user['token'];
-        $userToSession['vrm'] = $user['vrm'];
+        $userToSession['vrm'] = isset($user['vrm']) ? $user['vrm'] : '';
         $userToSession['app55_id'] = $user['app55_id'];
 
         // $userToSession['api_secret'] = $user['api_secret'];
