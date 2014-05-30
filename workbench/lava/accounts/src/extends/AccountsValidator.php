@@ -309,9 +309,9 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                         'created_by' => 1,
                         'updated_by' => 1,
                         'role_id' => 1,
-                        'notify_sms'=>1,
-                        'notify_push'=>1,
-                        'notify_email'=>1,
+                        'notify_sms' => 1,
+                        'notify_push' => 1,
+                        'notify_email' => 1,
                         'email' => $fbUserProfile['email']//TODO remove this
                     );
 
@@ -445,16 +445,15 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         $vehicleModel = $vehicleController->callController(\Util::buildNamespace('accounts', 'vehicle', 1), 'getModelByField', array('vrm', $vrm));
 
         if ($vehicleModel) {//Vehicle does not exist
-            if ($vehicleModel->user_owns) {
-
-                //Delete this vehicle in the pivot table
-                $vehicleController->updatePivotTable($vehicleModel, 'users', $vehicleModel->id, array('dropped_at' => Carbon::now()));
-
+            if ($vehicleModel->user_owns) {                
                 //Instantiate a new user controller
                 $userController = new UserController();
 
                 //Get user model by token
                 $userModel = $userController->getModelByField('token', $this->data['token']);
+                
+                //Delete this vehicle in the pivot table
+                $vehicleController->updatePivotTable($userModel, 'vehicles', $vehicleModel->id, array('dropped_at' => Carbon::now()));
 
                 if ($userModel && \Str::lower($userModel->vrm) == \Str::lower($vrm)) {//User exists
                     //Clear users default
@@ -464,14 +463,22 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                     //Save user
                     $userModel->save();
                 }//E# if statement
+                
                 //Get success message
                 $message = \Lang::get($vehicleController->package . '::' . $vehicleController->controller . '.api.delete', array('field' => 'vrm', 'value' => $vrm));
 
                 throw new \Api200Exception(array('id' => $vehicleModel->id, 'vrm' => $vrm), $message);
             } else {
-                //Set validation message
-                $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.validation.api');
-                return false;
+
+                //Set notification
+                $vehicleController->notification = array(
+                    'field' => 'vrm',
+                    'type' => 'Vehicle',
+                    'value' => $this->data['vrm'],
+                );
+
+                //Throw 403 error
+                throw new \Api403Exception($vehicleController->notification);
             }
         }//E# if statement
         //Set notification
