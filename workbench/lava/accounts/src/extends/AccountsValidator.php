@@ -13,37 +13,55 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
     //TODO Set message fro the 2 validators and more accurate
 
     /**
-     * S# validateUpdatePassword() function
+     * S# validateNewPassword() function
      * Validate update password
      * @param array $attribute Validation attribute
      * @param string $newPassword New Password
      * @param array $parameters Parameters
      */
     public function validatePassword($attribute, $newPassword, $parameters) {
+
         //Instantiate a new user controller
         $userController = new UserController();
 
-        //Get user model by token
-        $userModel = $userController->getModelByField('token', $this->data['token']);
+        if (isset($this->data['new_password'])) {
 
-        if (\Hash::check($this->data['old_password'], $userModel->password)) {
-            $this->data['password'] = $this->input['password'] = \Hash::make($newPassword);
-            return true;
-        } else {
-            //Set message
-            $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.validation.updatePassword.wrongPassword');
+            if ($this->validateMin($attribute, $this->data['new_password'], array(6))) {
+                if (isset($this->data['old_password'])) {
 
-            return false;
-        }
+                    //Get user model by token
+                    $userModel = $userController->getModelByField('token', $this->data['token']);
 
-        return false;
+                    if (\Hash::check($this->data['old_password'], $userModel->password)) {
+                        $this->data['password'] = $this->input['password'] = \Hash::make($newPassword);
+                        return true;
+                    } else {
+                        //Set message
+                        $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.validation.password.oldPasswordWrong');
+
+                        return false;
+                    }//E# if else statement
+                } else {
+                    //Set message
+                    $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.validation.password.oldPasswordRequired');
+
+                    return false;
+                }//E# if statement
+            } else {
+                //Set message
+                $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.validation.password.newPasswordMin', array('min' => 6));
+
+                return false;
+            }//E# if else statement
+        }//E# if statement
+        return true;
     }
 
-//E# validateUpdatePassword() function
+//E# validateNewPassword() function
 
     /**
-     * S# replaceUpdatePassword() function
-     * Replace all place-holders for the  user owns vrm rule.
+     * S# replaceNewPassword() function
+     * Replace all place-holders for the new_password rule.
      *
      * @author Edwin Mugendi <edwinmugendi@gmail.com>
      * @param  string  $message
@@ -53,10 +71,10 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
      * @return string
      */
     protected function replacePassword($message, $attribute, $rule, $parameters) {
-        return $message;
+        return $this->message;
     }
 
-//E# replaceUpdatePassword() function
+//E# replaceNewPassword() function
 
     /**
      * S# validateLatLng() function
@@ -445,13 +463,13 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         $vehicleModel = $vehicleController->callController(\Util::buildNamespace('accounts', 'vehicle', 1), 'getModelByField', array('vrm', $vrm));
 
         if ($vehicleModel) {//Vehicle does not exist
-            if ($vehicleModel->user_owns) {                
+            if ($vehicleModel->user_owns) {
                 //Instantiate a new user controller
                 $userController = new UserController();
 
                 //Get user model by token
                 $userModel = $userController->getModelByField('token', $this->data['token']);
-                
+
                 //Delete this vehicle in the pivot table
                 $vehicleController->updatePivotTable($userModel, 'vehicles', $vehicleModel->id, array('dropped_at' => Carbon::now()));
 
@@ -463,7 +481,6 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                     //Save user
                     $userModel->save();
                 }//E# if statement
-                
                 //Get success message
                 $message = \Lang::get($vehicleController->package . '::' . $vehicleController->controller . '.api.delete', array('field' => 'vrm', 'value' => $vrm));
 

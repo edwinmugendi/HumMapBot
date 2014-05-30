@@ -80,8 +80,8 @@ class UserModel extends \Eloquent {
         'notify_push' => 'integer|between:0,1',
         'push_token' => '',
         'os' => 'in:ios,android',
-        'old_password' => 'required_with:old_password',
-        'new_password' => 'required_with:new_password|min:6|password',
+        'old_password' => 'required_with:new_password',
+        'new_password' => 'password',
     );
 
     /**

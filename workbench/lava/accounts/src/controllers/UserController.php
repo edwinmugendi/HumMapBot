@@ -266,7 +266,11 @@ class UserController extends AccountsBaseController {
      * @return 
      */
     public function beforeUpdating() {
+        
+        if(isset($this->input['old_password']) && isset($this->inout['new_password']) ){
         $this->input['password'] = \Hash::make($this->input['new_password']);
+        }//E# if statement
+        
         $this->input['created_by'] = $this->user['id'] ? $this->user['id'] : 1;
         $this->input['updated_by'] = $this->user['id'] ? $this->user['id'] : 1;
         return;

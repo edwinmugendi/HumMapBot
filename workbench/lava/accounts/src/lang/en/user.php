@@ -8,7 +8,7 @@ return array(
      */
     'api' => array(
         'registerUser' => 'Your account has been created on :productName',
-        'updateUser' => 'Your details have been updated',
+        'update' => 'Your details have been updated',
         'forgotPassword' => 'We\'ve sent you reset email.',
         'resetPassword' => 'Your password has been reset',
         'login' => 'Logged in',
@@ -18,8 +18,10 @@ return array(
         'facebook' => array(
             'noUser' => 'No user found on Facebook with such token'
         ),
-        'updatePassword' => array(
-            'wrongPassword' => 'Wrong password'
+        'password'=>array(
+                'oldPasswordRequired'=>'Old password is required',
+                'oldPasswordWrong' => 'Wrong old password',
+                'newPasswordMin'=>'New password should be greater than :min'
         )
     ),
     'view' => array(
