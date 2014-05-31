@@ -430,7 +430,7 @@ return array(
                 array(
                     'field' => 'type',
                     'dataType' => 'string',
-                    'note' => 'Set \'car\' or \'4x4\' in lower case',
+                    'note' => 'Set \'1\' for car and 2 for 4X4',
                     'required' => 1,
                 ),
                 array(

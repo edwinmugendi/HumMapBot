@@ -71,6 +71,12 @@ App::error(function(Api403Exception $exception, $code) {
     return $exception->thrower();
 });
 
+//Register API 500 exception
+App::error(function(Api500Exception $exception, $code) {
+
+    return $exception->thrower();
+});
+
  /*
   |--------------------------------------------------------------------------
   | Maintenance Mode Handler

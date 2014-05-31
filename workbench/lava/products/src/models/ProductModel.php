@@ -17,6 +17,10 @@ class ProductModel extends \Eloquent {
         'created_by',
         'updated_by'
     );
+    //Appends fields
+    protected $appends = array(
+        'currency'
+    );
     protected $hidden = array(
         'status',
         'created_by',
@@ -39,6 +43,18 @@ class ProductModel extends \Eloquent {
     }
 
 //E# location() function
+    
+    /**
+     * S# getCurrencyAttribute() function
+     * Get product currency
+     * 
+     * @return string Currency
+     */
+    public function getCurrencyAttribute() {
+        return $this->location()->first()->currency;
+    }
+
+//E# getCurrencyAttribute() function
 }
 
 //E# ProductModel() Class

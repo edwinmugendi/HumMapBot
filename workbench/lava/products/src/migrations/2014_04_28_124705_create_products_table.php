@@ -16,8 +16,8 @@ class CreateProductsTable extends Migration {
             $table->integer('location_id')->unsigned();
             $table->string('name', 255);
             $table->string('description', 255);
-            $table->float('price_4X2');
-            $table->float('price_4X4');
+            $table->float('price_1');
+            $table->float('price_2');
             $table->boolean('loyable');
             
             $table->integer('status')->unsigned();

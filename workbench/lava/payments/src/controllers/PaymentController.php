@@ -15,9 +15,33 @@ class PaymentController extends PaymentsBaseController {
     public $controller = 'payment';
     //Lazy load
     public $lazyLoad = array();
-    
-    
-    public function getLocationStamps($locationId,$userId){
+
+    /**
+     * S# processWithStamps() function
+     * Process trancation with loyalty stamps
+     */
+    public function processWithStamps() {
+        $this->validationRules = array(
+            'product_id' => 'required',
+            'location' => 'latLng',
+            'vrm' => 'required|processTransactionWithStamps',
+        );
+
+        $this->isInputValid();
+    }
+
+//E# process() function
+    /**
+     * S# getLocationStamps() function
+     * @author Edwin Mugendi
+     * Get a users stamps on a certain location
+     * 
+     * @param integer $locationId Location id
+     * @param integer $userId User id
+     * 
+     * @return Model Feel Model or ''
+     */
+    public function getLocationStamps($locationId, $userId) {
         //Fields to select
         $fields = array('*');
 
@@ -44,8 +68,10 @@ class PaymentController extends PaymentsBaseController {
         );
         //Get feel model
         return $this->callController(\Util::buildNamespace('merchants', 'feel', 1), 'select', array($fields, $whereClause, 1));
-        
     }
+
+//E# getLocationStamps() function
+
     /**
      * S# updateLoyaltyStamp() function
      * Update users loyalty stamp
@@ -57,7 +83,7 @@ class PaymentController extends PaymentsBaseController {
     private function updateLoyaltyStamp($locationId, $userId) {
         //Get Loyalty stamp
         $feelModel = $this->getLocationStamps($locationId, $userId);
-        
+
         if ($feelModel) {//Stamp exists
             //Increment stamp by one
             $feelModel->feeling = ((int) $feelModel->feeling + 1);
@@ -80,18 +106,43 @@ class PaymentController extends PaymentsBaseController {
 
 //E# updateLoyaltyStamp() function
 
-    public function afterProcessing(&$transactionModel, &$productModel, &$userModel) {
-        //Update loyalty stamps
-        $this->updateLoyaltyStamp($transactionModel->location_id, $transactionModel->user_id);
-
+    /**
+     * S# afterProcessing() function
+     * 
+     * Call this after successful credit card processing
+     * 
+     * @param string $cardOrStamps Card or loyalty stamps
+     * @param model $transactionModel Transaction model
+     * @param model $productModel Product model
+     * @param model $userModel User model
+     */
+    public function afterProcessing($cardOrStamps, &$transactionModel, &$productModel, &$userModel) {
+        if ($cardOrStamps == 'card') {//Update stamps only if transaction was processed with card
+            //Update loyalty stamps
+            $this->updateLoyaltyStamp($transactionModel->location_id, $transactionModel->user_id);
+        }//E# if statement
         //Notify merchant
-        $this->notifyLocation($transactionModel, $productModel, $userModel);
+        $this->notifyLocation($cardOrStamps, $transactionModel, $productModel, $userModel);
 
         //Notify user
-        $this->notifyUser($transactionModel, $productModel, $userModel);
+        $this->notifyUser($cardOrStamps, $transactionModel, $productModel, $userModel);
     }
 
-    public function notifyUser(&$transactionModel, &$productModel, &$userModel) {
+//E# afterProcessing() function
+
+    /**
+     * S# notifyUser() function
+     * Notify user of a successful transaction
+     * 
+     * @param string $cardOrStamps Card or loyalty stamps
+     * @param model $transactionModel Transaction model
+     * @param model $productModel Product model
+     * @param model $userModel User model
+     * 
+     */
+    public function notifyUser($cardOrStamps, &$transactionModel, &$productModel, &$userModel) {
+        //Build template
+        $template = 'transactionUser' . \Str::title($cardOrStamps);
 
         //Transaction date
         $date = Carbon::createFromFormat('Y-m-d G:i:s', $transactionModel->created_at);
@@ -111,24 +162,37 @@ class PaymentController extends PaymentsBaseController {
             //Set os to parameters
             $parameters['os'] = $userModel->os;
             //Converse
-            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('push', null, null, $userModel->id, $userModel->push_token, 'transactionUser', \Config::get('app.locale'), $parameters));
+            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('push', null, null, $userModel->id, $userModel->push_token, $template, \Config::get('app.locale'), $parameters));
         }//E# if statement
 
         if ($userModel->notify_sms && $userModel->phone) {//SMS
             //Converse
-            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('sms', null, null, $userModel->id, array($userModel->phone), 'transactionUser', \Config::get('app.locale'), $parameters));
+            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('sms', null, null, $userModel->id, array($userModel->phone), $template, \Config::get('app.locale'), $parameters));
         }//E# if statement
 
 
         if ($userModel->notify_email) {//Email
             //Converse
-            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $userModel->id, $userModel->email, 'transactionUser', \Config::get('app.locale'), $parameters));
+            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $userModel->id, $userModel->email, $template, \Config::get('app.locale'), $parameters));
         }//E# if statement
     }
 
 //E# notifyUser() function
 
-    public function notifyLocation(&$transactionModel, &$productModel, &$userModel) {
+    /**
+     * S# notifyLocation() function
+     * Notify location owner of a successful transaction
+     * 
+     * @param string $cardOrStamps Card or loyalty stamps
+     * @param model $transactionModel Transaction model
+     * @param model $productModel Product model
+     * @param model $userModel User model
+     * 
+     */
+    public function notifyLocation($cardOrStamps, &$transactionModel, &$productModel, &$userModel) {
+        //Build template
+        $template = 'transactionMerchant' . \Str::title($cardOrStamps);
+
         //Transaction date
         $date = Carbon::createFromFormat('Y-m-d G:i:s', $transactionModel->created_at);
 
@@ -163,7 +227,7 @@ class PaymentController extends PaymentsBaseController {
 
         if ($emailRecipients) {//Email
             //Converse
-            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $transactionModel->location_id, $emailRecipients, 'transactionMerchant', \Config::get('app.locale'), $parameters));
+            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $transactionModel->location_id, $emailRecipients, $template, \Config::get('app.locale'), $parameters));
         }//E# if statement
         //Define sms recipients    
         $smsRecipients = array();
@@ -182,10 +246,16 @@ class PaymentController extends PaymentsBaseController {
 
         if ($smsRecipients) {//SMS
             //Converse
-            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('sms', null, null, $transactionModel->location_id, $smsRecipients, 'transactionMerchant', \Config::get('app.locale'), $parameters));
+            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('sms', null, null, $transactionModel->location_id, $smsRecipients, $template, \Config::get('app.locale'), $parameters));
         }//E# if statement
     }
 
+//E# notifyLocation() function
+
+    /**
+     * S# process() function
+     * Process trancation with credit card
+     */
     public function process() {
         $this->validationRules = array(
             'product_id' => 'required',
@@ -200,8 +270,11 @@ class PaymentController extends PaymentsBaseController {
         $this->isInputValid();
     }
 
+//E# process() function
+
     /**
-     * 
+     * S# prepare() function
+     * Prepare trancation before processing it with credit card
      */
     public function prepare() {
         $this->validationRules = array(
@@ -212,14 +285,38 @@ class PaymentController extends PaymentsBaseController {
         $this->isInputValid();
     }
 
+//E# prepare() function
+
+    /**
+     * transact() function
+     * Call the gateway to process the payment
+     * 
+     * @param string $gateway Gateway
+     * @param array $paymentInfo Payment Information
+     * 
+     * @return Array Gateway response
+     */
     public function transact($gateway, $paymentInfo) {
         return $this->callController(\Util::buildNamespace('payments', $gateway, 1), 'createTransaction', array($paymentInfo));
     }
 
+//E# transact() function
+
+    /**
+     * S# prepareTransactionArray() function
+     * Prepare transaction response specific to the gateway
+     *
+     * @param string $gateway Gateway
+     * @param array $gatewayTransaction Gateway transaction
+     * 
+     * @return array Transaction compatible with our database
+
+     */
     public function prepareTransactionArray($gateway, $gatewayTransaction) {
         return $this->callController(\Util::buildNamespace('payments', $gateway, 1), 'prepareTransactionArray', array($gatewayTransaction));
     }
 
+//E# prepareTransactionArray() function
 }
 
 //E# PaymentController() function

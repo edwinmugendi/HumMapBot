@@ -549,8 +549,9 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
             } else {//Don't own
                 //Set message
                 $this->message = \Lang::get($vehicleController->package . '::' . $vehicleController->controller . '.validation.userOwns', array('vrm' => $vrm));
+
             }//E# if else statement
-        } else {
+        } else {//Vehicle does exists
             //Set notification
             $vehicleController->notification = array(
                 'field' => 'vrm',

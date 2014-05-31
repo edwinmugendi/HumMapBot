@@ -19,6 +19,7 @@ class App55Controller extends PaymentsBaseController {
     private $response;
 
     public function prepareTransactionArray($app55Transaction) {
+      
         /**
           object(stdClass)#284 (7) {
           ["id"]=>
@@ -38,11 +39,11 @@ class App55Controller extends PaymentsBaseController {
           }
          * */
         $transaction = array(
+            'gateway'=>'app55',
             'gateway_tran_id' => $app55Transaction->id,
             'gateway_code' => $app55Transaction->auth_code,
             'amount' => $app55Transaction->amount,
-            'currency' => 'GBP',
-            'description' => $app55Transaction->description,
+            'currency' => $app55Transaction->currency,
             'status' => 1
         );
 
@@ -78,13 +79,13 @@ class App55Controller extends PaymentsBaseController {
         } catch (\App55_ApiException $e) {
             $this->notification = array(
                 'status' => 0,
-                'message' => $e->getMessage(),
+                'response' => $e->getMessage(),
                 'code' => $e->getCode()
             );
         } catch (\Exception $e) {
             $this->notification = array(
                 'status' => 0,
-                'message' => $e->getMessage(),
+                'response' => $e->getMessage(),
                 'code' => 500
             );
         }//E# try catch block

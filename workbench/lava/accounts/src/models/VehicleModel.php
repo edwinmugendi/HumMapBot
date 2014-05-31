@@ -35,7 +35,7 @@ class VehicleModel extends \Eloquent {
     public $createRules = array(
         'is_default' => 'required|between:0,1',
         'purpose' => 'required|in:personal,business',
-        'type' => 'required|in:car,4x4',
+        'type' => 'required|between:1,2',
         'force' => 'required|between:0,1',
         'vrm' => 'required|checkRegistry',
         'status' => 'integer',

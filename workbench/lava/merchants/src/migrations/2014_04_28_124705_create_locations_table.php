@@ -35,6 +35,7 @@ class CreateLocationsTable extends Migration {
 
             //Loyalty Scheme
             $table->integer('loyalty_stamps');
+            $table->string('currency',4);
 
             //Monday
             $table->string('monday_open', 255);

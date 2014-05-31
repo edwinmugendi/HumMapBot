@@ -360,7 +360,7 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Transaction processed',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":["id"],"data":{"gateway_tran_id":"140511172721_11582","gateway_code":"06603","amount":"12","currency":"GBP","description":"1","user_id":"1","product_id":"1","lat":"90","lng":"90","promotion_id":"1","updated_at":"2014-05-11 17:27:21","created_at":"2014-05-11 17:27:21","id":3}}'
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":["id"],"data":{"gateway":{"status":1,"message":"Transaction succeeded"},"transaction":{"gateway":"app55","gateway_tran_id":"140531130620_27122","gateway_code":"06603","amount":"12","currency":"GBP","stamps_issued":1,"lat":"90","lng":"90","vrm":"KANa","user_id":"1","description":"Sapama Kikuyu","product_id":"1","location_id":"1","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/35.0.1916.114 Safari\/537.36","card_used":"411111******1111","card_token":"AlRUi","updated_at":"2014-05-31 13:06:21","created_at":"2014-05-31 13:06:21","id":31,"loc":{"name":"Kikuyu","address":"10016 Nakuru"}},"stamps":{"issued":1,"user_total":2,"location_stamps":4}}}'
                 ),
                 array(
                     'action' => 'Error',
@@ -369,10 +369,98 @@ return array(
                     'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"vrm","error":"The vrm field is required."}]}'
                 ),
                 array(
+                    'action' => 'Forbidden  or Don\'t own',
+                    'httpCode' => 403,
+                    'note' => 'Forbidden or Don\'t own',
+                    'example' => '{"httpStatusCode":403,"systemCode":903,"message":"Forbidden or Don\'t own","data":{"field":"vrm","type":"Vehicle","value":"KANa1"}}'
+                ), array(
                     'action' => 'Not found',
                     'httpCode' => 404,
                     'note' => 'Object not found',
                     'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Product with id \'121\' not found.","data":{"field":"id","type":"Product","value":"121"}}'
+                ),
+                array(
+                    'action' => 'Internal server error',
+                    'httpCode' => 500,
+                    'note' => 'Internal Sever Error',
+                    'example' => '{"httpStatusCode":500,"systemCode":1000,"message":"Lost connection to the database","data":[]}'
+                ),
+            ),
+        ),
+        array(
+            'name' => 'Process Transaction with Loyalty Stamps',
+            'note' => 'Process a transaction with Loyalty stamps',
+            'filtered' => 1,
+            'endpoint' => '/payment/transaction/process/stamps',
+            'httpVerb' => 'POST',
+            'parameters' => array(
+                array(
+                    'field' => 'product_id',
+                    'dataType' => 'integer',
+                    'note' => 'Product integer id',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'vrm',
+                    'dataType' => 'string',
+                    'note' => 'Vehicle Registration Mark',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'token',
+                    'dataType' => 'string',
+                    'note' => 'User API token',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'location',
+                    'dataType' => array(
+                        array(
+                            'field' => 'lat',
+                            'dataType' => 'float',
+                            'note' => 'Latitude : range -90 to 90',
+                            'required' => 1,
+                        ),
+                        array(
+                            'field' => 'lng',
+                            'dataType' => 'float',
+                            'note' => 'Latitude : range -180 to 180',
+                            'required' => 1,
+                        ),
+                    ),
+                    'note' => 'Location array',
+                    'required' => 0,
+                ),
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Transaction processed',
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":["id"],"data":{"transaction":{"gateway":"stamps","gateway_tran_id":0,"gateway_code":0,"amount":"1.00","currency":"GBP","description":"stamp","user_id":"1","product_id":"1","location_id":"1","vrm":"KANa","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/35.0.1916.114 Safari\/537.36","stamps_issued":0,"lat":"90","lng":"90","updated_at":"2014-05-31 13:16:36","created_at":"2014-05-31 13:16:36","id":35,"loc":{"name":"Kikuyu","address":"10016 Nakuru"}},"stamps":{"issued":0,"user_total":0,"location_stamps":"4"}}}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"vrm","error":"Sapama requires 4 but you have 2"}]}'
+                ),
+                array(
+                    'action' => 'Forbidden  or Don\'t own',
+                    'httpCode' => 403,
+                    'note' => 'Forbidden or Don\'t own',
+                    'example' => '{"httpStatusCode":403,"systemCode":903,"message":"Forbidden or Don\'t own","data":{"field":"vrm","type":"Vehicle","value":"KANa1"}}'
+                ), array(
+                    'action' => 'Not found',
+                    'httpCode' => 404,
+                    'note' => 'Object not found',
+                    'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Product with id \'121\' not found.","data":{"field":"id","type":"Product","value":"121"}}'
+                ),
+                array(
+                    'action' => 'Internal server error',
+                    'httpCode' => 500,
+                    'note' => 'Internal Sever Error',
+                    'example' => '{"httpStatusCode":500,"systemCode":1000,"message":"Lost connection to the database","data":[]}'
                 ),
             ),
         ),

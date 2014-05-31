@@ -35,10 +35,10 @@ return array(
             'userMessage' => ':action not found. Sorry for any inconvinience',
             'moreInfo' => ''
         ),
-        1000 => array(
+        '1000' => array(
             'httpStatusCode' => '500',
             'shortDescription' => 'Internal Server Error',
-            'developerMessage' => ':message',
+            'developerMessage' => 'Internal Server Error',
             'userMessage' => 'Sapama encountered a technical hiche :action.',
             'moreInfo' => ''
         )

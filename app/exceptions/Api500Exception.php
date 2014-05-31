@@ -13,7 +13,7 @@ class Api500Exception extends \BaseException {
      * Constructor
       @param string $message Message
      */
-    public function __construct($message) {
+    public function __construct($message = '') {
         parent::__construct();
         $this->systemCode = 1000;
         $this->message = $message;
@@ -30,7 +30,7 @@ class Api500Exception extends \BaseException {
     public function thrower() {
         //Get and set notification
         $this->notification = $this->getNotification($this->systemCode, 'developerMessage', $this->data);
-
+        
         //Return nofitication response
         return \Response::make($this->notification['data'], $this->notification['httpStatusCode'])
                         ->header('Content-Type', 'application/json');

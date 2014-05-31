@@ -32,6 +32,9 @@
 
     //Process Transaction
     \Route::post('payment/transaction/process', array('as' => 'paymentTransactionProcess', 'uses' => 'Lava\Payments\PaymentController@process'));
+    
+    //Process Transaction with loyalty stamps
+    \Route::post('payment/transaction/process/stamps', array('as' => 'paymentTransactionProcessStamps', 'uses' => 'Lava\Payments\PaymentController@processWithStamps'));
 
     //Get single transactions
     \Route::get('payment/transaction/get/{field}/{value}', array('as' => 'cardGetSingle', 'uses' => 'Lava\Payments\TransactionController@getModelBelongingToUser'));
