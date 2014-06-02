@@ -91,7 +91,7 @@ Route::filter('api', function($route, $request) {
     if ($userController->subdomain == 'api') {//From API
        
         $httpMethod = $request->getMethod();
-       
+        
         $userController->authenticateApi();
         
     }//E# if else statement

@@ -2,6 +2,7 @@
 
 namespace Lava\Merchants;
 
+use Lava\Accounts\UserController;
 /**
  * S# LocationModel() Class
  * @author Edwin Mugendi
@@ -24,7 +25,8 @@ class LocationModel extends \Eloquent {
         'image_url',
         'favoured',
         'rated',
-        'rating_count'
+        'rating_count',
+        'user_stamps'
     );
     //Hidden fields
     protected $hidden = array(
@@ -63,6 +65,16 @@ class LocationModel extends \Eloquent {
         'created_by' => 'required|integer',
         'updated_by' => 'required|integer',
     );
+    
+    //This will be set if a valid user token is passed
+    public $loggedInUser;
+
+    public function __construct() {
+        parent::__construct();
+
+        $this->loggedInUser = $this->getUserIfTokenExists();
+        
+    }
 
     /**
      * S# merchant() function
@@ -99,18 +111,18 @@ class LocationModel extends \Eloquent {
      * Calculate average of the ratings and return the star rating
      */
     public function getStarRatingAttribute() {
-        return (int) $this->ratings()
+        return (string) $this->ratings()
                         ->avg('feeling');
     }
 
 //E# getStarRatingAttribute() function
-    
-        /**
+
+    /**
      * S# getRatingCountAttribute() function
      * Calculate average of the ratings and return the star rating
      */
     public function getRatingCountAttribute() {
-        return (int) $this->ratings()
+        return (string) $this->ratings()
                         ->count();
     }
 
@@ -131,32 +143,68 @@ class LocationModel extends \Eloquent {
      * Is user favourite
      */
     public function getFavouredAttribute() {
-        if (\Auth::check()) {
+        if ($this->loggedInUser) {
             $favouriteModel = $this->hasMany(\Util::buildNamespace('merchants', 'feel', 2), 'location_id')
                     ->whereType(1)
-                    ->whereUserId(\Auth::user()->id)
+                    ->whereUserId($this->loggedInUser->id)
                     ->count();
-            return $favouriteModel ? 1 : 0;
+            return (string) ($favouriteModel ? 1 : 0);
         } else {
-            return -1;
+            return '-1';
         }
     }
 
 //E# getFavouredAttribute() function
+    
+    /**
+     * S# getUserIfTokenExists() function
+     * If the user token exist, cache the user
+     */
+    protected function getUserIfTokenExists() {
+        //Create user controller
+        $userController = new UserController();
+
+        if ($userController->input['token']) {//Token exists
+            //Get user model by token
+            return $this->loggedInUser = $userController->getModelByField('token', $userController->input['token']);
+        }//E# if statement
+    }//E# getUserIfTokenExists() function
+
+    /**
+     * S# getUserStampsAttribute() function
+     * Get users stamps
+     */
+    public function getUserStampsAttribute() {
+       
+        if ($this->loggedInUser) {
+            //Create user controller
+            $userController = new UserController();
+
+            //Get loyalty stamps
+            $stampModel = $userController->callController(\Util::buildNamespace('payments', 'payment', 1), 'getLocationStamps', array($this->attributes['id'], $this->loggedInUser->id));
+
+            if ($stampModel) {//Stamp found
+                return $stampModel->feeling;
+            }//E# if statement
+        }//E# if statement
+        return '-1';
+    }
+
+//E# getUserStampsAttribute() function
 
     /**
      * S# getRatedAttribute() function
      * Is user favourite
      */
     public function getRatedAttribute() {
-        if (\Auth::check()) {
+        if ($this->loggedInUser) {
             $feelingModel = $this->hasMany(\Util::buildNamespace('merchants', 'feel', 2), 'location_id')
                     ->whereType(2)
-                    ->whereUserId(\Auth::user()->id)
+                    ->whereUserId($this->loggedInUser->id)
                     ->first();
-            return $feelingModel ? (int) $feelingModel->feeling : 0;
+            return (string) ($feelingModel ? $feelingModel->feeling : 0);
         } else {
-            return -1;
+            return '-1';
         }//E# if else statement
     }
 
@@ -167,7 +215,7 @@ class LocationModel extends \Eloquent {
      * Return total number of reviews
      */
     public function getTotalReviewsAttribute() {
-        return $this->hasMany(\Util::buildNamespace('merchants', 'feel', 2), 'location_id')
+        return (string)$this->hasMany(\Util::buildNamespace('merchants', 'feel', 2), 'location_id')
                         ->whereType(3)
                         ->count();
     }

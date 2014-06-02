@@ -394,13 +394,13 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     foreach ($userModel->cards as $singleCard) {
                         if ($singleCard->token == $userModel->card) {//User has specified a default card
                             $defaultCardFound = true;
-                            $userController->notification['card'] = $singleCard->toArray();
+                            $userController->notification['card_token'] = $singleCard->token;
                             break;
                         }//E# if statement
                     }//E# foreach statement
 
                     if (!$defaultCardFound) {//Set default card as the last added card
-                        $userController->notification['card'] = $userModel->cards[((int) $userModel->cards->count() - 1)]->toArray();
+                        $userController->notification['card_token'] = $userModel->cards[((int) $userModel->cards->count() - 1)]->token;
                     }//E# if statement
                     //CHECK PROMOTIONS
                     if ($userModel->unredeemed_promotions) {
@@ -419,8 +419,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     //PRODUCT
                     $userController->notification['product'] = array(
                         'id' => $productModel->id,
-                        'price_1' => $productModel->price_1,
-                        'price_2' => $productModel->price_2
+                        'price' => ((int)$vehicleModel->type == 2)  ? $productModel->price_2 : $productModel->price_1,
                     );
 
                     //PROMOTIONS
