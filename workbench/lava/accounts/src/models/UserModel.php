@@ -156,6 +156,18 @@ class UserModel extends \Eloquent {
     }
 
 //E# transactions() function
+    
+    
+    /**
+     * S# favourites() function
+     * Set one to many relationship to Feel Model
+     */
+    public function favourites() {
+        return $this->belongsToMany(\Util::buildNamespace('merchants', 'location', 2), 'mct_feels', 'user_id', 'location_id')
+            ->whereType(1);
+    }
+
+//E# favourites() function
 }
 
 //E# UserModel() Class

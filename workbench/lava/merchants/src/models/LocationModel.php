@@ -2,13 +2,12 @@
 
 namespace Lava\Merchants;
 
-use Lava\Accounts\UserController;
 /**
  * S# LocationModel() Class
  * @author Edwin Mugendi
  * Location Model
  */
-class LocationModel extends \Eloquent {
+class LocationModel extends \BaseModel {
 
     //Table
     protected $table = 'mct_locations';
@@ -66,16 +65,6 @@ class LocationModel extends \Eloquent {
         'updated_by' => 'required|integer',
     );
     
-    //This will be set if a valid user token is passed
-    public $loggedInUser;
-
-    public function __construct() {
-        parent::__construct();
-
-        $this->loggedInUser = $this->getUserIfTokenExists();
-        
-    }
-
     /**
      * S# merchant() function
      * Set one to one relationship to Merchant Model
@@ -140,13 +129,11 @@ class LocationModel extends \Eloquent {
 
     /**
      * S# getFavouredAttribute() function
-     * Is user favourite
+     * Has user favoured this location
      */
     public function getFavouredAttribute() {
         if ($this->loggedInUser) {
-            $favouriteModel = $this->hasMany(\Util::buildNamespace('merchants', 'feel', 2), 'location_id')
-                    ->whereType(1)
-                    ->whereUserId($this->loggedInUser->id)
+            $favouriteModel = $this->favourites()
                     ->count();
             return (string) ($favouriteModel ? 1 : 0);
         } else {
@@ -156,20 +143,6 @@ class LocationModel extends \Eloquent {
 
 //E# getFavouredAttribute() function
     
-    /**
-     * S# getUserIfTokenExists() function
-     * If the user token exist, cache the user
-     */
-    protected function getUserIfTokenExists() {
-        //Create user controller
-        $userController = new UserController();
-
-        if ($userController->input['token']) {//Token exists
-            //Get user model by token
-            return $this->loggedInUser = $userController->getModelByField('token', $userController->input['token']);
-        }//E# if statement
-    }//E# getUserIfTokenExists() function
-
     /**
      * S# getUserStampsAttribute() function
      * Get users stamps
@@ -194,7 +167,7 @@ class LocationModel extends \Eloquent {
 
     /**
      * S# getRatedAttribute() function
-     * Is user favourite
+     * Has user rated this location
      */
     public function getRatedAttribute() {
         if ($this->loggedInUser) {
@@ -234,10 +207,12 @@ class LocationModel extends \Eloquent {
 
     /**
      * S# favourites() function
-     * Set one to many relationship to Favourite Model
+     * Set one to many relationship to Feel Model
      */
     public function favourites() {
-        return $this->hasMany(\Util::buildNamespace('merchants', 'feel', 2), 'location_id');
+        return $this->hasMany(\Util::buildNamespace('merchants', 'feel', 2), 'location_id')
+                    ->whereType(1)
+                    ->whereUserId($this->loggedInUser->id);
     }
 
 //E# favourites() function

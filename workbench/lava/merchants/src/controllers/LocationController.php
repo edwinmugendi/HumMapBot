@@ -12,7 +12,49 @@ class LocationController extends MerchantsBaseController {
     //Controller
     public $controller = 'location';
 
-    //TODO Number of loyalty stamps – how many loyalty stamps the user has at that location
+    /**
+     * S# getLocations() function
+     * 
+     * Get location details or search location by lat and long
+     * 
+     * @param int $id Location id
+     * 
+     * @return array Location
+     */
+    public function getFavouredLocations() {
+        //Build relation
+        $relation = 'favourites';
+
+        //Lazy load to load
+        $parameters['lazyLoad'] = array($relation);
+
+        //Get user by id
+        $userModel = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('id', $this->user['id'], $parameters));
+
+        if ($this->subdomain == 'api') {//From API
+            //Get success message
+            $message = \Lang::get($this->package . '::' . $this->controller . '.api.getAll');
+            //Define relation array
+            $relationArray = array();
+            foreach ($userModel->$relation->toArray() as $singleRelation) {//Loop through the relations
+                $relationArray[] = $this->prepareModelToReturn($singleRelation);
+            }//E# foreach statement
+            //Throw 200 Exception
+            throw new \Api200Exception($relationArray, $message);
+        }//E# if else statement
+    }
+
+//E# getLocations() function
+
+    /**
+     * S# getLocations() function
+     * 
+     * Get location details or search location by lat and long
+     * 
+     * @param int $id Location id
+     * 
+     * @return array Location
+     */
     public function getLocations($id = null) {
         if (is_null($id)) {//Get List of locations
             $this->validationRules = array(
@@ -56,19 +98,19 @@ class LocationController extends MerchantsBaseController {
                         'operand' => $locationIds
                     )
                 );
-                
+
                 //Implode the location id's
                 $orderIds = implode(',', $locationIds);
-                
+
                 //Build parameters
                 $parameters = array(
-                    'orderByRaw'=>array(
+                    'orderByRaw' => array(
                         "FIELD(id, $orderIds)"
                     )
                 );
-                
+
                 //Get location model
-                $locationModel = $this->select($fields, $whereClause, 2,$parameters);
+                $locationModel = $this->select($fields, $whereClause, 2, $parameters);
 
                 //Location array
                 $locationArray = array();
@@ -101,7 +143,7 @@ class LocationController extends MerchantsBaseController {
             $this->isInputValid();
 
             //Lazy load
-            $parameters['lazyLoad'] = array('products','ratings');
+            $parameters['lazyLoad'] = array('products', 'ratings');
 
             $locationModel = $this->getModelByField('id', $id, $parameters);
 
@@ -128,6 +170,8 @@ class LocationController extends MerchantsBaseController {
             }
         }
     }
+
+//E# getLocations() function
 
     /**
      * S# prepareModelToReturn() function
@@ -160,9 +204,10 @@ class LocationController extends MerchantsBaseController {
         }//E# foreach statement
         //Set the days array as times key to the location array
         $locationArray['times'] = $daysArray;
-        
+
         unset($locationArray['ratings']);
-        
+        unset($locationArray['pivot']);
+
         return $locationArray;
     }
 

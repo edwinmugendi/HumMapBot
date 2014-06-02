@@ -103,13 +103,36 @@ return array(
                     'httpCode' => 400,
                     'note' => 'Validation error',
                     'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"id","error":"The id must be an integer."}]}'
+                )
+            )
+        ),
+        array(
+            'name' => 'Get User Favoured Locations',
+            'note' => 'Get User Favoured Locations',
+            'filtered' => 1,
+            'endpoint' => '/merchant/location/user/favoured',
+            'httpVerb' => 'GET',
+            'parameters' => array(
+                array(
+                    'field' => 'token',
+                    'dataType' => 'string',
+                    'note' => 'User API token',
+                    'required' => 1,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Location found',
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Locations list","data":{"location":{"lat":-1.28333,"long":-1.28333},"merchants":[{"id":"1","merchant_id":"0","name":"Kikuyu","fax":"","address":"","postal_code":"","lat":"0.000000","lng":"0.000000","loyalty_stamps":"0","monday_open":"","monday_close":"","tuesday_open":"","tuesday_close":"","wednesday_open":"","wednesday_close":"","thursday_open":"","thursday_close":"","friday_open":"","friday_close":"","saturday_open":"","saturday_close":"","sunday_open":"","sunday_close":"","holiday_open":"","holiday_close":"","image":"","created_at":"0000-00-00 00:00:00","updated_at":"0000-00-00 00:00:00","rating":2,"image_url":"http:\/\/api.lv.dev\/media\/upload\/merchant\/thumbnails","favoured":0,"rated":0}]}}'
                 ),
                 array(
-                    'action' => 'Not found',
-                    'httpCode' => 404,
-                    'note' => 'Object not found',
-                    'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Location with id \'122\' not found.","data":{"field":"id","type":"Location","value":"122"}}'
-                ),
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"id","error":"The id must be an integer."}]}'
+                )
             )
         ),
         array(
