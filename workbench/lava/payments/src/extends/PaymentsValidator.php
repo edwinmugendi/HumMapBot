@@ -70,7 +70,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                             'gateway_code' => 0,
                             'amount' => $vehicleModel->type == 2 ? $productModel->price_2 : $productModel->price_1,
                             'currency' => $productModel->currency,
-                            'description' => \Lang::get($paymentController->package.'::'.$paymentController->controller.'.api.freeStampWash'),
+                            'description' => \Lang::get($paymentController->package . '::' . $paymentController->controller . '.api.freeStampWash'),
                             'user_id' => $userModel->id,
                             'product_id' => $productModel->id,
                             'location_id' => $productModel->location->id,
@@ -402,34 +402,48 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     if (!$defaultCardFound) {//Set default card as the last added card
                         $userController->notification['card_token'] = $userModel->cards[((int) $userModel->cards->count() - 1)]->token;
                     }//E# if statement
-                    //CHECK PROMOTIONS
-                    if ($userModel->unredeemed_promotions) {
-                        foreach ($userModel->unredeemed_promotions as $singlePromotion) {
-                            $userController->notification['promotions'][] = array_only($singlePromotion->toArray(), array('id', 'type', 'value'));
-                        }//E# foreach statement
-                    } else {
-                        $userController->notification['promotions'] = array();
-                    }//E# if else statement
                     //VRM
                     $userController->notification['vehicle'] = array(
                         'vrm' => $vehicleModel->vrm,
                         'type' => $vehicleModel->type
                     );
 
-                    //PRODUCT
-                    $userController->notification['product'] = array(
-                        'id' => $productModel->id,
-                        'price' => ((int)$vehicleModel->type == 2)  ? $productModel->price_2 : $productModel->price_1,
-                    );
-
+                    /*
+                      $userController->notification['product'] = array(
+                      'id' => $productModel->id,
+                      'price' => ((int)$vehicleModel->type == 2)  ? $productModel->price_2 : $productModel->price_1,
+                      );
+                     */
                     //PROMOTIONS
                     $promotions = array();
+                    $amount = ((int) $vehicleModel->type == 2) ? $productModel->price_2 : $productModel->price_1;
+
+                    $surcharge = $productModel->location->surcharge;
+
                     if ($userModel->unredeemed_promotions) {//Promotions exist
                         foreach ($userModel->unredeemed_promotions->toArray() as $singlePromotion) {
-                            $promotions[] = array_except($singlePromotion, array('claimed', 'pivot'));
+                            //Calculate effective price
+                            $effectivePrice = $productController->callController(\Util::buildNamespace('products', 'promotion', 1), 'calculateEffectivePrice', array($singlePromotion['type'], $singlePromotion['value'], $amount));
+
+                            $promo = array(
+                                'price' => (string) round((floatval($effectivePrice) + floatval($surcharge)), 2),
+                                'id' => $singlePromotion['id'],
+                                'code' => $singlePromotion['code'],
+                                'type' => $singlePromotion['type'],
+                                'value' => $singlePromotion['value']
+                            );
+                            $promotions[] = $promo;
                         }//E# foreach statement
                     }//E# if statement
-                    $userController->notification['promotions'] = $promotions;
+                    //Build transaction
+                    $transaction = array(
+                        'amount' => $amount,
+                        'currency' => $productModel->location->currency,
+                        'surcharge' => $surcharge,
+                        'promotions' => $promotions,
+                    );
+
+                    $userController->notification['transaction'] = $transaction;
 
                     //GET MERCHANT
                     //Location controller
@@ -440,18 +454,6 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     //Get location by id
                     $locationModel = $locationController->callController(\Util::buildNamespace('merchants', 'location', 1), 'getModelByField', array('id', $productModel->location_id, $parameters));
 
-                    //Surcharge
-                    if ($locationModel->merchant->surcharge) {//Merchant has surcharge
-                        $userController->notification['transaction'] = array(
-                            'surcharge' => $locationModel->merchant->surcharge,
-                            'currency' => $locationModel->merchant->currency
-                        );
-                    } else {
-                        $userController->notification['transaction'] = array(
-                            'surcharge' => $locationModel->merchant->surcharge,
-                            'currency' => 0
-                        );
-                    }//E# if else statement
                     //Get success message
                     $message = \Lang::get('payments::payment.api.prepareTransaction');
 

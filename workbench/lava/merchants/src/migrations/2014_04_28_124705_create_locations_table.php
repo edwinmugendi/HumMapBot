@@ -71,6 +71,11 @@ class CreateLocationsTable extends Migration {
 
             //Image
             $table->text('image');
+            
+            //Transactions
+            $table->string('currency', 3);
+            $table->float('surcharge');
+
 
             $table->integer('views')->unsigned();
             $table->integer('status')->unsigned();

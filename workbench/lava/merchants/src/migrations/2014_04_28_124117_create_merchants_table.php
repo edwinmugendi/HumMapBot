@@ -48,10 +48,6 @@ class CreateMerchantsTable extends Migration {
             //Image
             $table->text('image');
 
-            //Transactions
-            $table->string('currency', 3);
-            $table->float('surcharge');
-
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();

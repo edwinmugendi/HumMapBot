@@ -15,6 +15,40 @@ class PromotionController extends ProductsBaseController {
     public $controller = 'promotion';
 
     /**
+     * S# calculateEffectivePrice() function
+     * Calculate the effective price after applying promotion
+     * 
+     * @param int $type Promotion type. Percentage or fixed
+     * @param int $promotionValue Promotion value
+     * @param float $priceBeforeCode Price before applying code
+     * 
+     * @return float Effective price
+     */
+    public function calculateEffectivePrice($type, $promotionValue, $priceBeforeCode) {
+        /*
+        var_dump($type);
+        var_dump($promotionValue);
+        dd($priceBeforeCode);
+         * 
+         */
+        if ($type == 1) {//Fixed value
+            //Calculate effective price
+            $effectivePrice = $priceBeforeCode - $promotionValue;
+
+            return $effectivePrice > 0 ? $effectivePrice : 0;
+        } else if ($type == 2) {//Percentage
+            //Calculate effective price
+            $effectivePrice = $priceBeforeCode - (($promotionValue * $priceBeforeCode)/100);
+
+            return $effectivePrice > 0 ? $effectivePrice : 0;
+        } else {
+            return $priceBeforeCode;
+        }
+    }
+
+//E# calculateEffectivePrice() function
+
+    /**
      * S# prepareModelToReturn() function
      * Prepare relation
      * 
@@ -34,7 +68,7 @@ class PromotionController extends ProductsBaseController {
      * @return boolean true if redeemed, false else
      */
     public function postRedeemPromotion($code) {
-       
+
         //Add merchant id to inputs for validation
         $this->input['code'] = $code;
 
