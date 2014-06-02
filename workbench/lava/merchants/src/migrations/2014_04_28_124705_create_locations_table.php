@@ -35,7 +35,8 @@ class CreateLocationsTable extends Migration {
 
             //Loyalty Scheme
             $table->integer('loyalty_stamps');
-            $table->string('currency',4);
+            $table->string('currency', 4);
+            $table->float('surcharge');
 
             //Monday
             $table->string('monday_open', 255);
@@ -71,11 +72,6 @@ class CreateLocationsTable extends Migration {
 
             //Image
             $table->text('image');
-            
-            //Transactions
-            $table->string('currency', 3);
-            $table->float('surcharge');
-
 
             $table->integer('views')->unsigned();
             $table->integer('status')->unsigned();
