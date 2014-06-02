@@ -70,7 +70,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                             'gateway_code' => 0,
                             'amount' => $vehicleModel->type == 2 ? $productModel->price_2 : $productModel->price_1,
                             'currency' => $productModel->currency,
-                            'description' => 'stamp',
+                            'description' => \Lang::get($paymentController->package.'::'.$paymentController->controller.'.api.freeStampWash'),
                             'user_id' => $userModel->id,
                             'product_id' => $productModel->id,
                             'location_id' => $productModel->location->id,

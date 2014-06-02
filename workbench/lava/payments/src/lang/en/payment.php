@@ -7,7 +7,8 @@ return array(
       |--------------------------------------------------------------------------
      */
     'api' => array(
-        'prepareTransaction' => 'Transaction prepared'
+        'prepareTransaction' => 'Transaction prepared',
+        'freeStampWash'=>'Free Stamp Wash'
     ),
     'validation' => array(
         'prepareTransaction' => array(
