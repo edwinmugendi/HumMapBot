@@ -217,17 +217,14 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                 $transactionResponse = $paymentController->transact($gateway, $paymentInfo);
 
                 if ($transactionResponse['status']) {//Gateway transaction succeeded
-                    if ($this->data['promotion_id']) {//Promotion id
-                        $transactionArray['promotion_id'] = $this->data['promotion_id'];
-
-                        //Redeem the promotion
-                        $userController->updatePivotTable($userModel, 'promotions', $this->data['promotion_id'], array('redeemed' => 1));
-                    }//E# if statement
                     //Prepare transaction
                     $transactionArray = $paymentController->prepareTransactionArray($gateway, $transactionResponse['response']);
 
                     //Set stamps issued and status
                     $transactionArray['stamps_issued'] = $transactionArray['status'] = 1;
+
+                    //Set promotion id
+                    $transactionArray['promotion_id'] = $this->data['promotion_id'];
                 } else {//Gateway transaction failed
                     $transactionArray = array(
                         'gateway' => 'app55',
@@ -269,6 +266,13 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                             'status' => 1,
                             'message' => \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransaction.transaction.1')
                         );
+
+                        if ($this->data['promotion_id']) {//Promotion id
+                            $transactionModel->promotion_id = $this->data['promotion_id'];
+
+                            //Redeem the promotion
+                            $userController->updatePivotTable($userModel, 'promotions', $this->data['promotion_id'], array('redeemed' => 1, 'transaction_id' => $transactionModel->id,'updated_at'=>Carbon::now()));
+                        }//E# if statement
                     } else {
                         //Build gateway response
                         $gatewayResponse = array(

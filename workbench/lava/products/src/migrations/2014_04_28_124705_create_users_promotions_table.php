@@ -15,6 +15,7 @@ class CreateUsersPromotionsTable extends Migration {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('promotion_id')->unsigned();
+            $table->integer('transaction_id')->unsigned();
             $table->integer('redeemed')->unsigned();
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();

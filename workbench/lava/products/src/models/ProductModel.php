@@ -9,7 +9,7 @@ use Lava\Accounts\UserController;
  * @author Edwin Mugendi
  * Product Model
  */
-class ProductModel extends \Eloquent {
+class ProductModel extends \BaseModel {
 
     //Table
     protected $table = 'pdt_products';
@@ -41,6 +41,16 @@ class ProductModel extends \Eloquent {
     protected $freePrice = false;
 
     /**
+     * S# __construct() function
+     * Constuctor
+     */
+    public function __construct() {
+        parent::__construct();
+    }
+
+//E# __construct() function
+
+    /**
      * S# location() function
      * Set one to one relationship to Location Model
      */
@@ -69,21 +79,17 @@ class ProductModel extends \Eloquent {
      * @return mixed Effective price
      */
     public function getPrice1Attribute() {
-        
+
         //Create user controller
         $userController = new UserController();
-        
-        if($this->attributes['loyable']){//This attribute is loyable
-        if ($userController->input['token']) {//Token exists
-            //Get user model by token
-            $userModel = $userController->getModelByField('token', $userController->input['token']);
 
-            if ($userModel) {//User exists
+        if ($this->attributes['loyable']) {//This attribute is loyable
+            if ($this->loggedInUser) {//User exists
                 //Cache location stamps
                 $locationStamps = $this->location()->first()->loyalty_stamps;
                 if ($locationStamps) {
                     //Get loyalty stamps
-                    $stampModel = $userController->callController(\Util::buildNamespace('payments', 'payment', 1), 'getLocationStamps', array($this->location()->first()->id, $userModel->id));
+                    $stampModel = $userController->callController(\Util::buildNamespace('payments', 'payment', 1), 'getLocationStamps', array($this->location()->first()->id, $this->loggedInUser->id));
 
                     if ($stampModel) {//Stamp found
                         if ((int) $stampModel->feeling >= $locationStamps) {//User qualifies for a free wash
@@ -93,14 +99,12 @@ class ProductModel extends \Eloquent {
                 }//E# if statement
             }//E# if statement
         }//E# if statement
-         }//E# if statement
-        
         //Return actual prices
         return $this->attributes['price_1'];
     }
 
 //E# getPrice1Attribute() function
-    
+
     /**
      * S# getPrice2Attribute() function
      * Get Price 2
@@ -109,11 +113,10 @@ class ProductModel extends \Eloquent {
      * @return mixed Effective price
      */
     public function getPrice2Attribute() {
-        return $this->freePrice != false ? $this->freePrice : $this->attributes['price_2']; 
-        }
+        return $this->freePrice != false ? $this->freePrice : $this->attributes['price_2'];
+    }
 
 //E# getPrice2Attribute() function
-
 }
 
 //E# ProductModel() Class

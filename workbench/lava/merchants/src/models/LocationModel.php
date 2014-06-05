@@ -2,6 +2,7 @@
 
 namespace Lava\Merchants;
 
+use Lava\Accounts\UserController;
 /**
  * S# LocationModel() Class
  * @author Edwin Mugendi
@@ -64,7 +65,15 @@ class LocationModel extends \BaseModel {
         'created_by' => 'required|integer',
         'updated_by' => 'required|integer',
     );
-    
+     
+    /**
+     * S# __construct() function
+     * Constuctor
+     */
+     public function __construct() {
+        parent::__construct();
+        
+    }//E# __construct() function
     /**
      * S# merchant() function
      * Set one to one relationship to Merchant Model
@@ -148,7 +157,6 @@ class LocationModel extends \BaseModel {
      * Get users stamps
      */
     public function getUserStampsAttribute() {
-       
         if ($this->loggedInUser) {
             //Create user controller
             $userController = new UserController();

@@ -16,6 +16,7 @@ class BaseModel extends \Eloquent {
         parent::__construct();
 
         $this->loggedInUser = $this->getUserIfTokenExists();
+        
     }
 
     /**
@@ -27,12 +28,14 @@ class BaseModel extends \Eloquent {
         //Create user controller
         $userController = new Lava\Accounts\UserController();
         
-        if ($userController->input['token']) {//Token exists
-            
+        if (array_key_exists('token',$userController->input)) {//Token exists
+             
             //Get user model by token
-            $this->loggedInUser = $userController->getModelByField('token', $userController->input['token']);
+            return $userController->getModelByField('token', $userController->input['token']);
             
         }//E# if statement
+        
+        return null;
     }
 
 //E# getUserIfTokenExists() function
