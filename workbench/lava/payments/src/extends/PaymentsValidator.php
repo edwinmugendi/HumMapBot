@@ -215,16 +215,19 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
 
                 //Attempt to transaction
                 $transactionResponse = $paymentController->transact($gateway, $paymentInfo);
-
+                
                 if ($transactionResponse['status']) {//Gateway transaction succeeded
                     //Prepare transaction
                     $transactionArray = $paymentController->prepareTransactionArray($gateway, $transactionResponse['response']);
 
-                    //Set stamps issued and status
-                    $transactionArray['stamps_issued'] = $transactionArray['status'] = 1;
+                    //Set status
+                    $transactionArray['status'] = 1;
 
                     //Set promotion id
                     $transactionArray['promotion_id'] = $this->data['promotion_id'];
+
+                    //Set stamp
+                    $transactionArray['stamps_issued'] = ((int) $productModel->location->loyalty_stamps) ? 1 : 0;
                 } else {//Gateway transaction failed
                     $transactionArray = array(
                         'gateway' => 'app55',
@@ -235,8 +238,6 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         'status' => 0,
                         'stamps_issued' => 0
                     );
-                    //Set stamps issued and status
-                    $transactionArray['stamps_issued'] = $transactionArray['status'] = 0;
                 }//E# if else statement
 
                 if ($this->data['location']) {//Set transaction location
@@ -277,7 +278,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         //Build gateway response
                         $gatewayResponse = array(
                             'status' => 0,
-                            'message' => $transactionResponse['response']
+                            'message' => \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransaction.transaction.0')
                         );
                     }//E# if else statement
                     //Get loyalty stamps
@@ -297,7 +298,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         'stamps' => $stamps
                     );
 
-                    throw new \Api200Exception($this->notification, array('id'));
+                    throw new \Api200Exception($this->notification,  $gatewayResponse['message']);
                 } else {//DB error
                     //Set message
                     $this->message = \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransaction.dbError');
@@ -428,7 +429,6 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         //Get promotions
                         $promotions = $productController->callController(\Util::buildNamespace('products', 'promotion', 1), 'locationRedeemablePromotions', array($productModel->location->id, $userModel->unredeemed_promotions->toArray(), $amount, $surcharge));
                     }//E# if statement
-                    
                     //Build transaction
                     $transaction = array(
                         'amount' => $amount,

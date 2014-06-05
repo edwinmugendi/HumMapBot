@@ -19,7 +19,8 @@ class App55Controller extends PaymentsBaseController {
     private $response;
 
     public function prepareTransactionArray($app55Transaction) {
-      
+        
+        
         /**
           object(stdClass)#284 (7) {
           ["id"]=>

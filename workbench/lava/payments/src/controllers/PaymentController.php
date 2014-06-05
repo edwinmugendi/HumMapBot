@@ -117,7 +117,7 @@ class PaymentController extends PaymentsBaseController {
      * @param model $userModel User model
      */
     public function afterProcessing($cardOrStamps, &$transactionModel, &$productModel, &$userModel) {
-        if ($cardOrStamps == 'card') {//Update stamps only if transaction was processed with card
+        if (($cardOrStamps == 'card') && $transactionModel->stamps_issued) {//Update stamps only if transaction was processed with card
             //Update loyalty stamps
             $this->updateLoyaltyStamp($transactionModel->location_id, $transactionModel->user_id);
         }//E# if statement
@@ -142,7 +142,7 @@ class PaymentController extends PaymentsBaseController {
      */
     public function notifyUser($cardOrStamps, &$transactionModel, &$productModel, &$userModel) {
         //Build template
-        $template = 'transactionUser' . \Str::title($cardOrStamps);
+        $template = 'transactionUser' . \Str::title(\Str::lower($cardOrStamps));
 
         //Transaction date
         $date = Carbon::createFromFormat('Y-m-d G:i:s', $transactionModel->created_at);
@@ -191,7 +191,7 @@ class PaymentController extends PaymentsBaseController {
      */
     public function notifyLocation($cardOrStamps, &$transactionModel, &$productModel, &$userModel) {
         //Build template
-        $template = 'transactionMerchant' . \Str::title($cardOrStamps);
+        $template = 'transactionMerchant' . \Str::title(\Str::lower($cardOrStamps));
 
         //Transaction date
         $date = Carbon::createFromFormat('Y-m-d G:i:s', $transactionModel->created_at);
