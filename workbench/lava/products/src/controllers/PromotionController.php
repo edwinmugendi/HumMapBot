@@ -15,6 +15,71 @@ class PromotionController extends ProductsBaseController {
     public $controller = 'promotion';
 
     /**
+     * S# locationRedeemablePromotions() function
+     * Get the redeemable promotions for this location
+     * 
+     * @param int $locationId Location id
+     * @param array $promotions Promotions that can be redeemed
+     * @param float $amount Transaction amount - needed when calculating effective price
+     * @param float $surcharge Surcharge  - needed when calculating effective price
+     * 
+     * @return array Prepared promotions
+     * 
+     */
+    public function locationRedeemablePromotions($locationId, $promotions, $amount, $surcharge) {
+        //Cache redeemable promotions
+        $redeemablePromotions = array();
+
+        foreach ($promotions as $singlePromotion) {//Loop via the promotions
+            if (($singlePromotion['type'] == 1)) {//System Promotions
+                $redeemablePromotions[] = $singlePromotion;
+            } else if (($singlePromotion['type'] == 2)) {//Merchant Promotions
+                if (($singlePromotion['location_id'] == $locationId)) {
+                    $redeemablePromotions[] = $singlePromotion;
+                }//E# if else statement
+            }//E# if else statement
+        }//E# foreach statement
+        //Return prepared redeemable promotions
+        return $this->prepareRedeemablePromotions($redeemablePromotions, $amount, $surcharge);
+    }
+
+//E# locationRedeemablePromotions() function
+
+    /**
+     * S# prepareRedeemablePromotions() function
+     * Get the redeemable promotions for this location
+     * 
+     * @param array $promotions Promotions that can be redeemed
+     * @param float $amount Transaction amount - needed when calculating effective price
+     * @param float $surcharge Surcharge  - needed when calculating effective price
+     * 
+     * @return array Prepared promotions
+     * 
+     */
+    private function prepareRedeemablePromotions($promotions, $amount, $surcharge) {
+        //Cache redeemable promotions
+        $redeemablePromotions = array();
+        foreach ($promotions as $singlePromotion) {//Loop via the promotions
+            //Calculate effective price
+            $effectivePrice = $this->calculateEffectivePrice($singlePromotion['type'], $singlePromotion['value'], $amount);
+
+            //Define promo
+            $promo = array(
+                'price' => (string) round((floatval($effectivePrice) + floatval($surcharge)), 2),
+                'id' => $singlePromotion['id'],
+                'code' => $singlePromotion['code'],
+                'type' => $singlePromotion['type'],
+                'value' => $singlePromotion['value']
+            );
+            $redeemablePromotions[] = $promo;
+        }//E# foreach statement
+        //Return redeemable promotions
+        return $redeemablePromotions;
+    }
+
+//E# prepareRedeemablePromotions() function
+
+    /**
      * S# calculateEffectivePrice() function
      * Calculate the effective price after applying promotion
      * 
@@ -26,9 +91,9 @@ class PromotionController extends ProductsBaseController {
      */
     public function calculateEffectivePrice($type, $promotionValue, $priceBeforeCode) {
         /*
-        var_dump($type);
-        var_dump($promotionValue);
-        dd($priceBeforeCode);
+          var_dump($type);
+          var_dump($promotionValue);
+          dd($priceBeforeCode);
          * 
          */
         if ($type == 1) {//Fixed value
@@ -38,7 +103,7 @@ class PromotionController extends ProductsBaseController {
             return $effectivePrice > 0 ? $effectivePrice : 0;
         } else if ($type == 2) {//Percentage
             //Calculate effective price
-            $effectivePrice = $priceBeforeCode - (($promotionValue * $priceBeforeCode)/100);
+            $effectivePrice = $priceBeforeCode - (($promotionValue * $priceBeforeCode) / 100);
 
             return $effectivePrice > 0 ? $effectivePrice : 0;
         } else {

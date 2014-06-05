@@ -271,7 +271,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                             $transactionModel->promotion_id = $this->data['promotion_id'];
 
                             //Redeem the promotion
-                            $userController->updatePivotTable($userModel, 'promotions', $this->data['promotion_id'], array('redeemed' => 1, 'transaction_id' => $transactionModel->id,'updated_at'=>Carbon::now()));
+                            $userController->updatePivotTable($userModel, 'promotions', $this->data['promotion_id'], array('redeemed' => 1, 'transaction_id' => $transactionModel->id, 'updated_at' => Carbon::now()));
                         }//E# if statement
                     } else {
                         //Build gateway response
@@ -425,19 +425,8 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     $surcharge = $productModel->location->surcharge;
 
                     if ($userModel->unredeemed_promotions) {//Promotions exist
-                        foreach ($userModel->unredeemed_promotions->toArray() as $singlePromotion) {
-                            //Calculate effective price
-                            $effectivePrice = $productController->callController(\Util::buildNamespace('products', 'promotion', 1), 'calculateEffectivePrice', array($singlePromotion['type'], $singlePromotion['value'], $amount));
-
-                            $promo = array(
-                                'price' => (string) round((floatval($effectivePrice) + floatval($surcharge)), 2),
-                                'id' => $singlePromotion['id'],
-                                'code' => $singlePromotion['code'],
-                                'type' => $singlePromotion['type'],
-                                'value' => $singlePromotion['value']
-                            );
-                            $promotions[] = $promo;
-                        }//E# foreach statement
+                        //Calculate effective price
+                        $promotions = $productController->callController(\Util::buildNamespace('products', 'promotion', 1), 'locationRedeemablePromotions', array($productModel->location->id, $userModel->unredeemed_promotions->toArray(), $amount, $surcharge));
                     }//E# if statement
                     //Build transaction
                     $transaction = array(
