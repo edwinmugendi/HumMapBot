@@ -31,12 +31,12 @@ class PromotionController extends ProductsBaseController {
         $redeemablePromotions = array();
 
         foreach ($promotions as $singlePromotion) {//Loop via the promotions
-            if (($singlePromotion['type'] == 1)) {//System Promotions
-                $redeemablePromotions[] = $singlePromotion;
-            } else if (($singlePromotion['type'] == 2)) {//Merchant Promotions
-                if (($singlePromotion['location_id'] == $locationId)) {
+            if ($singlePromotion['location_id']) {
+                if ($singlePromotion['location_id'] == $locationId) {
                     $redeemablePromotions[] = $singlePromotion;
-                }//E# if else statement
+                }//E# if else statement    
+            } else {
+                $redeemablePromotions[] = $singlePromotion;
             }//E# if else statement
         }//E# foreach statement
         //Return prepared redeemable promotions
