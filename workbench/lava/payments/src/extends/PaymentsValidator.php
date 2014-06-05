@@ -425,9 +425,10 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     $surcharge = $productModel->location->surcharge;
 
                     if ($userModel->unredeemed_promotions) {//Promotions exist
-                        //Calculate effective price
+                        //Get promotions
                         $promotions = $productController->callController(\Util::buildNamespace('products', 'promotion', 1), 'locationRedeemablePromotions', array($productModel->location->id, $userModel->unredeemed_promotions->toArray(), $amount, $surcharge));
                     }//E# if statement
+                    
                     //Build transaction
                     $transaction = array(
                         'amount' => $amount,
