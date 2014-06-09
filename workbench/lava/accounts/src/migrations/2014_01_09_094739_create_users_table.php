@@ -52,8 +52,8 @@ class CreateUsersTable extends Migration {
             $table->string('fb_uid');
 
             //Location
-            $table->float('lat');
-            $table->float('lng');
+            $table->decimal('lat', 13, 10);
+            $table->decimal('lng', 13, 10);
 
             //APP55
             $table->integer('app55_id');

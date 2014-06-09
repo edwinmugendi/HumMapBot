@@ -29,19 +29,20 @@ class MessageController extends MessagesBaseController {
      * @return boolean 1 if email is sent 0 otherwise
      */
     public function push($senderId, $sender, $recipientId, $recipient, $comCode, $lang, $parameters) {
-
+        
+        
         //Get com code configs
         $comCodeConfig = \Config::get($this->package . '::' . $this->controller . '.communication.' . $comCode);
 
         //Build message
         $parameters['body'] = \Lang::get($this->package . '::' . $this->controller . '.communication.' . $comCode . '.sms', $parameters);
-
+        
         //Prepare sender
         $senderId = is_null($senderId) ? 1 : $senderId;
 
         //Push
         $sent = $this->callController(\Util::buildNamespace('messages', 'urbanairship', 1), 'push', array($recipient, $parameters['os'], $parameters['body']));
-
+        
         //Add sent to parameters
         $parameters['sent'] = $sent;
 
@@ -183,7 +184,7 @@ class MessageController extends MessagesBaseController {
 
         //Get body to inject into the template
         $parameters['body'] = $this->getMessageBody('email', $comCode, $parameters);
-
+        
         //Get com code configs
         $comCodeConfig = \Config::get($this->package . '::' . $this->controller . '.communication.' . $comCode);
 

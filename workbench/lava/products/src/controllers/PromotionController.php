@@ -56,7 +56,7 @@ class PromotionController extends ProductsBaseController {
      * @return array Prepared promotions
      * 
      */
-    private function prepareRedeemablePromotions($promotions, $amount, $surcharge) {
+    public function prepareRedeemablePromotions($promotions, $amount, $surcharge) {
         //Cache redeemable promotions
         $redeemablePromotions = array();
         foreach ($promotions as $singlePromotion) {//Loop via the promotions

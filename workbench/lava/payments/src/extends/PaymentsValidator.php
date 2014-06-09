@@ -8,6 +8,7 @@ use Lava\Accounts\VehicleController;
 use Lava\Accounts\UserController;
 use Lava\Products\ProductController;
 use Lava\Merchants\LocationController;
+use Lava\Products\PromotionController;
 
 /**
  * S# PaymentsValidator() function
@@ -179,6 +180,9 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
      */
     public function validateProcessTransaction($attribute, $vrm, $parameters) {
 
+        //Cache promotion id
+        $promotionId = array_key_exists('promotion_id', $this->data) ? $this->data['promotion_id'] : false;
+
         //Product controller
         $productController = new ProductController();
 
@@ -202,11 +206,37 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
             $vehicleModel = $this->validateUserOwnsVrm($attribute, $this->data['vrm'], $parameters);
 
             if ($vehicleModel) {//User owns this vehicle
+                //Cache price and surcharge
+                $price = $vehicleModel->type == 2 ? $productModel->price_2 : $productModel->price_1;
+                $surcharge = $productModel->location->surcharge;
+
+                //Promotion Controller
+                $promotionController = new PromotionController();
+
+                if ($promotionId) {//Promotion has been set
+                    //Get Promotion model by id
+                    $promotionModel = $promotionController->getModelByField('id', $promotionId);
+
+                    if ($promotionModel) {//Promotion model exists
+                        //Prepare price
+                        $promotionArray = $promotionController->prepareRedeemablePromotions(array($promotionModel->toArray()), $price, $surcharge);
+
+                        //dd($promotionArray);
+                        if ($promotionArray && array_key_exists('price', $promotionArray[0])) {//Price is set
+                            $amount = $promotionArray[0]['price'];
+                        }//E# if statement
+                    }//E# if statement
+                }//E# if statement
+
+                if (!isset($amount)) {//Amount is not set
+                    $amount = round((floatval($price) + floatval($surcharge)), 2);
+                }//E# if statement
+
                 $paymentInfo = array(
                     'app55UserId' => $userModel->app55_id,
                     'cardToken' => $this->data['card_token'],
-                    'amount' => $this->data['amount'],
-                    'currency' => $this->data['currency'],
+                    'amount' => $amount,
+                    'currency' => $productModel->location->currency,
                     'description' => $this->data['product_id']
                 );
 
@@ -215,7 +245,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
 
                 //Attempt to transaction
                 $transactionResponse = $paymentController->transact($gateway, $paymentInfo);
-                
+
                 if ($transactionResponse['status']) {//Gateway transaction succeeded
                     //Prepare transaction
                     $transactionArray = $paymentController->prepareTransactionArray($gateway, $transactionResponse['response']);
@@ -224,7 +254,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     $transactionArray['status'] = 1;
 
                     //Set promotion id
-                    $transactionArray['promotion_id'] = $this->data['promotion_id'];
+                    $transactionArray['promotion_id'] = $promotionId ? $promotionId : 0;
 
                     //Set stamp
                     $transactionArray['stamps_issued'] = ((int) $productModel->location->loyalty_stamps) ? 1 : 0;
@@ -268,11 +298,9 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                             'message' => \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransaction.transaction.1')
                         );
 
-                        if ($this->data['promotion_id']) {//Promotion id
-                            $transactionModel->promotion_id = $this->data['promotion_id'];
-
+                        if ($promotionId) {//Promotion id
                             //Redeem the promotion
-                            $userController->updatePivotTable($userModel, 'promotions', $this->data['promotion_id'], array('redeemed' => 1, 'transaction_id' => $transactionModel->id, 'updated_at' => Carbon::now()));
+                            $userController->updatePivotTable($userModel, 'promotions', $promotionId, array('redeemed' => 1, 'transaction_id' => $transactionModel->id, 'updated_at' => Carbon::now()));
                         }//E# if statement
                     } else {
                         //Build gateway response
@@ -298,7 +326,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         'stamps' => $stamps
                     );
 
-                    throw new \Api200Exception($this->notification,  $gatewayResponse['message']);
+                    throw new \Api200Exception($this->notification, $gatewayResponse['message']);
                 } else {//DB error
                     //Set message
                     $this->message = \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransaction.dbError');

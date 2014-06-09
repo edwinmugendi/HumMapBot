@@ -1,4 +1,4 @@
-<p>Dear <? echo $viewData['name']; ?>,</p>
+<p>Dear <?php echo $viewData['name']; ?>,</p>
 <p>We received a request to reset the password for your <?php echo $viewData['productName'];?> account for email address <?php echo $viewData['email']; ?></p>
 
 <p>If you want to reset your password, please click on the link below (or copy and paste the link (URL) onto your browser):</p>

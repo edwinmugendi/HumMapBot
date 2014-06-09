@@ -1,2 +1,2 @@
-<p>Dear <? echo $viewData['name']; ?>,</p>
+<p>Dear <?php echo $viewData['name']; ?>,</p>
 <p></p>

@@ -312,18 +312,6 @@ return array(
                     'required' => 1,
                 ),
                 array(
-                    'field' => 'amount',
-                    'dataType' => 'float (2 Decimal place)',
-                    'note' => 'Calculated amount',
-                    'required' => 1,
-                ),
-                array(
-                    'field' => 'currency',
-                    'dataType' => 'string',
-                    'note' => '3 letter currency code',
-                    'required' => 1,
-                ),
-                array(
                     'field' => 'card_token',
                     'dataType' => 'string',
                     'note' => 'Card to be used',
@@ -360,7 +348,7 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Transaction processed',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":["id"],"data":{"gateway":{"status":1,"message":"Transaction succeeded"},"transaction":{"gateway":"app55","gateway_tran_id":"140531130620_27122","gateway_code":"06603","amount":"12","currency":"GBP","stamps_issued":1,"lat":"90","lng":"90","vrm":"KANa","user_id":"1","description":"Sapama Kikuyu","product_id":"1","location_id":"1","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/35.0.1916.114 Safari\/537.36","card_used":"411111******1111","card_token":"AlRUi","updated_at":"2014-05-31 13:06:21","created_at":"2014-05-31 13:06:21","id":31,"loc":{"name":"Kikuyu","address":"10016 Nakuru"}},"stamps":{"issued":1,"user_total":2,"location_stamps":4}}}'
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Transaction succeeded","data":{"gateway":{"status":1,"message":"Transaction succeeded"},"transaction":{"gateway":"app55","gateway_tran_id":"140609074422_94612","gateway_code":"06603","amount":"11.88","currency":"GBP","promotion_id":"3","stamps_issued":1,"lat":"90","lng":"90","vrm":"KANa","user_id":"1","description":"Sapama Kikuyu","product_id":"1","location_id":"1","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/35.0.1916.114 Safari\/537.36","card_used":"411111******1111","card_token":"AlRui","updated_at":"2014-06-09 07:44:23","created_at":"2014-06-09 07:44:23","id":64,"loc":{"name":"Kikuyu","address":"10016 Nakuru"}},"stamps":{"issued":1,"user_total":24,"location_stamps":5}}}'
                 ),
                 array(
                     'action' => 'Error',

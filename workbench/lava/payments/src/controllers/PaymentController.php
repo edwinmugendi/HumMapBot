@@ -164,7 +164,7 @@ class PaymentController extends PaymentsBaseController {
             //Converse
             $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('push', null, null, $userModel->id, $userModel->push_token, $template, \Config::get('app.locale'), $parameters));
         }//E# if statement
-
+        
         if ($userModel->notify_sms && $userModel->phone) {//SMS
             //Converse
             $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('sms', null, null, $userModel->id, array($userModel->phone), $template, \Config::get('app.locale'), $parameters));
@@ -261,8 +261,6 @@ class PaymentController extends PaymentsBaseController {
             'product_id' => 'required',
             'location' => 'latLng',
             'card_token' => 'required',
-            'amount' => 'required',
-            'currency' => 'required',
             'promotion_id' => 'integer',
             'vrm' => 'required|processTransaction',
         );

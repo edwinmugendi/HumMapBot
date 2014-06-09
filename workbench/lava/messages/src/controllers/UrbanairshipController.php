@@ -23,7 +23,7 @@ class UrbanairshipController extends MessagesBaseController {
         $configs = \Config::get($this->package . '::thirdParty.urbanairship');
 
         //Instantiate Push client
-        $this->pushClient = new \UrbanAirship\Airship($configs['username'], $configs['password'], $configs['apiId']);
+        $this->pushClient = new \UrbanAirship\Airship($configs['appKey'],$configs['appMaster']);
     }
 
 //E# __construct() function
@@ -45,17 +45,11 @@ class UrbanairshipController extends MessagesBaseController {
                     ->setNotification($message)
                     ->setDeviceTypes($os)
                     ->send();
-            $this->response = array(
-                'status' => 1
-            );
+            $this->response = 1;
         } catch (\AirshipException $e) {
-            $this->response = array(
-                'status' => 0
-            );
+            $this->response = 0;
         } catch (\Exception $e) {
-            $this->response = array(
-                'status' => 0
-            );
+            $this->response = 0;
         }//E# try catch statement
 
         return $this->response;

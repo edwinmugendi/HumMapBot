@@ -36,8 +36,8 @@ class CreateTransactionsTable extends Migration {
             $table->integer('stamps_issued');
             
             //Location
-            $table->decimal('lat', 10, 6);
-            $table->decimal('lng', 10, 6);
+            $table->decimal('lat', 13, 10);
+            $table->decimal('lng', 13, 10);
 
             //Gateway
             $table->string('gateway', 255);
