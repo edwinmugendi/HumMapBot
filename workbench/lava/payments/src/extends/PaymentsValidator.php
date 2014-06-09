@@ -427,13 +427,13 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     foreach ($userModel->cards as $singleCard) {
                         if ($singleCard->token == $userModel->card) {//User has specified a default card
                             $defaultCardFound = true;
-                            $userController->notification['card_token'] = $singleCard->token;
+                            $userController->notification['card'] = array_only($singleCard->toArray(),array('name','number','expiry','token'));
                             break;
                         }//E# if statement
                     }//E# foreach statement
 
                     if (!$defaultCardFound) {//Set default card as the last added card
-                        $userController->notification['card_token'] = $userModel->cards[((int) $userModel->cards->count() - 1)]->token;
+                        $userController->notification['card'] = array_only($userModel->cards[((int) $userModel->cards->count() - 1)]->toArray(),array('name','number','expiry','token'));
                     }//E# if statement
                     //VRM
                     $userController->notification['vehicle'] = array(
