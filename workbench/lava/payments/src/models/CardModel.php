@@ -11,13 +11,14 @@ class CardModel extends \Eloquent {
 
     //Table
     protected $table = 'fnc_cards';
-    
     //Soft delete
     protected $softDelete = true;
-    
+    //Appends fields
+    protected $appends = array(
+        'is_default'
+    );
     //User owned
     public $userOwned = true;
-    
     //Fillable fields
     protected $fillable = array(
         'address_city',
@@ -50,13 +51,11 @@ class CardModel extends \Eloquent {
         'field' => 'required|in:id',
         'value' => 'required|integer|exists:fnc_cards,id',
     );
-    
     //Select validation rules
     public $selectRules = array(
         'field' => 'required|in:id',
         'value' => 'required|integer|exists:fnc_cards,id',
     );
-    
     //Select validation rules
     public $selectAllRules = array();
 
@@ -69,6 +68,19 @@ class CardModel extends \Eloquent {
     }
 
 //E# user() function
+
+    /**
+     * S# getIsDefaultAttribute() function
+     * Is this card the default
+     */
+    public function getIsDefaultAttribute() {
+        //Get the logged in user card
+        $token = $this->user()->first()->card;
+
+        return ($this->attributes['token'] == $token) ? 1 : 0;
+    }
+
+//E# getIsDefaultAttribute() function
 }
 
 //E# CardModel() Class

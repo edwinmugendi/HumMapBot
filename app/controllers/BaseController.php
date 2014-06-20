@@ -38,6 +38,7 @@ class BaseController extends Controller {
 
         $this->user = $this->sessionedUser();
         $this->subdomain = \Session::get('subdomain');
+        
         //Get POSTed data
         $this->input = \Input::get();
 

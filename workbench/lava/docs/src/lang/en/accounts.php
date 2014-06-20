@@ -266,6 +266,18 @@ return array(
                     'required' => 0,
                 ),
                 array(
+                    'field' => 'vrm',
+                    'dataType' => 'String',
+                    'note' => 'VRM to make default',
+                    'required' => 0,
+                ),
+                array(
+                    'field' => 'card',
+                    'dataType' => 'String',
+                    'note' => 'Card token to make default',
+                    'required' => 0,
+                ),
+                array(
                     'field' => 'location',
                     'dataType' => array(
                         array(
@@ -533,7 +545,7 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Vehicle found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Vehicle vrm KANa found.","data":{"id":"1","vrm":"KANa","created_at":"2014-04-22 09:03:13","updated_at":"2014-04-22 09:03:13","drive_type":"4X2","user_owns":1,"pivot":{"user_id":"1","vehicle_id":"1"}}}'
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Vehicle vrm Kana found.","data":{"id":"3","vrm":"KANa","type":"2","combined_make":"","model_range_desc":"","drive_type":"","created_at":"2014-05-30 13:13:56","updated_at":"2014-05-30 13:13:56","user_owns":1,"is_default":0}}'
                 ),
                 array(
                     'action' => 'Error',
@@ -574,7 +586,7 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Vehicles found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Your vehicles list","data":[{"id":"1","vrm":"KANa","created_at":"2014-04-22 09:03:13","updated_at":"2014-04-22 09:03:13","drive_type":"4X2","user_owns":1,"pivot":{"user_id":"1","vehicle_id":"1"}},{"id":"2","vrm":"KANaa","created_at":"2014-04-22 09:59:00","updated_at":"2014-04-22 09:59:00","drive_type":"","user_owns":1,"pivot":{"user_id":"1","vehicle_id":"2"}},{"id":"4","vrm":"123","created_at":"2014-05-09 10:35:52","updated_at":"2014-05-09 10:35:52","drive_type":"","user_owns":1,"pivot":{"user_id":"1","vehicle_id":"4"}}]}'
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Your vehicles list","data":[{"id":"3","vrm":"KANa","type":"2","combined_make":"","model_range_desc":"","drive_type":"","created_at":"2014-05-30 13:13:56","updated_at":"2014-05-30 13:13:56","user_owns":1,"is_default":0}]}'
                 ),
                 array(
                     'action' => 'Error',

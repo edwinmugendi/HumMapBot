@@ -118,7 +118,7 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Card found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Card token NTQGu found.","data":{"id":"1","user_id":"1","gateway_id":"1","name":"","number":"442244******4444","address_street":"test address","address_city":"manchester","address_postal_code":"m13df","address_country":"GB","token":"NTQGu","expiry":"0000-00-00 00:00:00","created_at":"2014-05-07 17:08:35","updated_at":"2014-05-07 17:08:35"}}'
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Card id 1 found.","data":{"id":"1","user_id":"1","gateway_id":"1","name":"","number":"411111******1111","address_street":"8 Exchange Quay","address_city":"Manchester","address_postal_code":"M5 3EJ","address_country":"GB","token":"AlRui","expiry":"03\/2015","created_at":"2014-05-31 12:45:34","updated_at":"2014-05-31 12:45:34","is_default":1}}'
                 ),
                 array(
                     'action' => 'Error',
@@ -147,7 +147,7 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Cards found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Card\'s list","data":[{"id":"1","user_id":"1","gateway_id":"1","name":"","number":\"442244******4444","address_street":"test address","address_city":"manchester","address_postal_code":"m13df","address_country":"GB","token":"NTQGu","expiry":"0000-00-00 00:00:00","created_at":"2014-05-07 17:08:35","updated_at":"2014-05-07 17:08:35"},{"id":"2","user_id":"1","gateway_id":"1","name":"","number":"447815******2688","address_street":"Nairobi","address_city":"Nairobi","address_postal_code":"00200","address_country":"UG","token":"Bulan","expiry":"0000-00-00 00:00:00","created_at":"2014-05-07 17:08:35","updated_at":"2014-05-07 17:08:35"}]}'
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Card\'s list","data":{"list":[{"id":"8","user_id":"1","gateway_id":"1","name":"","number":"411111******1111","address_street":"8 Exchange Quay","address_city":"Manchester","address_postal_code":"M5 3EJ","address_country":"GB","token":"AlRui","expiry":"03\/2015","created_at":"2014-05-31 12:45:34","updated_at":"2014-05-31 12:45:34","is_default":1}],"pagination":{"current_page":1,"last_page":1,"per_page":30,"total":1,"from":1,"count":1}}}'
                 ),
                 array(
                     'action' => 'Error',

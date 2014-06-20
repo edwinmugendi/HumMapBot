@@ -10,7 +10,7 @@ return array(
     'clickatell' => array(
         "apiId" => "3422899",
         "username" => "lavamsg",
-        "password" => "OEfCOBESeVeBGN",
+        "password" => "U7qWFNgp",
     ),
     'urbanairship'=>array(
         'appKey'=>'D67O0ivYSCO0J9TsRwyyAQ',

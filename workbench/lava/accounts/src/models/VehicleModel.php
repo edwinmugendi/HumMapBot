@@ -23,7 +23,8 @@ class VehicleModel extends \Eloquent {
     );
     //Appends fields
     protected $appends = array(
-        'user_owns'
+        'user_owns',
+        'is_default'
     );
     protected $hidden = array(
         'status',
@@ -65,7 +66,7 @@ class VehicleModel extends \Eloquent {
      */
     public function users() {
         return $this->belongsToMany(\Util::buildNamespace('accounts', 'user', 2), 'acc_users_vehicles', 'vehicle_id', 'user_id')
-            ->whereNull('acc_users_vehicles.dropped_at');
+                        ->whereNull('acc_users_vehicles.dropped_at');
     }
 
 //E# users() function
@@ -81,6 +82,19 @@ class VehicleModel extends \Eloquent {
     }
 
 //E# getUserOwnsAttribute() function
+
+    /**
+     * S# getIsDefaultAttribute() function
+     * Is this vehicle the default
+     */
+    public function getIsDefaultAttribute() {
+        //Get the logged in user vrm
+        $vrm = $this->users()->whereUserId(\Auth::user()->id)->first()->vrm;
+
+        return ($this->attributes['vrm'] == $vrm) ? 1 : 0;
+    }
+
+//E# getIsDefaultAttribute() function
 }
 
 //E# VehicleModel() Class

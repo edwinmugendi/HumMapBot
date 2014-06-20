@@ -3,6 +3,7 @@
 namespace Lava\Products;
 
 use Lava\Accounts\UserController;
+use Lava\Accounts\VehicleController;
 
 /**
  * S# ProductModel() Class
@@ -22,6 +23,7 @@ class ProductModel extends \BaseModel {
     //Appends fields
     protected $appends = array(
         'currency',
+        'price',
         'price_1',
         'price_2'
     );
@@ -71,6 +73,31 @@ class ProductModel extends \BaseModel {
     }
 
 //E# getCurrencyAttribute() function
+
+    /**
+     * S# getPriceAttribute() function
+     * Get Price
+     * 
+     * @return mixed Effective price
+     */
+    public function getPriceAttribute() {
+        //Create vehicle controller
+        $vehicleController = new VehicleController();
+
+        if ($this->loggedInUser && $this->loggedInUser->vrm) {//User exists
+            //Get vehicle by vrm
+            $vehicleModel = $vehicleController->getModelByField('vrm', $this->loggedInUser->vrm);
+
+            if ($vehicleModel) {//Model exists
+                return $vehicleModel->type == 2 ? $this->getPrice2Attribute() : $this->getPrice1Attribute();
+            }//E# if else statement
+        }//E# if statement
+        //User not logged in or has not set the default card
+
+        return $this->getPrice1Attribute();
+    }
+
+//E# getPriceAttribute() function
 
     /**
      * S# getPrice1Attribute() function

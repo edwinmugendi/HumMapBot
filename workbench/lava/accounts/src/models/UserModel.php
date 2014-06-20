@@ -32,6 +32,8 @@ class UserModel extends \Eloquent {
         'notify_email',
         'notify_push',
         'os',
+        'vrm',
+        'card',
         'push_token',
         'app_version',
         'role_id',
@@ -60,7 +62,7 @@ class UserModel extends \Eloquent {
         'phone' => 'required',
         'password' => 'required',
         'verification_code' => '',
-         'email' => 'required|unique:acc_users',//TODO
+        'email' => 'required|unique:acc_users', //TODO
         //'email' => 'required|email', //TODO Uncomment above
         'location' => 'latLng',
         'role_id' => 'integer',
@@ -80,6 +82,8 @@ class UserModel extends \Eloquent {
         'notify_push' => 'integer|between:0,1',
         'push_token' => '',
         'os' => 'in:ios,android',
+        'vrm' => '',
+        'card'=>'',
         'old_password' => 'required_with:new_password',
         'new_password' => 'password',
     );
@@ -111,7 +115,7 @@ class UserModel extends \Eloquent {
     public function unredeemedPromotions() {
         return $this->promotions()
                         ->whereRedeemed(0)
-                       ->where('pdt_promotions.expiry_date', '>', Carbon::now());
+                        ->where('pdt_promotions.expiry_date', '>', Carbon::now());
     }
 
 //E# promotions() function
@@ -146,7 +150,7 @@ class UserModel extends \Eloquent {
     }
 
 //E# cards() function
-    
+
     /**
      * S# transactions() function
      * Set one to many relationship to Card Model
@@ -156,15 +160,14 @@ class UserModel extends \Eloquent {
     }
 
 //E# transactions() function
-    
-    
+
     /**
      * S# favourites() function
      * Set one to many relationship to Feel Model
      */
     public function favourites() {
         return $this->belongsToMany(\Util::buildNamespace('merchants', 'location', 2), 'mct_feels', 'user_id', 'location_id')
-            ->whereType(1);
+                        ->whereType(1);
     }
 
 //E# favourites() function
