@@ -47,37 +47,37 @@ App::error(function(Exception $exception, $code) {
     Log::error($exception);
 });
 
-//Register Validation exception
+//Register 404 (Validation) exception
 App::error(function(Api400Exception $exception, $code) {
 
     return $exception->thrower();
 });
 
-//Register API Success "exception" - Not exception per se but a good way to listen and return 200
+//Register 200 (Success) "exception" - Not exception per se but a good way to listen and return 200
 App::error(function(Api200Exception $exception, $code) {
 
     return $exception->thrower();
 });
 
-//Register API 404 exception
+//Register 404 (Not Found) exception
 App::error(function(Api404Exception $exception, $code) {
 
     return $exception->thrower();
 });
 
-//Register API 403 exception
+//Register 403 (Forbidden) exception
 App::error(function(Api403Exception $exception, $code) {
 
     return $exception->thrower();
 });
 
-//Register API 500 exception
+//Register 500 (Server Error) exception
 App::error(function(Api500Exception $exception, $code) {
 
     return $exception->thrower();
 });
 
- /*
+/*
   |--------------------------------------------------------------------------
   | Maintenance Mode Handler
   |--------------------------------------------------------------------------

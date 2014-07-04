@@ -162,7 +162,7 @@ class PaymentController extends PaymentsBaseController {
             //Set os to parameters
             $parameters['os'] = $userModel->os;
             //Converse
-            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('push', null, null, $userModel->id, $userModel->push_token, $template, \Config::get('app.locale'), $parameters));
+            //$sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('push', null, null, $userModel->id, $userModel->push_token, $template, \Config::get('app.locale'), $parameters));
         }//E# if statement
         
         if ($userModel->notify_sms && $userModel->phone) {//SMS
