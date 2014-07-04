@@ -39,9 +39,7 @@ class ProductModel extends \BaseModel {
         'created_by' => 'required|integer',
         'updated_by' => 'required|integer',
     );
-    //Does user has enough stamps for a free wash
-    protected $freePrice = false;
-
+  
     /**
      * S# __construct() function
      * Constuctor
@@ -81,6 +79,7 @@ class ProductModel extends \BaseModel {
      * @return mixed Effective price
      */
     public function getPriceAttribute() {
+
         //Create vehicle controller
         $vehicleController = new VehicleController();
 
@@ -106,11 +105,10 @@ class ProductModel extends \BaseModel {
      * @return mixed Effective price
      */
     public function getPrice1Attribute() {
-
         //Create user controller
         $userController = new UserController();
 
-        if ($this->attributes['loyable']) {//This attribute is loyable
+        if ($this->attributes['loyable']) {//This product is loyable
             if ($this->loggedInUser) {//User exists
                 //Cache location stamps
                 $locationStamps = $this->location()->first()->loyalty_stamps;
@@ -140,7 +138,27 @@ class ProductModel extends \BaseModel {
      * @return mixed Effective price
      */
     public function getPrice2Attribute() {
-        return $this->freePrice != false ? $this->freePrice : $this->attributes['price_2'];
+        //Create user controller
+        $userController = new UserController();
+
+        if ($this->attributes['loyable']) {//This product is loyable
+            if ($this->loggedInUser) {//User exists
+                //Cache location stamps
+                $locationStamps = $this->location()->first()->loyalty_stamps;
+                if ($locationStamps) {
+                    //Get loyalty stamps
+                    $stampModel = $userController->callController(\Util::buildNamespace('payments', 'payment', 1), 'getLocationStamps', array($this->location()->first()->id, $this->loggedInUser->id));
+
+                    if ($stampModel) {//Stamp found
+                        if ((int) $stampModel->feeling >= $locationStamps) {//User qualifies for a free wash
+                            return $this->freePrice = \Lang::get('products::product.api.freePrice');
+                        }//E# if statement
+                    }//E# if statement
+                }//E# if statement
+            }//E# if statement
+        }//E# if statement
+        //Return actual prices
+        return $this->attributes['price_2'];
     }
 
 //E# getPrice2Attribute() function

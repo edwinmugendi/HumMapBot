@@ -68,7 +68,7 @@ class PromotionController extends ProductsBaseController {
                 'price' => (string) round((floatval($effectivePrice) + floatval($surcharge)), 2),
                 'id' => $singlePromotion['id'],
                 'description' => $singlePromotion['description'],
-                'expiry_date' => Carbon::createFromFormat('Y-m-d H:i:s', $singlePromotion['expiry_date'])->format('d-m-Y'),
+                'expiry_date' => $singlePromotion['expiry_date'],
                 'code' => $singlePromotion['code'],
                 'type' => $singlePromotion['type'],
                 'value' => $singlePromotion['value']
