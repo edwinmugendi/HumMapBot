@@ -15,7 +15,8 @@ class CardModel extends \Eloquent {
     protected $softDelete = true;
     //Appends fields
     protected $appends = array(
-        'is_default'
+        'is_default',
+        'app55_id'
     );
     //User owned
     public $userOwned = true;
@@ -81,6 +82,17 @@ class CardModel extends \Eloquent {
     }
 
 //E# getIsDefaultAttribute() function
+
+    /**
+     * S# getApp55IdAttribute() function
+     * Get User App55 Id
+     */
+    public function getApp55IdAttribute() {
+        //Return app55 id
+        return $this->user()->first()->app55_id;
+    }
+
+//E# getApp55IdAttribute() function
 }
 
 //E# CardModel() Class

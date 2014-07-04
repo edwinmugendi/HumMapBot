@@ -22,14 +22,14 @@ class CardController extends PaymentsBaseController {
      * @return; 
      */
     public function afterDeleting($controllerModel) {
-        
+
         //Delete card on app55 and db
         $this->deleteApp55Card($this->user['app55_id'], $controllerModel->token);
         return;
     }
 
 //E# afterDeleting() function
-    
+
     /**
      * S# deleteApp55Card() function
      * Delete card on app55 and database
@@ -38,48 +38,47 @@ class CardController extends PaymentsBaseController {
      * @param string $token Card token
      *
      */
-    public function deleteApp55Card($app55UserId,$token){
-        
+    public function deleteApp55Card($app55UserId, $token) {
+
         //Build delete data
         $deleteData = array(
             'app55UserId' => $app55UserId,
             'token' => $token
         );
-        
+
         //Delete card on app55
         $deleteCardResponse = $this->callController(\Util::buildNamespace('payments', 'app55', 1), 'deleteCard', array($deleteData));
-        
+
         if ($deleteCardResponse['status']) {//Card deleted on App55  
-            
             $parameters = array(
-                'withTrashed'=>true
+                'withTrashed' => true
             );
-            
+
             //Get trashed card
             $cardModel = $this->getModelByField('token', $token, $parameters);
-            
-            if($cardModel){//Card founds
+
+            if ($cardModel) {//Card founds
                 $cardModel->forceDelete();
             }//E# if statement
         }//E# if else statement
-        
-    }//E# deleteApp55Card() function
-    
+    }
+
+//E# deleteApp55Card() function
+
     /**
-     * S# prepareRelation() function
-     * Prepare relation
+     * S# prepareModelToReturn() function
+     * Prepare model to relation
      * 
      * @param array $rawRelation Raw relation
      */
-    public function prepareRelation($rawRelation) {
-        array_except($rawRelation, array('pivot'));
+    public function prepareModelToReturn($rawRelation) {
 
-        $rawRelation['app55_id'] = $this->user['app55_id'];
+        array_except($rawRelation, array('pivot'));
 
         return $rawRelation;
     }
 
-//E# prepareRelation() function
+//E# prepareModelToReturn() function
 
     /**
      * S# postSync() function
@@ -174,8 +173,7 @@ class CardController extends PaymentsBaseController {
     }
 
 //E# getCardIfItExists() function
-    
-    
+
     /**
      * S# getVerbativeCardUsed() function
      * @author Edwin Mugendi
@@ -185,15 +183,17 @@ class CardController extends PaymentsBaseController {
      * 
      * @return string verbative card
      */
-    public function getVerbativeCardUsed($token){
-           $cardModel = $this->getModelByField('token', $token);
-           
-           if($cardModel){
-               return $cardModel->number;
-           }else{
-               return '';
-           }
-    }//E# getVerbativeCardUsed() function
+    public function getVerbativeCardUsed($token) {
+        $cardModel = $this->getModelByField('token', $token);
+
+        if ($cardModel) {
+            return $cardModel->number;
+        } else {
+            return '';
+        }
+    }
+
+//E# getVerbativeCardUsed() function
 }
 
 //E# CardController() function
