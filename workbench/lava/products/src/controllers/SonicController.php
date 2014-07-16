@@ -21,7 +21,7 @@ class SonicController extends ProductsBaseController {
         //IP check 
         if (!\App::environment('local')) {
             if (!in_array($this->input['ipAddress'], \Config::get('thirdParty.sonic.trustedIps'))) {
-                return;
+                return "Untrusted IP";
             }//E# if statement
         }//E# if statement
         //Prepare Application user id
