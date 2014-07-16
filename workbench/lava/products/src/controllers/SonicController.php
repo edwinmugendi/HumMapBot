@@ -1,0 +1,59 @@
+<?php
+
+namespace Lava\Products;
+
+/**
+ * S# SonicController() function
+ * Sonic controller
+ * @author Edwin Mugendi
+ */
+class SonicController extends ProductsBaseController {
+
+    //Controller
+    public $controller = 'sonic';
+
+    /**
+     * S# getCallback() function
+     * Callback
+     */
+    public function getCallback() {
+
+        //IP check 
+        if (!\App::environment('local')) {
+            if (!in_array($this->input['ipAddress'], \Config::get('thirdParty.sonic.trustedIps'))) {
+                return;
+            }//E# if statement
+        }//E# if statement
+        //Prepare Application user id
+        if (array_key_exists('applicationUserId', $this->input)) {
+            $this->input['user_id'] = $this->input['applicationUserId'];
+        }//E# if statement
+        //Prepare event id
+        if (array_key_exists('eventId', $this->input)) {
+            $this->input['event_id'] = $this->input['eventId'];
+        }//E# if statement
+        //Prepare rewards
+        if (array_key_exists('rewards', $this->input)) {
+            $this->input['points'] = $this->input['rewards'];
+        }//E# if statement
+        //Validate the call using the signature
+        if (md5($this->input['timestamp'] . $this->input['event_id'] . $this->input['user_id'] . $this->input['points'] . \Config::get('thirdParty.sonic.secret')) != $this->input['signature']) {
+            //return;
+        }//E# if statement
+        //Get model by event id
+        $sonicModel = $this->getModelByField('event_id', $this->input['event_id']);
+
+        if ($sonicModel) {//Negative
+            $sonicModel->points = ($sonicModel->points - $this->input['points']);
+        } else {//Positive
+            //Create sonic model
+            $this->createIfValid($this->input, true);
+        }//E# if statement
+
+        return $this->input['event_id'] . ":OK";
+    }
+
+//E# getCallback() function
+}
+
+//E# SonicController() function
