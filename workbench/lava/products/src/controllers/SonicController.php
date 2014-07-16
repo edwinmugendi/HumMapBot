@@ -36,6 +36,10 @@ class SonicController extends ProductsBaseController {
         if (array_key_exists('rewards', $this->input)) {
             $this->input['points'] = $this->input['rewards'];
         }//E# if statement
+        //Prepare item name
+        if (array_key_exists('itemName', $this->input)) {
+            $this->input['item_name'] = $this->input['itemName'];
+        }//E# if statement
         //Validate the call using the signature
         if (md5($this->input['timestamp'] . $this->input['event_id'] . $this->input['user_id'] . $this->input['points'] . \Config::get('thirdParty.sonic.secret')) != $this->input['signature']) {
             //return;
@@ -44,7 +48,15 @@ class SonicController extends ProductsBaseController {
         $sonicModel = $this->getModelByField('event_id', $this->input['event_id']);
 
         if ($sonicModel) {//Negative
-            $sonicModel->points = ($sonicModel->points - $this->input['points']);
+            if (((int) $sonicModel->negated == 0)) {
+                //Reduce points
+                $sonicModel->points = ($sonicModel->points - $this->input['points']);
+
+                //Mark as negated
+                $sonicModel->negated = 1;
+
+                $sonicModel->save();
+            }//E# if statement
         } else {//Positive
             //Create sonic model
             $this->createIfValid($this->input, true);

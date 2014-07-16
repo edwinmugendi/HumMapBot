@@ -21,6 +21,8 @@ class CreateSonicTable extends Migration {
             $table->string('item_name', 255);
             $table->string('signature', 255);
             $table->string('timestamp', 255);
+            $table->boolean('negated');
+            
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();
