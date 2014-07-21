@@ -90,7 +90,11 @@ class SonicController extends ProductsBaseController {
 
 //E# getCallback() function
 
-
+    
+    /**
+     * S# sonic() function
+     * Cron job to award user promotion from sonic points
+     */
     public function sonic() {
         //Current date
         $now = Carbon::now();
@@ -185,7 +189,7 @@ class SonicController extends ProductsBaseController {
             }
         }//E# if statement
 
-        return "Processed";
+        return "Cron job called";
     }
 
 //E# sonic function
