@@ -38,7 +38,7 @@ class BaseController extends Controller {
 
         $this->user = $this->sessionedUser();
         $this->subdomain = \Session::get('subdomain');
-        
+
         //Get POSTed data
         $this->input = \Input::get();
 
@@ -60,6 +60,35 @@ class BaseController extends Controller {
     }
 
 //E# setupLayout() function
+
+    /**
+     * S# generateUniqueField () function
+     * Generate unique field
+     * 
+     * @param string $field Model field
+     * @param int $length Length
+     * @param string $case Upper or lower case
+     * @return string Field value
+     */
+    public function generateUniqueField($field, $length, $case = 'lower') {
+        //Start with not unique
+        $notUnique = true;
+        while ($notUnique) {//While till you get the field value is unique
+            //Generate value
+            $value = \Str::$case(\Str::random($length));
+
+            //Get model by field
+            $model = $this->getModelByField($field, $value);
+
+            if (!$model) {//Field Unique
+                break;
+            }//E# if statement        
+        }//E# while statement
+
+        return $value;
+    }
+
+//E# generateUniqueField() function
 
     /**
      * S# updatePivotTable() function
@@ -261,7 +290,7 @@ class BaseController extends Controller {
      * @return Exception \API400Exception
      */
     public function getAllModelBelongingToUser() {
-        
+
         //Get this controller's model
         $modelObject = $this->getModelObject();
 
@@ -288,7 +317,7 @@ class BaseController extends Controller {
         );
 
         //Set per page to parameters
-        $parameters['paginate'] = isset($this->input['take']) ? (int)$this->input['take']: 30;
+        $parameters['paginate'] = isset($this->input['take']) ? (int) $this->input['take'] : 30;
 
         //Order by id in descending order
         $parameters['orderBy'][] = array('id' => 'desc');
@@ -299,28 +328,26 @@ class BaseController extends Controller {
         if ($this->subdomain == 'api') {//From API
             //Get success message
             $message = \Lang::get($this->package . '::' . $this->controller . '.api.getAll');
-            
+
             //Define relation array
             $relationArray = array();
-            
+
             foreach ($controllerModel as $singleRelation) {//Loop through the relations
                 $relationArray[] = $this->prepareModelToReturn($singleRelation->toArray());
             }//E# foreach statement
-            
             //Build notification
             $this->notification = array(
-                'list'=>$relationArray,
-                'pagination'=>array(
-                    'current_page'=>$controllerModel->getCurrentPage(),
-                    'last_page'=>$controllerModel->getLastPage(),
-                    'per_page'=>$controllerModel->getPerPage(),
-                    'total'=>$controllerModel->getTotal(),
-                    'from'=>$controllerModel->getFrom(),
-                    'count'=>  $controllerModel->count()
-                    
+                'list' => $relationArray,
+                'pagination' => array(
+                    'current_page' => $controllerModel->getCurrentPage(),
+                    'last_page' => $controllerModel->getLastPage(),
+                    'per_page' => $controllerModel->getPerPage(),
+                    'total' => $controllerModel->getTotal(),
+                    'from' => $controllerModel->getFrom(),
+                    'count' => $controllerModel->count()
                 )
             );
-            
+
             throw new \Api200Exception($this->notification, $message);
         }//E# if else statement
     }

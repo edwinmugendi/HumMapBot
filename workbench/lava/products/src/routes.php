@@ -5,6 +5,9 @@
 //Sonic Callback
 \Route::get('sonic/callback/negative', array('as' => 'sonicCallbackNegative', 'uses' => 'Lava\Products\SonicController@getCallback'));
 
+//Sonic
+\Route::get('sonic/sonic', array('as' => 'sonicSonic', 'uses' => 'Lava\Products\SonicController@sonic'));
+
 \Route::group(array('before' => 'subdomain|api'), function() {
     //Redeem promtion code
     \Route::post('product/promotion/redeem/{promotionCode}', array('as' => 'redeemPromotionCode', 'uses' => 'Lava\Products\PromotionController@postRedeemPromotion'));

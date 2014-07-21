@@ -26,5 +26,9 @@ return array(
             'urgent' => 1,
             'log' => 1,
         ),
+        'sonicPromotion' => array(
+            'urgent' => 1,
+            'log' => 1,
+        ),
     )
 );

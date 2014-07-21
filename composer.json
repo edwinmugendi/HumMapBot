@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "laravel/framework": "4.1.*",
+        "laravel/framework": "4.2.*",
         "patricktalmadge/bootstrapper": "dev-develop",
         "nesbot/Carbon": "*",
         "facebook/php-sdk": "*",

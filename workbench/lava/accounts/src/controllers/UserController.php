@@ -165,7 +165,6 @@ class UserController extends AccountsBaseController {
         if ($controllerModel->phone) {//Phone
             $app55User['phone'] = $controllerModel->phone;
         }//E# if statement
-        
         //Create App55 user
         $app55Response = $this->callController(\Util::buildNamespace('payments', 'app55', 1), 'createUser', array($app55User));
 
@@ -189,7 +188,7 @@ class UserController extends AccountsBaseController {
      * @param Model $controllerModel User model
      */
     public function updateLoginSpecificFields(&$controller, &$controllerModel) {
-        $controllerModel->token = $this->generateUniqueToken();
+        $controllerModel->token = $this->generateUniqueField('token', 32);
 
         //Update user login details
         $controllerModel->last_login = Carbon::now();
@@ -213,32 +212,7 @@ class UserController extends AccountsBaseController {
 
 //E# updateLoginSpecificFields() function
 
-    /**
-     * S# generateUniqueToken () function
-     * Generate unique token
-     * 
-     * @return string Token
-     */
-    private function generateUniqueToken() {
-        //Start with not unique
-        $notUnique = true;
-        while ($notUnique) {//While till you get the token is unique
-            //Generate token
-            $token = \Str::lower(\Str::random(32));
-
-            //Get user model by token
-            $userModel = $this->getModelByField('token', $token);
-
-            if (!$userModel) {//Token Unique
-                break;
-            }//E# if statement        
-        }//E# while statement
-
-        return $token;
-    }
-
-//E# generateUniqueToken() function
-
+    
     /**
      * S# apiLoginSuccess() function
      * API login success
@@ -266,11 +240,11 @@ class UserController extends AccountsBaseController {
      * @return 
      */
     public function beforeUpdating() {
-        
-        if(isset($this->input['old_password']) && isset($this->inout['new_password']) ){
-        $this->input['password'] = \Hash::make($this->input['new_password']);
+
+        if (isset($this->input['old_password']) && isset($this->inout['new_password'])) {
+            $this->input['password'] = \Hash::make($this->input['new_password']);
         }//E# if statement
-        
+
         $this->input['created_by'] = $this->user['id'] ? $this->user['id'] : 1;
         $this->input['updated_by'] = $this->user['id'] ? $this->user['id'] : 1;
         return;

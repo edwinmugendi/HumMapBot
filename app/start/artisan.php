@@ -11,3 +11,7 @@
 |
 */
 
+//Register Sonic Command
+Artisan::add(new SonicCommand);
+
+

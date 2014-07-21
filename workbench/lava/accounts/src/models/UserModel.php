@@ -37,6 +37,7 @@ class UserModel extends \Eloquent {
         'push_token',
         'app_version',
         'role_id',
+        'points',
         'status',
         'created_by',
         'updated_by',

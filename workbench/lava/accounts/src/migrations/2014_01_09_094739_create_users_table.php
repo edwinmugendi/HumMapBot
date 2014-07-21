@@ -57,6 +57,9 @@ class CreateUsersTable extends Migration {
 
             //APP55
             $table->integer('app55_id');
+            
+            //Sonic
+            $table->integer('points');
 
             //Notifications
             $table->boolean('notify_sms');
