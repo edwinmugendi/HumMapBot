@@ -416,13 +416,11 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         $userModel = $userController->getModelByField('token', $token);
 
         if ($userModel) {//User exists
-            if (\Auth::check() == false) {//User not logged in
-                //Login user
-                \Auth::login(\Auth::loginUsingId($userModel->id));
+            //Login user
+            \Auth::login(\Auth::loginUsingId($userModel->id));
 
-                //Session user
-                $userController->sessionUser($userModel);
-            }//E# if statement
+            //Session user
+            $userController->sessionUser($userModel);
 
             return true;
         }//E# if statement
@@ -549,7 +547,6 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
             } else {//Don't own
                 //Set message
                 $this->message = \Lang::get($vehicleController->package . '::' . $vehicleController->controller . '.validation.userOwns', array('vrm' => $vrm));
-
             }//E# if else statement
         } else {//Vehicle does exists
             //Set notification
