@@ -23,7 +23,6 @@ class CardController extends PaymentsBaseController {
      */
     public function afterDeleting($controllerModel) {
 
-        //dd($controllerModel->toArray());
         //Delete card on app55 and db
         $this->deleteApp55Card($controllerModel);
         return;
