@@ -23,8 +23,9 @@ class CardController extends PaymentsBaseController {
      */
     public function afterDeleting($controllerModel) {
 
+        //dd($controllerModel->toArray());
         //Delete card on app55 and db
-        $this->deleteApp55Card($this->user['app55_id'], $controllerModel->token);
+        $this->deleteApp55Card($controllerModel);
         return;
     }
 
@@ -35,30 +36,44 @@ class CardController extends PaymentsBaseController {
      * Delete card on app55 and database
      * 
      * @param id $app55UserId App55 user id
-     * @param string $token Card token
+     * @param string $cardModel Card Model
      *
      */
-    public function deleteApp55Card($app55UserId, $token) {
+    public function deleteApp55Card(&$cardModel) {
 
         //Build delete data
         $deleteData = array(
-            'app55UserId' => $app55UserId,
-            'token' => $token
+            'app55UserId' => $cardModel->app55_id,
+            'token' => $cardModel->token
         );
 
         //Delete card on app55
         $deleteCardResponse = $this->callController(\Util::buildNamespace('payments', 'app55', 1), 'deleteCard', array($deleteData));
 
         if ($deleteCardResponse['status']) {//Card deleted on App55  
-            $parameters = array(
-                'withTrashed' => true
+            //Fields to select
+            $fields = array('id');
+
+            //Set where clause
+            $whereClause = array(
+                array(
+                    'where' => 'where',
+                    'column' => 'id',
+                    'operator' => '=',
+                    'operand' => $cardModel->id
+                )
             );
 
-            //Get trashed card
-            $cardModel = $this->getModelByField('token', $token, $parameters);
+            //Set per page to parameters
+            $parameters['withTrashed'] = true;
+
+            //Select this users models
+            $cardModel = $this->select($fields, $whereClause, 2, $parameters);
 
             if ($cardModel) {//Card founds
-                $cardModel->forceDelete();
+                foreach ($cardModel as $singleModel) {
+                    $singleModel->forceDelete();
+                }//E# foreach statement
             }//E# if statement
         }//E# if else statement
     }

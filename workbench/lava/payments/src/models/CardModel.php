@@ -2,17 +2,20 @@
 
 namespace Lava\Payments;
 
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
+
 /**
  * S# CardModel() Class
  * @author Edwin Mugendi
  * Card Model
  */
 class CardModel extends \Eloquent {
-
+    
+    use SoftDeletingTrait;
     //Table
     protected $table = 'fnc_cards';
     //Soft delete
-    protected $softDelete = true;
+    protected $dates = ['deleted_at'];
     //Appends fields
     protected $appends = array(
         'is_default',
@@ -77,7 +80,7 @@ class CardModel extends \Eloquent {
     public function getIsDefaultAttribute() {
         //Get the logged in user card
         $token = $this->user()->first()->card;
-
+        
         return ($this->attributes['token'] == $token) ? 1 : 0;
     }
 
