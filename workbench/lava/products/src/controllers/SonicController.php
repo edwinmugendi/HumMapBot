@@ -19,7 +19,6 @@ class SonicController extends ProductsBaseController {
      * Callback
      */
     public function getCallback() {
-        dd(\Request::segment(3));
         //return $this->input;
         //IP check 
         if (!\App::environment('local')) {
@@ -93,7 +92,6 @@ class SonicController extends ProductsBaseController {
         $sonicModel = $this->select($fields, $whereClause, 1);
 
         if ($sonicModel) {//Negative
-            
             
             if (((int) $sonicModel->negated == 0) && (\Request::segment(3) == 'negative')) {
                 //Reduce points
