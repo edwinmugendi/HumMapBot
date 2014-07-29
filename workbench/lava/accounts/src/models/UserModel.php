@@ -115,8 +115,8 @@ class UserModel extends \Eloquent {
      */
     public function unredeemedPromotions() {
         return $this->promotions()
-                        ->whereRedeemed(0)
-                        ->where('pdt_promotions.expiry_date', '>', Carbon::now());
+                        ->whereRedeemed(0);
+                        //->where('pdt_promotions.expiry_date', '>', Carbon::now());
     }
 
 //E# promotions() function

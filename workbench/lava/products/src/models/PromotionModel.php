@@ -15,6 +15,13 @@ class PromotionModel extends \Eloquent {
     protected $table = 'pdt_promotions';
     //Fillable fields
     protected $fillable = array(
+        'code',
+        'description',
+        'expiry_date',
+        'type',
+        'value',
+        'location_id',
+        'new_customer',
         'status',
         'created_by',
         'updated_by'
