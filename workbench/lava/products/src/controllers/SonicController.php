@@ -21,11 +21,14 @@ class SonicController extends ProductsBaseController {
     public function getCallback() {
         //return $this->input;
         //IP check 
+        /*
         if (!\App::environment('local')) {
             if (!in_array($this->input['ipAddress'], \Config::get('thirdParty.sonic.trustedIps'))) {
                 return 'Untrusted IP';
             }//E# if statement
         }//E# if statement
+         * 
+         */
         //Prepare Application user id
         if (array_key_exists('applicationUserId', $this->input)) {
             $this->input['user_id'] = urldecode($this->input['applicationUserId']);
