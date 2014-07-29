@@ -9,7 +9,7 @@ return array(
       |
      */
     'sonic' => array(
-        'secret' => 'a43b2269d092b0a03fa98d9546510fe4',
+        'secret' => '1dc504',
         'trustedIps' => array(
             '79.125.5.179',
             '79.125.26.193',

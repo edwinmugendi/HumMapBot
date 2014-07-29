@@ -19,7 +19,7 @@ class SonicController extends ProductsBaseController {
      * Callback
      */
     public function getCallback() {
-
+        //return $this->input;
         //IP check 
         if (!\App::environment('local')) {
             if (!in_array($this->input['ipAddress'], \Config::get('thirdParty.sonic.trustedIps'))) {
@@ -28,7 +28,7 @@ class SonicController extends ProductsBaseController {
         }//E# if statement
         //Prepare Application user id
         if (array_key_exists('applicationUserId', $this->input)) {
-            $this->input['user_id'] = $this->input['applicationUserId'];
+            $this->input['user_id'] = urldecode($this->input['applicationUserId']);
         }//E# if statement
         //Prepare event id
         if (array_key_exists('eventId', $this->input)) {
@@ -53,20 +53,18 @@ class SonicController extends ProductsBaseController {
         ///sonic/callback/positive?applicationUserId=userid&rewards=1&eventId=593f2456aaf930dd723b9beb8b26d26c&itemName=itemname&signature=ef085b0c6acbf75ffaf454c1b9f64220&timestamp=201407291026&publisherSubId=publish&country=
         ////sonic/callback/positive?
         //applicationUserId=userid&
-        //
         //rewards=1&
-        //
         //eventId=593f2456aaf930dd723b9beb8b26d26c
-        //
         //&itemName=itemname
-        //
         //&signature=ef085b0c6acbf75ffaf454c1b9f64220
         //&timestamp=201407291026
-        //
         //&publisherSubId=publish&
         //country=
+        //Generate MD5
+        $md5 = md5($this->input['timestamp'] . $this->input['event_id'] . $this->input['user_id'] . $this->input['points'] . \Config::get('thirdParty.sonic.secret'));
+        
         //Validate the call using the signature
-        if (md5($this->input['timestamp'] . $this->input['event_id'] . $this->input['user_id'] . $this->input['points'] . \Config::get('thirdParty.sonic.secret')) != $this->input['signature']) {
+        if ($md5 != $this->input['signature']) {
             if (!\App::environment('local')) {
                 return "MD5 error";
             }//E# if statement
