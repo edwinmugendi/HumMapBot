@@ -23,6 +23,8 @@ class SonicModel extends \Eloquent {
         'commission_origin',
         'application_id',
         'item_name',
+        'country',
+        'publisher_sub_id',
         'status',
         'created_by',
         'updated_by'
