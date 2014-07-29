@@ -21,14 +21,11 @@ class SonicController extends ProductsBaseController {
     public function getCallback() {
         //return $this->input;
         //IP check 
-        /*
         if (!\App::environment('local')) {
             if (!in_array($this->input['ipAddress'], \Config::get('thirdParty.sonic.trustedIps'))) {
                 return 'Untrusted IP';
             }//E# if statement
         }//E# if statement
-         * 
-         */
         //Prepare Application user id
         if (array_key_exists('applicationUserId', $this->input)) {
             $this->input['user_id'] = urldecode($this->input['applicationUserId']);
@@ -65,7 +62,7 @@ class SonicController extends ProductsBaseController {
         //country=
         //Generate MD5
         $md5 = md5($this->input['timestamp'] . $this->input['event_id'] . $this->input['user_id'] . $this->input['points'] . \Config::get('thirdParty.sonic.secret'));
-        
+
         //Validate the call using the signature
         if ($md5 != $this->input['signature']) {
             if (!\App::environment('local')) {
@@ -117,6 +114,9 @@ class SonicController extends ProductsBaseController {
     /**
      * S# sonic() function
      * Cron job to award user promotion from sonic points
+     * Status = 0 = Unprocessed
+     * Status = 1 = Processed and user exists
+     * Status = 2 = Processed and user does not exists
      */
     public function sonic() {
         //Current date
@@ -147,41 +147,41 @@ class SonicController extends ProductsBaseController {
         $oneSonicModel = $this->select($fields, $whereClause, 1);
 
         if ($oneSonicModel) {//Found
-            //Fields to select
-            $fields = array('*');
+            //Get user by id
+            $userModel = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('id', $oneSonicModel->user_id));
 
-            //Set where clause
-            $whereClause = array(
-                array(
-                    'where' => 'where',
-                    'column' => 'status',
-                    'operator' => '=',
-                    'operand' => 0
-                ),
-                array(
-                    'where' => 'where',
-                    'column' => 'created_at',
-                    'operator' => '<',
-                    'operand' => $now
-                ),
-                array(
-                    'where' => 'where',
-                    'column' => 'user_id',
-                    'operator' => '=',
-                    'operand' => $oneSonicModel->user_id
-                )
-            );
-            //Take only   
-            $parameters['take'] = 10;
+            if ($userModel) {//User found
+                //Fields to select
+                $fields = array('*');
 
-            //Sonic Model
-            $sonicModel = $this->select($fields, $whereClause, 2);
+                //Set where clause
+                $whereClause = array(
+                    array(
+                        'where' => 'where',
+                        'column' => 'status',
+                        'operator' => '=',
+                        'operand' => 0
+                    ),
+                    array(
+                        'where' => 'where',
+                        'column' => 'created_at',
+                        'operator' => '<',
+                        'operand' => $now
+                    ),
+                    array(
+                        'where' => 'where',
+                        'column' => 'user_id',
+                        'operator' => '=',
+                        'operand' => $oneSonicModel->user_id
+                    )
+                );
+                //Take only   
+                $parameters['take'] = 10;
 
-            if ($sonicModel) {//Sonic Models found
-                //Get user by id
-                $userModel = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('id', $oneSonicModel->user_id));
+                //Sonic Model
+                $sonicModel = $this->select($fields, $whereClause, 2);
 
-                if ($userModel) {//User found
+                if ($sonicModel) {//Sonic Models found
                     //Promotion points
                     $promotionPoints = \Config::get('thirdParty.sonic.promotionPoints');
 
@@ -209,7 +209,10 @@ class SonicController extends ProductsBaseController {
                     //Save user model
                     $userModel->save();
                 }//E# if statement
-            }
+            } else {//No such user
+                $oneSonicModel->status = 2;
+                $oneSonicModel->save();
+            }//E# if statement
         }//E# if statement
 
         return "Cron job called";
