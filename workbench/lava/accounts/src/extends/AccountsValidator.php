@@ -279,7 +279,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
             $fb->setAccessToken($token);
 
             //Try getting user
-            $fbUserId = $fb->getUser();
+            $fbUserId = trim($fb->getUser());
 
             if ($fbUserId) {//User exists
                 //Get user profile from facebook
@@ -291,13 +291,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                 //Build where clause
                 $whereClause = array(
                     array(
-                        'where' => 'whereOr',
-                        'column' => 'email',
-                        'operator' => '=',
-                        'operand' => trim($fbUserProfile['email'])
-                    ),
-                    array(
-                        'where' => 'whereOr',
+                        'where' => 'where',
                         'column' => 'fb_uid',
                         'operator' => '=',
                         'operand' => $fbUserId
