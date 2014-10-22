@@ -15,11 +15,8 @@ Route::get('/', function() {
     return View::make('hello');
 });
 
-//Log database queries
-/*
-DB::listen(function($sql, $bindings, $time) {
-            \Log::debug(json_encode($sql));
-            \Log::debug(json_encode($bindings));
-        });
- * 
- */
+if (\App::environment() == 'local') {
+    DB::listen(function($sql, $bindings, $time) {
+        \Log::debug(json_encode($sql));
+    });
+}

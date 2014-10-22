@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration {
             $table->string('first_name', 255);
             $table->string('last_name', 255);
             $table->string('phone', 255);
-            $table->datetime('dob', 255);
+            $table->date('dob');
             $table->string('gender', 255);
 
             //Identity

@@ -284,14 +284,20 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
             if ($fbUserId) {//User exists
                 //Get user profile from facebook
                 $fbUserProfile = $fb->api('/me', 'GET');
-
+                
                 //Fields to select
                 $fields = array('*');
 
                 //Build where clause
                 $whereClause = array(
                     array(
-                        'where' => 'where',
+                        'where' => 'orWhere',
+                        'column' => 'email',
+                        'operator' => '=',
+                        'operand' => trim($fbUserProfile['email'])
+                    ),
+                    array(
+                        'where' => 'orWhere',
                         'column' => 'fb_uid',
                         'operator' => '=',
                         'operand' => $fbUserId
@@ -300,7 +306,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
 
                 //Get user by facebook id
                 $userModel = $userController->select($fields, $whereClause, 1);
-
+                
                 if ($userModel) {//User has already signed in facebook
                     if (!$userModel->app55_id) {//User does not an app55 account
                         $userController->createApp55User($userModel);
@@ -318,6 +324,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                         'last_name' => $fbUserProfile['last_name'],
                         'gender' => $fbUserProfile['gender'] ? $fbUserProfile['gender'] : '',
                         'status' => (int) $fbUserProfile['verified'],
+                        'dob'=>  Carbon::createFromFormat('m/d/Y',$fbUserProfile['birthday']),
                         'created_by' => 1,
                         'updated_by' => 1,
                         'role_id' => 1,
@@ -326,7 +333,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                         'notify_email' => 1,
                         'email' => $fbUserProfile['email']//TODO remove this
                     );
-
+                    
                     //Create user
                     $userModel = $userController->createIfValid($newUser, true);
 

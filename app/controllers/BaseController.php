@@ -818,7 +818,7 @@ class BaseController extends Controller {
 //E# delete() function
 
     public function select($fields, $whereClause, $oneOrAll, $parameters = array()) {
-
+        
         //Cache model namespace
         $model = \Util::buildNamespace($this->package, $this->controller, 2);
 
