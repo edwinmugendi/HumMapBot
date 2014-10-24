@@ -13,6 +13,9 @@
     //Feel location
     \Route::post('merchant/location/feel/{locationId}', array('as' => 'feelLocation', 'uses' => 'Lava\Merchants\FeelController@postFeel'));
 
+    //Unfeel location
+    \Route::post('merchant/location/unfeel/{locationId}', array('as' => 'unfeelLocation', 'uses' => 'Lava\Merchants\FeelController@postUnfeel'));
+
     //Get location feel
     \Route::post('merchant/location/feel/{locationId}/get/{type}', array('as' => 'feelLocationGet', 'uses' => 'Lava\Merchants\LocationController@getFeel'));
 });

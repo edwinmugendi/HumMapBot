@@ -204,7 +204,9 @@ class BaseController extends Controller {
             //Define relation array
             $relationArray = array();
             foreach ($userModel->$relation->toArray() as $singleRelation) {//Loop through the relations
-                $relationArray[] = $this->prepareModelToReturn($singleRelation);
+                if ($this->isModelViewable($singleRelation)) {
+                    $relationArray[] = $this->prepareModelToReturn($singleRelation);
+                }//E# if statement
             }//E# foreach statement
             //Throw 200 Exception
             throw new \Api200Exception($relationArray, $message);
@@ -224,6 +226,18 @@ class BaseController extends Controller {
     }
 
 //E# prepareModelToReturn() function
+
+    /**
+     * S# isModelViewable() function
+     * Is model viewable
+     * 
+     * @param array $model Model
+     */
+    public function isModelViewable($model) {
+        return true;
+    }
+
+//E# isModelViewable() function
 
     /**
      * S# getModelBelongingToUser() function
@@ -818,7 +832,7 @@ class BaseController extends Controller {
 //E# delete() function
 
     public function select($fields, $whereClause, $oneOrAll, $parameters = array()) {
-        
+
         //Cache model namespace
         $model = \Util::buildNamespace($this->package, $this->controller, 2);
 

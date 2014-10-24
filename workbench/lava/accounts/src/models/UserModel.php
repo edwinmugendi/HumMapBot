@@ -64,7 +64,6 @@ class UserModel extends \Eloquent {
         'password' => 'required',
         'verification_code' => '',
         'email' => 'required|unique:acc_users', //TODO
-        //'email' => 'required|email', //TODO Uncomment above
         'location' => 'latLng',
         'role_id' => 'integer',
         'notify_sms' => 'integer|between:0,1',
@@ -115,8 +114,8 @@ class UserModel extends \Eloquent {
      */
     public function unredeemedPromotions() {
         return $this->promotions()
-                        ->whereRedeemed(0);
-                        //->where('pdt_promotions.expiry_date', '>', Carbon::now());
+                        ->whereRedeemed(0)
+                        ->where('pdt_promotions.expiry_date', '>', Carbon::now());
     }
 
 //E# promotions() function

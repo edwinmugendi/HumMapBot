@@ -128,6 +128,23 @@ class PromotionController extends ProductsBaseController {
 //E# prepareModelToReturn() function
 
     /**
+     * S# isModelViewable() function
+     * Is model viewable
+     * 
+     * @param array $model Model
+     */
+    public function isModelViewable($model) {
+        //Now    
+        $now = Carbon::now();
+        //Expiry date    
+        $expiryDate = Carbon::createFromFormat('Y-m-d G:i:s', $model['expiry_date']);
+
+        return $expiryDate->gt($now) ? true : false;
+    }
+
+//E# isModelViewable() function
+
+    /**
      * S# postRedeemPromotion() function
      * Redeem a promotion code if valid
      * 

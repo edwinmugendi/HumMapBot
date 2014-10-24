@@ -168,7 +168,7 @@ class LocationModel extends \BaseModel {
                 return $stampModel->feeling;
             }//E# if statement
         }//E# if statement
-        return '-1';
+        return '0';
     }
 
 //E# getUserStampsAttribute() function

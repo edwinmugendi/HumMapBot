@@ -191,5 +191,56 @@ return array(
                 ),
             )
         ),
+        array(
+            'name' => 'Un feel a location or Delete location\'s favourite, rate, review)',
+            'note' => 'Delete a favourite, rate or review of a location',
+            'filtered' => 1,
+            'endpoint' => '/merchant/location/unfeel/{id}',
+            'httpVerb' => 'POST',
+            'parameters' => array(
+                array(
+                    'field' => 'id',
+                    'dataType' => 'integer',
+                    'note' => 'Location id Set this in the url not query string',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'type',
+                    'dataType' => 'integer',
+                    'note' => 'Set 1 to favourite<br> 2 to rate <br> 3 to review',
+                    'required' => 1,
+                ), array(
+                    'field' => 'review_id',
+                    'dataType' => 'integer',
+                    'note' => 'Review id. Required if <i>type</i> is 3',
+                    'required' => 0,
+                ), array(
+                    'field' => 'token',
+                    'dataType' => 'string',
+                    'note' => 'User API token',
+                    'required' => 1,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Location found',
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Location id 1 unfavoured","data":{"id":"7"}}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"id","error":"The id must be an integer."}]}'
+                ),
+                array(
+                    'action' => 'Not found',
+                    'httpCode' => 404,
+                    'note' => 'Object not found',
+                    'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Favourites with id \'1\' not found.","data":{"field":"id","type":"Favourites","value":"1"}}'
+                ),
+            )
+        ),
     )
 );

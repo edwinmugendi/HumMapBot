@@ -9,10 +9,15 @@ return array(
     'api' => array(
         'getSingle' => 'Location :field :value found.',
         'getAll' => 'Locations list',
-        'feel'=>array(
-            1=>'Location :field :value favoured',
-            2=>'Location :field :value rated',
-            3=>'Location :field :value reviewed'
+        'feel' => array(
+            1 => 'Location :field \':value\' favoured',
+            2 => 'Location :field \':value\' rated',
+            3 => 'Location :field \':value\' reviewed'
+        ),
+        'unfeel' => array(
+            1 => 'Location :field \':value\' unfavoured',
+            2 => 'Location :field \':value de-rated',
+            3 => 'Review of location :field \':value\' deleted'
         )
     ),
     'validation' => array(
