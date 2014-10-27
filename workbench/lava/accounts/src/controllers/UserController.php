@@ -212,7 +212,6 @@ class UserController extends AccountsBaseController {
 
 //E# updateLoginSpecificFields() function
 
-    
     /**
      * S# apiLoginSuccess() function
      * API login success
@@ -468,11 +467,136 @@ class UserController extends AccountsBaseController {
 
         //Get the validation rules
         $this->validationRules = array(
-            'facebook_token' => 'required|facebookLogin'
+            'location' => 'latLng',
+            'os' => 'in:ios,android',
+            'push_token' => '',
+            'app_version' => '',
+            'facebook_token' => 'required',
         );
 
         //Validate row to be inserted
         $validation = $this->isInputValid();
+
+        //Get FB configs
+        $fbConfig = array(
+            'appId' => \Config::get($this->package . '::thirdParty.facebook.appId'),
+            'secret' => \Config::get($this->package . '::thirdParty.facebook.appSecret'),
+            'scope' => \Config::get($this->package . '::thirdParty.facebook.scope'),
+            'allowSignedRequest' => false,
+        );
+        try {
+            //Call Facebook
+            $fb = new \Facebook($fbConfig);
+
+            $fb->setAccessToken($this->input['facebook_token']);
+
+            //Try getting user
+            $fbUserId = trim($fb->getUser());
+
+            if ($fbUserId) {//User exists
+                //Get user profile from facebook
+                $fbUserProfile = $fb->api('/me', 'GET');
+                
+                //Fields to select
+                $fields = array('*');
+
+                //Build where clause
+                $whereClause = array(
+                    array(
+                        'where' => 'orWhere',
+                        'column' => 'email',
+                        'operator' => '=',
+                        'operand' => trim($fbUserProfile['email'])
+                    ),
+                    array(
+                        'where' => 'orWhere',
+                        'column' => 'fb_uid',
+                        'operator' => '=',
+                        'operand' => $fbUserId
+                    )
+                );
+
+                //Get user by facebook id
+                $userModel = $this->select($fields, $whereClause, 1);
+
+                if ($userModel) {//User has already signed in facebook
+                    if (!$userModel->app55_id) {//User does not an app55 account
+                        $this->createApp55User($userModel);
+                    }//E# if statement
+                    //Update users email and fb uid
+                    $userModel->email = $fbUserProfile['email'];
+                    $userModel->fb_uid = $fbUserId;
+
+                    //Push token
+                    if (array_key_exists('push_token', $this->input)) {
+                        $userModel->push_token = $this->input['push_token'];
+                    }//E# if else statement
+                    //App version
+                    if (array_key_exists('app_version', $this->input)) {
+                        $userModel->app_version = $this->input['app_version'];
+                    }//E# if else statement
+                    //Os
+                    if (array_key_exists('os', $this->input)) {
+                        $userModel->os = $this->input['os'];
+                    }//E# if else statement
+                    //Location
+                    if (array_key_exists('location', $this->input)) {
+                        $userModel->lat = $this->input['location']['lat'];
+                        $userModel->lng = $this->input['location']['lng'];
+                    }//E# if else statement
+                    //Update user login specific fields
+                    $this->updateLoginSpecificFields($this, $userModel);
+                } else {//Register
+                    $newUser = array(
+                        'fb_uid' => $fbUserId,
+                        'first_name' => $fbUserProfile['first_name'],
+                        'last_name' => $fbUserProfile['last_name'],
+                        'gender' => $fbUserProfile['gender'] ? $fbUserProfile['gender'] : '',
+                        'status' => (int) $fbUserProfile['verified'],
+                        'dob' => Carbon::createFromFormat('m/d/Y', $fbUserProfile['birthday']),
+                        'created_by' => 1,
+                        'updated_by' => 1,
+                        'role_id' => 1,
+                        'notify_sms' => 1,
+                        'notify_push' => 1,
+                        'notify_email' => 1,
+                        'email' => $fbUserProfile['email']//TODO remove this
+                    );
+
+                    //Push token
+                    if (array_key_exists('push_token', $this->input)) {
+                        $newUser['push_token'] = $this->input['push_token'];
+                    }//E# if else statement
+                    //App version
+                    if (array_key_exists('app_version', $this->input)) {
+                        $newUser['app_version'] = $this->input['app_version'];
+                    }//E# if else statement
+                    //Os
+                    if (array_key_exists('os', $this->input)) {
+                        $newUser['os'] = $this->input['os'];
+                    }//E# if else statement
+                    //Location
+                    if (array_key_exists('location', $this->input)) {
+                        $newUser['lat'] = $this->input['location']['lat'];
+                        $newUser['lng'] = $this->input['location']['lng'];
+                    }//E# if else statement
+                    //Create user
+                    $userModel = $this->createIfValid($newUser, true);
+
+                    //Post create callback
+                    $this->afterCreating($userModel);
+
+                    //Update login specific fields
+                    $this->updateLoginSpecificFields($this, $userModel);
+                }//E# if else statement
+            } else {
+                //Set validation message
+                $this->message = \Lang::get($this->package . '::' . $this->controller . '.validation.facebook.noUser');
+            }//E# if else statement
+        } catch (FacebookApiException $e) {
+            throw new \Api500Exception($e->getMessage());
+        }//E# try catch exception
+        return false;
     }
 
 //E# postFacebookLogin() function
