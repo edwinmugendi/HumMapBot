@@ -103,7 +103,21 @@ class MessageController extends MessagesBaseController {
             'welcome'
         );
 
-        $sent = $this->sms(null, null, 1, '+254722', 'welcome', 'en', array());
+        //Message parameters
+        $parameters = array(
+            'name' => 'Edwin',
+            'tranId' => '1',
+            'product' => 'product',
+            'productId' => 'product_id',
+            'vrm' => 'KAN',
+            'location' => 'Location',
+            'day' => 'Monday',
+            'time' => '12:30 PM',
+            'os' => 'ios'
+        );
+        $sent = $this->converse('push', null, null, 1, '9A6E26299DBB199969B50BABD67839CC0ACCC07C287B664DD80D0A94F740C9D9', 'transactionUserCard', \Config::get('app.locale'), $parameters);
+    
+        dd($sent);
     }
 
     /**

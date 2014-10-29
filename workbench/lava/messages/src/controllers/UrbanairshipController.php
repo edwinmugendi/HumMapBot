@@ -2,6 +2,8 @@
 
 namespace Lava\Messages;
 
+use UrbanAirship\Push as P;
+
 /**
  * S# UrbanairshipController() function
  * Urbanairship controller
@@ -23,7 +25,7 @@ class UrbanairshipController extends MessagesBaseController {
         $configs = \Config::get($this->package . '::thirdParty.urbanairship');
 
         //Instantiate Push client
-        $this->pushClient = new \UrbanAirship\Airship($configs['appKey'],$configs['appMaster']);
+        $this->pushClient = new \UrbanAirship\Airship($configs['appKey'], $configs['appMaster']);
     }
 
 //E# __construct() function
@@ -40,15 +42,19 @@ class UrbanairshipController extends MessagesBaseController {
      * */
     public function push($token, $os, $message) {
         try {
-            $this->response = $this->pushClient->push()
-                    ->setAudience($token)
-                    ->setNotification($message)
-                    ->setDeviceTypes($os)
+            $this->response = $this->pushClient
+                    ->push()
+                    ->setAudience(P\deviceToken($token))
+                    ->setNotification(P\notification($message))
+                    ->setDeviceTypes(P\all)
                     ->send();
+            
             $this->response = 1;
         } catch (\AirshipException $e) {
+            echo $e->getMessage();
             $this->response = 0;
         } catch (\Exception $e) {
+            echo $e->getMessage();
             $this->response = 0;
         }//E# try catch statement
 

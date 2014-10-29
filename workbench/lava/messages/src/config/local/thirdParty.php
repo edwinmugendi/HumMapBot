@@ -13,7 +13,7 @@ return array(
         "password" => "MBKUAHMRaNTfKD",
     ),
     'urbanairship'=>array(
-        'appKey'=>'D67O0ivYSCO0J9TsRwyyAQ',
-        'appSecret'=>'RT1te8KdTXaeduGJhW4_Sg'
+        'appKey'=>'C_uN4mmLRjqchfL0dRJq3Q',
+        'appMaster'=>'ajZw9BPxSW2zv4SUMd7HLg'
     )
 );
