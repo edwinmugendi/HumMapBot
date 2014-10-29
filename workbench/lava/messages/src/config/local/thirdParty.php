@@ -8,12 +8,12 @@ return array(
       |
      */
     'clickatell' => array(
-        "apiId" => "3480294",
-        "username" => "lavasms",
-        "password" => "MBKUAHMRaNTfKD",
+        "apiId" => "3422899",
+        "username" => "lavamsg",
+        "password" => "U7qWFNgp",
     ),
-    'urbanairship'=>array(
-        'appKey'=>'C_uN4mmLRjqchfL0dRJq3Q',
-        'appMaster'=>'ajZw9BPxSW2zv4SUMd7HLg'
+    'urbanairship' => array(
+        'appKey' => 'C_uN4mmLRjqchfL0dRJq3Q',
+        'appMaster' => 'ajZw9BPxSW2zv4SUMd7HLg'
     )
 );
