@@ -496,7 +496,7 @@ class UserController extends AccountsBaseController {
             if ($fbUserId) {//User exists
                 //Get user profile from facebook
                 $fbUserProfile = $fb->api('/me', 'GET');
-                
+
                 //Fields to select
                 $fields = array('*');
 
@@ -590,8 +590,16 @@ class UserController extends AccountsBaseController {
                     $this->updateLoginSpecificFields($this, $userModel);
                 }//E# if else statement
             } else {
-                //Set validation message
-                $this->message = \Lang::get($this->package . '::' . $this->controller . '.validation.facebook.noUser');
+
+                //Set notification
+                $this->notification = array(
+                    'field' => 'facebook_token',
+                    'type' => 'User',
+                    'value' => $this->input['facebook_token'],
+                );
+
+                //Throw VRM not found error
+                throw new \Api404Exception($this->notification);
             }//E# if else statement
         } catch (FacebookApiException $e) {
             throw new \Api500Exception($e->getMessage());

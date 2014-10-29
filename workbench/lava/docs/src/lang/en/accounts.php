@@ -134,7 +134,45 @@ return array(
                     'dataType' => 'string',
                     'note' => 'Token from facebook',
                     'required' => 1,
-                )
+                ),
+                 array(
+                    'field' => 'os',
+                    'dataType' => 'String',
+                    'note' => 'Can be <i>ios</i> or <i>android</i>',
+                    'required' => 0,
+                ),
+                array(
+                    'field' => 'push_token',
+                    'dataType' => 'String',
+                    'note' => 'Urban Air Ship push token',
+                    'required' => 0,
+                ),
+                array(
+                    'field' => 'app_version',
+                    'dataType' => 'String',
+                    'note' => 'App version',
+                    'required' => 0,
+                ),
+                array(
+                    'field' => 'location',
+                    'dataType' => array(
+                        array(
+                            'field' => 'lat',
+                            'dataType' => 'float',
+                            'note' => 'Latitude : range -90 to 90',
+                            'required' => 1,
+                        ),
+                        array(
+                            'field' => 'lng',
+                            'dataType' => 'float',
+                            'note' => 'Latitude : range -180 to 180',
+                            'required' => 1,
+                        ),
+                    ),
+                    'note' => 'Location array',
+                    'required' => 0,
+                ),
+                
             ),
             'returns' => array(
                 array(
