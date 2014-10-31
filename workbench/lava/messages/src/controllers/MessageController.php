@@ -84,6 +84,9 @@ class MessageController extends MessagesBaseController {
         //Prepare sender id
         $sender = is_null($sender) ? \Config::get('product.smsSender') : $sender;
 
+        foreach ($recipient as &$singleRecipient) {
+            $singleRecipient = $this->cleanSmsSender($singleRecipient);
+        }//E# foreach statement
         //SMS
         $sent = $this->callController(\Util::buildNamespace('messages', 'clickatell', 1), 'sms', array($sender, $recipient, $parameters['body']));
 
@@ -98,7 +101,31 @@ class MessageController extends MessagesBaseController {
 
 //E# sms() function
 
+    /**
+     * S# cleanSmsSender() function
+     * Return the number if it's valid otherwise return false
+     * @param string $number Number
+     * @return int The formated number otherwise 0
+     */
+    public function cleanSmsSender($number) {
+        if ((int)substr($number, 0, 1) === 0) {//Starts with 0
+            return '44' . substr($number, 1);
+        }//E# if statement
+
+        return $number;
+    }
+
+//E# cleanSmsSender() function
+
     public function testSend($type) {
+        $recipient = array('07779977791');
+        var_dump($recipient);
+          foreach ($recipient as &$singleRecipient) {
+            $singleRecipient = $this->cleanSmsSender($singleRecipient);
+        }//E# foreach statement
+        
+        //$num = $this->cleanSmsSender('07779977791');
+        dd($recipient[0]);
         $parameters = array(
             'welcome'
         );
@@ -116,7 +143,7 @@ class MessageController extends MessagesBaseController {
             'os' => 'ios'
         );
         $sent = $this->converse('push', null, null, 1, '9A6E26299DBB199969B50BABD67839CC0ACCC07C287B664DD80D0A94F740C9D9', 'transactionUserCard', \Config::get('app.locale'), $parameters);
-    
+
         dd($sent);
     }
 
