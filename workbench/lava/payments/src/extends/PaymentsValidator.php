@@ -264,7 +264,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         'gateway_tran_id' => 0,
                         'gateway_code' => $transactionResponse['code'],
                         'amount' => $amount,
-                        'currency' => $this->data['currency'],
+                        'currency' => $productModel->location->currency,
                         'status' => 0,
                         'stamps_issued' => 0
                     );
