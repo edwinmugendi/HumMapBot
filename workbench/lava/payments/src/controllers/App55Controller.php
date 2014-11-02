@@ -18,9 +18,8 @@ class App55Controller extends PaymentsBaseController {
     //Response
     private $response;
 
-    public function prepareTransactionArray($app55Transaction) {
-        
-        
+    public function prepareTransactionArray($status, $app55Transaction) {
+
         /**
           object(stdClass)#284 (7) {
           ["id"]=>
@@ -39,16 +38,21 @@ class App55Controller extends PaymentsBaseController {
           string(5) "06603"
           }
          * */
-        $transaction = array(
-            'gateway'=>'app55',
-            'gateway_tran_id' => $app55Transaction->id,
-            'gateway_code' => $app55Transaction->auth_code,
-            'amount' => $app55Transaction->amount,
-            'currency' => $app55Transaction->currency,
-            'status' => 1
-        );
+        $transaction['gateway'] = 'app55';
+        $transaction['amount'] = $app55Transaction->amount;
+        $transaction['currency'] = $app55Transaction->currency;
 
-        return $transaction;
+        if ($status) {
+            $transaction['gateway_tran_id'] = $app55Transaction->id;
+            $transaction['gateway_code'] = $app55Transaction->auth_code;
+            $transaction['status'] = 1;
+        } else {
+            $transaction['gateway_tran_id'] = 0;
+            $transaction['gateway_code'] = $app55Transaction->auth_code;
+            $transaction['status'] = 0;
+        }//E# if else statement
+        
+       return $transaction;
     }
 
     /**

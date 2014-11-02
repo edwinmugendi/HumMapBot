@@ -53,7 +53,6 @@ class UrbanairshipController extends MessagesBaseController {
         } catch (\AirshipException $e) {
             $this->response = 0;
         } catch (\Exception $e) {
-            echo $e->getMessage();
             $this->response = 0;
         }//E# try catch statement
 

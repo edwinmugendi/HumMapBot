@@ -232,43 +232,11 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     $amount = round((floatval($price) + floatval($surcharge)), 2);
                 }//E# if statement
 
-                $paymentInfo = array(
-                    'app55UserId' => $userModel->app55_id,
-                    'cardToken' => $this->data['card_token'],
-                    'amount' => $amount,
-                    'currency' => $productModel->location->currency,
-                    'description' => $this->data['product_id']
-                );
+                if (!floatval($price)) {
+                    $amount = 0;
+                }
 
-                //Set the gateway
-                $gateway = 'app55';
-
-                //Attempt to transaction
-                $transactionResponse = $paymentController->transact($gateway, $paymentInfo);
-
-                if ($transactionResponse['status']) {//Gateway transaction succeeded
-                    //Prepare transaction
-                    $transactionArray = $paymentController->prepareTransactionArray($gateway, $transactionResponse['response']);
-
-                    //Set status
-                    $transactionArray['status'] = 1;
-
-                    //Set promotion id
-                    $transactionArray['promotion_id'] = $promotionId ? $promotionId : 0;
-
-                    //Set stamp
-                    $transactionArray['stamps_issued'] = ((int) $productModel->location->loyalty_stamps) ? 1 : 0;
-                } else {//Gateway transaction failed
-                    $transactionArray = array(
-                        'gateway' => 'app55',
-                        'gateway_tran_id' => 0,
-                        'gateway_code' => $transactionResponse['code'],
-                        'amount' => $amount,
-                        'currency' => $productModel->location->currency,
-                        'status' => 0,
-                        'stamps_issued' => 0
-                    );
-                }//E# if else statement
+                $transactionArray = array();
 
                 if ($this->data['location']) {//Set transaction location
                     $transactionArray['lat'] = $this->data['location']['lat'];
@@ -281,16 +249,78 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                 $transactionArray['product_id'] = $productModel->id;
                 $transactionArray['location_id'] = $productModel->location->id;
                 $transactionArray['agent'] = \Request::server('HTTP_USER_AGENT');
-                $transactionArray['card_used'] = $userController->callController(\Util::buildNamespace('payments', 'card', 1), 'getVerbativeCardUsed', array($this->data['card_token']));
-                $transactionArray['card_token'] = $this->data['card_token'];
+                $transactionArray['amount'] = $amount;
+                $transactionArray['currency'] = $productModel->location->currency;
+                $transactionArray['stamps_issued'] = ((int) $productModel->location->loyalty_stamps) ? 1 : 0;
 
+                if ($amount) {//Amount is greater than 0
+                    $paymentInfo = array(
+                        'app55UserId' => $userModel->app55_id,
+                        'cardToken' => $this->data['card_token'],
+                        'amount' => $amount,
+                        'currency' => $productModel->location->currency,
+                        'description' => $this->data['product_id']
+                    );
+
+                    //Set the gateway
+                    $transactionArray['gateway'] = $gateway = 'app55';
+
+                    //Attempt to transaction
+                    $transactionResponse = $paymentController->transact($gateway, $paymentInfo);
+
+
+                    if ($transactionResponse['status']) {//Gateway transaction succeeded
+                        //Prepare transaction
+                        $gatewayResponse = $paymentController->prepareTransactionArray($gateway, $transactionResponse['status'], $transactionResponse['response']);
+                        //Merge transaction and gateway response
+                        $transactionArray = array_merge($transactionArray, $gatewayResponse);
+                        //Set promotion id
+                        $transactionArray['promotion_id'] = $promotionId ? $promotionId : 0;
+                    } else {//Gateway transaction failed
+                        //Prepare transaction
+                        $gatewayResponse = $paymentController->prepareTransactionArray($gateway, $transactionResponse['status'], $transactionResponse['response']);
+
+                        //Merge transaction and gateway response
+                        $transactionArray = array_merge($transactionArray, $gatewayResponse);
+                        //Set stamp
+                        $transactionArray['stamps_issued'] = 0;
+                    }//E# if else statement
+                    //Set card
+                    $transactionArray['card_used'] = $userController->callController(\Util::buildNamespace('payments', 'card', 1), 'getVerbativeCardUsed', array($this->data['card_token']));
+                    $transactionArray['card_token'] = $this->data['card_token'];
+                } else {
+                    $transactionArray['gateway'] = 'promotion';
+                    $transactionArray['status'] = 3;
+                }//E# if else statement
                 //Create transaction
                 $transactionModel = $userController->callController(\Util::buildNamespace('payments', 'transaction', 1), 'createIfValid', array($transactionArray, true));
 
                 if ($transactionModel) {//Transaction created
-                    if ($transactionResponse['status']) {
+                    if ($amount) {//Amount is greater than 0
+                        if ($transactionResponse['status']) {
+                            //After processing
+                            $paymentController->afterProcessing('card', $transactionModel, $productModel, $userModel);
+
+                            //Build gateway response
+                            $gatewayResponse = array(
+                                'status' => 1,
+                                'message' => \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransaction.transaction.1')
+                            );
+
+                            if ($promotionId) {//Promotion id
+                                //Redeem the promotion
+                                $userController->updatePivotTable($userModel, 'promotions', $promotionId, array('redeemed' => 1, 'transaction_id' => $transactionModel->id, 'updated_at' => Carbon::now()));
+                            }//E# if statement
+                        } else {
+                            //Build gateway response
+                            $gatewayResponse = array(
+                                'status' => 0,
+                                'message' => \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransaction.transaction.0')
+                            );
+                        }//E# if else statement
+                    } else {
                         //After processing
-                        $paymentController->afterProcessing('card', $transactionModel, $productModel, $userModel);
+                        $paymentController->afterProcessing('promotion', $transactionModel, $productModel, $userModel);
 
                         //Build gateway response
                         $gatewayResponse = array(
@@ -302,12 +332,6 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                             //Redeem the promotion
                             $userController->updatePivotTable($userModel, 'promotions', $promotionId, array('redeemed' => 1, 'transaction_id' => $transactionModel->id, 'updated_at' => Carbon::now()));
                         }//E# if statement
-                    } else {
-                        //Build gateway response
-                        $gatewayResponse = array(
-                            'status' => 0,
-                            'message' => \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransaction.transaction.0')
-                        );
                     }//E# if else statement
                     //Get loyalty stamps
                     $stampModel = $paymentController->getLocationStamps($transactionModel->location_id, $userModel->id);
@@ -427,13 +451,13 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     foreach ($userModel->cards as $singleCard) {
                         if ($singleCard->token == $userModel->card) {//User has specified a default card
                             $defaultCardFound = true;
-                            $userController->notification['card'] = array_only($singleCard->toArray(),array('name','number','expiry','token'));
+                            $userController->notification['card'] = array_only($singleCard->toArray(), array('name', 'number', 'expiry', 'token'));
                             break;
                         }//E# if statement
                     }//E# foreach statement
 
                     if (!$defaultCardFound) {//Set default card as the last added card
-                        $userController->notification['card'] = array_only($userModel->cards[((int) $userModel->cards->count() - 1)]->toArray(),array('name','number','expiry','token'));
+                        $userController->notification['card'] = array_only($userModel->cards[((int) $userModel->cards->count() - 1)]->toArray(), array('name', 'number', 'expiry', 'token'));
                     }//E# if statement
                     //VRM
                     $userController->notification['vehicle'] = array(

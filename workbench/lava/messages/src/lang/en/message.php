@@ -12,6 +12,16 @@ return array(
             'sms' => ':tranId confirmed.  You bought :product for :vrm at :location on :day at :time. :productName',
             'push' => ':tranId confirmed.  You bought :product for :vrm at :location on :day at :time. :productName',
         ),
+        'transactionUserPromotion' => array(
+            'email' => 'Product bought :productName',
+            'sms' => ':tranId confirmed.  You bought :product for :vrm at :location on :day at :time. :productName',
+            'push' => ':tranId confirmed.  You bought :product for :vrm at :location on :day at :time. :productName',
+        ),
+        'transactionUserPromotion' => array(
+            'email' => 'Product bought :productName',
+            'sms' => ':tranId confirmed.  You bought :product for :vrm at :location on :day at :time. :productName',
+            'push' => ':tranId confirmed.  You bought :product for :vrm at :location on :day at :time. :productName',
+        ),
         'transactionUserStamps' => array(
             'email' => 'Product bought :productName',
             'sms' => ':tranId confirmed.  You bought :product for :vrm at :location on :day at :time. :productName',

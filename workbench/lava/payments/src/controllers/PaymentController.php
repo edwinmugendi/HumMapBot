@@ -111,21 +111,21 @@ class PaymentController extends PaymentsBaseController {
      * 
      * Call this after successful credit card processing
      * 
-     * @param string $cardOrStamps Card or loyalty stamps
+     * @param string $cardOrStampsOrPromotion Card or loyalty stamps
      * @param model $transactionModel Transaction model
      * @param model $productModel Product model
      * @param model $userModel User model
      */
-    public function afterProcessing($cardOrStamps, &$transactionModel, &$productModel, &$userModel) {
-        if (($cardOrStamps == 'card') && $transactionModel->stamps_issued) {//Update stamps only if transaction was processed with card
+    public function afterProcessing($cardOrStampsOrPromotion, &$transactionModel, &$productModel, &$userModel) {
+        if ((($cardOrStampsOrPromotion == 'card') || ($cardOrStampsOrPromotion == 'promotion')) && $transactionModel->stamps_issued) {//Update stamps only if transaction was processed with card
             //Update loyalty stamps
             $this->updateLoyaltyStamp($transactionModel->location_id, $transactionModel->user_id);
         }//E# if statement
         //Notify merchant
-        $this->notifyLocation($cardOrStamps, $transactionModel, $productModel, $userModel);
+        $this->notifyLocation($cardOrStampsOrPromotion, $transactionModel, $productModel, $userModel);
 
         //Notify user
-        $this->notifyUser($cardOrStamps, $transactionModel, $productModel, $userModel);
+        $this->notifyUser($cardOrStampsOrPromotion, $transactionModel, $productModel, $userModel);
     }
 
 //E# afterProcessing() function
@@ -134,15 +134,15 @@ class PaymentController extends PaymentsBaseController {
      * S# notifyUser() function
      * Notify user of a successful transaction
      * 
-     * @param string $cardOrStamps Card or loyalty stamps
+     * @param string $cardOrStampsOrPromotion Card or loyalty stamps
      * @param model $transactionModel Transaction model
      * @param model $productModel Product model
      * @param model $userModel User model
      * 
      */
-    public function notifyUser($cardOrStamps, &$transactionModel, &$productModel, &$userModel) {
+    public function notifyUser($cardOrStampsOrPromotion, &$transactionModel, &$productModel, &$userModel) {
         //Build template
-        $template = 'transactionUser' . \Str::title(\Str::lower($cardOrStamps));
+        $template = 'transactionUser' . \Str::title(\Str::lower($cardOrStampsOrPromotion));
 
         //Transaction date
         $date = Carbon::createFromFormat('Y-m-d G:i:s', $transactionModel->created_at);
@@ -164,7 +164,7 @@ class PaymentController extends PaymentsBaseController {
             //Converse
             $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('push', null, null, $userModel->id, $userModel->push_token, $template, \Config::get('app.locale'), $parameters));
         }//E# if statement
-        
+
         if ($userModel->notify_sms && $userModel->phone) {//SMS
             //Converse
             $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('sms', null, null, $userModel->id, array($userModel->phone), $template, \Config::get('app.locale'), $parameters));
@@ -183,15 +183,15 @@ class PaymentController extends PaymentsBaseController {
      * S# notifyLocation() function
      * Notify location owner of a successful transaction
      * 
-     * @param string $cardOrStamps Card or loyalty stamps
+     * @param string $cardOrStampsOrPromotion Card or loyalty stamps
      * @param model $transactionModel Transaction model
      * @param model $productModel Product model
      * @param model $userModel User model
      * 
      */
-    public function notifyLocation($cardOrStamps, &$transactionModel, &$productModel, &$userModel) {
+    public function notifyLocation($cardOrStampsOrPromotion, &$transactionModel, &$productModel, &$userModel) {
         //Build template
-        $template = 'transactionMerchant' . \Str::title(\Str::lower($cardOrStamps));
+        $template = 'transactionMerchant' . \Str::title(\Str::lower($cardOrStampsOrPromotion));
 
         //Transaction date
         $date = Carbon::createFromFormat('Y-m-d G:i:s', $transactionModel->created_at);
@@ -276,7 +276,7 @@ class PaymentController extends PaymentsBaseController {
      */
     public function prepare() {
         $this->validationRules = array(
-           // 'vrm' => 'integer',
+            // 'vrm' => 'integer',
             'product_id' => 'required|prepareTransaction',
         );
 
@@ -310,8 +310,8 @@ class PaymentController extends PaymentsBaseController {
      * @return array Transaction compatible with our database
 
      */
-    public function prepareTransactionArray($gateway, $gatewayTransaction) {
-        return $this->callController(\Util::buildNamespace('payments', $gateway, 1), 'prepareTransactionArray', array($gatewayTransaction));
+    public function prepareTransactionArray($gateway, $status, $gatewayTransaction) {
+        return $this->callController(\Util::buildNamespace('payments', $gateway, 1), 'prepareTransactionArray', array($status, $gatewayTransaction));
     }
 
 //E# prepareTransactionArray() function
