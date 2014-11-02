@@ -20,6 +20,7 @@ class App55Controller extends PaymentsBaseController {
 
     public function prepareTransactionArray($status, $app55Transaction) {
 
+        $transaction = array();
         /**
           object(stdClass)#284 (7) {
           ["id"]=>
@@ -51,8 +52,8 @@ class App55Controller extends PaymentsBaseController {
             $transaction['gateway_code'] = $app55Transaction->auth_code;
             $transaction['status'] = 0;
         }//E# if else statement
-        
-       return $transaction;
+
+        return $transaction;
     }
 
     /**
