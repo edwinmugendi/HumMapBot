@@ -8,7 +8,7 @@ return array(
      */
     'api' => array(
         'prepareTransaction' => 'Transaction prepared',
-        'freeStampWash'=>'Free Stamp Wash'
+        'freeStampWash' => 'Free Stamp Wash'
     ),
     'validation' => array(
         'prepareTransaction' => array(
@@ -19,7 +19,7 @@ return array(
                 0 => 'Transaction declined',
             )
         ),
-         'processTransaction' => array(
+        'processTransaction' => array(
             'dbError' => 'Lost connection to the database',
             'transaction' => array(
                 1 => 'Transaction succeeded',
@@ -29,7 +29,10 @@ return array(
         'processTransactionWithStamps' => array(
             'productNotLoyable' => ':name cannot be paid with loyalty stamps',
             'insufficientStamps' => ':name requires :locationStamps but you have :userStamps',
-            'dbError' => 'Lost connection to the database'
+            'dbError' => 'Lost connection to the database',
+            'transaction' => array(
+                1 => 'Transaction processed with loyalty stamps',
+            )
         ),
     )
 );

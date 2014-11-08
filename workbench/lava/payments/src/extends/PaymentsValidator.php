@@ -105,12 +105,18 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                                 'location_stamps' => $productModel->location->loyalty_stamps
                             );
 
+                            //Build gateway response
+                            $gatewayResponse = array(
+                                'status' => 1,
+                                'message' => \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransactionWithStamps.transaction.1')
+                            );
                             //Build notification
                             $this->notification = array(
+                                'gateway' => $gatewayResponse,
                                 'transaction' => $transactionModel->toArray(),
                                 'stamps' => $stamps
                             );
-                            throw new \Api200Exception($this->notification, array('id'));
+                            throw new \Api200Exception($this->notification, $gatewayResponse['message']);
                         } else {//Database error
                             //Set message
                             $this->message = \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransactionWithStamps.dbError');
