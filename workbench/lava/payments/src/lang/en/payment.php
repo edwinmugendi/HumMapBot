@@ -22,7 +22,7 @@ return array(
         'processTransaction' => array(
             'dbError' => 'Lost connection to the database',
             'transaction' => array(
-                1 => 'Transaction succeeded',
+                1 => 'Transaction successful',
                 0 => 'Transaction declined',
             )
         ),
@@ -31,7 +31,7 @@ return array(
             'insufficientStamps' => ':name requires :locationStamps but you have :userStamps',
             'dbError' => 'Lost connection to the database',
             'transaction' => array(
-                1 => 'Transaction processed with loyalty stamps',
+                1 => 'Transaction successful',
             )
         ),
     )
