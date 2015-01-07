@@ -67,7 +67,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         //Build transaction array
                         $transactionArray = array(
                             'gateway' => 'stamps',
-                            'gateway_tran_id' => 0,
+                            'gateway_tran_id' => "0",
                             'gateway_code' => 0,
                             'amount' => $vehicleModel->type == 2 ? $productModel->price_2 : $productModel->price_1,
                             'currency' => $productModel->currency,
