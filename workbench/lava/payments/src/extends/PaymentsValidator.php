@@ -22,6 +22,42 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
     private $message;
 
     /**
+     * S# calculateDistance() function
+     * Calculate distance between 2 coordinates
+     * @param type $lat1 latitude 1
+     * @param type $lon1 longitude 1
+     * @param type $lat2 latitude 2
+     * @param type $lon2 longitude 2
+     * @param type $unit N = Nautical miles, K = Kilometre, M = miles
+     * 
+     * @return float
+     */
+    function calculateDistance($lat1, $lon1, $lat2, $lon2, $unit) {
+
+        $theta = $lon1 - $lon2;
+
+        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+
+        $dist = acos($dist);
+
+        $dist = rad2deg($dist);
+
+        $miles = $dist * 60 * 1.1515;
+
+        $unit = strtoupper($unit);
+
+        if ($unit == 'K') {
+            return ($miles * 1.609344);
+        } else if ($unit == 'N') {
+            return ($miles * 0.8684);
+        } else {
+            return $miles;
+        }
+    }
+
+//E# if statement
+
+    /**
      * S# validateProcessTransactionWithStamps() function
      * Validate process transaction with stamps
      * @param array $attribute Validation attribute
@@ -43,109 +79,128 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
         $productModel = $productController->callController(\Util::buildNamespace('products', 'product', 1), 'getModelByField', array('id', $this->data['product_id'], $parameters));
 
         if ($productModel) {//Product found
-            //Cache location stamps
-            $locationStamps = (int) $productModel->location->loyalty_stamps;
+            //Calculate Distance
+            $distance = $this->calculateDistance($this->data['location']['lat'], $this->data['location']['lng'], $productModel->location->lat, $productModel->location->lng, 'K');
 
-            if ($productModel->loyable && $locationStamps) {//Product is loyable
-                //User controller
-                $userController = new UserController();
+            if ($distance <= 0.5) {//Within range
+                //Cache location stamps
+                $locationStamps = (int) $productModel->location->loyalty_stamps;
 
-                //Get user model by id
-                $userModel = $userController->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->data['token']));
+                if ($productModel->loyable && $locationStamps) {//Product is loyable
+                    //User controller
+                    $userController = new UserController();
 
-                //Get loyalty stamps
-                $stampModel = $paymentController->getLocationStamps($productModel->location->id, $userModel->id);
+                    //Get user model by id
+                    $userModel = $userController->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->data['token']));
 
-                //Cache user stamps
-                $userStamps = (int) $stampModel->feeling;
+                    //Get loyalty stamps
+                    $stampModel = $paymentController->getLocationStamps($productModel->location->id, $userModel->id);
 
-                //Get vehiclel model
-                $vehicleModel = $this->validateUserOwnsVrm($attribute, $this->data['vrm'], $parameters);
+                    //Cache user stamps
+                    $userStamps = (int) $stampModel->feeling;
 
-                if ($vehicleModel) {//User ownes this vrm
-                    if ($userStamps >= $locationStamps) {//User has sufficient stamps
-                        //Build transaction array
-                        $transactionArray = array(
-                            'gateway' => 'stamps',
-                            'gateway_tran_id' => "0",
-                            'gateway_code' => 0,
-                            'amount' => $vehicleModel->type == 2 ? $productModel->price_2 : $productModel->price_1,
-                            'currency' => $productModel->currency,
-                            'description' => \Lang::get($paymentController->package . '::' . $paymentController->controller . '.api.freeStampWash'),
-                            'user_id' => $userModel->id,
-                            'product_id' => $productModel->id,
-                            'location_id' => $productModel->location->id,
-                            'vrm' => $this->data['vrm'],
-                            'agent' => \Request::server('HTTP_USER_AGENT'),
-                            'stamps_issued' => 0,
-                            'status' => 2
+                    //Get vehiclel model
+                    $vehicleModel = $this->validateUserOwnsVrm($attribute, $this->data['vrm'], $parameters);
+
+                    if ($vehicleModel) {//User ownes this vrm
+                        if ($userStamps >= $locationStamps) {//User has sufficient stamps
+                            //Build transaction array
+                            $transactionArray = array(
+                                'gateway' => 'stamps',
+                                'gateway_tran_id' => "0",
+                                'gateway_code' => 0,
+                                'amount' => $vehicleModel->type == 2 ? $productModel->price_2 : $productModel->price_1,
+                                'currency' => $productModel->currency,
+                                'description' => \Lang::get($paymentController->package . '::' . $paymentController->controller . '.api.freeStampWash'),
+                                'user_id' => $userModel->id,
+                                'product_id' => $productModel->id,
+                                'location_id' => $productModel->location->id,
+                                'vrm' => $this->data['vrm'],
+                                'agent' => \Request::server('HTTP_USER_AGENT'),
+                                'stamps_issued' => 0,
+                                'status' => 2
+                            );
+
+                            if ($this->data['location']) {//Set transaction location
+                                $transactionArray['lat'] = $this->data['location']['lat'];
+                                $transactionArray['lng'] = $this->data['location']['lng'];
+                            }//E# if statement
+                            //Create transaction
+                            $transactionModel = $userController->callController(\Util::buildNamespace('payments', 'transaction', 1), 'createIfValid', array($transactionArray, true));
+
+                            if ($transactionModel) {//Transaction created in the database
+                                //Reset the loyalty stamps for this location
+                                $stampModel->feeling = 0;
+
+                                //Save stamps
+                                $stampModel->save();
+
+                                //After processing
+                                $paymentController->afterProcessing('stamps', $transactionModel, $productModel, $userModel);
+
+                                //Build stamps
+                                $stamps = array(
+                                    'issued' => 0,
+                                    'user_total' => 0,
+                                    'location_stamps' => $productModel->location->loyalty_stamps
+                                );
+
+                                //Build gateway response
+                                $gatewayResponse = array(
+                                    'status' => 1,
+                                    'message' => \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransactionWithStamps.transaction.1')
+                                );
+                                //Build notification
+                                $this->notification = array(
+                                    'gateway' => $gatewayResponse,
+                                    'transaction' => $transactionModel->toArray(),
+                                    'stamps' => $stamps
+                                );
+                                throw new \Api200Exception($this->notification, $gatewayResponse['message']);
+                            } else {//Database error
+                                //Set message
+                                $this->message = \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransactionWithStamps.dbError');
+
+                                //Throw 500 Exception
+                                throw new \Api500Exception($this->message);
+                            }//E# if else statement
+                        } else {//You don't have enough stamps
+                            //Set message
+                            $this->message = \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransactionWithStamps.insufficientStamps', (array('name' => $productModel->name, 'locationStamps' => $locationStamps, 'userStamps' => $userStamps)));
+
+                            return false;
+                        }//E# if statement
+                    } else {//Don't own this vrm
+                        //Set notification
+                        $paymentController->notification = array(
+                            'field' => 'vrm',
+                            'type' => 'Vehicle',
+                            'value' => $vrm,
                         );
 
-                        if ($this->data['location']) {//Set transaction location
-                            $transactionArray['lat'] = $this->data['location']['lat'];
-                            $transactionArray['lng'] = $this->data['location']['lng'];
-                        }//E# if statement
-                        //Create transaction
-                        $transactionModel = $userController->callController(\Util::buildNamespace('payments', 'transaction', 1), 'createIfValid', array($transactionArray, true));
-
-                        if ($transactionModel) {//Transaction created in the database
-                            //Reset the loyalty stamps for this location
-                            $stampModel->feeling = 0;
-
-                            //Save stamps
-                            $stampModel->save();
-
-                            //After processing
-                            $paymentController->afterProcessing('stamps', $transactionModel, $productModel, $userModel);
-
-                            //Build stamps
-                            $stamps = array(
-                                'issued' => 0,
-                                'user_total' => 0,
-                                'location_stamps' => $productModel->location->loyalty_stamps
-                            );
-
-                            //Build gateway response
-                            $gatewayResponse = array(
-                                'status' => 1,
-                                'message' => \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransactionWithStamps.transaction.1')
-                            );
-                            //Build notification
-                            $this->notification = array(
-                                'gateway' => $gatewayResponse,
-                                'transaction' => $transactionModel->toArray(),
-                                'stamps' => $stamps
-                            );
-                            throw new \Api200Exception($this->notification, $gatewayResponse['message']);
-                        } else {//Database error
-                            //Set message
-                            $this->message = \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransactionWithStamps.dbError');
-
-                            //Throw 500 Exception
-                            throw new \Api500Exception($this->message);
-                        }//E# if else statement
-                    } else {//You don't have enough stamps
-                        //Set message
-                        $this->message = \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransactionWithStamps.insufficientStamps', (array('name' => $productModel->name, 'locationStamps' => $locationStamps, 'userStamps' => $userStamps)));
-
-                        return false;
+                        //Throw not found error
+                        throw new \Api403Exception($paymentController->notification);
                     }//E# if statement
-                } else {//Don't own this vrm
-                    //Set notification
-                    $paymentController->notification = array(
-                        'field' => 'vrm',
-                        'type' => 'Vehicle',
-                        'value' => $vrm,
-                    );
+                } else {//Product not loyable or location does not have a loyalty stamps
+                    //Set message
+                    $this->message = \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransactionWithStamps.productNotLoyable', array('name' => $productModel->name));
 
-                    //Throw not found error
-                    throw new \Api403Exception($paymentController->notification);
-                }//E# if statement
-            } else {//Product not loyable or location does not have a loyalty stamps
+                    return false;
+                }//E# if else statement
+            } else {
+
+                //Set notification
+                $paymentController->notification = array(
+                    'field' => 'gps',
+                    'type' => 'Distance',
+                    'value' => 'Invalid',
+                );
+
                 //Set message
-                $this->message = \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransactionWithStamps.productNotLoyable', array('name' => $productModel->name));
+                $this->message = \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransactionWithStamps.notNearEnough');
 
-                return false;
+                //Throw 403 error
+                throw new \Api403Exception($paymentController->notification, $this->message);
             }//E# if else statement
         } else {//No such product
             //Set notification
@@ -199,113 +254,138 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
         $productModel = $productController->callController(\Util::buildNamespace('products', 'product', 1), 'getModelByField', array('id', $this->data['product_id'], $parameters));
 
         if ($productModel) {//Product found
-            //User controller
-            $userController = new UserController();
+            //Calculate Distance
+            $distance = $this->calculateDistance($this->data['location']['lat'], $this->data['location']['lng'], $productModel->location->lat, $productModel->location->lng, 'K');
 
-            //Get user model by id
-            $userModel = $userController->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->data['token']));
+            if ($distance <= 0.5) {//Within range
+                //User controller
+                $userController = new UserController();
 
-            //Payment controller
-            $paymentController = new PaymentController();
+                //Get user model by id
+                $userModel = $userController->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->data['token']));
 
-            //Get vehiclel model
-            $vehicleModel = $this->validateUserOwnsVrm($attribute, $this->data['vrm'], $parameters);
+                //Payment controller
+                $paymentController = new PaymentController();
 
-            if ($vehicleModel) {//User owns this vehicle
-                //Cache price and surcharge
-                $price = $vehicleModel->type == 2 ? $productModel->price_2 : $productModel->price_1;
-                $surcharge = $productModel->location->surcharge;
+                //Get vehiclel model
+                $vehicleModel = $this->validateUserOwnsVrm($attribute, $this->data['vrm'], $parameters);
 
-                //Promotion Controller
-                $promotionController = new PromotionController();
+                if ($vehicleModel) {//User owns this vehicle
+                    //Cache price and surcharge
+                    $price = $vehicleModel->type == 2 ? $productModel->price_2 : $productModel->price_1;
+                    $surcharge = $productModel->location->surcharge;
 
-                if ($promotionId) {//Promotion has been set
-                    //Get Promotion model by id
-                    $promotionModel = $promotionController->getModelByField('id', $promotionId);
+                    //Promotion Controller
+                    $promotionController = new PromotionController();
 
-                    if ($promotionModel) {//Promotion model exists
-                        //Prepare price
-                        $promotionArray = $promotionController->prepareRedeemablePromotions(array($promotionModel->toArray()), $price, $surcharge);
+                    if ($promotionId) {//Promotion has been set
+                        //Get Promotion model by id
+                        $promotionModel = $promotionController->getModelByField('id', $promotionId);
 
-                        //dd($promotionArray);
-                        if ($promotionArray && array_key_exists('price', $promotionArray[0])) {//Price is set
-                            $amount = $promotionArray[0]['price'];
+                        if ($promotionModel) {//Promotion model exists
+                            //Prepare price
+                            $promotionArray = $promotionController->prepareRedeemablePromotions(array($promotionModel->toArray()), $price, $surcharge);
+
+                            //dd($promotionArray);
+                            if ($promotionArray && array_key_exists('price', $promotionArray[0])) {//Price is set
+                                $amount = $promotionArray[0]['price'];
+                            }//E# if statement
                         }//E# if statement
                     }//E# if statement
-                }//E# if statement
 
-                if (!isset($amount)) {//Amount is not set
-                    $amount = round((floatval($price) + floatval($surcharge)), 2);
-                }//E# if statement
+                    if (!isset($amount)) {//Amount is not set
+                        $amount = round((floatval($price) + floatval($surcharge)), 2);
+                    }//E# if statement
 
-                if (!floatval($price)) {
-                    $amount = 0;
-                }
+                    if (!floatval($price)) {
+                        $amount = 0;
+                    }
 
-                $transactionArray = array();
+                    $transactionArray = array();
 
-                if ($this->data['location']) {//Set transaction location
-                    $transactionArray['lat'] = $this->data['location']['lat'];
-                    $transactionArray['lng'] = $this->data['location']['lng'];
-                }//E# if statement
-                //Set other fields
-                $transactionArray['vrm'] = $this->data['vrm'];
-                $transactionArray['user_id'] = $userModel->id;
-                $transactionArray['description'] = $productModel->name . ' ' . $productModel->location->name;
-                $transactionArray['product_id'] = $productModel->id;
-                $transactionArray['location_id'] = $productModel->location->id;
-                $transactionArray['agent'] = \Request::server('HTTP_USER_AGENT');
-                $transactionArray['amount'] = $amount;
-                $transactionArray['currency'] = $productModel->location->currency;
-                $transactionArray['stamps_issued'] = ((int) $productModel->location->loyalty_stamps) ? 1 : 0;
+                    if ($this->data['location']) {//Set transaction location
+                        $transactionArray['lat'] = $this->data['location']['lat'];
+                        $transactionArray['lng'] = $this->data['location']['lng'];
+                    }//E# if statement
+                    //Set other fields
+                    $transactionArray['vrm'] = $this->data['vrm'];
+                    $transactionArray['user_id'] = $userModel->id;
+                    $transactionArray['description'] = $productModel->name . ' ' . $productModel->location->name;
+                    $transactionArray['product_id'] = $productModel->id;
+                    $transactionArray['location_id'] = $productModel->location->id;
+                    $transactionArray['agent'] = \Request::server('HTTP_USER_AGENT');
+                    $transactionArray['amount'] = $amount;
+                    $transactionArray['currency'] = $productModel->location->currency;
+                    $transactionArray['stamps_issued'] = ((int) $productModel->location->loyalty_stamps) ? 1 : 0;
 
-                if ($amount) {//Amount is greater than 0
-                    $paymentInfo = array(
-                        'app55UserId' => $userModel->app55_id,
-                        'cardToken' => $this->data['card_token'],
-                        'amount' => $amount,
-                        'currency' => $productModel->location->currency,
-                        'description' => $this->data['product_id']
-                    );
-
-                    //Set the gateway
-                    $transactionArray['gateway'] = $gateway = 'app55';
-
-                    //Attempt to transaction
-                    $transactionResponse = $paymentController->transact($gateway, $paymentInfo);
-
-
-                    if ($transactionResponse['status']) {//Gateway transaction succeeded
-                        //Prepare transaction
-                        $gatewayResponse = $paymentController->prepareTransactionArray($gateway, $transactionResponse['status'], $transactionResponse['response']);
-                        //Merge transaction and gateway response
-                        $transactionArray = array_merge($transactionArray, $gatewayResponse);
-                        //Set promotion id
-                        $transactionArray['promotion_id'] = $promotionId ? $promotionId : 0;
-                    } else {//Gateway transaction failed
-                        //Prepare transaction
-                        $gatewayResponse = $paymentController->prepareTransactionArray($gateway, $transactionResponse['status'], $transactionResponse['response']);
-
-                        //Merge transaction and gateway response
-                        $transactionArray = array_merge($transactionArray, $gatewayResponse);
-                        //Set stamp
-                        $transactionArray['stamps_issued'] = 0;
-                    }//E# if else statement
-                    //Set card
-                    $transactionArray['card_used'] = $userController->callController(\Util::buildNamespace('payments', 'card', 1), 'getVerbativeCardUsed', array($this->data['card_token']));
-                    $transactionArray['card_token'] = $this->data['card_token'];
-                } else {
-                    $transactionArray['gateway'] = 'promotion';
-                    $transactionArray['status'] = 3;
-                }//E# if else statement
-                //Create transaction
-                $transactionModel = $userController->callController(\Util::buildNamespace('payments', 'transaction', 1), 'createIfValid', array($transactionArray, true));
-
-                if ($transactionModel) {//Transaction created
                     if ($amount) {//Amount is greater than 0
-                        if ($transactionResponse['status']) {
+                        $paymentInfo = array(
+                            'app55UserId' => $userModel->app55_id,
+                            'cardToken' => $this->data['card_token'],
+                            'amount' => $amount,
+                            'currency' => $productModel->location->currency,
+                            'description' => $this->data['product_id']
+                        );
+
+                        //Set the gateway
+                        $transactionArray['gateway'] = $gateway = 'app55';
+
+                        //Attempt to transaction
+                        $transactionResponse = $paymentController->transact($gateway, $paymentInfo);
+
+
+                        if ($transactionResponse['status']) {//Gateway transaction succeeded
+                            //Prepare transaction
+                            $gatewayResponse = $paymentController->prepareTransactionArray($gateway, $transactionResponse['status'], $transactionResponse['response']);
+                            //Merge transaction and gateway response
+                            $transactionArray = array_merge($transactionArray, $gatewayResponse);
+                            //Set promotion id
+                            $transactionArray['promotion_id'] = $promotionId ? $promotionId : 0;
+                        } else {//Gateway transaction failed
+                            //Prepare transaction
+                            $gatewayResponse = $paymentController->prepareTransactionArray($gateway, $transactionResponse['status'], $transactionResponse['response']);
+
+                            //Merge transaction and gateway response
+                            $transactionArray = array_merge($transactionArray, $gatewayResponse);
+                            //Set stamp
+                            $transactionArray['stamps_issued'] = 0;
+                        }//E# if else statement
+                        //Set card
+                        $transactionArray['card_used'] = $userController->callController(\Util::buildNamespace('payments', 'card', 1), 'getVerbativeCardUsed', array($this->data['card_token']));
+                        $transactionArray['card_token'] = $this->data['card_token'];
+                    } else {
+                        $transactionArray['gateway'] = 'promotion';
+                        $transactionArray['status'] = 3;
+                    }//E# if else statement
+                    //Create transaction
+                    $transactionModel = $userController->callController(\Util::buildNamespace('payments', 'transaction', 1), 'createIfValid', array($transactionArray, true));
+
+                    if ($transactionModel) {//Transaction created
+                        if ($amount) {//Amount is greater than 0
+                            if ($transactionResponse['status']) {
+                                //After processing
+                                $paymentController->afterProcessing('card', $transactionModel, $productModel, $userModel);
+
+                                //Build gateway response
+                                $gatewayResponse = array(
+                                    'status' => 1,
+                                    'message' => \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransaction.transaction.1')
+                                );
+
+                                if ($promotionId) {//Promotion id
+                                    //Redeem the promotion
+                                    $userController->updatePivotTable($userModel, 'promotions', $promotionId, array('redeemed' => 1, 'transaction_id' => $transactionModel->id, 'updated_at' => Carbon::now()));
+                                }//E# if statement
+                            } else {
+                                //Build gateway response
+                                $gatewayResponse = array(
+                                    'status' => 0,
+                                    'message' => \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransaction.transaction.0')
+                                );
+                            }//E# if else statement
+                        } else {
                             //After processing
-                            $paymentController->afterProcessing('card', $transactionModel, $productModel, $userModel);
+                            $paymentController->afterProcessing('promotion', $transactionModel, $productModel, $userModel);
 
                             //Build gateway response
                             $gatewayResponse = array(
@@ -317,64 +397,57 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                                 //Redeem the promotion
                                 $userController->updatePivotTable($userModel, 'promotions', $promotionId, array('redeemed' => 1, 'transaction_id' => $transactionModel->id, 'updated_at' => Carbon::now()));
                             }//E# if statement
-                        } else {
-                            //Build gateway response
-                            $gatewayResponse = array(
-                                'status' => 0,
-                                'message' => \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransaction.transaction.0')
-                            );
                         }//E# if else statement
-                    } else {
-                        //After processing
-                        $paymentController->afterProcessing('promotion', $transactionModel, $productModel, $userModel);
+                        //Get loyalty stamps
+                        $stampModel = $paymentController->getLocationStamps($transactionModel->location_id, $userModel->id);
 
-                        //Build gateway response
-                        $gatewayResponse = array(
-                            'status' => 1,
-                            'message' => \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransaction.transaction.1')
+                        //Build stamps 
+                        $stamps = array(
+                            'issued' => (int) $transactionModel->stamps_issued,
+                            'user_total' => $stampModel ? (int) $stampModel->feeling : 0,
+                            'location_stamps' => (int) $productModel->location->loyalty_stamps
                         );
 
-                        if ($promotionId) {//Promotion id
-                            //Redeem the promotion
-                            $userController->updatePivotTable($userModel, 'promotions', $promotionId, array('redeemed' => 1, 'transaction_id' => $transactionModel->id, 'updated_at' => Carbon::now()));
-                        }//E# if statement
+                        //Build notification
+                        $this->notification = array(
+                            'gateway' => $gatewayResponse,
+                            'transaction' => $transactionModel->toArray(),
+                            'stamps' => $stamps
+                        );
+
+                        throw new \Api200Exception($this->notification, $gatewayResponse['message']);
+                    } else {//DB error
+                        //Set message
+                        $this->message = \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransaction.dbError');
+
+                        //Throw 500 Exception
+                        throw new \Api500Exception($this->message);
                     }//E# if else statement
-                    //Get loyalty stamps
-                    $stampModel = $paymentController->getLocationStamps($transactionModel->location_id, $userModel->id);
-
-                    //Build stamps 
-                    $stamps = array(
-                        'issued' => (int) $transactionModel->stamps_issued,
-                        'user_total' => $stampModel ? (int) $stampModel->feeling : 0,
-                        'location_stamps' => (int) $productModel->location->loyalty_stamps
+                } else {//Don't own this vrm
+                    //Set notification
+                    $paymentController->notification = array(
+                        'field' => 'vrm',
+                        'type' => 'Vehicle',
+                        'value' => $vrm,
                     );
 
-                    //Build notification
-                    $this->notification = array(
-                        'gateway' => $gatewayResponse,
-                        'transaction' => $transactionModel->toArray(),
-                        'stamps' => $stamps
-                    );
-
-                    throw new \Api200Exception($this->notification, $gatewayResponse['message']);
-                } else {//DB error
-                    //Set message
-                    $this->message = \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransaction.dbError');
-
-                    //Throw 500 Exception
-                    throw new \Api500Exception($this->message);
-                }//E# if else statement
-            } else {//Don't own this vrm
+                    //Throw not found error
+                    throw new \Api403Exception($paymentController->notification);
+                }//E# if statement
+            } else {
                 //Set notification
                 $paymentController->notification = array(
-                    'field' => 'vrm',
-                    'type' => 'Vehicle',
-                    'value' => $vrm,
+                    'field' => 'gps',
+                    'type' => 'Distance',
+                    'value' => 'Invalid',
                 );
 
-                //Throw not found error
-                throw new \Api403Exception($paymentController->notification);
-            }//E# if statement
+                //Set message
+                $this->message = \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransaction.notNearEnough');
+
+                //Throw 403 error
+                throw new \Api403Exception($paymentController->notification, $this->message);
+            }//E# if else statement
         } else {//No such product
             //Set notification
             $productController->notification = array(

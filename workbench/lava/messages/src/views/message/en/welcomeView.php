@@ -1,7 +1,14 @@
 <p>Dear <?php echo $viewData['name']; ?>,</p>
-<p>You have recently created an account on <?php echo $viewData['productName'];?> using this email address: <?php echo $viewData['email']; ?></p>
+<p>Welcome to <?php echo $viewData['productName'];?>!</p>
 
-<p>Kindly click on the link below (or copy and paste the link (URL) onto your browser) to activate your account and enjoy all our cool features <?php echo $viewData['productName'];?> has to offer:</p>
+<p>To start enjoying our services:</p>
+<p>1. Search car wash near you,</p>
+<p>2. View services offered by the car wash,</p>
+<p>3. Instantly pay for a service on your mobile phone,</p>
+<p>4. Earn loyalty points for each car wash,</p>
+<p>5. Get a free car wash from your loyalty points or promotions that run from time to time,</p>
+
+<p>kindly click on the link below (or copy and paste the link (URL) onto your browser):</p>
 
 <p><?php echo $viewData['url']; ?></p>
 
