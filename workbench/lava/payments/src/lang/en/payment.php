@@ -20,7 +20,7 @@ return array(
             )
         ),
         'processTransaction' => array(
-            'notNearEnough' => 'You have to be within 500 metre to process a payment',
+            'notNearEnough' => 'Your not close enough to the Car Wash to process a transaction. Please attempt again when at the location.',
             'dbError' => 'Lost connection to the database',
             'transaction' => array(
                 1 => 'Transaction successful',
@@ -28,7 +28,7 @@ return array(
             )
         ),
         'processTransactionWithStamps' => array(
-            'notNearEnough' => 'You have to be within 500 metre to process a payment',
+            'notNearEnough' => 'Your not close enough to the Car Wash to process a transaction. Please attempt again when at the location.',
             'productNotLoyable' => ':name cannot be paid with loyalty stamps',
             'insufficientStamps' => ':name requires :locationStamps but you have :userStamps',
             'dbError' => 'Lost connection to the database',
