@@ -190,17 +190,17 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
             } else {
 
                 //Set notification
-                $paymentController->notification = array(
+                $productController->notification = array(
                     'field' => 'gps',
                     'type' => 'Distance',
                     'value' => 'Invalid',
                 );
 
                 //Set message
-                $this->message = \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransactionWithStamps.notNearEnough');
+                $this->message = \Lang::get($productController->package . '::' . $productController->controller . '.validation.processTransactionWithStamps.notNearEnough');
 
                 //Throw 403 error
-                throw new \Api403Exception($paymentController->notification, $this->message);
+                throw new \Api403Exception($productController->notification, $this->message);
             }//E# if else statement
         } else {//No such product
             //Set notification
@@ -436,17 +436,17 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                 }//E# if statement
             } else {
                 //Set notification
-                $paymentController->notification = array(
+                $productController->notification = array(
                     'field' => 'gps',
                     'type' => 'Distance',
                     'value' => 'Invalid',
                 );
 
                 //Set message
-                $this->message = \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransaction.notNearEnough');
+                $this->message = \Lang::get($productController->package . '::' . $productController->controller . '.validation.processTransaction.notNearEnough');
 
                 //Throw 403 error
-                throw new \Api403Exception($paymentController->notification, $this->message);
+                throw new \Api403Exception($productController->notification, $this->message);
             }//E# if else statement
         } else {//No such product
             //Set notification
