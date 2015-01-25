@@ -19,6 +19,7 @@ return array(
                 0 => 'Transaction declined',
             )
         ),
+        //validation.processTransaction.notNearEnough
         'processTransaction' => array(
             'notNearEnough' => 'Your not close enough to the Car Wash to process a transaction. Please attempt again when at the location.',
             'dbError' => 'Lost connection to the database',

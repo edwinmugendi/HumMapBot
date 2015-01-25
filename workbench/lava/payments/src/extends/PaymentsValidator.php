@@ -190,14 +190,14 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
             } else {
 
                 //Set notification
-                $productController->notification = array(
+                $paymentController->notification = array(
                     'field' => 'gps',
                     'type' => 'Distance',
                     'value' => 'Invalid',
                 );
 
                 //Set message
-                $this->message = \Lang::get($productController->package . '::' . $productController->controller . '.validation.processTransactionWithStamps.notNearEnough');
+                $this->message = \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransactionWithStamps.notNearEnough');
 
                 //Throw 403 error
                 throw new \Api403Exception($productController->notification, $this->message);
@@ -244,6 +244,9 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
         //Cache promotion id
         $promotionId = array_key_exists('promotion_id', $this->data) ? $this->data['promotion_id'] : false;
 
+        //Payment controller
+        $paymentController = new PaymentController();
+
         //Product controller
         $productController = new ProductController();
 
@@ -263,9 +266,6 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
 
                 //Get user model by id
                 $userModel = $userController->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->data['token']));
-
-                //Payment controller
-                $paymentController = new PaymentController();
 
                 //Get vehiclel model
                 $vehicleModel = $this->validateUserOwnsVrm($attribute, $this->data['vrm'], $parameters);
@@ -436,14 +436,14 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                 }//E# if statement
             } else {
                 //Set notification
-                $productController->notification = array(
+                $paymentController->notification = array(
                     'field' => 'gps',
                     'type' => 'Distance',
                     'value' => 'Invalid',
                 );
 
                 //Set message
-                $this->message = \Lang::get($productController->package . '::' . $productController->controller . '.validation.processTransaction.notNearEnough');
+                $this->message = \Lang::get($paymentController->package . '::' . $paymentController->controller . '.validation.processTransaction.notNearEnough');
 
                 //Throw 403 error
                 throw new \Api403Exception($productController->notification, $this->message);
