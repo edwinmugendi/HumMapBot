@@ -353,11 +353,12 @@ class BaseController extends Controller {
             $this->notification = array(
                 'list' => $relationArray,
                 'pagination' => array(
-                    'current_page' => $controllerModel->getCurrentPage(),
+                    'page' => $controllerModel->getCurrentPage(),
                     'last_page' => $controllerModel->getLastPage(),
                     'per_page' => $controllerModel->getPerPage(),
                     'total' => $controllerModel->getTotal(),
                     'from' => $controllerModel->getFrom(),
+                    'to' => $controllerModel->getTo(),
                     'count' => $controllerModel->count()
                 )
             );

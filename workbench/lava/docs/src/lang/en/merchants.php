@@ -28,7 +28,7 @@ return array(
                     'field' => 'token',
                     'dataType' => 'string',
                     'note' => 'User API token',
-                    'required' => 1,
+                    'required' => 0,
                 )
             ),
             'returns' => array(
@@ -76,7 +76,7 @@ return array(
                         ),
                     ),
                     'note' => 'Location array',
-                    'required' => 0,
+                    'required' => 1,
                 ),
                 array(
                     'field' => 'radius',
@@ -85,10 +85,28 @@ return array(
                     'required' => 1,
                 ),
                 array(
+                    'field' => 'radius',
+                    'dataType' => 'integer',
+                    'note' => 'Radius in meters',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'per_page',
+                    'dataType' => 'integer',
+                    'note' => 'Number of locations to return in a given page eg return 20 locations (Defaults to 30)',
+                    'required' => 0,
+                ),
+                array(
+                    'field' => 'page',
+                    'dataType' => 'integer',
+                    'note' => 'The page of the pagination to return eg page 1, 2',
+                    'required' => 0,
+                ),
+                array(
                     'field' => 'token',
                     'dataType' => 'string',
                     'note' => 'User API token',
-                    'required' => 1,
+                    'required' => 0,
                 )
             ),
             'returns' => array(
@@ -96,7 +114,7 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Location found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Locations list","data":{"location":{"lat":-1.28333,"long":-1.28333},"merchants":[{"id":"1","merchant_id":"0","name":"Kikuyu","fax":"","address":"","postal_code":"","lat":"0.000000","lng":"0.000000","loyalty_stamps":"0","monday_open":"","monday_close":"","tuesday_open":"","tuesday_close":"","wednesday_open":"","wednesday_close":"","thursday_open":"","thursday_close":"","friday_open":"","friday_close":"","saturday_open":"","saturday_close":"","sunday_open":"","sunday_close":"","holiday_open":"","holiday_close":"","image":"","created_at":"0000-00-00 00:00:00","updated_at":"0000-00-00 00:00:00","rating":2,"image_url":"http:\/\/api.lv.dev\/media\/upload\/merchant\/thumbnails","favoured":0,"rated":0}]}}'
+                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Locations list","data":{"list":[{"id":"3","merchant_id":"1","name":"Product 1","fax":"","address":"","postal_code":"","lat":"1.0000000000","lng":"1.0000000000","loyalty_stamps":"0","currency":"","surcharge":"0.00","image":"","created_at":"-0001-11-30 00:00:00","updated_at":"-0001-11-30 00:00:00","times":{"monday":{"open":"","close":""},"tuesday":{"open":"","close":""},"wednesday":{"open":"","close":""},"thursday":{"open":"","close":""},"friday":{"open":"","close":""},"saturday":{"open":"","close":""},"sunday":{"open":"","close":""},"holiday":{"open":"","close":""}},"star_rating":"","image_url":"http:\/\/api.lv.dev\/media\/upload\/merchant\/thumbnails","favoured":"-1","rated":"-1","rating_count":"0","user_stamps":"0"}],"pagination":{"page":1,"last_page":9,"per_page":1,"total":9,"from":1,"to":1,"count":1}}}'
                 ),
                 array(
                     'action' => 'Error',

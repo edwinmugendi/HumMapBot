@@ -76,12 +76,13 @@ class LocationController extends MerchantsBaseController {
             $this->notification = array(
                 'location' => array(
                     'lat' => floatval($this->input['location']['lat']),
-                    'long' => floatval($this->input['location']['lat']),
+                    'lng' => floatval($this->input['location']['lng']),
                 )
             );
             //Get locations within radius
             $fluentLocations = \DB::select(\DB::raw("SELECT *, (6371 * acos(cos(radians(?)) * cos(radians(lat)) * cos( radians(lng) - radians(?)) + sin(radians(?)) * sin(radians(lat)))) AS distance FROM sp_mct_locations Having distance < ? ORDER BY distance"), $parameters);
 
+            // dd($fluentLocations);
             if ($fluentLocations) {//Locations found
                 //Get location ids
                 $locationIds = array_fetch($fluentLocations, 'id');
@@ -96,6 +97,12 @@ class LocationController extends MerchantsBaseController {
                         'column' => 'id',
                         'operator' => '=',
                         'operand' => $locationIds
+                    ),
+                    array(
+                        'where' => 'where',
+                        'column' => 'status',
+                        'operator' => '=',
+                        'operand' => 1
                     )
                 );
 
@@ -109,18 +116,37 @@ class LocationController extends MerchantsBaseController {
                     )
                 );
 
+                //Set per page to parameters
+                $parameters['paginate'] = isset($this->input['per_page']) ? (int) $this->input['per_page'] : 30;
+
                 //Get location model
                 $locationModel = $this->select($fields, $whereClause, 2, $parameters);
 
                 //Location array
                 $locationArray = array();
 
-                foreach ($locationModel->toArray() as $singleLocation) {//Loop via the locations
-                    //Prepare Model
+                //dd($locationModel->toArray());
+                foreach ($locationModel as $singleLocation) {//Loop via the locations
+                    //var_dump($singleLocation);
+                    ///Prepare Model
                     $locationArray[] = $this->prepareModelToReturn($singleLocation);
                 }//E# foreach statement
                 //Set merchants
                 $this->notification['list'] = $locationArray;
+
+                //Build notification
+                $this->notification = array(
+                    'list' => $locationArray,
+                    'pagination' => array(
+                        'page' => $locationModel->getCurrentPage(),
+                        'last_page' => $locationModel->getLastPage(),
+                        'per_page' => $locationModel->getPerPage(),
+                        'total' => $locationModel->getTotal(),
+                        'from' => $locationModel->getFrom(),
+                        'to' => $locationModel->getTo(),
+                        'count' => $locationModel->count()
+                    )
+                );
             } else {
                 //Set merchants
                 $this->notification['list'] = array();
@@ -180,6 +206,7 @@ class LocationController extends MerchantsBaseController {
      * 
      */
     public function prepareModelToReturn($locationArray) {
+        //dd($locationArray);
         //Define days
         $days = array(
             'monday',
