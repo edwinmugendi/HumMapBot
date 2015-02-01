@@ -82,7 +82,6 @@ class LocationController extends MerchantsBaseController {
             //Get locations within radius
             $fluentLocations = \DB::select(\DB::raw("SELECT *, (6371 * acos(cos(radians(?)) * cos(radians(lat)) * cos( radians(lng) - radians(?)) + sin(radians(?)) * sin(radians(lat)))) AS distance FROM sp_mct_locations Having distance < ? ORDER BY distance"), $parameters);
 
-            // dd($fluentLocations);
             if ($fluentLocations) {//Locations found
                 //Get location ids
                 $locationIds = array_fetch($fluentLocations, 'id');
@@ -125,9 +124,7 @@ class LocationController extends MerchantsBaseController {
                 //Location array
                 $locationArray = array();
 
-                //dd($locationModel->toArray());
                 foreach ($locationModel as $singleLocation) {//Loop via the locations
-                    //var_dump($singleLocation);
                     ///Prepare Model
                     $locationArray[] = $this->prepareModelToReturn($singleLocation);
                 }//E# foreach statement
@@ -206,7 +203,6 @@ class LocationController extends MerchantsBaseController {
      * 
      */
     public function prepareModelToReturn($locationArray) {
-        //dd($locationArray);
         //Define days
         $days = array(
             'monday',
