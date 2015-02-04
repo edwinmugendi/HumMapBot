@@ -22,7 +22,6 @@ class LocationModel extends \BaseModel {
     //Appends fields
     protected $appends = array(
         'star_rating',
-        'image_url',
         'favoured',
         'rated',
         'rating_count',
@@ -126,16 +125,7 @@ class LocationModel extends \BaseModel {
 
 //E# getRatingCountAttribute() function
 
-    /**
-     * S# getImageUrlAttribute() function
-     * Get image url
-     */
-    public function getImageUrlAttribute() {
-        return asset('media/upload/merchant/thumbnails/' . $this->image);
-    }
-
-//E# getImageUrlAttribute() function
-
+  
     /**
      * S# getFavouredAttribute() function
      * Has user favoured this location

@@ -171,8 +171,12 @@ class LocationController extends MerchantsBaseController {
             $locationModel = $this->getModelByField('id', $id, $parameters);
 
             if ($locationModel) {
+                $locationArray = $locationModel->toArray();
+
+                $locationArray['no_thumbnails'] = 1;
+
                 //Prepare model
-                $locationArray = $this->prepareModelToReturn($locationModel->toArray());
+                $locationArray = $this->prepareModelToReturn($locationArray);
 
                 //Get success message
                 $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => 'id', 'value' => $id));
@@ -225,6 +229,12 @@ class LocationController extends MerchantsBaseController {
             unset($locationArray[$day . '_open']);
             unset($locationArray[$day . '_close']);
         }//E# foreach statement
+        //Url
+        $url = array_key_exists('no_thumbnails', $locationArray) ? 'media/lava/upload/' : 'media/lava/upload/thumbnails/';
+
+        //Image
+        $locationArray['image_url'] = $locationArray['image'] ? asset($url . $locationArray['image']) : "";
+
         //Set the days array as times key to the location array
         $locationArray['times'] = $daysArray;
 
