@@ -8,6 +8,10 @@ return array(
       | The name of the product
       |
      */
+    'stripe' => array(
+        'api_key' => 'pk_test_DYBeYnfNbzE5L5QRjKy55DsX',
+        'api_secret' => 'sk_test_we6SCXt44ocldL6M7lnC9Gss',
+    ),
     'sonic' => array(
         'secret' => '1dc504',
         'trustedIps' => array(

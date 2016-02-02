@@ -5,11 +5,17 @@
      * APP55 API's
      * 
      */
-    //Sync Card Page
-    \Route::post('payment/card/sync', array('as' => 'cardSync', 'uses' => 'Lava\Payments\CardController@postSync'));
+    //Create Card
+    \Route::post('api/create/card', array('as' => 'createCard', 'uses' => 'Lava\Payments\CardController@postCreate'));
 
-    //Get single cards
-    \Route::get('payment/card/get/{field}/{value}', array('as' => 'cardGetSingle', 'uses' => 'Lava\Payments\CardController@getModelBelongingToUser'));
+    //Stripe Test Form Page
+    \Route::get('card/test/form', array('as' => 'testForm', 'uses' => 'Lava\Payments\CardController@getTestForm'));
+
+    //Delete card
+    \Route::post('api/delete/card', array('as' => 'deleteCard', 'uses' => 'Lava\Payments\CardController@postDrop'));
+
+    //Get card
+    \Route::get('api/get/card', array('as' => 'Get Card', 'uses' => 'Lava\Payments\CardController@getList'));
 
     //Get all cards
     \Route::get('payment/card/get', array('as' => 'cardGetAll', 'uses' => 'Lava\Payments\CardController@getAllModelBelongingToUser'));
@@ -32,7 +38,7 @@
 
     //Process Transaction
     \Route::post('payment/transaction/process', array('as' => 'paymentTransactionProcess', 'uses' => 'Lava\Payments\PaymentController@process'));
-    
+
     //Process Transaction with loyalty stamps
     \Route::post('payment/transaction/process/stamps', array('as' => 'paymentTransactionProcessStamps', 'uses' => 'Lava\Payments\PaymentController@processWithStamps'));
 
@@ -41,5 +47,4 @@
 
     //Get all transactions
     \Route::get('payment/transaction/get', array('as' => 'cardGetAll', 'uses' => 'Lava\Payments\TransactionController@getAllModelBelongingToUser'));
-
 });

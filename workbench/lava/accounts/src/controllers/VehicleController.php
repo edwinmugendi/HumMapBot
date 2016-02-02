@@ -19,47 +19,49 @@ class VehicleController extends AccountsBaseController {
     public $userSearchableRelations = array('vehicles');
 
     /**
-     * S# postCreate() function
-     * Create model associated with this controller
+     * S# controllerSpecificWhereClause() function
+     * @author Edwin Mugendi
      * 
-     * @return function createRedirect
+     * Set controller specific where clause
+     * @param array $fields Fields
+     * @param array $whereClause Where clause
+     * @param array $parameters Parameters
      */
-    public function postCreate() {
-        //Build model namespace
-        $modelName = \Util::buildNamespace($this->package, $this->controller, 2);
+    public function controllerSpecificWhereClause(&$fields, &$whereClause, &$parameters) {
 
-        //Create a model object
-        $model = new $modelName();
+        if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//From API
+            //dd($this->input);
+            if (!array_key_exists('id', $this->input)) {
+                //Lazy load to load
+                $params['lazyLoad'] = array('vehicles');
 
-        //Get and set the model's create validation rules
-        $this->validationRules = $model->createRules;
+                //Get user by token
+                $user_model = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->input['token'], $params));
 
-        //Validate row to be inserted
-        $validation = $this->isInputValid();
+                $vehicle_ids = array();
 
-        if ($validation->fails()) {//Validation fails
-            //Validation error redirect
-            return $this->failedValidationRedirect($validation, 1);
-        } else {//Validation passes
-            //Just before creating the model
-            $this->beforeCreating();
+                if ($user_model && $user_model->vehicles) {
+                    foreach ($user_model->vehicles as $single_vehicle) {
+                        $vehicle_ids[] = $single_vehicle['id'];
+                    }//E# foreach statement
+                }//E# if statement
 
-            //Check if vehicle already exists
-            $controllerModel = $this->getModelByField('vrm', $this->input['vrm']);
+                $vehicle_ids = $vehicle_ids ? $vehicle_ids : array(0);
 
-            if (!$controllerModel) {//Create it
-                //Create controller model
-                $controllerModel = $this->createIfValid($this->input, true);
+                if ($vehicle_ids) {
+                    //Set where clause
+                    $whereClause[] = array(
+                        'where' => 'whereIn',
+                        'column' => 'id',
+                        'operator' => '=',
+                        'operand' => $vehicle_ids
+                    );
+                }//E# if statement
             }//E# if statement
-            //Just after creating the model
-            $this->afterCreating($controllerModel);
-
-            //Redirect to list
-            return $this->createRedirect($controllerModel);
-        }//E# if else statement
+        }//E# if statement
     }
 
-//E# postCreate() function
+//E# controllerSpecificWhereClause() function
 
     /**
      * S# beforeCreating() function
@@ -88,6 +90,32 @@ class VehicleController extends AccountsBaseController {
      * @return 
      */
     public function afterCreating(&$controllerModel) {
+        $this->afterCreatingAndUpdating($controllerModel);
+    }
+
+//E# afterCreating() function
+
+    /**
+     * S# afterUpdating() function
+     * @author Edwin Mugendi
+     * Call this just after creating the model
+     * Can be used to perform post create actions
+     * @return 
+     */
+    public function afterUpdating(&$controllerModel) {
+        $this->afterCreatingAndUpdating($controllerModel);
+    }
+
+//E# afterUpdating() function
+
+    /**
+     * S# afterCreatingAndUpdating() function
+     * @author Edwin Mugendi
+     * Call this just after creating or updating the model
+     * Can be used to perform post create and update actions
+     * @return 
+     */
+    private function afterCreatingAndUpdating(&$controllerModel) {
         //Cache relation
         $relation = 'allVehicles';
 
@@ -102,17 +130,13 @@ class VehicleController extends AccountsBaseController {
 
         if (!in_array($controllerModel->id, $currentVrmIds)) {
             $now = Carbon::now();
-            $userModel->vehicles()->attach($controllerModel->id,array('created_at'=> $now,'updated_at'=>$now));
+            $userModel->vehicles()->attach($controllerModel->id, array('created_at' => $now, 'updated_at' => $now));
         }//E# if else statement
-        
         //Get user by token
         $userModel = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->input['token'], $parameters));
 
         //Count user vehicles
         $userVehicles = $userModel->$relation->count();
-
-        //Data to update
-        $dataToUpdate = array();
 
         //Save user
         $saveUser = false;
@@ -129,33 +153,22 @@ class VehicleController extends AccountsBaseController {
             foreach ($userModel->$relation as $singleVehicle) {//Loop via the vehicles
                 //Data to update
                 $dataToUpdate = array();
-                $inputVrm = \Str::lower($this->input['vrm']);
-                
-                $vehicleVrm = \Str::lower($singleVehicle->vrm);
 
-                if ($inputVrm == $vehicleVrm) {
+                if ($controllerModel->id == $singleVehicle->id) {
                     $dataToUpdate['dropped_at'] = 'null';
-                }//E# if statement
-                
-                //Set is default
-                if (($this->input['is_default'])) {
-                    if ($inputVrm == $vehicleVrm) {
+                    //Set is default
+                    if (($this->input['is_default'])) {
                         //Default this vehicle
                         $userModel->vrm = $singleVehicle->vrm;
 
                         //Update save user
                         $saveUser = true;
                     }//E# if else statement
-                }//E# if else statement
-                //Set force
-                if (($this->input['force'])) {
-                    if ($inputVrm == $vehicleVrm) {
-                        $dataToUpdate['force'] = 1;
-                    }//E# if statement
-                }//E# if statement
-                //Set purpose
-                if (($this->input['purpose'])) {
-                    if ($inputVrm == $vehicleVrm) {
+                    //Set force
+                    $dataToUpdate['force'] = $this->input['force'];
+
+                    //Set purpose
+                    if (($this->input['purpose'])) {
                         $dataToUpdate['purpose'] = $this->input['purpose'];
                     }//E# if statement
                 }//E# if statement
@@ -173,20 +186,25 @@ class VehicleController extends AccountsBaseController {
         }//E# if statement
     }
 
-//E# afterCreating() function
+//E# afterCreatingAndUpdating() function
 
-
+    /**
+     * S# postDrop() function
+     * 
+     * Drop vehicle
+     */
     public function postDrop() {
         //TODO Set Deleted at field
         //TODO update or reset the users default vrm
         //Set validation rules
         $this->validationRules = array(
-            'vrm' => 'required|vrmDelete'
+            'id' => 'required|integer|deleteVehicle'
         );
         //Validate inputs
         $this->isInputValid();
     }
 
+//E# postDrop() function
 }
 
 //E# VehicleController() function

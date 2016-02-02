@@ -87,13 +87,12 @@ Route::filter('api', function($route, $request) {
     //TODO check that user is activated firstf
     //User controller
     $userController = new Lava\Accounts\UserController();
-    
-    if ($userController->subdomain == 'api') {//From API
-       
+
+
+    if (array_key_exists('format', $userController->input) && ($userController->input['format'] == 'json')) {
+
         $httpMethod = $request->getMethod();
-        
+
         $userController->authenticateApi();
-        
     }//E# if else statement
-     
 });

@@ -9,7 +9,7 @@ use Carbon\Carbon;
  * @author Edwin Mugendi
  * User Model
  */
-class UserModel extends \Eloquent {
+class UserModel extends \BaseModel {
 
     //Table
     protected $table = 'acc_users';
@@ -38,6 +38,8 @@ class UserModel extends \Eloquent {
         'app_version',
         'role_id',
         'points',
+        'agent',
+        'ip',
         'status',
         'created_by',
         'updated_by',
@@ -75,6 +77,7 @@ class UserModel extends \Eloquent {
     );
     //Create update rules
     public $updateRules = array(
+        'id'=>'exists:acc_users',
         'email' => 'exists:acc_users', //TODO
         'location' => 'latLng',
         'notify_sms' => 'integer|between:0,1',
@@ -83,7 +86,7 @@ class UserModel extends \Eloquent {
         'push_token' => '',
         'os' => 'in:ios,android',
         'vrm' => '',
-        'card'=>'',
+        'card' => '',
         'old_password' => 'required_with:new_password',
         'new_password' => 'password',
     );

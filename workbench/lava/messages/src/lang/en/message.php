@@ -37,6 +37,11 @@ return array(
             'sms' => '',
             'push' => ''
         ),
+        'forgotPassword' => array(
+            'email' => 'Request to change your :productName account password.',
+            'sms' => 'Dear :name, your password reset code is :resetCode',
+            'push' => ''
+        ),
         'welcome' => array(
             'email' => 'Welcome to :productName',
             'sms' => 'Welcome to :productName',

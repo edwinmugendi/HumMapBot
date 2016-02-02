@@ -2,53 +2,50 @@
 
 namespace Lava\Payments;
 
-use Illuminate\Database\Eloquent\SoftDeletingTrait;
-
 /**
  * S# CardModel() Class
  * @author Edwin Mugendi
  * Card Model
  */
-class CardModel extends \Eloquent {
-    
-    use SoftDeletingTrait;
+class CardModel extends \BaseModel {
+
     //Table
     protected $table = 'fnc_cards';
-    //Soft delete
-    protected $dates = ['deleted_at'];
+    //View fields
+    public $viewFields = array(
+        'id' => array(1, 'text', '='),
+    );
     //Appends fields
     protected $appends = array(
         'is_default',
-        'app55_id'
+        'stripe_id'
     );
-    //User owned
-    public $userOwned = true;
     //Fillable fields
     protected $fillable = array(
-        'address_city',
-        'address_country',
-        'address_postal_code',
-        'address_street',
-        'expiry',
-        'gateway_id',
-        'number',
-        'token',
         'user_id',
+        'gateway',
+        'exp_month',
+        'exp_year',
+        'last4',
+        'brand',
+        'address_city',
+        'address_zip',
+        'address_country',
+        'address_line1',
+        'token',
         'status',
         'created_by',
         'updated_by'
     );
     protected $hidden = array(
-        'status',
         'created_by',
         'updated_by',
-        'deleted_at'
     );
     //Create validation rules
     public $createRules = array(
-        'status' => 'required|integer',
-        'created_by' => 'required|integer',
-        'updated_by' => 'required|integer',
+    );
+    //Update validation rules
+    public $updateRules = array(
     );
     //Delete validation rules
     public $deleteRules = array(
@@ -60,15 +57,13 @@ class CardModel extends \Eloquent {
         'field' => 'required|in:id',
         'value' => 'required|integer|exists:fnc_cards,id',
     );
-    //Select validation rules
-    public $selectAllRules = array();
 
     /**
      * S# user() function
      * Set one to one relationship to User Model
      */
     public function user() {
-        return $this->belongsTo(\Util::buildNamespace('accounts', 'user', 2), 'user_id', 'id');
+        return $this->belongsTo(\Util::buildNamespace('accounts', 'user', 2), 'user_id');
     }
 
 //E# user() function
@@ -78,24 +73,29 @@ class CardModel extends \Eloquent {
      * Is this card the default
      */
     public function getIsDefaultAttribute() {
-        //Get the logged in user card
-        $token = $this->user()->first()->card;
-        
-        return ($this->attributes['token'] == $token) ? 1 : 0;
+
+        if (count($this->user)) {
+            //Get the logged in user card
+            $token = $this->user()->first()->card;
+
+            return ($this->attributes['token'] == $token) ? 1 : 0;
+        } else {
+            return 0;
+        }
     }
 
 //E# getIsDefaultAttribute() function
 
     /**
-     * S# getApp55IdAttribute() function
-     * Get User App55 Id
+     * S# getStripeIdAttribute() function
+     * Get User Stripe Id
      */
-    public function getApp55IdAttribute() {
-        //Return app55 id
-        return $this->user()->first()->app55_id;
+    public function getStripeIdAttribute() {
+        //Return stripe id
+        return count($this->user) ? $this->user()->first()->stripe_id : '';
     }
 
-//E# getApp55IdAttribute() function
+//E# getStripeIdAttribute() function
 }
 
 //E# CardModel() Class

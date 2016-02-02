@@ -108,6 +108,14 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
      */
     public function validateResetCode($attribute, $resetCode, $parameters) {
 
+        //Checks if send to is email, else reverts to phone
+        if (filter_var($this->data['send_to'], FILTER_VALIDATE_EMAIL)) {
+            $field = 'email';
+        } else {
+            $field = 'phone';
+        }//E# if else statement
+
+
         $userController = new UserController();
 
         //Fields to select
@@ -117,9 +125,9 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         $whereClause = array(
             array(
                 'where' => 'where',
-                'column' => 'email',
+                'column' => $field,
                 'operator' => '=',
-                'operand' => $this->data['email']
+                'operand' => $this->data['send_to']
             ),
             array(
                 'where' => 'where',
@@ -284,7 +292,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
             if ($fbUserId) {//User exists
                 //Get user profile from facebook
                 $fbUserProfile = $fb->api('/me', 'GET');
-                
+
                 //Fields to select
                 $fields = array('*');
 
@@ -306,7 +314,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
 
                 //Get user by facebook id
                 $userModel = $userController->select($fields, $whereClause, 1);
-                
+
                 if ($userModel) {//User has already signed in facebook
                     if (!$userModel->app55_id) {//User does not an app55 account
                         $userController->createApp55User($userModel);
@@ -324,7 +332,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                         'last_name' => $fbUserProfile['last_name'],
                         'gender' => $fbUserProfile['gender'] ? $fbUserProfile['gender'] : '',
                         'status' => (int) $fbUserProfile['verified'],
-                        'dob'=>  Carbon::createFromFormat('m/d/Y',$fbUserProfile['birthday']),
+                        'dob' => Carbon::createFromFormat('m/d/Y', $fbUserProfile['birthday']),
                         'created_by' => 1,
                         'updated_by' => 1,
                         'role_id' => 1,
@@ -333,7 +341,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                         'notify_email' => 1,
                         'email' => $fbUserProfile['email']//TODO remove this
                     );
-                    
+
                     //Create user
                     $userModel = $userController->createIfValid($newUser, true);
 
@@ -448,18 +456,18 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
 //E# replaceApi() function
 
     /**
-     * S# validateVrmDelete() function
-     * Validate Vrm Delete
+     * S# validateDeleteVehicle() function
+     * Validate Id Delete
      * @param array $attribute Validation attribute
-     * @param boolean $vrm The vrm
+     * @param boolean $id The id
      * @param array $parameters Parameters
      */
-    public function validateVrmDelete($attribute, $vrm, $parameters) {
+    public function validateDeleteVehicle($attribute, $id, $parameters) {
         //Create vehicle controller
         $vehicleController = new VehicleController();
 
-        //Get vehicle by vrm
-        $vehicleModel = $vehicleController->callController(\Util::buildNamespace('accounts', 'vehicle', 1), 'getModelByField', array('vrm', $vrm));
+        //Get vehicle by id
+        $vehicleModel = $vehicleController->getModelByField('id', $id);
 
         if ($vehicleModel) {//Vehicle does not exist
             if ($vehicleModel->user_owns) {
@@ -472,7 +480,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                 //Delete this vehicle in the pivot table
                 $vehicleController->updatePivotTable($userModel, 'vehicles', $vehicleModel->id, array('dropped_at' => Carbon::now()));
 
-                if ($userModel && \Str::lower($userModel->vrm) == \Str::lower($vrm)) {//User exists
+                if ($userModel && \Str::lower($userModel->vrm) == \Str::lower($vehicleModel->vrm)) {//User exists
                     //Clear users default
                     $userModel->vrm = '';
 
@@ -481,27 +489,16 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                     $userModel->save();
                 }//E# if statement
                 //Get success message
-                $message = \Lang::get($vehicleController->package . '::' . $vehicleController->controller . '.api.delete', array('field' => 'vrm', 'value' => $vrm));
+                $message = \Lang::get($vehicleController->package . '::' . $vehicleController->controller . '.notification.deleted');
 
-                throw new \Api200Exception(array('id' => $vehicleModel->id, 'vrm' => $vrm), $message);
-            } else {
-
-                //Set notification
-                $vehicleController->notification = array(
-                    'field' => 'vrm',
-                    'type' => 'Vehicle',
-                    'value' => $this->data['vrm'],
-                );
-
-                //Throw 403 error
-                throw new \Api403Exception($vehicleController->notification);
-            }
+                throw new \Api200Exception(array('id' => $vehicleModel->id, 'id' => $id), $message);
+            }//E# if statement
         }//E# if statement
         //Set notification
         $vehicleController->notification = array(
-            'field' => 'vrm',
+            'field' => 'id',
             'type' => 'Vehicle',
-            'value' => $vrm,
+            'value' => $id,
         );
 
         //Throw VRM not found error
@@ -510,21 +507,96 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         return false;
     }
 
-//E# validateVrmDelete() function
+//E# validateDeleteVehicle() function
 
     /**
-     * S# replaceVrmDelete() function
+     * S# replaceDeleteVehicle() function
      * Replace status parameter in login validaion string
      * @param $string $message The message
      * @param $string $attribute The attribute
      * @param $string $rule The rule
      * @param array $parameters The parameters
      */
-    protected function replaceVrmDelete($message, $attribute, $rule, $parameters) {
+    protected function replaceDeleteVehicle($message, $attribute, $rule, $parameters) {
         return $this->message;
     }
 
-//E# replaceVrmDelete() function
+//E# replaceDeleteVehicle() function
+
+    /**
+     * S# validateDeleteCard() function
+     * Validate Id Delete
+     * @param array $attribute Validation attribute
+     * @param boolean $id The id
+     * @param array $parameters Parameters
+     */
+    public function validateDeleteCard($attribute, $id, $parameters) {
+        //Create card controller
+        $cardController = new \Lava\Payments\CardController();
+        
+        //Set scope
+        $parameters['scope'] = array('statusOne');
+
+        //Get card by id
+        $cardModel = $cardController->getModelByField('id', $id, $parameters);
+        
+        if ($cardModel) {//Card does not exist
+            //Instantiate a new user controller
+            $userController = new UserController();
+
+            //Get user model by token
+            $userModel = $userController->getModelByField('token', $this->data['token']);
+
+            if ($cardModel->created_by == $userModel->id) {
+
+
+                //Delete card on stripe
+                $stripe_controller = new \Lava\Payments\StripeController();
+                $stripe_response = $stripe_controller->deleteCard($userModel->stripe_id, $cardModel->token);
+                $cardModel->deleted_on_stripe = $stripe_response['status'] ? 1 : 0;
+
+                $cardModel->status = 2;
+                $cardModel->save();
+
+                if ($cardModel->token == $userModel->card) {
+                    $userModel->card = '';
+
+                    $userModel->save();
+                }//E# if statement
+                //Get success message
+                $message = \Lang::get($cardController->package . '::' . $cardController->controller . '.notification.deleted');
+
+                throw new \Api200Exception(array('id' => $cardModel->id, 'id' => $id), $message);
+            }
+        }//E# if statement
+        //Set notification
+        $cardController->notification = array(
+            'field' => 'id',
+            'type' => 'Card',
+            'value' => $id,
+        );
+
+        //Throw VRM not found error
+        throw new \Api404Exception($cardController->notification);
+
+        return false;
+    }
+
+//E# validateDeleteCard() function
+
+    /**
+     * S# replaceDeleteCard() function
+     * Replace status parameter in login validaion string
+     * @param $string $message The message
+     * @param $string $attribute The attribute
+     * @param $string $rule The rule
+     * @param array $parameters The parameters
+     */
+    protected function replaceDeleteCard($message, $attribute, $rule, $parameters) {
+        return $this->message;
+    }
+
+//E# replaceDeleteCard() function
 
     /**
      * S# validateUserOwnsVrm() function

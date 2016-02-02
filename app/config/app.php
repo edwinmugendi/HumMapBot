@@ -100,7 +100,7 @@ return array(
         'UtilLibraryServiceProvider',
         //Register Accounts Service Provider
         'Lava\Accounts\AccountsServiceProvider',
-         //Register Docs Service Provider
+        //Register Docs Service Provider
         'Lava\Docs\DocsServiceProvider',
         //Register Merchants Service Provider
         'Lava\Merchants\MerchantsServiceProvider',

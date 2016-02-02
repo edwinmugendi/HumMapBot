@@ -31,7 +31,7 @@ return array(
         904 => array(
             'httpStatusCode' => '404',
             'shortDescription' => 'Not found',
-            'developerMessage' => ':type with :field \':value\' not found.',
+            'developerMessage' => ':type not found.',
             'userMessage' => ':action not found. Sorry for any inconvinience',
             'moreInfo' => ''
         ),

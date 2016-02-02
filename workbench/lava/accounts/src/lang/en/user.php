@@ -6,22 +6,28 @@ return array(
       | User Language Lines
       |--------------------------------------------------------------------------
      */
+    'notification' => array(
+        'created' => 'User created',
+        'updated' => 'User updated',
+    ),
     'api' => array(
         'registerUser' => 'Your account has been created on :productName',
         'update' => 'Your details have been updated',
         'forgotPassword' => 'We\'ve sent you reset email.',
         'resetPassword' => 'Your password has been reset',
-        'login' => 'Logged in',
+        'login' => 'Logged in!',
+        'sending_email_failed' => 'Sending email failed. Kindly try again later',
+        'sending_sms_failed' => 'Sending sms failed. Kindly try again later',
     ),
     'validation' => array(
         'api' => 'Invalid login token',
         'facebook' => array(
             'noUser' => 'No user found on Facebook with such token'
         ),
-        'password'=>array(
-                'oldPasswordRequired'=>'Old password is required',
-                'oldPasswordWrong' => 'Wrong old password',
-                'newPasswordMin'=>'New password should be greater than :min'
+        'password' => array(
+            'oldPasswordRequired' => 'Old password is required',
+            'oldPasswordWrong' => 'Wrong old password',
+            'newPasswordMin' => 'New password should be greater than :min'
         )
     ),
     'view' => array(
@@ -239,6 +245,9 @@ return array(
                     'field' => array(
                         'enterPassword' => 'Enter new password',
                         'confirmPassword' => 'Confirm password'
+                    ),
+                    'statusCode' => array(
+                        1 => 'User not found.',
                     )
                 ),
             )

@@ -7,7 +7,7 @@ use Carbon\Carbon;
  * @author Edwin Mugendi
  * Base Controller
  */
-class BaseController extends Controller {
+class BaseController1 extends Controller {
 
     //Bundle
     protected $layout = 'layouts.master';
@@ -26,27 +26,24 @@ class BaseController extends Controller {
     //Notification
     public $notification;
     //User
-    public $user, $currentUser, $org;
+    public $user;
     //Inputs
     public $input = array();
     //Searchable fields
     public $searchableFields;
     //User Searchable relations
     public $userSearchableRelations;
-    //Imageable
-    public $imageable;
-    //Owned by
-    public $ownedBy = array();
 
     public function __construct() {
 
         $this->user = $this->sessionedUser();
+        $this->subdomain = \Session::get('subdomain');
 
         //Get POSTed data
         $this->input = \Input::get();
 
         //Cache ip
-        $this->input['ip'] = \Request::getClientIp();
+        $this->input['ipAddress'] = \Request::getClientIp();
     }
 
 //E# __construct() function
@@ -201,7 +198,7 @@ class BaseController extends Controller {
         //Get user by id
         $userModel = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('id', $this->user['id'], $parameters));
 
-        if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//From API
+        if ($this->subdomain == 'api') {//From API
             //Get success message
             $message = \Lang::get($this->package . '::' . $this->controller . '.api.getAll');
             //Define relation array
@@ -380,86 +377,21 @@ class BaseController extends Controller {
     }
 
     /**
-     * S# getDateFormat() function
-     * 
-     * Get data format
-     * 
-     * @return str date format
-     */
-    public function getDateFormat() {
-        if (\Auth::check() && $this->org['date_format']) {
-            $date_format = \Str::upper($this->org['date_format']);
-        } else {
-            $date_format = 'DD/MM/YYYY';
-        }//E# if else statement
-
-        return $date_format;
-    }
-
-//E# getDateFormat() function
-
-    /**
-     * S# convertDateFormat() function
-     * 
-     * Convert system date format to a format compatible with the date plugin
-     * 
-     * @return str Date plugin
-     * 
-     */
-    public function convertDateFormat($date_format) {
-        return str_replace('YYYY', 'Y', str_replace('DD', 'd', str_replace('MM', 'm', $date_format)));
-    }
-
-//E# convertDateFormat() function
-
-    /**
-     * S# formatDates() function
-     * 
-     * Format submitted input dates to mysql dates
-     */
-    public function formatDates($fields) {
-
-        $date_format = $this->getDateFormat();
-
-        $new_format = $this->convertDateFormat($date_format);
-
-        foreach ($fields as $single_field) {
-            if (array_key_exists($single_field, $this->input) && $this->input[$single_field]) {
-                $this->input[$single_field] = Carbon::createFromFormat($new_format, $this->input[$single_field])->format('Y-m-d');
-            }//E# if statement
-        }//E# foreach statement
-    }
-
-//E# formatDates() function
-
-    /**
-     * S# beforeViewing() function
-     * Prepare fields for list view
-     */
-    public function beforeViewing(&$singleModel) {
-        return;
-    }
-
-//E# beforeViewing() function
-
-    /**
      * S# buidSingleList() function
      * Build a single list of controller
+     * @param array $viewData View Data
      * @return string Single list
      */
-    public function buildSingleList() {
+    public function buildSingleList($viewData) {
 
         $controllerList = '';
-        foreach ($this->viewData['controllerModel'] as $singleController) {//Loop via the controller
-            //Prepare fields for list view
-            $this->beforeViewing($singleController);
-
+        foreach ($viewData['controllerModel'] as $singleController) {//Loop via the controller
             //Set the single controller to view data
-            $this->viewData['singleModel'] = $singleController;
+            $viewData['singleController'] = $singleController;
 
             //Set user controller to the view data
-            $controllerList .= \View::make($this->package . '::' . $this->controller . '.' . $this->controller . 'ListSingleView')
-                            ->with('viewData', $this->viewData)->render();
+            $controllerList .= \View::make($this->controller . '.' . $this->controller . 'ListSingleView')
+                            ->with('viewData', $viewData)->render();
         }//E#  foreach statement
 
         return $controllerList;
@@ -474,306 +406,57 @@ class BaseController extends Controller {
      */
     public function getList() {
 
-        //Set crudId
-        $this->crudId = 3;
-
         //Prepare view data
-        $this->viewData = $this->prepareViewData('list');
-
-        //Set layout's title
-        $this->layout->title = \Lang::get($this->viewData['package'] . '::' . $this->viewData['controller'] . '.' . $this->viewData['page'] . '.title');
-
-        //Order
-        $this->viewData['dataSource']['per_page'] = \BaseArrayDataModel::getPerPageSelectOptions($this->package, $this->controller);
-
-        //Order
-        $this->viewData['dataSource']['order'] = \BaseArrayDataModel::getOrderSelectOptions($this->package, $this->controller);
-
-        //Define parameters
-        $this->viewData['paginationAppends'] = $whereClause = $parameters = array();
-
-        //Inject Data Sources
-        $this->injectDataSources();
-
-        //Inject View data
-        $this->injectViewData();
-
-        //Cache model namespace
-        $model = \Util::buildNamespace($this->package, $this->controller, 2);
-
-        //Create a model
-        $viewData['model'] = new $model;
+        $viewData = $this->prepareViewData('list');
 
         //Fields to select
         $fields = array('*');
 
-        //Set per page
-        if (array_key_exists('per_page', $this->input)) {
-            $per_page = (int) $this->input['per_page'];
-            $perPageMax = \Config::get('product.perPageMax');
+        //Define parameters
+        $parameters = array();
 
-            if ($per_page > $perPageMax) {
-                $per_page = $perPageMax;
-            }//E# if statement
-        } else {
-            $per_page = \Config::get('product.perPageMin');
-        }//if else statement
         //Set per page to parameters
-        $this->viewData['paginationAppends']['per_page'] = $parameters['paginate'] = $per_page;
+        $parameters['paginate'] = 10;
 
-        //Set export
-        if (array_key_exists('export', $this->input) && in_array($this->input['export'], array('pdf', 'print', 'csv', 'xls'))) {
-            $this->viewData['export'] = $this->input['export'];
-            //Override per page
-            $this->viewData['paginationAppends']['per_page'] = $parameters['paginate'] = 1000;
-        }//if else statement
+        //Order by id in descending order
+        $parameters['orderBy'][] = array('id' => 'desc');
 
-        if (array_key_exists('sort', $this->input) && property_exists($viewData['model'], 'viewFields') && array_key_exists($this->input['sort'], $viewData['model']->viewFields)) {//Sort field
-            if (array_key_exists('order', $this->input)) {//Order exists
-                if (\Str::lower($this->input['order']) == 'desc') {//Desc
-                    //Order by field in acsending order
-                    $parameters['orderBy'][] = array($this->input['sort'] => 'desc');
-                } else {
-                    //Order by field in acsending order
-                    $parameters['orderBy'][] = array($this->input['sort'] => 'asc');
-                }//E# if else statement
-            } else {
-                //Order by field in acsending order
-                $parameters['orderBy'][] = array($this->input['sort'] => 'asc');
-            }//E# if else statement
-        } else {
-            //Order by id in descending order
-            $parameters['orderBy'][] = array('id' => 'desc');
-        }//E# if else statement
         //Set lazy load parameters
         $parameters['lazyLoad'] = $this->lazyLoad;
 
-        //Search
-        $this->buildSearchWhereClause($fields, $whereClause, $parameters, $viewData['model']);
-
-        //Build where clause based on role
-        $this->roleBasedWhereClause($fields, $whereClause, $parameters);
-
-        //Set owned by where clause
-        $this->setOwnedBy($whereClause);
-
-        //Set scope
-        $parameters['scope'] = array('statusOne');
-
-        //Call controller specific where clause
-        $this->controllerSpecificWhereClause($fields, $whereClause, $parameters);
-
         //Select this users
-        $this->viewData['controllerModel'] = $this->select($fields, $whereClause, 2, $parameters);
-
-        //Prepare controller model
-        $this->prepareControllerModel();
+        $viewData['controllerModel'] = $this->select($fields, array(), 2, $parameters);
 
         //Build the user list and set to view data
-        $this->viewData['controllerList'] = $this->buildSingleList($this->viewData);
+        $viewData['controllerList'] = $this->buildSingleList($viewData);
 
-        //return $this->viewData['controllerModel'][0];
+        //Set layout's title
+        $this->layout->title = \Lang::get($viewData['controller'] . '.' . $viewData['page'] . '.title');
+
         //Get and set layout's inline javascript
-        $this->layout->inlineJs = $this->injectInlineJs($this->viewData);
+        $this->layout->inlineJs = $this->injectInlineJs($viewData['page']);
 
         //Register css and js assets for this page
-        $this->layout->assets = $this->registerAssets($this->viewData);
+        $this->layout->assets = $this->registerAssets($viewData['page']);
+
+        //Set top bar box to view data
+        $viewData['topBarBox'] = 'search';
 
         //Set layout's top bar partial
-        $this->layout->topBarPartial = $this->getTopBarPartialView();
+        $this->layout->topBarPartial = $this->getTopBarPartialView($viewData);
 
-        //Set list side bar
-        $this->viewData['sideBar'] = $this->getListSideBarPartialView();
+        //Set layout's side bar partial
+        $this->layout->sideBarPartial = $this->getSideBarPartialView($viewData);
 
-        if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {
-
-            //Prepare controller model
-            $this->prepareControllerModel();
-
-            //Get success message
-            $message = \Lang::get($this->package . '::' . $this->controller . '.notification.list');
-
-            throw new \Api200Exception($this->viewData['controllerModel']->toArray(), $message);
-        }//E# if statement
-        //Load content view
-        $this->viewData['contentView'] = \View::make($this->viewData['package'] . '::' . $this->viewData['controller'] . '.' . $this->viewData['view'])
-                ->with('viewData', $this->viewData);
-
-        if (array_key_exists('export', $this->input) && in_array($this->input['export'], array('csv', 'xls'))) {
-            return $this->exportToCsv();
-        }//E# if statement
-
-        if (array_key_exists('export', $this->input) && in_array($this->input['export'], array('pdf', 'print'))) {
-            return $this->exportToPdf();
-        }//E# if statement
-
-        if (array_key_exists('echo', $this->input)) {
-            return $this->viewData['contentView'];
-        }//E# if statement
-        //Set container view
-        $this->layout->containerView = $this->getContainerViewPartialView();
-
-        //Register templates
-        $this->layout->containerView .= $this->registerListTemplates();
+        //Set layout's content view
+        $this->layout->contentView = \View::make($viewData['controller'] . '.' . $viewData['view'])
+                ->with('viewData', $viewData);
 
         //Render page
         return $this->layout;
     }
 
 //E# getList() function
-
-    /**
-     * S# registerListTemplates() method
-     * @author Edwin Mugendi
-     * 
-     * Register list templates
-     * 
-     * @return return template
-     */
-    public function registerListTemplates() {
-        
-    }
-
-//E# registerListTemplates() function
-
-    /**
-     * S# injectDataSources() function
-     * Inject data sources
-     * @param array $dataSources Data sources array
-     * 
-     */
-    public function injectDataSources() {
-        
-    }
-
-//E# injectDataSources() function
-
-    /**
-     * S# injectViewData() function
-     * Inject view data
-     * 
-     */
-    public function injectViewData() {
-        
-    }
-
-//E# injectViewData() function
-
-    /**
-     * S# buildSearchWhereClause() function
-     * @author Edwin Mugendi
-     * Build search where clause
-     * 
-     * @param array $fields Fields
-     * @param array $parameters Parameters
-     * @param array $whereClause Where clause
-     * @param model $model Model
-     * 
-     * @param Model $model Model
-     */
-    public function buildSearchWhereClause(&$fields, &$whereClause, &$parameters, &$model) {
-
-        if (property_exists($model, 'viewFields')) {//Search fields exist
-            foreach ($this->input as $key => $value) {//Loop via the inputs
-                if (array_key_exists($key, $model->viewFields)) {
-                    if ($value) {
-
-                        //Append to pagination
-                        $this->viewData['paginationAppends'][$key] = $value;
-
-                        if ($model->viewFields[$key][2] == 'like') {
-                            $value = '%' . $value . '%';
-                        }//E# if statement
-                        //Append where clause
-                        $whereClause[] = array(
-                            'where' => 'where',
-                            'column' => $key,
-                            'operator' => $model->viewFields[$key][2],
-                            'operand' => $value
-                        );
-                    }
-                }//E# if statement
-            }//E# foreach statement
-        }//E# if statement
-    }
-
-//E# buildSearchWhereClause() function
-
-    /**
-     * S# roleBasedWhereClause() function
-     * @author Edwin Mugendi
-     * Build where clause based on role
-     * 
-     * @param array $fields Fields
-     * @param array $parameters Parameters
-     * @param array $whereClause Where clause
-     */
-    public function roleBasedWhereClause($fields, &$parameters, &$whereClause) {
-        
-    }
-
-//E# roleBasedWhereClause() function
-
-    /**
-     * S#setOwnedBy() function
-     * 
-     * Set owned by where clause to get only models owned by the respective model
-     * 
-     * @param type $whereClause
-     */
-    public function setOwnedBy(&$whereClause) {
-       
-        if ($this->ownedBy) {//Owned by is set
-            foreach ($this->ownedBy as $singleOwnedBy) {
-                //Owned by current user
-                if ($singleOwnedBy == 'user') {
-                    $whereClause[] = array(
-                        'where' => 'where',
-                        'column' => 'user_id',
-                        'operator' => '=',
-                        'operand' => $this->user['id']
-                    );
-                }//E# if statement
-                //Owned by current organization
-                if ($singleOwnedBy == 'organization') {
-                    $whereClause[] = array(
-                        'where' => 'where',
-                        'column' => 'organization_id',
-                        'operator' => '=',
-                        'operand' => $this->org['id']
-                    );
-                }//E# if statement
-            }//E# foreach statement
-        }//E# if statement
-    }
-
-//E# setOwnedBy() function
-
-    /**
-     * S# controllerSpecificWhereClause() function
-     * @author Edwin Mugendi
-     * 
-     * Set controller specific where clause
-     * @param array $fields Fields
-     * @param array $whereClause Where clause
-     * @param array $parameters Parameters
-     */
-    public function controllerSpecificWhereClause(&$fields, &$whereClause, &$parameters) {
-        
-    }
-
-//E# controllerSpecificWhereClause() function
-
-    /**
-     * S# prepareControllerModel() function
-     * Prepare Controller Model
-     * 
-     */
-    public function prepareControllerModel() {
-        
-    }
-
-//E# prepareControllerModel() function
 
     /**
      * S# validateInput() function
@@ -788,7 +471,7 @@ class BaseController extends Controller {
         //Validate this input
         $validation = \Validator::make($this->input, $this->validationRules);
 
-        if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json') && $validation->fails()) {//Validation failed
+        if (($this->subdomain == 'api') && $validation->fails()) {//Validation failed
             //Throw a Validation Exception
             throw new Api400Exception($validation, $this->validationRules);
         }//E# if statement
@@ -837,28 +520,15 @@ class BaseController extends Controller {
      * @param array $parameters the parameters
      * @return string inline Javascript
      */
-    public function injectInlineJs($parameters = array()) {
+    public function injectInlineJs($page, $parameters = array()) {
         //Define js array to be returned
         $js = array();
 
-        //Set date format
         //Set login redirect
         $js['loginRedirect'] = \Request::path();
 
         //Set current page
-        $js['page'] = camel_case($this->package . '_' . $parameters['page']);
-
-        //Set date format
-        $js['date_format'] = $this->getDateFormat();
-
-        //Set crud id
-        $js['crudId'] = $this->crudId;
-
-        //Set package
-        $js['package'] = $this->package;
-
-        //Set controller
-        $js['controller'] = $this->controller;
+        $js['page'] = $page;
 
         //Set base url
         $js['baseUrl'] = \URL::to('/');
@@ -869,27 +539,16 @@ class BaseController extends Controller {
         //Set current language
         $js['lang']['current'] = \Config::get('app.locale');
 
-        //Set property
-        $js['controllerModel'] = array_key_exists('controllerModel', $parameters) ? $parameters['controllerModel'] : false;
-
-        if ($parameters['page'] == $this->controller . 'ListPage') {
-            $js['lang']['actions'] = \Lang::get($this->package . '::' . $this->controller . '.view.actions');
-
-            $js['imageable'] = 1;
-        }//E# if statement
-
-        if ($this->imageable && ($parameters['page'] == $this->controller . 'PostPage')) {//Load Media picker component
-            //Media
-            $js['maxNumberOfFiles'] = $parameters['media']['count'];
-
-            $js['lang']['media']['maxFilesExceeded'] = $this->callController(\Util::buildNamespace('media', 'media', 1), 'getLanguageString', array('inlineJs.error.fileupload.description.maxFilesExceeded'));
-            $js['lang']['media']['fileNotAllowed'] = $this->callController(\Util::buildNamespace('media', 'media', 1), 'getLanguageString', array('inlineJs.error.fileupload.description.fileNotAllowed'));
-            $js['lang']['media']['fileTooBig'] = $this->callController(\Util::buildNamespace('media', 'media', 1), 'getLanguageString', array('inlineJs.error.fileupload.description.fileTooBig'));
-            $js['lang']['media']['fileTooSmall'] = $this->callController(\Util::buildNamespace('media', 'media', 1), 'getLanguageString', array('inlineJs.error.fileupload.description.fileTooSmall'));
-        }//E# if statement
-        //Inject controller specific js
-        $this->injectControllerSpecificJs($js);
-
+        //Switch through the pages
+        switch ($page) {
+            case 'transactionDetailedPage': {//Transaction Detailed Page
+                    $js['iframe'] = $parameters['transactionModel']['iframe'];
+                    $js['callback'] = $parameters['callback'];
+                    break;
+                }//E# case
+            default:
+                break;
+        }//E# switch statement
         //Append inline javascript to inline Js
         $this->inlineJs .= '<script type="text/javascript">';
         $this->inlineJs .= "var inlineJs = " . json_encode($js) . ";";
@@ -900,18 +559,6 @@ class BaseController extends Controller {
     }
 
 //E# injectInlineJs() method
-
-    /**
-     * S# injectControllerSpecificJs() method
-     * @author Edwin Mugendi
-     * Inject controller specific js
-     * @param string $js javascript
-     */
-    public function injectControllerSpecificJs(&$js) {
-        
-    }
-
-//E# injectControllerSpecificJs() method
 
     /**
      * S# registerComponents() method
@@ -969,68 +616,43 @@ class BaseController extends Controller {
      * S# getTopBarPartialView() method
      * @author Edwin Mugendi
      * Return top bar partial view for each page
+     * @param array $viewData top bar partial view data
      * @return view the top bar partial view
      */
-    public function getTopBarPartialView() {
+    public function getTopBarPartialView($viewData) {
         //Get and return the global top bar partial
         return \View::make('partials.topBar')
-                        ->with('viewData', $this->viewData);
+                        ->with('viewData', $viewData);
     }
 
 //E# getTopBarPartialView() method
 
     /**
-     * S# getPostSideBarPartialView() method
+     * S# getSideBarPartialView() method
      * @author Edwin Mugendi
      * Return side bar partial view for each page
+     * @param array $viewData side bar partial view data
      * @return view the side bar partial view
      */
-    public function getPostSideBarPartialView() {
+    public function getSideBarPartialView($viewData) {
         //Get and return the global side bar partial
         return \View::make('partials.sideBar')
-                        ->with('viewData', $this->viewData);
+                        ->with('viewData', $viewData);
     }
 
-//E# getPostSideBarPartialView() method
-
-    /**
-     * S# getListSideBarPartialView() method
-     * @author Edwin Mugendi
-     * Return side bar partial view for each page
-     * @return view the side bar partial view
-     */
-    public function getListSideBarPartialView() {
-        //Get and return the global side bar partial
-        return \View::make('partials.sideBar')
-                        ->with('viewData', $this->viewData);
-    }
-
-//E# getListSideBarPartialView() method
-
-    /**
-     * S# getContainerViewPartialView() method
-     * @author Edwin Mugendi
-     * Return container view partial view for each page
-     * @return view the container view partial view
-     */
-    public function getContainerViewPartialView() {
-        //Get and return the global side bar partial
-        return \View::make('partials.containerView')
-                        ->with('viewData', $this->viewData);
-    }
-
-//E# getContainerViewPartialView() method
+//E# getSideBarPartialView() method
 
     /**
      * S# getFooterBarPartialView() method
      * @author Edwin Mugendi
      * Return footer bar partial view for each page
+     * @param array $viewData footer bar partial view data
      * @return view the footer bar partial view
      */
-    public function getFooterBarPartialView() {
+    public function getFooterBarPartialView($viewData) {
         //Get and return the global footer bar partial
         return \View::make('partials.footerBar')
-                        ->with('viewData', $this->viewData);
+                        ->with('viewData', $viewData);
     }
 
 //E# getFooterBarPartialView() method
@@ -1074,76 +696,106 @@ class BaseController extends Controller {
      * @return array view data
      */
     public function prepareViewData($action) {
-        //Set meta description
-        $this->layout->meta_description = \Config::get('product.meta.description');
-
-        //Set meta keywords
-        $this->layout->meta_keywords = \Config::get('product.meta.keywords');
-
-        //Set data source to view data
-        $this->viewData['dataSource'] = array();
 
         //Set package to view data
-        $this->viewData['package'] = $this->package;
+        $viewData['package'] = $this->package;
 
         //Set controller to view data
-        $this->viewData['controller'] = $this->controller;
+        $viewData['controller'] = $this->controller;
 
         //Set carbon to view data
-        $this->viewData['Carbon'] = new Carbon;
+        $viewData['Carbon'] = new Carbon;
 
         //Set action to view data
-        $this->viewData['action'] = $action;
+        $viewData['action'] = $action;
 
         //Set theme to view data
-        $this->viewData['theme'] = $this->theme;
+        $viewData['theme'] = $this->theme;
 
         //Set logged in to view data
-        $this->layout->logged = $this->viewData['logged'] = \Auth::check();
+        $viewData['logged'] = \Auth::check();
 
-        //Set logged in user to view data
-        $this->viewData['user'] = $this->user;
+        //Set logged in to view data
+        $viewData['user'] = $this->user;
 
-        //Set current user to view data
-        //$this->viewData['currentUser'] = $this->currentUser;
-        //Set current user to view data
-        // $this->viewData['org'] = $this->org;
         //Set input data to view data
-        $this->viewData['input'] = $this->input;
+        $viewData['input'] = $this->input;
 
-        //Set disable Fields to view data
-        //$this->viewData['disableFields'] = $this->disableFields;
-        //Set segment to view data
-        $this->viewData['segments'] = \Request::segments();
+        //Set first segment to view data
+        $viewData['firstSegment'] = \Request::segment(1);
 
-        //Set environment to view data
-        $this->viewData['env'] = App::environment();
-
-        //Set date_format to view data
-        $this->viewData['date_format'] = $this->convertDateFormat($this->getDateFormat());
-
-        //Set imageable to view data
-        $this->viewData['imageable'] = $this->imageable;
-
-        if ($this->imageable) {
-            //Set uploadpath to view data
-            $this->viewData['uploadPath'] = \URL::to('/') . \Config::get('media::media.uploadPath');
-        }//E# if statement
         //Set view to view data
-        $this->viewData['view'] = camel_case($this->controller . '_' . $action . '_view');
+        $viewData['view'] = camel_case($this->controller . '_' . $action . '_view');
 
         //Set page to view data
-        $this->viewData['page'] = camel_case($this->controller . '_' . $action . '_page');
+        $viewData['page'] = camel_case($this->controller . '_' . $action . '_page');
 
         //Set layout's footer bar partial
-        $this->layout->footerBarPartial = $this->getFooterBarPartialView($this->viewData);
+        $this->layout->footerBarPartial = $this->getFooterBarPartialView($viewData);
 
         //Return prepared view data
-        return $this->viewData;
+        return $viewData;
     }
 
 //E# prepareViewData() method
 
+    public function get() {
+        //Get and set inputs
+        $inputs = \Input::get();
+
+        //Parameters
+        $whereClause = $parameters = array();
+
+        foreach ($inputs as $key => $value) {
+            switch ($key) {
+                case 'fields':
+                    $fields = explode(',', $value);
+                    break;
+                case 'sort':
+                    $operator = substr($value, 0, 1);
+                    if ($operator == '-') {//Sort in descending order
+                        $parameters['orderBy'][] = array(substr($value, 1) => 'desc');
+                    } else if ($operator == '+') {//Sort in ascending order
+                        $parameters['orderBy'][] = array(substr($value, 1) => 'desc');
+                    }//E# if else statement 
+
+                    break;
+                case 'limit':
+                    $parameters['limit'] = $value;
+
+                    if (array_key_exists('offset', $inputs)) {
+                        $parameters['offset'] = $value;
+                    }//E# if statement
+
+                    break;
+
+                default:
+                    $valueParts = explode('_', $value);
+
+                    if (\Str::lower($valueParts[0]) == 'where') {
+                        $whereClause[] = array(
+                            'where' => 'where',
+                            'column' => $key,
+                            'operator' => $valueParts[0],
+                            'operand' => $valueParts[1]
+                        );
+                    }//E# if else statement
+
+                    break;
+            }
+        }//E# foreach statement
+
+        if (!isset($fields)) {//Check if fields is set
+            $fields = array('*');
+        }//E# if statement
+
+
+        return $this->select($fields, $whereClause, 2);
+
+        return $fields;
+    }
+
+//E# get() function
     /**
      * S# getModelByField() function
      * @author Edwin Mugendi
@@ -1179,6 +831,7 @@ class BaseController extends Controller {
     }
 
 //E# delete() function
+
     public function select($fields, $whereClause, $oneOrAll, $parameters = array()) {
 
         //Cache model namespace
@@ -1194,20 +847,11 @@ class BaseController extends Controller {
             $selectModel = $selectModel->withTrashed();
         }//E# if statement
 
-        if (array_key_exists('count', $parameters)) {//Count models and return
+        if (array_key_exists('count', $parameters)) {////Count models and return
             return $selectModel->count();
         }//E# if statement
 
-        if (array_key_exists('aggregate', $parameters)) {//Count models and return
-            return $selectModel->$parameters['aggregate']['function']($parameters['aggregate']['field']);
-        }//E# if statement
-
-        if (array_key_exists('groupBy', $parameters)) {//Group by
-            $selectModel->groupBy($parameters['groupBy']);
-        }//E# if statement
-
         if (array_key_exists('orderBy', $parameters)) {//Order model
-            //dd($parameters);
             $this->buildOrderBy($selectModel, $parameters['orderBy']);
         }//E# if statement
 
@@ -1215,35 +859,28 @@ class BaseController extends Controller {
             $this->buildOrderByRaw($selectModel, $parameters['orderByRaw']);
         }//E# if statement
 
+
         if (array_key_exists('lazyLoad', $parameters)) {//Lazy load other models
             $lazyLoad = $this->buildLazyLoad($parameters['lazyLoad']);
             // dd($lazyLoad);
             $selectModel->with($lazyLoad)->get();
         }//E# if statement
-        
-        if (array_key_exists('scope', $parameters)) {//Load Scope
-            $lazyLoad = $this->buildScope($selectModel, $parameters['scope']);
-        }//E# if statement
 
         if (array_key_exists('paginate', $parameters)) {//Paginate
-            //Select fields
-            $selectModel->select($fields);
-
             //Return here because paginator object cannot be converted to array or json
             return $selectModel->paginate($parameters['paginate']);
         } else {
-
             //Get all or first model
             $selectModel = ($oneOrAll == 2) ? $selectModel->get($fields) : $selectModel->first($fields);
             if (array_key_exists('convertTo', $parameters) && $oneOrAll == 2) {//Convert this model to array or json   
                 $selectModel = $selectModel->$parameters['convertTo']();
             }//E# if statement
             //Return selected model
-            return count($selectModel) ? $selectModel : array();
+            return count($selectModel) ? $selectModel : '';
         }//E# if else statement
     }
 
-//E# select() method
+//E# post_select() method
 
     /**
      * S# buildLazyLoad() method
@@ -1287,7 +924,6 @@ class BaseController extends Controller {
      */
     private function buildWhereClause(&$model, &$whereClause) {
         foreach ($whereClause as $singleWhereClause) {//Loop through the where clause
-            //($singleWhereClause);
             if ($singleWhereClause['where'] == 'where') {//Where clause
                 $model = $model->where($singleWhereClause['column'], $singleWhereClause['operator'], $singleWhereClause['operand']);
             } else if ($singleWhereClause['where'] == 'orWhere') {//Where clause
@@ -1308,20 +944,6 @@ class BaseController extends Controller {
 
 //E# buildWhereClause() method
 
-    /**
-     * S# buildScope() method
-     * @author Edwin Mugendi
-     * Set scopes
-     * @param array $scope Scopes
-     * @param model an ordered model 
-     */
-    private function buildScope(&$model, $scope) {
-        foreach ($scope as $singleScope) {//Loop through the scopes by array
-            $model = $model->$singleScope();
-        }//E# foreach statement
-    }
-
-//E# buildScope() method
     /**
      * S# buildOrderBy() method
      * @author Edwin Mugendi
@@ -1386,7 +1008,6 @@ class BaseController extends Controller {
             $this->isInputValid();
         }//E# if statement
         //Hip Hip Hurrah!
-        
         //Create model
         $createdModel = $model::create($row);
 
@@ -1409,7 +1030,7 @@ class BaseController extends Controller {
      * @return mixed 
      * 1. {oject} the updated object
      */
-    public function updateIfValid($field, $value, $row, $valid = false) {
+    public function updateIfValid($id, $row, $valid = false) {
 
         //Build model namespace
         $modelName = \Util::buildNamespace($this->package, $this->controller, 2);
@@ -1425,7 +1046,7 @@ class BaseController extends Controller {
             $this->isInputValid($row);
         }//E# if statement
         //Hip Hip Hurrah!
-        $updatedModel = $this->getModelByField($field, $value);
+        $updatedModel = $model->find($id);
 
         if ($updatedModel) {//Updating model failed
             $updatedModel->fill($row);
@@ -1466,67 +1087,34 @@ class BaseController extends Controller {
      * @return function createRedirect
      */
     public function postCreate() {
-        //Set the crud id
-        $this->crudId = 1;
-
         //Get this controller's model
         $modelObject = $this->getModelObject();
 
         //Get and set the model's create validation rules
         $this->validationRules = $modelObject->createRules;
 
-        //Set owned by
-        $this->assignOwnedBy();
-
         //Validate row to be inserted
-        $this->validator = $this->isInputValid();
+        $validation = $this->isInputValid();
 
-        if ($this->validator->fails()) {//Validation fails
+        if ($validation->fails()) {//Validation fails
             //Validation error redirect
-            return $this->createValidationFailed();
+            return $this->failedValidationRedirect($validation, 1);
         } else {//Validation passes
             //Just before creating the model
             $this->beforeCreating();
 
-            if (array_key_exists('dateFields', $modelObject)) {
-                $this->formatDates($modelObject->dateFields);
-            }//E# if statement
-            //Should we create this model
-            $should_create = $this->shouldCreate();
+            //Create controller model
+            $controllerModel = $this->createIfValid($this->input, true);
 
-            if ($should_create) {
-                //Create controller model
-                $controllerModel = $this->createIfValid($this->input, true);
+            //Just after creating the model
+            $this->afterCreating($controllerModel);
 
-                //Just after creating the model
-                $this->afterCreating($controllerModel);
-            } else {
-                //Create controller model
-                $controllerModel = $this->afterCreating($this->input);
-            }//E# if else statement
-
-            if ($this->imageable) {//Imageable
-                $this->callController(\Util::buildNamespace('media', 'media', 1), 'relateToMedia', array(&$controllerModel, $this->controller));
-            }//E# if statement
             //Redirect to list
             return $this->createRedirect($controllerModel);
         }//E# if else statement
     }
 
 //E# postCreate() function
-
-    /**
-     * S# shouldCreate() function
-     * 
-     * Should we create this model
-     * 
-     * @return boolean true if we should create, false otherwise
-     */
-    public function shouldCreate() {
-        return true;
-    }
-
-//E# shouldCreate() function
 
     /**
      * S# beforeCreating() function
@@ -1568,26 +1156,20 @@ class BaseController extends Controller {
      * @return \API200Exception if source is "api" throw Success Exception 
      */
     public function createRedirect($controllerModel) {
+        if ($this->subdomain == 'api') {//From API
+            //Get success message
+            $message = \Lang::get($this->package . '::' . $this->controller . '.api.create', array('field' => 'id', 'value' => $controllerModel->id));
 
-        //Get success message
-        $message = \Lang::get($this->package . '::' . $this->controller . '.notification.created');
-
-        if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//From API
             throw new \Api200Exception(array_only($controllerModel->toArray(), array('id')), $message);
         }//E# if else statement
-        //Set notification
-        $this->notification = array(
-            'type' => 'success',
-            'message' => $message
-        );
 
-        return \Redirect::route(camel_case($this->package . '_list_' . $this->controller))->with('notification', $this->notification);
+        return \Redirect::route($this->controller . 'List');
     }
 
 //E# createRedirect() function
 
     /**
-     * S# postUpdate() function
+     * S# postCreate() function
      * @author Edwin Mugendi
      * Update model associated with this controller
      * 
@@ -1596,12 +1178,13 @@ class BaseController extends Controller {
      * 
      * @return function updateRedirect
      */
-    public function postUpdate() {
-        //Set the crud id
-        $this->crudId = 2;
+    public function postUpdate($field, $value) {
 
         //Get this controller's model
         $modelObject = $this->getModelObject();
+
+        //Add field and value to input
+        $this->addFieldValueToInput($field, $value);
 
         //Get and set the model's update validation rules
         $this->validationRules = $modelObject->updateRules;
@@ -1610,31 +1193,22 @@ class BaseController extends Controller {
         $this->validateModelIsUserOwned($modelObject);
 
         //Validate row to be updated
-        $this->validator = $this->isInputValid();
+        $validation = $this->isInputValid();
 
-        if ($this->validator->fails()) {//Validation fails
+        if ($validation->fails()) {//Validation fails
             //Validation error redirect
-            return $this->updateValidationFailed();
+            return $this->failedValidationRedirect($validation, 2, $this->input['id']);
         } else {//Validation passes
             //Just before updating the model
             $this->beforeUpdating();
 
-            if (array_key_exists('dateFields', $modelObject)) {
-                $this->formatDates($modelObject->dateFields);
-            }
-
-
             //Update controller model
-            $controllerModel = $this->updateIfValid('id', $this->input['id'], $this->input, true);
-
+            $controllerModel = $this->updateIfValid($value, $this->input, true);
 
             if ($controllerModel) {//Model updated
                 //Just after updating the model
                 $this->afterUpdating($controllerModel);
 
-                if ($this->imageable) {//Imageable
-                    $this->callController(\Util::buildNamespace('media', 'media', 1), 'relateToMedia', array(&$controllerModel, $this->controller));
-                }//E# if statement
                 //Redirect to list
                 return $this->updateRedirect($controllerModel);
             }//E# if statement
@@ -1644,23 +1218,6 @@ class BaseController extends Controller {
 //E# postUpdate() function
 
     /**
-     * S# updateValidationFailed() function
-     * @author Edwin Mugendi
-     * Redirect to the initial post page after failed validation
-     * @return \Redirect redirect to post page
-     */
-    public function updateValidationFailed() {
-
-        //Build parameters to redirect to
-        //Redirect to this route with old inputs and errors
-        return \Redirect::route(camel_case($this->package . '_post_' . $this->controller), array($this->input['id']))
-                        ->withInput()
-                        ->withErrors($this->validator);
-    }
-
-//E# updateValidationFailed() function
-
-    /**
      * S# beforeUpdating() function
      * @author Edwin Mugendi
      * Call this just before updating the model
@@ -1668,6 +1225,7 @@ class BaseController extends Controller {
      * @return 
      */
     public function beforeUpdating() {
+        $this->input['status'] = 1;
         $this->input['created_by'] = $this->user['id'] ? $this->user['id'] : 1;
         $this->input['updated_by'] = $this->user['id'] ? $this->user['id'] : 1;
         return;
@@ -1700,22 +1258,32 @@ class BaseController extends Controller {
      */
     public function updateRedirect($controllerModel) {
 
-        //Get success message
-        $message = \Lang::get($this->package . '::' . $this->controller . '.notification.updated');
+        if ($this->subdomain == 'api') {//From API
+            //Get success message
+            $message = \Lang::get($this->package . '::' . $this->controller . '.api.update', array('field' => 'id', 'value' => $controllerModel->id));
 
-        if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//From API
-            throw new \Api200Exception($controllerModel->toArray(), $message);
+            throw new \Api200Exception(array_only($controllerModel->toArray(), array('id')), $message);
         }//E# if else statement
-        //Set notification
-        $this->notification = array(
-            'type' => 'success',
-            'message' => $message
-        );
 
-        return \Redirect::route(camel_case($this->package . '_list_' . $this->controller))->with('notification', $this->notification);
+        return \Redirect::route($this->controller . 'List');
     }
 
 //E# updateRedirect() function
+
+    /**
+     * S# addFieldValueToInput() function
+     * Add field and value to input
+     * 
+     * @param string $field Field
+     * @param string $value Value
+     */
+    private function addFieldValueToInput($field, $value) {
+        //Add field and value to inputs
+        $this->input['field'] = $field;
+        $this->input['value'] = $value;
+    }
+
+//E# addFieldValueToInput() function
 
     /**
      * S# validateModelIsUserOwned() function
@@ -1724,9 +1292,9 @@ class BaseController extends Controller {
      * @param string $model Model
      */
     private function validateModelIsUserOwned($model) {
-        //  if ($model->userOwned) {
-        //      $this->validationRules['value'] .= ',user_id,' . $this->user['id'];
-        //  }//E# if statement
+        if ($model->userOwned) {
+            $this->validationRules['value'] .= ',user_id,' . $this->user['id'];
+        }//E# if statement
     }
 
 //E# validateModelIsUserOwned() function
@@ -1838,42 +1406,35 @@ class BaseController extends Controller {
 //E# deleteRedirect() function
 
     /**
-     * S# createValidationFailed() function
+     * S# failedValidationRedirect() function
      * @author Edwin Mugendi
      * Redirect to the initial post page after failed validation
+     * @param Object $validation Validation object
+     * @param int $crudAction Integer crud action
+     * @param int $controllerId The controller id
      * @return \Redirect redirect to post page
      */
-    public function createValidationFailed() {
+    public function failedValidationRedirect($validation, $crudAction, $controllerId = null) {
 
-        //Build parameters to redirect to
+        if ($crudAction == 1) {//Create action
+            //Build parameters to redirect to
+            $parameters = array(
+                'new'
+            );
+        } else {//Update Action
+            //Build parameters to redirect to
+            $parameters = array(
+                'update',
+                $controllerId
+            );
+        }//E# if else statement
         //Redirect to this route with old inputs and errors
-        return \Redirect::route(camel_case($this->package . '_post_' . $this->controller))
+        return \Redirect::route($this->controller . 'Post', $parameters)
                         ->withInput()
-                        ->withErrors($this->validator);
+                        ->withErrors($validation);
     }
 
-//E# createValidationFailed() function
-
-    /**
-     * S# assignOwnedBy() function
-     * Assign Owned By field
-     */
-    public function assignOwnedBy() {
-        if ($this->ownedBy) {//Owned by is set
-            foreach ($this->ownedBy as $singleOwnedBy) {
-                //Owned by current user
-                if ($singleOwnedBy == 'user') {
-                    $this->input['user_id'] = $this->currentUser['id'];
-                }//E# if statement
-                //Owned by current organization
-                if ($singleOwnedBy == 'organization') {
-                    $this->input['organization_id'] = $this->org['id'];
-                }//E# if statement
-            }//E# foreach statement
-        }//E# if statement
-    }
-
-//E# assignOwnedBy() function
+//E# failedValidationRedirect() function
 }
 
 //E# BaseController() method

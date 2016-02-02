@@ -17,5 +17,11 @@ return array(
         'checkRegistry' => 'VRM is in use',
         'vrmDelete' => 'No such VRM attached to you',
         'userOwns' => 'User doesn\'t own this vehicle with vrm :vrm'
-    )
+    ),
+    'notification' => array(
+        'created' => 'Vehicle added',
+        'updated' => 'Vehicle updated',
+        'deleted' => 'Vehicle deleted',
+        'list' => 'Vehicles list',
+    ),
 );

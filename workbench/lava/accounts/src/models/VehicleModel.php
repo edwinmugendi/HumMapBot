@@ -7,12 +7,15 @@ namespace Lava\Accounts;
  * @author Edwin Mugendi
  * Vehicle Model
  */
-class VehicleModel extends \Eloquent {
+class VehicleModel extends \BaseModel {
 
     //Table
     protected $table = 'acc_vehicles';
-    //User owned
-    public $userOwned = true;
+    
+    //View fields
+    public $viewFields = array(
+        'id' => array(1, 'text', '='),
+    );
     //Fillable fields
     protected $fillable = array(
         'vrm',
@@ -45,11 +48,11 @@ class VehicleModel extends \Eloquent {
     );
     //Update validation rules
     public $updateRules = array(
-        'field' => 'required|in:id',
-        'value' => 'required|exists:acc_vehicles,id',
-        'is_default' => 'required|between:0,1',
-        'purpose' => 'required|in:personal,business',
-        'type' => 'required|in:car,4x4',
+        'id' => 'required|exists:acc_vehicles,id',
+        'is_default' => 'between:0,1',
+        'purpose' => 'in:personal,business',
+        'type' => 'between:1,2',
+        //'vrm' => 'checkRegistry',
         'status' => 'integer',
         'created_by' => 'integer',
         'updated_by' => 'integer',
@@ -89,9 +92,8 @@ class VehicleModel extends \Eloquent {
      */
     public function getIsDefaultAttribute() {
         //Get the logged in user vrm
-        $vrm = $this->users()->whereUserId(\Auth::user()->id)->first()->vrm;
-
-        return ($this->attributes['vrm'] == $vrm) ? 1 : 0;
+        //  $vrm = $this->users()->whereUserId(\Auth::user()->id)->first()->vrm;
+        //  return ($this->attributes['vrm'] == $vrm) ? 1 : 0;
     }
 
 //E# getIsDefaultAttribute() function

@@ -43,21 +43,21 @@ class CreateUsersTable extends Migration {
             $table->string('token');
 
             //VRM
-            $table->string('vrm', 30);
+            $table->string('default_vrm', 30);
 
             //Card
-            $table->string('card', 255);
+            $table->string('default_card', 255);
 
             //Facebook
-            $table->string('fb_uid');
+            $table->string('fb_uid', 255);
 
             //Location
             $table->decimal('lat', 13, 10);
             $table->decimal('lng', 13, 10);
 
-            //APP55
-            $table->integer('app55_id');
-            
+            //Stripe
+            $table->string('stripe_id');
+
             //Sonic
             $table->integer('points');
 
@@ -71,6 +71,7 @@ class CreateUsersTable extends Migration {
             $table->string('push_token');
             $table->string('app_version');
 
+            $table->string('ip', 255);
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();

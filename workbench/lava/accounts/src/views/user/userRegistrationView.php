@@ -134,6 +134,11 @@
                     </div>
                 <?php endif; ?>
             <?php elseif ($viewData['registrationType'] == 'reset'): ?>
+                <?php $resetStatusCode = \Session::has('resetStatusCode') ? \Session::get('resetStatusCode') : 0; ?>
+
+                <?php if ($resetStatusCode == 1): ?>
+                    <h2><?php echo \Lang::get($viewData['package'] . '::' . $viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.reset.statusCode.1'); ?></h2>
+                <?php endif; ?>
                 <div class="shadowPortlet commonBorderRadius commonBorderColor row-fluid">
                     <!--S# shadow portlet heading div-->
                     <div class="shadowPortletHeading">

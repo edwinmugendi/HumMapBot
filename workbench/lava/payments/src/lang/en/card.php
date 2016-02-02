@@ -6,9 +6,10 @@ return array(
       | Card Language Lines
       |--------------------------------------------------------------------------
      */
-    'api' => array(
-        'getAll' => 'Card\'s list',
-        'getSingle' => 'Card :field :value found.',
-        'delete' => 'Card :field :value deleted'
+    'notification' => array(
+        'created' => 'Card created',
+        'updated' => 'Card updated',
+        'deleted' => 'Card deleted',
+        'list' => 'Card list',
     )
 );

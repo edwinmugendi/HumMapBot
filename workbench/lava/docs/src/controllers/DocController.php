@@ -11,7 +11,7 @@ class DocController extends DocsBaseController {
 
     //Controller
     public $controller = 'doc';
-    public $modules = array('accounts','payments','products','merchants');
+    public $modules = array('accounts', 'payments', 'products', 'merchants');
 
     /**
      * S# getDocs() function
@@ -23,29 +23,35 @@ class DocController extends DocsBaseController {
      * 4. Forgot password page
      */
     public function getDocs() {
+        $this->crudId = 1;
+
         //Prepare view data
-        $viewData = $this->prepareViewData('docs');
-
-        $this->layout->title = \Lang::get($viewData['package'] . '::' . $viewData['controller'] . '.' . $viewData['page'] . '.title');
-
-        //Get and set layout's inline javascript
-        $this->layout->inlineJs = $this->injectInlineJs($viewData['page']);
-
-        //Register css and js assets for this page
-        $this->layout->assets = $this->registerAssets($viewData['page']);
-
-        //Set layout's top bar partial
-        $this->layout->topBarPartial = $this->getTopBarPartialView($viewData);
-
-        //Set layout's side bar partial
-        $this->layout->sideBarPartial = $this->getSideBarPartialView($viewData);
+        $this->viewData = $this->prepareViewData('docs');
 
         //Set module view to view data
-        $viewData['modulesView'] = $this->buildModuleDocs();
+        $this->viewData['modulesView'] = $this->buildModuleDocs();
 
-        //Set layout's content view
-        $this->layout->contentView = \View::make($viewData['package'] . '::' . $viewData['controller'] . '.' . $viewData['view'])
-                ->with('viewData', $viewData);
+        //Set layout's title
+        $this->layout->title = \Lang::get($this->viewData['package'] . '::' . $this->viewData['controller'] . '.' . $this->viewData['page'] . '.title');
+
+        //Get and set layout's inline javascript
+        $this->layout->inlineJs = $this->injectInlineJs($this->viewData);
+
+        //Register css and js assets for this page
+        $this->layout->assets = $this->registerAssets($this->viewData);
+
+        //Set layout's top bar partial
+        $this->layout->topBarPartial = $this->getTopBarPartialView();
+
+        //Load content view
+        $this->viewData['sideBar'] = '';
+
+        //Load content view
+        $this->viewData['contentView'] = \View::make($this->viewData['package'] . '::' . $this->viewData['controller'] . '.' . $this->viewData['view'])
+                ->with('viewData', $this->viewData);
+
+        //Set container view
+        $this->layout->containerView = $this->getContainerViewPartialView();
 
         //Render page
         return $this->layout;
@@ -76,25 +82,25 @@ class DocController extends DocsBaseController {
         return $docs;
     }
 
-    public function buildTable(&$viewData, &$docs, $parameters, $type,$heading = null) {
-           
+    public function buildTable(&$viewData, &$docs, $parameters, $type, $heading = null) {
+
         $tableBody = '';
         foreach ($parameters as $singleParameter) {
-            
+
             //heading
-            $viewData['header'] = $heading? $heading:\Str::title($type);
-            
+            $viewData['header'] = $heading ? $heading : \Str::title($type);
+
             $viewData['heading'][0] = $type == 'parameters' ? 'Field' : 'Action';
             $viewData['heading'][1] = $type == 'parameters' ? 'Data type' : 'Http status code';
             $viewData['heading'][2] = $type == 'parameters' ? 'Note' : 'Note';
             $viewData['heading'][3] = $type == 'parameters' ? 'Required / Optional' : 'Example';
-            
-            if($type == 'parameters' && is_array($singleParameter['dataType'])){
-                $this->buildTable($viewData, $docs, $singleParameter['dataType'], 'parameters',$singleParameter['field']);
-            
+
+            if ($type == 'parameters' && is_array($singleParameter['dataType'])) {
+                $this->buildTable($viewData, $docs, $singleParameter['dataType'], 'parameters', $singleParameter['field']);
+
                 $singleParameter['dataType'] = 'array';
             }
-            
+
             $viewData['tableData'][0] = $type == 'parameters' ? $singleParameter['field'] : $singleParameter['action'];
             $viewData['tableData'][1] = $type == 'parameters' ? $singleParameter['dataType'] : $singleParameter['httpCode'];
             $viewData['tableData'][2] = $type == 'parameters' ? $singleParameter['note'] : $singleParameter['note'];
