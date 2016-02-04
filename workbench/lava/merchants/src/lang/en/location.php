@@ -6,6 +6,9 @@ return array(
       | Vehicle Language Lines
       |--------------------------------------------------------------------------
      */
+    'notification'=>array(
+        'list'=>'Location list',
+    ),
     'api' => array(
         'getSingle' => 'Location :field :value found.',
         'getAll' => 'Locations list',

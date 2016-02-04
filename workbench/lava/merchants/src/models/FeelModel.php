@@ -7,7 +7,7 @@ namespace Lava\Merchants;
  * @author Edwin Mugendi
  * Feel Model
  */
-class FeelModel extends \Eloquent {
+class FeelModel extends \BaseModel {
 
     //Table
     protected $table = 'mct_feels';
@@ -27,11 +27,13 @@ class FeelModel extends \Eloquent {
         'updated_by',
         'deleted_at'
     );
+    
     //Create validation rules
     public $createRules = array(
-        'status' => 'required|integer',
-        'created_by' => 'required|integer',
-        'updated_by' => 'required|integer',
+        'location_id' => 'required|exists:mct_locations,id',
+        'type' => 'required|integer|between:1,3',
+        'rate' => 'required_if:type,2|integer|between_if:type,2,1,5',
+        'review' => 'required_if:type,3'
     );
 
 }

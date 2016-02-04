@@ -13,6 +13,7 @@ class UserModel extends \BaseModel {
 
     //Table
     protected $table = 'acc_users';
+    
     //Fillable fields
     protected $fillable = array(
         'first_name',

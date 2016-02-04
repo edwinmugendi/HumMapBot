@@ -6,18 +6,17 @@ return array(
       | Vehicle Language Lines
       |--------------------------------------------------------------------------
      */
+    
     'api' => array(
-        'getSingle' => 'Location :field :value found.',
-        'getAll' => 'Locations list',
         'feel' => array(
-            1 => 'Location :field \':value\' favoured',
-            2 => 'Location :field \':value\' rated',
-            3 => 'Location :field \':value\' reviewed'
+            1 => 'Location favoured',
+            2 => 'Location rated',
+            3 => 'Location reviewed'
         ),
         'unfeel' => array(
-            1 => 'Location :field \':value\' unfavoured',
-            2 => 'Location :field \':value de-rated',
-            3 => 'Review of location :field \':value\' deleted'
+            1 => 'Location unfavoured',
+            2 => 'Location de-rated',
+            3 => 'Review deleted'
         )
     ),
     'validation' => array(

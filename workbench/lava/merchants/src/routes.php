@@ -1,22 +1,15 @@
 <?php
 
-\Route::group(array('before' => 'subdomain'), function() {
-    //Get locations
-    \Route::get('merchant/location/get/{locationId?}', array('as' => 'getLocation', 'uses' => 'Lava\Merchants\LocationController@getLocations'));
-});
+//Get locations
+\Route::get('api/get/location', array('as' => 'getLocation', 'uses' => 'Lava\Merchants\LocationController@getList'));
 
-
-\Route::group(array('before' => 'subdomain|api'), function() {
-    //Get locations
-    \Route::get('merchant/location/user/favoured', array('as' => 'getLocationFavoured', 'uses' => 'Lava\Merchants\LocationController@getFavouredLocations'));
+\Route::group(array('before' => 'api'), function() {
 
     //Feel location
-    \Route::post('merchant/location/feel/{locationId}', array('as' => 'feelLocation', 'uses' => 'Lava\Merchants\FeelController@postFeel'));
+    \Route::post('api/feel/location', array('as' => 'feelLocation', 'uses' => 'Lava\Merchants\FeelController@postFeel'));
 
     //Unfeel location
-    \Route::post('merchant/location/unfeel/{locationId}', array('as' => 'unfeelLocation', 'uses' => 'Lava\Merchants\FeelController@postUnfeel'));
+    \Route::post('api/unfeel/location', array('as' => 'unfeelLocation', 'uses' => 'Lava\Merchants\FeelController@postUnfeel'));
 
-    //Get location feel
-    \Route::post('merchant/location/feel/{locationId}/get/{type}', array('as' => 'feelLocationGet', 'uses' => 'Lava\Merchants\LocationController@getFeel'));
 });
 

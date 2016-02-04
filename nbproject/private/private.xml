@@ -2,6 +2,21 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/home/sapama/projects/web/lava/workbench/lava/merchants/src/models/LocationModel.php</file>
+            <file>file:/home/sapama/projects/web/lava/workbench/lava/merchants/src/models/FeelModel.php</file>
+            <file>file:/home/sapama/projects/web/lava/workbench/lava/messages/src/controllers/MessageController.php</file>
+            <file>file:/home/sapama/projects/web/lava/app/models/BaseModel.php</file>
+            <file>file:/home/sapama/projects/web/lava/workbench/lava/merchants/src/lang/en/feel.php</file>
+            <file>file:/home/sapama/projects/web/lava/workbench/lava/merchants/src/routes.php</file>
+            <file>file:/home/sapama/projects/web/lava/workbench/lava/merchants/src/controllers/LocationController.php</file>
+            <file>file:/home/sapama/projects/web/lava/workbench/lava/accounts/src/models/UserModel.php</file>
+            <file>file:/home/sapama/projects/web/lava/workbench/lava/merchants/src/migrations/2014_04_28_124705_create_feels_table.php</file>
+            <file>file:/home/sapama/projects/web/lava/workbench/lava/merchants/src/controllers/MerchantController.php</file>
+            <file>file:/home/sapama/projects/web/lava/app/config/product.php</file>
+            <file>file:/home/sapama/projects/web/lava/workbench/lava/merchants/src/controllers/FeelController.php</file>
+            <file>file:/home/sapama/projects/web/lava/app/controllers/BaseController.php</file>
+            <file>file:/home/sapama/projects/web/lava/workbench/lava/merchants/src/lang/en/location.php</file>
+        </group>
     </open-files>
 </project-private>

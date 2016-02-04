@@ -520,7 +520,7 @@ class BaseController extends Controller {
         }//if else statement
         //Set per page to parameters
         $this->viewData['paginationAppends']['per_page'] = $parameters['paginate'] = $per_page;
-
+        
         //Set export
         if (array_key_exists('export', $this->input) && in_array($this->input['export'], array('pdf', 'print', 'csv', 'xls'))) {
             $this->viewData['export'] = $this->input['export'];

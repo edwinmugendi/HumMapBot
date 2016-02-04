@@ -3,6 +3,7 @@
 namespace Lava\Merchants;
 
 use Lava\Accounts\UserController;
+
 /**
  * S# LocationModel() Class
  * @author Edwin Mugendi
@@ -12,6 +13,10 @@ class LocationModel extends \BaseModel {
 
     //Table
     protected $table = 'mct_locations';
+    //View fields
+    public $viewFields = array(
+        'id' => array(1, 'text', '='),
+    );
     //Fillable fields
     protected $fillable = array(
         'total_reviews',
@@ -64,19 +69,21 @@ class LocationModel extends \BaseModel {
         'created_by' => 'required|integer',
         'updated_by' => 'required|integer',
     );
-     
+
     /**
      * S# __construct() function
      * Constuctor
      */
-     public function __construct() {
+    public function __construct() {
         parent::__construct();
-        
-    }//E# __construct() function
+    }
+
+//E# __construct() function
     /**
      * S# merchant() function
      * Set one to one relationship to Merchant Model
      */
+
     public function merchant() {
         return $this->belongsTo(\Util::buildNamespace('merchants', 'merchant', 2), 'merchant_id');
     }
@@ -125,13 +132,12 @@ class LocationModel extends \BaseModel {
 
 //E# getRatingCountAttribute() function
 
-  
     /**
      * S# getFavouredAttribute() function
      * Has user favoured this location
      */
     public function getFavouredAttribute() {
-        if ($this->loggedInUser) {
+        if (\Auth::check()) {
             $favouriteModel = $this->favourites()
                     ->count();
             return (string) ($favouriteModel ? 1 : 0);
@@ -141,7 +147,7 @@ class LocationModel extends \BaseModel {
     }
 
 //E# getFavouredAttribute() function
-    
+
     /**
      * S# getUserStampsAttribute() function
      * Get users stamps
@@ -168,10 +174,10 @@ class LocationModel extends \BaseModel {
      * Has user rated this location
      */
     public function getRatedAttribute() {
-        if ($this->loggedInUser) {
+        if (\Auth::check()) {
             $feelingModel = $this->hasMany(\Util::buildNamespace('merchants', 'feel', 2), 'location_id')
                     ->whereType(2)
-                    ->whereUserId($this->loggedInUser->id)
+                    ->whereUserId(\Auth::user()->id)
                     ->first();
             return (string) ($feelingModel ? $feelingModel->feeling : 0);
         } else {
@@ -186,7 +192,7 @@ class LocationModel extends \BaseModel {
      * Return total number of reviews
      */
     public function getTotalReviewsAttribute() {
-        return (string)$this->hasMany(\Util::buildNamespace('merchants', 'feel', 2), 'location_id')
+        return (string) $this->hasMany(\Util::buildNamespace('merchants', 'feel', 2), 'location_id')
                         ->whereType(3)
                         ->count();
     }
@@ -209,8 +215,8 @@ class LocationModel extends \BaseModel {
      */
     public function favourites() {
         return $this->hasMany(\Util::buildNamespace('merchants', 'feel', 2), 'location_id')
-                    ->whereType(1)
-                    ->whereUserId($this->loggedInUser->id);
+                        ->whereType(1)
+                        ->whereUserId(\Auth::user()->id);
     }
 
 //E# favourites() function
