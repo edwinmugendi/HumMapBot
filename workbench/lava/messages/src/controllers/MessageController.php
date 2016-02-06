@@ -41,7 +41,7 @@ class MessageController extends MessagesBaseController {
         $senderId = is_null($senderId) ? 1 : $senderId;
 
         //Push
-        $sent = $this->callController(\Util::buildNamespace('messages', 'urbanairship', 1), 'push', array($recipient, $parameters['os'], $parameters['body']));
+        $sent = $this->callController(\Util::buildNamespace('messages', 'pushwoosh', 1), 'push', array($recipient, $parameters['os'], $parameters['body']));
 
         //Add sent to parameters
         $parameters['sent'] = $sent;

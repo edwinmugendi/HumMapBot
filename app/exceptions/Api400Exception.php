@@ -22,7 +22,7 @@ class Api400Exception extends \BaseException {
      */
     public function __construct($validation, $rules) {
         parent::__construct();
-        $this->systemCode = 900;
+        $this->system_code = 900;
         $this->validation = $validation;
         $this->rules = $rules;
     }
@@ -47,10 +47,10 @@ class Api400Exception extends \BaseException {
         }//E# foreach statement
         
         //Get and set notification
-        $this->notification = $this->getNotification($this->systemCode, 'developerMessage');
+        $this->notification = $this->getNotification($this->system_code, 'developer_message');
 
         //Return nofitication response
-        return \Response::make($this->notification['data'], $this->notification['httpStatusCode'])
+        return \Response::make($this->notification['data'], $this->notification['http_status_code'])
                         ->header('Content-Type', 'application/json');
     }
 

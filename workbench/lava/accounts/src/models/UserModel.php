@@ -50,7 +50,7 @@ class UserModel extends \BaseModel {
         'reset_time',
         'last_login',
         'role_id',
-        'ip_address',
+        'ip',
         'verification_code',
         'username',
         'password',
@@ -79,7 +79,7 @@ class UserModel extends \BaseModel {
     //Create update rules
     public $updateRules = array(
         'id'=>'exists:acc_users',
-        'email' => 'exists:acc_users', //TODO
+        'email' => 'unique:acc_users',
         'location' => 'latLng',
         'notify_sms' => 'integer|between:0,1',
         'notify_email' => 'integer|between:0,1',

@@ -11,7 +11,6 @@ class VehicleModel extends \BaseModel {
 
     //Table
     protected $table = 'acc_vehicles';
-    
     //View fields
     public $viewFields = array(
         'id' => array(1, 'text', '='),
@@ -79,7 +78,8 @@ class VehicleModel extends \BaseModel {
      * Does the logged in user own this vehicle
      */
     public function getUserOwnsAttribute() {
-        return $this->users()
+        return $this
+                        ->users()
                         ->whereUserId(\Auth::user()->id)
                         ->count();
     }

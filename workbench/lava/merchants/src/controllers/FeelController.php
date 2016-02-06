@@ -18,6 +18,7 @@ class FeelController extends MerchantsBaseController {
      * Favourite: type == 1, no other field is needed
      * Rate: type == 2, no other field is needed
      * Review: type == 3, review_id field is need
+     * Stamps: type == 4
      * 
      * @param int $id Location
      * @return json 

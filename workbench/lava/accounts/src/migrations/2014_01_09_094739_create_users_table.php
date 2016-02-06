@@ -30,8 +30,7 @@ class CreateUsersTable extends Migration {
             $table->string('reset_code', 255);
             $table->datetime('reset_time');
             $table->datetime('last_login');
-            $table->string('ip_address', 255);
-
+            
             //Address
             $table->string('address', 255);
             $table->string('postal_code', 255);
@@ -71,6 +70,7 @@ class CreateUsersTable extends Migration {
             $table->string('push_token');
             $table->string('app_version');
 
+            $table->string('agent', 255);
             $table->string('ip', 255);
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();

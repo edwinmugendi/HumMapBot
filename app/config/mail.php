@@ -54,7 +54,7 @@ return array(
 	|
 	*/
 
-	'from' => array('address' => 'care@sapama.com', 'name' => 'Sapama'),
+	'from' => array('address' => 'care@sapama.com', 'name' => 'Lava'),
 
 	/*
 	|--------------------------------------------------------------------------

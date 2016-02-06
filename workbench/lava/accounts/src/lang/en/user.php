@@ -9,13 +9,12 @@ return array(
     'notification' => array(
         'created' => 'User created',
         'updated' => 'User updated',
+        'login' => 'Logged in!',
+        'list' => 'User profile',
+        'forgot_password' => 'We\'ve sent you reset email.',
+        'reset_password' => 'Your password has been reset',
     ),
     'api' => array(
-        'registerUser' => 'Your account has been created on :productName',
-        'update' => 'Your details have been updated',
-        'forgotPassword' => 'We\'ve sent you reset email.',
-        'resetPassword' => 'Your password has been reset',
-        'login' => 'Logged in!',
         'sending_email_failed' => 'Sending email failed. Kindly try again later',
         'sending_sms_failed' => 'Sending sms failed. Kindly try again later',
     ),

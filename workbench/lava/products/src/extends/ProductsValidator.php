@@ -22,32 +22,34 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
      *
      * @author Edwin Mugendi <edwinmugendi@gmail.com>
      * @param  string  $attribute
-     * @param  mixed   $value
+     * @param  string   $promotion_code
      * @param  mixed   $parameters
      * @return bool
      */
-    protected function validateIsPromotionCodeValid($attribute, $code, $parameters) {
-        $promotionController = new PromotionController();
+    protected function validateIsPromotionCodeValid($attribute, $promotion_code, $parameters) {
+        
+        $promotion_controller = new PromotionController();
 
         //Get promotion model by code
-        $promotionModel = $promotionController->getModelByField('code', $code);
+        $promotion_model = $promotion_controller->getModelByField('code', $promotion_code);
 
-        if ($promotionModel) {//Exists
-            if ($promotionModel->claimed) {//Redeemed
-                if ($promotionModel->claimed->pivot->redeemed) {
+        if ($promotion_model) {//Exists
+            if ($promotion_model->claimed) {//Redeemed
+                if ($promotion_model->claimed->pivot->redeemed) {
                     //Set error message
-                    $this->message = \Lang::get($promotionController->package . '::' . $promotionController->controller . '.validation.isPromotionCodeValid.redeemed', array('code' => $code));
+                    $this->message = \Lang::get($promotion_controller->package . '::' . $promotion_controller->controller . '.validation.isPromotionCodeValid.redeemed', array('code' => $promotion_code));
                 } else {
                     //Set error message
-                    $this->message = \Lang::get($promotionController->package . '::' . $promotionController->controller . '.validation.isPromotionCodeValid.claimed', array('code' => $code));
+                    $this->message = \Lang::get($promotion_controller->package . '::' . $promotion_controller->controller . '.validation.isPromotionCodeValid.claimed', array('code' => $promotion_code));
                 }//E# if else statement
             } else {//Has not redeemed
                 //Now
                 $now = Carbon::now();
 
-                $promoExpiryDate = Carbon::createFromFormat('Y-m-d G:i:s', $promotionModel->expiry_date);
+                $promoExpiryDate = Carbon::createFromFormat('Y-m-d G:i:s', $promotion_model->expiry_date);
+                
                 if ($promoExpiryDate->gt($now)) {
-                    if ($promotionModel->new_customer) {//Only for new customers
+                    if ($promotion_model->new_customer) {//Only for new customers
                         //TODO check if customer has a transaction for this location
                         //Fields to select
                         $fields = array('*');
@@ -58,40 +60,41 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
                                 'where' => 'where',
                                 'column' => 'user_id',
                                 'operator' => '=',
-                                'operand' => $promotionController->user['id']
+                                'operand' => $promotion_controller->user['id']
                             )
                         );
 
-                        if ($promotionModel->type == 2) {
+                        if ($promotion_model->type == 2) {
                             $whereClause[] = array(
                                 'where' => 'where',
                                 'column' => 'location_id',
                                 'operator' => '=',
-                                'operand' => $promotionModel->location_id
+                                'operand' => $promotion_model->location_id
                             );
-                        }
+                        }//E# if statement
+                        
                         //Get user by email and verification code
-                        $transactionModel = $promotionController->callController(\Util::buildNamespace('payments', 'transaction', 1), 'select', array($fields, $whereClause, 1));
+                        $transaction_model = $promotion_controller->callController(\Util::buildNamespace('payments', 'transaction', 1), 'select', array($fields, $whereClause, 1));
 
-                        if ($transactionModel) {//Has a transaction for this location
+                        if ($transaction_model) {//Has a transaction for this location
                             //Set error message
-                            $this->message = \Lang::get($promotionController->package . '::' . $promotionController->controller . '.validation.isPromotionCodeValid.newCustomers', array('code' => $code));
+                            $this->message = \Lang::get($promotion_controller->package . '::' . $promotion_controller->controller . '.validation.isPromotionCodeValid.newCustomers', array('code' => $code));
                         } else {//Claim
                             //Claim this promotion code
-                            $promotionController->claimPromotionCode($promotionController, $promotionModel);
+                            $promotion_controller->claimPromotionCode($promotion_controller, $promotion_model);
                         }//E# if else statement
                     } else {//Claim
                         //Claim this promotion code
-                        $promotionController->claimPromotionCode($promotionController, $promotionModel);
+                        $promotion_controller->claimPromotionCode($promotion_controller, $promotion_model);
                     }//E# if else statement
                 } else {//Expired
                     //Set error message
-                    $this->message = \Lang::get($promotionController->package . '::' . $promotionController->controller . '.validation.isPromotionCodeValid.expired', array('code' => $code));
+                    $this->message = \Lang::get($promotion_controller->package . '::' . $promotion_controller->controller . '.validation.isPromotionCodeValid.expired', array('code' => $code));
                 }//E# if else statement
             }//E# if else statement
         } else {//Don't exist
             //Set notification
-            $promotionController->notification = array(
+            $promotion_controller->notification = array(
                 'field' => 'code',
                 'type' => 'Promotion',
                 'value' => $code,
@@ -99,7 +102,7 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
 
 
             //Throw VRM not found error
-            throw new \Api404Exception($promotionController->notification);
+            throw new \Api404Exception($promotion_controller->notification);
         }//E# if else statement
         return false;
     }

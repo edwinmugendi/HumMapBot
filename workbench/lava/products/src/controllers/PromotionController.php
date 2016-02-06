@@ -18,7 +18,7 @@ class PromotionController extends ProductsBaseController {
      * S# locationRedeemablePromotions() function
      * Get the redeemable promotions for this location
      * 
-     * @param int $locationId Location id
+     * @param int $location_id Location id
      * @param array $promotions Promotions that can be redeemed
      * @param float $amount Transaction amount - needed when calculating effective price
      * @param float $surcharge Surcharge  - needed when calculating effective price
@@ -26,21 +26,22 @@ class PromotionController extends ProductsBaseController {
      * @return array Prepared promotions
      * 
      */
-    public function locationRedeemablePromotions($locationId, $promotions, $amount, $surcharge) {
+    public function locationRedeemablePromotions($location_id, $promotions, $amount, $surcharge) {
         //Cache redeemable promotions
-        $redeemablePromotions = array();
+        $redeemable_promotions = array();
 
-        foreach ($promotions as $singlePromotion) {//Loop via the promotions
-            if ($singlePromotion['location_id']) {
-                if ($singlePromotion['location_id'] == $locationId) {
-                    $redeemablePromotions[] = $singlePromotion;
+        foreach ($promotions as $single_promotion) {//Loop via the promotions
+            if ($single_promotion['location_id']) {
+                if ($single_promotion['location_id'] == $location_id) {
+                    $redeemable_promotions[] = $single_promotion;
                 }//E# if else statement    
             } else {
-                $redeemablePromotions[] = $singlePromotion;
+                $redeemable_promotions[] = $single_promotion;
             }//E# if else statement
         }//E# foreach statement
+        
         //Return prepared redeemable promotions
-        return $this->prepareRedeemablePromotions($redeemablePromotions, $amount, $surcharge);
+        return $this->prepareRedeemablePromotions($redeemable_promotions, $amount, $surcharge);
     }
 
 //E# locationRedeemablePromotions() function
@@ -58,25 +59,26 @@ class PromotionController extends ProductsBaseController {
      */
     public function prepareRedeemablePromotions($promotions, $amount, $surcharge) {
         //Cache redeemable promotions
-        $redeemablePromotions = array();
-        foreach ($promotions as $singlePromotion) {//Loop via the promotions
+        $redeemable_promotions = array();
+        foreach ($promotions as $single_promotion) {//Loop via the promotions
             //Calculate effective price
-            $effectivePrice = $this->calculateEffectivePrice($singlePromotion['type'], $singlePromotion['value'], $amount);
+            $effective_price = $this->calculateEffectivePrice($single_promotion['type'], $single_promotion['value'], $amount);
 
             //Define promo
             $promo = array(
-                'price' => (string) round((floatval($effectivePrice) + floatval($surcharge)), 2),
-                'id' => $singlePromotion['id'],
-                'description' => $singlePromotion['description'],
-                'expiry_date' => $singlePromotion['expiry_date'],
-                'code' => $singlePromotion['code'],
-                'type' => $singlePromotion['type'],
-                'value' => $singlePromotion['value']
+                'price' => (string) round((floatval($effective_price) + floatval($surcharge)), 2),
+                'id' => $single_promotion['id'],
+                'description' => $single_promotion['description'],
+                'expiry_date' => $single_promotion['expiry_date'],
+                'code' => $single_promotion['code'],
+                'type' => $single_promotion['type'],
+                'value' => $single_promotion['value']
             );
-            $redeemablePromotions[] = $promo;
+            $redeemable_promotions[] = $promo;
         }//E# foreach statement
+        
         //Return redeemable promotions
-        return $redeemablePromotions;
+        return $redeemable_promotions;
     }
 
 //E# prepareRedeemablePromotions() function
@@ -86,31 +88,25 @@ class PromotionController extends ProductsBaseController {
      * Calculate the effective price after applying promotion
      * 
      * @param int $type Promotion type. Percentage or fixed
-     * @param int $promotionValue Promotion value
-     * @param float $priceBeforeCode Price before applying code
+     * @param int $promotion_value Promotion value
+     * @param float $price_before_code Price before applying code
      * 
      * @return float Effective price
      */
-    public function calculateEffectivePrice($type, $promotionValue, $priceBeforeCode) {
-        /*
-          var_dump($type);
-          var_dump($promotionValue);
-          dd($priceBeforeCode);
-         * 
-         */
+    public function calculateEffectivePrice($type, $promotion_value, $price_before_code) {
         if ($type == 1) {//Fixed value
             //Calculate effective price
-            $effectivePrice = $priceBeforeCode - $promotionValue;
+            $effective_price = $price_before_code - $promotion_value;
 
-            return $effectivePrice > 0 ? $effectivePrice : 0;
+            return $effective_price > 0 ? $effective_price : 0;
         } else if ($type == 2) {//Percentage
             //Calculate effective price
-            $effectivePrice = $priceBeforeCode - (($promotionValue * $priceBeforeCode) / 100);
+            $effective_price = $price_before_code - (($promotion_value * $price_before_code) / 100);
 
-            return $effectivePrice > 0 ? $effectivePrice : 0;
+            return $effective_price > 0 ? $effective_price : 0;
         } else {
-            return $priceBeforeCode;
-        }
+            return $price_before_code;
+        }//E#  if else statement
     }
 
 //E# calculateEffectivePrice() function
@@ -151,14 +147,11 @@ class PromotionController extends ProductsBaseController {
      * @param string $code Promotion code
      * @return boolean true if redeemed, false else
      */
-    public function postRedeemPromotion($code) {
-
-        //Add merchant id to inputs for validation
-        $this->input['code'] = $code;
+    public function postRedeemPromotion() {
 
         //Define validation rules
         $this->validationRules = array(
-            'code' => 'required|isPromotionCodeValid'
+            'promotion_code' => 'required|isPromotionCodeValid'
         );
         //Validate merchant
         $this->isInputValid();
@@ -169,19 +162,27 @@ class PromotionController extends ProductsBaseController {
      * S# claimPromotionCode() function
      * Claim promotion code
      * 
-     * @param Controller $promotionController Controller
-     * @param Model $promotionModel Model
+     * @param Controller $promotion_controller Controller
+     * @param Model $promotion_model Model
      * @throws APISucessException
      */
-    public function claimPromotionCode(&$promotionController, &$promotionModel) {
+    public function claimPromotionCode(&$promotion_controller, &$promotion_model) {
         //Claim
-        $promotionModel->users()->attach($promotionController->user['id']);
+        $promotion_model->users()->attach($promotion_controller->user['id'],
+                array(
+                    'status'=>1,
+                    'created_by'=>$promotion_controller->user['id'],
+                    'updated_by'=>$promotion_controller->user['id'],
+                    'created_at'=>Carbon::now(),
+                    'updated_at'=>Carbon::now(),
+                    )
+                );
 
         //Get success message
-        $message = \Lang::get($this->package . '::' . $this->controller . '.api.redeemPromotion', array('code' => $promotionModel->code));
+        $message = \Lang::get($this->package . '::' . $this->controller . '.api.redeemPromotion', array('code' => $promotion_model->code));
 
         //Throw new API Success Exception
-        throw new \Api200Exception(array_only($promotionModel->toArray(), array('id')), $message);
+        throw new \Api200Exception(array_only($promotion_model->toArray(), array('id')), $message);
     }
 
 //E# claimPromotionCode() function

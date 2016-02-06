@@ -8,9 +8,23 @@ return array(
       | The name of the product
       |
      */
+    'facebook' => array(
+        'appId' => '291512857637270',
+        'appSecret' => '1c4a3dcef631bf5104ed9f8239bfb139',
+        "scope" => "email,user_birthday"
+    ),
     'stripe' => array(
         'api_key' => 'pk_test_DYBeYnfNbzE5L5QRjKy55DsX',
         'api_secret' => 'sk_test_we6SCXt44ocldL6M7lnC9Gss',
+    ),
+    'clickatell' => array(
+        "apiId" => "3422899",
+        "username" => "lavamsg",
+        "password" => "U7qWFNgp",
+    ),
+    'pushwoosh' => array(
+        'application' => 'C4CAC-60E87',
+        'auth' => 'WX4RsJtHNwFfxLqAfBKeiZJ3sC8Zm5A8FXNPpwYnhQTEpKdJVs9eH2r5VuCeofbcPxcpj80MCGQdRUqm7fVO',
     ),
     'sonic' => array(
         'secret' => '1dc504',

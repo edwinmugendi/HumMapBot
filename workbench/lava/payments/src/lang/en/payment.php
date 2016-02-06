@@ -6,6 +6,15 @@ return array(
       | Vehicle Language Lines
       |--------------------------------------------------------------------------
      */
+    'data' => array(
+        'workflow' => array(
+            0 => 'Failed',
+            1 => 'Processed',
+            2 => 'Promotion',
+            3 => 'Stamps',
+            4 => 'Refunded',
+        )
+    ),
     'api' => array(
         'prepareTransaction' => 'Transaction prepared',
         'freeStampWash' => 'Free Stamp Wash'

@@ -22,7 +22,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
     public function validatePassword($attribute, $newPassword, $parameters) {
 
         //Instantiate a new user controller
-        $userController = new UserController();
+        $user_controller = new UserController();
 
         if (isset($this->data['new_password'])) {
 
@@ -30,26 +30,26 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                 if (isset($this->data['old_password'])) {
 
                     //Get user model by token
-                    $userModel = $userController->getModelByField('token', $this->data['token']);
+                    $user_model = $user_controller->getModelByField('token', $this->data['token']);
 
-                    if (\Hash::check($this->data['old_password'], $userModel->password)) {
+                    if (\Hash::check($this->data['old_password'], $user_model->password)) {
                         $this->data['password'] = $this->input['password'] = \Hash::make($newPassword);
                         return true;
                     } else {
                         //Set message
-                        $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.validation.password.oldPasswordWrong');
+                        $this->message = \Lang::get($user_controller->package . '::' . $user_controller->controller . '.validation.password.oldPasswordWrong');
 
                         return false;
                     }//E# if else statement
                 } else {
                     //Set message
-                    $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.validation.password.oldPasswordRequired');
+                    $this->message = \Lang::get($user_controller->package . '::' . $user_controller->controller . '.validation.password.oldPasswordRequired');
 
                     return false;
                 }//E# if statement
             } else {
                 //Set message
-                $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.validation.password.newPasswordMin', array('min' => 6));
+                $this->message = \Lang::get($user_controller->package . '::' . $user_controller->controller . '.validation.password.newPasswordMin', array('min' => 6));
 
                 return false;
             }//E# if else statement
@@ -116,7 +116,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         }//E# if else statement
 
 
-        $userController = new UserController();
+        $user_controller = new UserController();
 
         //Fields to select
         $fields = array('*');
@@ -138,11 +138,11 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         );
 
         //Get user by email and reset code
-        $userModel = $userController->select($fields, $whereClause, 1);
+        $user_model = $user_controller->select($fields, $whereClause, 1);
 
-        if ($userModel) {//user exists
+        if ($user_model) {//user exists
             //Create reset time and now
-            $resetTime = new Carbon($userModel->reset_time);
+            $resetTime = new Carbon($user_model->reset_time);
             $now = Carbon::now();
 
             //Get time out from configs
@@ -180,29 +180,29 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         $parameters['lazyLoad'] = array('logins');
 
         //User controller
-        $userController = new UserController();
+        $user_controller = new UserController();
 
         //Get user by email
-        $userModel = $userController->getModelByField('email', $credentials['email'], $parameters);
+        $user_model = $user_controller->getModelByField('email', $credentials['email'], $parameters);
 
-        if ($userModel) {//User with this email exist
+        if ($user_model) {//User with this email exist
             //Previous logins deleted
             $deleted = 0;
 
             //Get lockout
-            $lockOut = \Config::get($userController->package . '::account.lockOut');
+            $lockOut = \Config::get($user_controller->package . '::account.lockOut');
 
             //Now 
             $now = Carbon::now();
 
-            foreach ($userModel->logins as $singleLogin) {//Loop through this user login models
+            foreach ($user_model->logins as $singleLogin) {//Loop through this user login models
                 //Get login time
                 $attemptTime = Carbon::createFromFormat('Y-m-d G:i:s', $singleLogin->date_time);
 
                 //Get time difference in minutes
                 $minDifference = $now->diffInMinutes($attemptTime);
 
-                if (($minDifference > $lockOut) && ($singleLogin->ip_address == $this->data['ipAddress'])) {//Expired logins
+                if (($minDifference > $lockOut) && ($singleLogin->ip == $this->data['ip'])) {//Expired logins
                     //Delete this login model
                     $singleLogin->delete();
                     //Increment counter
@@ -210,38 +210,66 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                 }//E# if statement
             }//E# foreach statement
 
-            if ((count($userModel->logins) - $deleted) >= \Config::get($userController->package . '::account.loginAttempts')) {//User has exceeded the login attempts
+            if ((count($user_model->logins) - $deleted) >= \Config::get($user_controller->package . '::account.loginAttempts')) {//User has exceeded the login attempts
                 //Set message
-                $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.userRegistrationPage.userRegistrationView.form.login.statusCode.3', array('lockOut' => $lockOut));
+                $this->message = \Lang::get($user_controller->package . '::' . $user_controller->controller . '.userRegistrationPage.userRegistrationView.form.login.statusCode.3', array('lockOut' => $lockOut));
             } else {
 
                 if (\Auth::attempt($credentials)) {//User is logged in
                     //Generate user token
-                    $userController->updateLoginSpecificFields($userController, $userModel);
+                    $user_controller->updateLoginSpecificFields($user_controller, $user_model);
+
+                    if (array_key_exists('format', $this->data) && ($this->data['format'] == 'json')) {//API
+                        //Push token
+                        if (array_key_exists('push_token', $this->data)) {
+                            $user_model->push_token = $this->data['push_token'];
+                        }//E# if else statement
+                        //App version
+                        if (array_key_exists('app_version', $this->data)) {
+                            $user_model->app_version = $this->data['app_version'];
+                        }//E# if else statement
+                        //Os
+                        if (array_key_exists('os', $this->data)) {
+                            $user_model->os = $this->data['os'];
+                        }//E# if else statement
+                        //Location
+                        if (array_key_exists('location', $this->data)) {
+                            $user_model->lat = $this->data['location']['lat'];
+                            $user_model->lng = $this->data['location']['lng'];
+                        }//E# if else statement
+                        //Save user
+                        $user_model->save();
+
+                        //Get success message
+                        $message = \Lang::get($user_controller->package . '::' . $user_controller->controller . '.notification.login');
+
+                        throw new \Api200Exception($user_model->toArray(), $message);
+                    }//E# if statement
 
                     return true;
                 } else {//Incorrect credentials
                     //Set message
-                    $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.userRegistrationPage.userRegistrationView.form.login.statusCode.1');
+                    $this->message = \Lang::get($user_controller->package . '::' . $user_controller->controller . '.userRegistrationPage.userRegistrationView.form.login.statusCode.1');
 
                     //Increase login attempts
                     //Define Login row
-                    $loginRow = array(
-                        'user_id' => $userModel->id,
-                        'ip_address' => $this->data['ipAddress'],
+                    $login_row = array(
+                        'user_id' => $user_model->id,
                         'date_time' => $now,
+                        'agent' => $this->data['agent'],
+                        'ip' => $this->data['ip'],
                         'status' => 1,
                         'created_by' => 1, //USER_ID
                         'updated_by' => 1//USER_ID
                     );
 
                     //Create an issue
-                    $userController->callController(\Util::buildNamespace('accounts', 'login', 1), 'createIfValid', array($loginRow, true));
+                    $user_controller->callController(\Util::buildNamespace('accounts', 'login', 1), 'createIfValid', array($login_row, true));
                 }//E# if else statement
             }//E# if else statement
         } else {//User with this email does not exist
             //Set message
-            $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.userRegistrationPage.userRegistrationView.form.login.statusCode.2');
+            $this->message = \Lang::get($user_controller->package . '::' . $user_controller->controller . '.userRegistrationPage.userRegistrationView.form.login.statusCode.2');
         }//E# if else statement   
 
         return false;
@@ -261,121 +289,6 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
     }
 
 //E# replaceLogin() function
-
-    /**
-     * S# validateFacebookLogin() function
-     * Validate facebook login token
-     * @param array $attribute Validation attribute
-     * @param array $token The token
-     * @param array $parameters Parameters
-     */
-    public function validateFacebookLogin($attribute, $token, $parameters) {
-        //User controller
-        $userController = new UserController();
-
-        //Get FB configs
-        $fbConfig = array(
-            'appId' => \Config::get($userController->package . '::thirdParty.facebook.appId'),
-            'secret' => \Config::get($userController->package . '::thirdParty.facebook.appSecret'),
-            'scope' => \Config::get($userController->package . '::thirdParty.facebook.scope'),
-            'allowSignedRequest' => false,
-        );
-        try {
-            //Call Facebook
-            $fb = new \Facebook($fbConfig);
-
-            $fb->setAccessToken($token);
-
-            //Try getting user
-            $fbUserId = trim($fb->getUser());
-
-            if ($fbUserId) {//User exists
-                //Get user profile from facebook
-                $fbUserProfile = $fb->api('/me', 'GET');
-
-                //Fields to select
-                $fields = array('*');
-
-                //Build where clause
-                $whereClause = array(
-                    array(
-                        'where' => 'orWhere',
-                        'column' => 'email',
-                        'operator' => '=',
-                        'operand' => trim($fbUserProfile['email'])
-                    ),
-                    array(
-                        'where' => 'orWhere',
-                        'column' => 'fb_uid',
-                        'operator' => '=',
-                        'operand' => $fbUserId
-                    )
-                );
-
-                //Get user by facebook id
-                $userModel = $userController->select($fields, $whereClause, 1);
-
-                if ($userModel) {//User has already signed in facebook
-                    if (!$userModel->app55_id) {//User does not an app55 account
-                        $userController->createApp55User($userModel);
-                    }//E# if statement
-                    //Update users email and fb uid
-                    $userModel->email = $fbUserProfile['email'];
-                    $userModel->fb_uid = $fbUserId;
-
-                    //Update user login specific fields
-                    $userController->updateLoginSpecificFields($userController, $userModel);
-                } else {//Register
-                    $newUser = array(
-                        'fb_uid' => $fbUserId,
-                        'first_name' => $fbUserProfile['first_name'],
-                        'last_name' => $fbUserProfile['last_name'],
-                        'gender' => $fbUserProfile['gender'] ? $fbUserProfile['gender'] : '',
-                        'status' => (int) $fbUserProfile['verified'],
-                        'dob' => Carbon::createFromFormat('m/d/Y', $fbUserProfile['birthday']),
-                        'created_by' => 1,
-                        'updated_by' => 1,
-                        'role_id' => 1,
-                        'notify_sms' => 1,
-                        'notify_push' => 1,
-                        'notify_email' => 1,
-                        'email' => $fbUserProfile['email']//TODO remove this
-                    );
-
-                    //Create user
-                    $userModel = $userController->createIfValid($newUser, true);
-
-                    //Post create callback
-                    $userController->afterCreating($userModel);
-
-                    //Update login specific fields
-                    $userController->updateLoginSpecificFields($userController, $userModel);
-                }//E# if else statement
-            } else {
-                //Set validation message
-                $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.validation.facebook.noUser');
-            }//E# if else statement
-        } catch (FacebookApiException $e) {
-            throw new \Api500Exception($e->getMessage());
-        }//E# try catch exception
-        return false;
-    }
-
-//E# validateFacebookLogin() function
-
-    /**
-     * S# replaceFacebookLogin() function
-     * Replace status parameter in login validaion string
-     * @param $string $message The message
-     * @param $string $attribute The attribute
-     * @param $string $rule The rule
-     * @param array $parameters The parameters
-     */
-    protected function replaceFacebookLogin($message, $attribute, $rule, $parameters) {
-        return $this->message;
-    }
-
-//E# replaceFacebookLogin() function
 
     /**
      * S# validateCheckRegistry() function
@@ -419,22 +332,22 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
      */
     public function validateApi($attribute, $token, $parameters) {
         //Create user controller
-        $userController = new UserController();
+        $user_controller = new UserController();
 
         //Get user by token
-        $userModel = $userController->getModelByField('token', $token);
+        $user_model = $user_controller->getModelByField('token', $token);
 
-        if ($userModel) {//User exists
+        if ($user_model) {//User exists
             //Login user
-            \Auth::login(\Auth::loginUsingId($userModel->id));
+            \Auth::login(\Auth::loginUsingId($user_model->id));
 
             //Session user
-            $userController->sessionUser($userModel);
+            $user_controller->sessionUser($user_model);
 
             return true;
         }//E# if statement
         //Set validation message
-        $this->message = \Lang::get($userController->package . '::' . $userController->controller . '.validation.api');
+        $this->message = \Lang::get($user_controller->package . '::' . $user_controller->controller . '.validation.api');
 
         return false;
     }
@@ -472,21 +385,21 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         if ($vehicleModel) {//Vehicle does not exist
             if ($vehicleModel->user_owns) {
                 //Instantiate a new user controller
-                $userController = new UserController();
+                $user_controller = new UserController();
 
                 //Get user model by token
-                $userModel = $userController->getModelByField('token', $this->data['token']);
+                $user_model = $user_controller->getModelByField('token', $this->data['token']);
 
                 //Delete this vehicle in the pivot table
-                $vehicleController->updatePivotTable($userModel, 'vehicles', $vehicleModel->id, array('dropped_at' => Carbon::now()));
+                $vehicleController->updatePivotTable($user_model, 'vehicles', $vehicleModel->id, array('dropped_at' => Carbon::now()));
 
-                if ($userModel && \Str::lower($userModel->vrm) == \Str::lower($vehicleModel->vrm)) {//User exists
+                if ($user_model && \Str::lower($user_model->vrm) == \Str::lower($vehicleModel->vrm)) {//User exists
                     //Clear users default
-                    $userModel->vrm = '';
+                    $user_model->vrm = '';
 
                     //TODO update default
                     //Save user
-                    $userModel->save();
+                    $user_model->save();
                 }//E# if statement
                 //Get success message
                 $message = \Lang::get($vehicleController->package . '::' . $vehicleController->controller . '.notification.deleted');
@@ -533,35 +446,35 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
     public function validateDeleteCard($attribute, $id, $parameters) {
         //Create card controller
         $cardController = new \Lava\Payments\CardController();
-        
+
         //Set scope
         $parameters['scope'] = array('statusOne');
 
         //Get card by id
         $cardModel = $cardController->getModelByField('id', $id, $parameters);
-        
+
         if ($cardModel) {//Card does not exist
             //Instantiate a new user controller
-            $userController = new UserController();
+            $user_controller = new UserController();
 
             //Get user model by token
-            $userModel = $userController->getModelByField('token', $this->data['token']);
+            $user_model = $user_controller->getModelByField('token', $this->data['token']);
 
-            if ($cardModel->created_by == $userModel->id) {
+            if ($cardModel->created_by == $user_model->id) {
 
 
                 //Delete card on stripe
                 $stripe_controller = new \Lava\Payments\StripeController();
-                $stripe_response = $stripe_controller->deleteCard($userModel->stripe_id, $cardModel->token);
+                $stripe_response = $stripe_controller->deleteCard($user_model->stripe_id, $cardModel->token);
                 $cardModel->deleted_on_stripe = $stripe_response['status'] ? 1 : 0;
 
                 $cardModel->status = 2;
                 $cardModel->save();
 
-                if ($cardModel->token == $userModel->card) {
-                    $userModel->card = '';
+                if ($cardModel->token == $user_model->card) {
+                    $user_model->card = '';
 
-                    $userModel->save();
+                    $user_model->save();
                 }//E# if statement
                 //Get success message
                 $message = \Lang::get($cardController->package . '::' . $cardController->controller . '.notification.deleted');
@@ -599,34 +512,34 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
 //E# replaceDeleteCard() function
 
     /**
-     * S# validateUserOwnsVrm() function
-     * Validate user owns this vrm
+     * S# validateUserOwnsVehicle() function
+     * Validate user owns this vehicle_id
      *
      * @author Edwin Mugendi <edwinmugendi@gmail.com>
      * @param  string  $attribute
-     * @param  mixed   $vrm
+     * @param  mixed   $vehicle_id
      * @param  mixed   $parameters
      * @return bool
      */
-    protected function validateUserOwnsVrm($attribute, $vrm, $parameters) {
+    protected function validateUserOwnsVehicle($attribute, $vehicle_id, $parameters) {
         //Intialize a vehicle controller object
         $vehicleController = new VehicleController();
 
-        $vehicleModel = $vehicleController->getModelByField('vrm', $vrm);
+        $vehicleModel = $vehicleController->getModelByField('id', $vehicle_id);
 
         if ($vehicleModel) {//Vehicle exists
             if ($vehicleModel->user_owns) {//Logged in user owns this vehicle
                 return $vehicleModel;
             } else {//Don't own
                 //Set message
-                $this->message = \Lang::get($vehicleController->package . '::' . $vehicleController->controller . '.validation.userOwns', array('vrm' => $vrm));
+                $this->message = \Lang::get($vehicleController->package . '::' . $vehicleController->controller . '.validation.userOwns', array('vehicle_id' => $vehicle_id));
             }//E# if else statement
         } else {//Vehicle does exists
             //Set notification
             $vehicleController->notification = array(
-                'field' => 'vrm',
+                'field' => 'vehicle_id',
                 'type' => 'Vehicle',
-                'value' => $vrm,
+                'value' => $vehicle_id,
             );
 
             //Throw VRM not found error
@@ -635,11 +548,11 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         return false;
     }
 
-//E# validateUserOwnsVrm() function
+//E# validateUserOwnsVehicle() function
 
     /**
-     * S# replaceUserOwnsVrm() function
-     * Replace all place-holders for the  user owns vrm rule.
+     * S# replaceUserOwnsVehicle() function
+     * Replace all place-holders for the  user owns vehicle_id rule.
      *
      * @author Edwin Mugendi <edwinmugendi@gmail.com>
      * @param  string  $message
@@ -648,9 +561,9 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
      * @param  array   $parameters
      * @return string
      */
-    protected function replaceUserOwnsVrm($message, $attribute, $rule, $parameters) {
+    protected function replaceUserOwnsVehicle($message, $attribute, $rule, $parameters) {
         return $message;
     }
 
-//E# replaceUserOwnsVrm() function
+//E# replaceUserOwnsVehicle() function
 }

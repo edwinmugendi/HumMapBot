@@ -26,69 +26,26 @@ class StripeController extends PaymentsBaseController {
 
 //E# contruct() function
 
-    public function prepareTransactionArray($status, $stripeTransaction) {
-
-        $transaction = array();
-        /**
-          object(stdClass)#284 (7) {
-          ["id"]=>
-          string(18) "140507161003_34177"
-          ["type"]=>
-          string(4) "sale"
-          ["description"]=>
-          string(1) "1"
-          ["currency"]=>
-          string(3) "GBP"
-          ["code"]=>
-          string(9) "succeeded"
-          ["amount"]=>
-          string(2) "12"
-          ["auth_code"]=>
-          string(5) "06603"
-          }
-         * */
-        $transaction['gateway'] = 'stripe';
-        $transaction['amount'] = $stripeTransaction->amount;
-        $transaction['currency'] = $stripeTransaction->currency;
-
-        if ($status) {
-            $transaction['gateway_tran_id'] = $stripeTransaction->id;
-            $transaction['gateway_code'] = $stripeTransaction->auth_code;
-            $transaction['status'] = 1;
-        } else {
-            $transaction['gateway_tran_id'] = 0;
-            $transaction['gateway_code'] = $stripeTransaction->auth_code;
-            $transaction['status'] = 0;
-        }//E# if else statement
-
-        return $transaction;
-    }
-
     /**
      * S# createTransaction() function
      * Create Card on Stripe
      */
     public function createTransaction($paymentInfo) {
         try {
-            //Instantiate Stripe object
-            $this->gateway = new \Stripe_Gateway(\Stripe_Environment::$sandbox, trim(\Config::get($this->package . '::thirdParty.stripe.apiKey')), trim(\Config::get($this->package . '::thirdParty.stripe.apiSecret')));
 
-            $this->response = $this->gateway->createTransaction(
-                            new \Stripe_User(array(
-                        'id' => $paymentInfo['stripeUserId']
-                            )), new \Stripe_Card(array(
-                        'token' => $paymentInfo['cardToken']
-                            )), new \Stripe_Transaction(array(
-                        'amount' => $paymentInfo['amount'],
-                        'currency' => $paymentInfo['currency'],
+            $this->response = \Stripe\Charge::create(array(
+                        'amount' => $paymentInfo['amount'] * 100,
+                        'currency' => $paymentInfo['currency_id'],
+                        'customer' => $paymentInfo['stripe_id'],
+                        'source' => $paymentInfo['card_token'],
                         'description' => $paymentInfo['description'],
-                        'commit' => true
-                            ))
-                    )->send();
+                        'metadata' => $paymentInfo['metadata']
+            ));
 
+            //Build response
             $this->notification = array(
                 'status' => 1,
-                'response' => $this->response->transaction
+                'response' => $this->response
             );
         } catch (\Stripe_ApiException $e) {
             $this->notification = array(

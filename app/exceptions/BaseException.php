@@ -10,7 +10,7 @@ class BaseException extends \Exception {
     //Data array
     protected $data;
     //System code
-    protected $systemCode;
+    protected $system_code;
     //Notification
     protected $notification;
     //Replacement
@@ -30,24 +30,24 @@ class BaseException extends \Exception {
      * 
      * Get notification
      * 
-     * @param integer $systemCode System code
+     * @param integer $system_code System code
      * @param string $messageKey Message to get
      * @param array $replacement Replacement array
      * 
      * @return array Notification
      */
-    public function getNotification($systemCode, $messageKey, $replacement = array()) {
+    public function getNotification($system_code, $messageKey, $replacement = array()) {
        
         //Build message
-        $notificationMessage = $this->message ? $this->message : \Lang::get('httpStatus.systemCode.' . $systemCode . '.' . $messageKey, $replacement);
+        $notificationMessage = $this->message ? $this->message : \Lang::get('httpStatus.system_code.' . $system_code . '.' . $messageKey, $replacement);
          
         //Get the HTTP/1.1 code
-        $this->notification['httpStatusCode'] = (int) \Lang::get('httpStatus.systemCode.' . $systemCode . '.httpStatusCode', $replacement);
+        $this->notification['http_status_code'] = (int) \Lang::get('httpStatus.system_code.' . $system_code . '.http_status_code', $replacement);
                 
         //Build notification
         $this->notification['data'] = array(
-            'httpStatusCode' => $this->notification['httpStatusCode'],
-            'systemCode' => $systemCode,
+            'http_status_code' => $this->notification['http_status_code'],
+            'system_code' => $system_code,
             'message' => $notificationMessage
         );
 

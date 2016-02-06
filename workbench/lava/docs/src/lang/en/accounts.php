@@ -15,9 +15,15 @@ return array(
             'name' => 'Register User',
             'note' => 'Register a user',
             'filtered' => 1,
-            'endpoint' => '/user/register',
+            'endpoint' => 'api/register_user',
             'httpVerb' => 'POST',
             'parameters' => array(
+                array(
+                    'field' => 'format',
+                    'dataType' => 'string',
+                    'note' => 'Must be \'json\'',
+                    'required' => 1,
+                ),
                 array(
                     'field' => 'first_name',
                     'dataType' => 'string',
@@ -45,7 +51,7 @@ return array(
                 array(
                     'field' => 'password',
                     'dataType' => 'string',
-                    'note' => 'Password',
+                    'note' => 'Password (Password should be more than 6 characters)',
                     'required' => 1,
                 ),
                 array(
@@ -72,26 +78,32 @@ return array(
                 array(
                     'action' => 'Success',
                     'httpCode' => 200,
-                    'note' => 'User created succefully',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Your account has been created on Lava app","data":{"id":48}}'
+                    'note' => 'User created',
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"User created","data":{"id":30}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Your account has been created on Lava app","data":{"id":48}}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"email","error":"The email has already been taken."}]}'
                 ),
             )
         ),
         array(
-            'name' => 'Login',
+            'name' => 'Login with email and password',
             'note' => 'Login a user <br>'
             . '<br> For improved security a new token is generated everytime you login'
             . 'Securely save the returned <i>token</i> that will used to access all endpoints that need the user to be logged in.',
             'filtered' => 0,
-            'endpoint' => '/user/login',
+            'endpoint' => 'api/login_user',
             'httpVerb' => 'POST',
             'parameters' => array(
+                array(
+                    'field' => 'format',
+                    'dataType' => 'string',
+                    'note' => 'Must be \'json\'',
+                    'required' => 1,
+                ),
                 array(
                     'field' => 'email',
                     'dataType' => 'string',
@@ -103,39 +115,8 @@ return array(
                     'dataType' => 'string',
                     'note' => 'Password',
                     'required' => 1,
-                )
-            ),
-            'returns' => array(
-                array(
-                    'action' => 'Success',
-                    'httpCode' => 200,
-                    'note' => 'Logged in',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Logged in","data":{"token":"jdkgnjniiflbye5xojemmphpdst0bsdw"}}'
                 ),
                 array(
-                    'action' => 'Error',
-                    'httpCode' => 400,
-                    'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"password","error":"The email or password you entered is incorrect."}]}'
-                ),
-            )
-        ),
-        array(
-            'name' => 'Facebook Login',
-            'note' => 'Login a user <br>'
-            . '<br> For improved security a new token is generated everytime you login'
-            . 'Securely save the returned <i>token</i> that will used to access all endpoints that need the user to be logged in.',
-            'filtered' => 0,
-            'endpoint' => '/user/facebook_login',
-            'httpVerb' => 'POST',
-            'parameters' => array(
-                array(
-                    'field' => 'facebook_token',
-                    'dataType' => 'string',
-                    'note' => 'Token from facebook',
-                    'required' => 1,
-                ),
-                 array(
                     'field' => 'os',
                     'dataType' => 'String',
                     'note' => 'Can be <i>ios</i> or <i>android</i>',
@@ -144,7 +125,7 @@ return array(
                 array(
                     'field' => 'push_token',
                     'dataType' => 'String',
-                    'note' => 'Urban Air Ship push token',
+                    'note' => 'Pushwoosh push token',
                     'required' => 0,
                 ),
                 array(
@@ -172,30 +153,109 @@ return array(
                     'note' => 'Location array',
                     'required' => 0,
                 ),
-                
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Logged in!',
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Logged in!","data":{"id":"30","first_name":"Edwin","last_name":"Mugendi","phone":"+254722906836","dob":"0000-00-00","gender":"","email":"edwinmugendi@gmail.com","address":"","postal_code":"","token":"pjimbrfgccjbprshe7akqgxkmvuk7ouy","vrm":"","card":"","fb_uid":"","lat":"90.0000000000","lng":"11.0000000000","points":"0","notify_sms":"1","notify_push":"1","notify_email":"1","os":"","push_token":"","app_version":"","created_at":"2016-02-06 01:17:12","updated_at":"2016-02-06 01:19:09","stripe_id":"cus_7qvW8niFCRsB0W","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36","ip":"127.0.0.1","logins":[]}}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"password","error":"The email or password you entered is incorrect."}]}'
+                ),
+            )
+        ),
+        array(
+            'name' => 'Facebook Login',
+            'note' => 'Login a user with Facebook Token<br>'
+            . '<br> For improved security a new token is generated everytime you login'
+            . 'Securely save the returned <i>token</i> that will used to access all endpoints that need the user to be logged in.',
+            'filtered' => 0,
+            'endpoint' => 'api/login_with_facebook',
+            'httpVerb' => 'POST',
+            'parameters' => array(
+                array(
+                    'field' => 'format',
+                    'dataType' => 'string',
+                    'note' => 'Must be \'json\'',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'facebook_token',
+                    'dataType' => 'string',
+                    'note' => 'Token from facebook',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'os',
+                    'dataType' => 'String',
+                    'note' => 'Can be <i>ios</i> or <i>android</i>',
+                    'required' => 0,
+                ),
+                array(
+                    'field' => 'push_token',
+                    'dataType' => 'String',
+                    'note' => 'Pushwoosh push token',
+                    'required' => 0,
+                ),
+                array(
+                    'field' => 'app_version',
+                    'dataType' => 'String',
+                    'note' => 'App version',
+                    'required' => 0,
+                ),
+                array(
+                    'field' => 'location',
+                    'dataType' => array(
+                        array(
+                            'field' => 'lat',
+                            'dataType' => 'float',
+                            'note' => 'Latitude : range -90 to 90',
+                            'required' => 1,
+                        ),
+                        array(
+                            'field' => 'lng',
+                            'dataType' => 'float',
+                            'note' => 'Latitude : range -180 to 180',
+                            'required' => 1,
+                        ),
+                    ),
+                    'note' => 'Location array',
+                    'required' => 0,
+                ),
             ),
             'returns' => array(
                 array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Logged in',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Logged in","data":{"token":"l4tjo9l165qx01i3ak8uupmbr6ueaosp"}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Logged in!","data":{"id":"34","first_name":"Donna","last_name":"Bushakman","phone":"","dob":"1980-08-08","gender":"female","email":"gkivacm_bushakman_1415013488@tfbnw.net","address":"","postal_code":"","token":"padarez8egpew0njvpqt7lcblcfrspyr7evtk2sfyfnxlirv","vrm":"","card":"","fb_uid":"1495733417344044","lat":"0.0000000000","lng":"0.0000000000","points":"0","notify_sms":"1","notify_push":"1","notify_email":"1","os":"ios","push_token":"push_token","app_version":"App Verssion","created_at":"2016-02-06 02:14:10","updated_at":"2016-02-06 02:26:08","stripe_id":"cus_7qwRvxDu44ijq7","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36"}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"facebook_token","error":"No user found on Facebook with such token"}]}'
+                    'example' => '{"http_status_code":404,"system_code":904,"message":"User not found.","data":{"field":"facebook_token","type":"User","value":""}}'
                 ),
             )
         ),
         array(
-            'name' => 'Get Profile',
+            'name' => 'Get User Profile',
             'note' => 'Get a logged in user\'s profile identified by the token',
             'filtered' => 1,
-            'endpoint' => '/user/profile',
+            'endpoint' => '/api/get_user_profile',
             'httpVerb' => 'GET',
             'parameters' => array(
+                array(
+                    'field' => 'format',
+                    'dataType' => 'string',
+                    'note' => 'Must be \'json\'',
+                    'required' => 1,
+                ),
                 array(
                     'field' => 'token',
                     'dataType' => 'string',
@@ -208,27 +268,34 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Got profile',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Succeed.","data":{"id":"1","first_name":"Edwin","last_name":"Mugendi","phone":"+254722906836","dob":"2014-12-12 00:00:00","gender":"","email":"edwinmugendi@gmail.com","address":"2014-12-12","postal_code":"","token":"jdkgnjniiflbye5xojemmphpdst0bsdw","default_vrm":"KANa","fb_uid":"0","lat":"12.00","lng":"0.00","card":"NTQGu","created_at":"2014-04-17 06:30:21","updated_at":"2014-05-09 10:27:35","push_attempts":"0","role_id":"0"}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Succeed.","data":{"id":"35","first_name":"Edwin","last_name":"Mugendi","phone":"+254722906836","dob":"0000-00-00","gender":"","email":"edwinmugendi@gmail.com","address":"","postal_code":"","token":"jdkgnjniiflbye5xojemmphpdst0bsdw","vrm":"","card":"","fb_uid":"","lat":"90.0000000000","lng":"11.0000000000","points":"0","notify_sms":"1","notify_push":"1","notify_email":"1","os":"ios","push_token":"sdfaf","app_version":"asd","created_at":"2016-02-06 02:16:38","updated_at":"2016-02-06 02:24:39","stripe_id":"cus_7qwTckPJkETZwp","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36"}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
                 ),
             )
         ),
         array(
             'name' => 'Update User Profile',
-            'note' => 'Update a users profile',
+            'note' => 'Update a users profile<br>'
+            . 'To update the password you\'ll need to provide both <i>old_password</i> and <i>new_password</i> fields',
             'filtered' => 1,
-            'endpoint' => '/user/update/id/{value}',
+            'endpoint' => 'api/update_user',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
-                    'field' => 'value',
+                    'field' => 'format',
+                    'dataType' => 'string',
+                    'note' => 'Must be \'json\'',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'id',
                     'dataType' => 'integer',
-                    'note' => 'Lava User Id (Set in the URL)',
+                    'note' => 'User Id',
                     'required' => 1,
                 ),
                 array(
@@ -264,7 +331,7 @@ return array(
                 array(
                     'field' => 'new_password',
                     'dataType' => 'string',
-                    'note' => 'New password (Required if <i>old_password</i> is present. Should be greater than 8 characters',
+                    'note' => 'New password (Required if <i>old_password</i> is present. Should be greater than 6 characters',
                     'required' => 2,
                 ),
                 array(
@@ -294,7 +361,7 @@ return array(
                 array(
                     'field' => 'push_token',
                     'dataType' => 'String',
-                    'note' => 'Urban Air Ship push token',
+                    'note' => 'Pushwoosh push token',
                     'required' => 0,
                 ),
                 array(
@@ -340,42 +407,49 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'User updated',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Your details have been updated","data":{"id":"1","first_name":"Edwin","last_name":"Mugendi","phone":"+254722906836","dob":"2014-12-12 00:00:00","gender":"","email":"edwinmugendi@gmail.com","address":"2014-12-12","postal_code":"","token":"jdkgnjniiflbye5xojemmphpdst0bsdw","default_vrm":"KANa","fb_uid":"0","lat":"12.00","lng":"0.00","card":"NTQGu","created_at":"2014-04-17 06:30:21","updated_at":"2014-05-09 12:55:42","push_attempts":"0","role_id":"0"}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"User updated","data":{"id":"35","first_name":"Edwin","last_name":"Mugendi","phone":"+254722906836","dob":"0000-00-00","gender":"","email":"edwinmugendi@gmail.com","address":"","postal_code":"","token":"jdkgnjniiflbye5xojemmphpdst0bsdw","vrm":"","card":"","fb_uid":"","lat":"90.0000000000","lng":"11.0000000000","points":"0","notify_sms":"1","notify_push":"1","notify_email":"1","os":"ios","push_token":"sdfaf","app_version":"asd","created_at":"2016-02-06 02:16:38","updated_at":"2016-02-06 02:36:45","stripe_id":"cus_7qwTckPJkETZwp","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36"}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"location","error":"Latitude (range -90 to 90) or longitude (range 180 to -180) missing or not valid"}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
                 ),
             )
         ),
         array(
             'name' => 'Forgot Password',
-            'note' => 'Send forgot password email',
+            'note' => 'Send forgot password email or SMS<br>'
+            . 'if send_to parameter is an email or phone number we\'ll send the code on email or SMS and the user should use the code in the reset password screen',
             'filtered' => 0,
-            'endpoint' => '/user/forgot_password',
+            'endpoint' => '/api/forgot_password',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
-                    'field' => 'email',
+                    'field' => 'format',
                     'dataType' => 'string',
-                    'note' => 'Email address',
+                    'note' => 'Must be \'json\'',
                     'required' => 1,
-                )
+                ),
+                array(
+                    'field' => 'send_to',
+                    'dataType' => 'string',
+                    'note' => 'Can be either the users email or phone number',
+                    'required' => 1,
+                ),
             ),
             'returns' => array(
                 array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Sent reset password',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"We\'ve sent you reset email.","data":{"reset_code":"sj0lcsq18r"}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"We\'ve sent you reset email.","data":[]}'
                 ),
                 array(
                     'action' => 'Not found',
                     'httpCode' => 404,
-                    'note' => 'Object not found',
-                    'example' => '{"httpStatusCode":404,"systemCode":904,"message":"User with email \'john.doe@gmail.com\' not found.","data":{"field":"email","type":"User","value":"edwinmugendi@gmail.com1"}}'
+                    'note' => 'User not found',
+                    'example' => '{"http_status_code":404,"system_code":904,"message":"User not found.","data":{"field":"email","type":"User","value":"edwinmugendi@gmail.com1"}}'
                 ),
             )
         ),
@@ -410,24 +484,24 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Password reset',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Your password has been reset","data":["1"]}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Your password has been reset","data":["35"]}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation Error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"reset_code","error":"Invalid email or reset code or expired reset code (Expires after 60 minutes)"}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"reset_code","error":"Invalid email or reset code or expired reset code (Expires after 60 minutes)"}]}'
                 ),
             )
         ),
         array(
             'name' => 'Is Email Available?',
             'note' => 'Check a email address is available?<br>'
-            . '<i></i> is 1 if email is available<br>'
-            . '<i></i> is 0 if email is not available<br>'
+            . '<i>data</i> is 1 if email is available<br>'
+            . '<i>data</i> is 0 if email is not available<br>'
             . '',
             'filtered' => 0,
-            'endpoint' => '/user/is_email_available',
+            'endpoint' => '/api/is_email_available',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
@@ -442,13 +516,13 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Email is available or not',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Succeed.","data":0}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Succeed.","data":0}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"email","error":"The email field is required."}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"email","error":"The email format is invalid."}]}'
                 ),
             )
         ),

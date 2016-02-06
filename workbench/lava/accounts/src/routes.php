@@ -13,18 +13,28 @@
         \Route::get('register', array('as' => 'userRegistrationRegister', function() {
                 return \Redirect::route('userRegistration', array('register'));
             }));
+                /* S# API End points */
+                //Register User
+                \Route::post('api/register_user', array('as' => 'apiRegisterUser', 'uses' => 'Lava\Accounts\UserController@postCreate'));
 
                 //Login User
-                \Route::post('user/login', array('as' => 'userLogin', 'uses' => 'Lava\Accounts\UserController@postLogin'));
+                \Route::post('api/login_user', array('as' => 'apiLoginUser', 'uses' => 'Lava\Accounts\UserController@postLogin'));
 
                 //Login with fabook
-                \Route::post('user/facebook_login', array('as' => 'userFacebookLogin', 'uses' => 'Lava\Accounts\UserController@postFacebookLogin'));
+                \Route::post('api/login_with_facebook', array('as' => 'userFacebookLogin', 'uses' => 'Lava\Accounts\UserController@postFacebookLogin'));
 
+                //Forgot Password
+                \Route::post('api/forgot_password', array('as' => 'apiForgotPassword', 'uses' => 'Lava\Accounts\UserController@postForgotPassword'));
+
+                //Reset Password
+                \Route::post('api/reset_password', array('as' => 'apiResetPassword', 'uses' => 'Lava\Accounts\UserController@postResetPassword'));
+
+                //Is email available
+                \Route::get('api/is_email_available', array('as' => 'apiIsEmailAvailable', 'uses' => 'Lava\Accounts\UserController@getIsEmailAvailable'));
+
+                /* E# API End points */
                 //Sign out User
                 \Route::get('user/signout', array('as' => 'userSignOut', 'uses' => 'Lava\Accounts\UserController@getSignOut'));
-
-                //Register User
-                \Route::post('user/register', array('as' => 'userRegister', 'uses' => 'Lava\Accounts\UserController@postCreate'));
 
                 //Is email available
                 \Route::get('user/is_email_available', array('as' => 'userIsEmailAvailable', 'uses' => 'Lava\Accounts\UserController@getIsEmailAvailable'));
@@ -38,17 +48,19 @@
                 //Reset Password
                 \Route::post('user/reset_password', array('as' => 'userResetPassword', 'uses' => 'Lava\Accounts\UserController@postResetPassword'));
 
-                \Route::group(array('before' => 'subdomain|api'), function() {
+                \Route::group(array('before' => 'api'), function() {
+                    /* S# API End points */
+                    //Get Profile Page
+                    \Route::get('api/get_user_profile', array('as' => 'apiGetUserProfile', 'uses' => 'Lava\Accounts\UserController@getProfile'));
+
+                    //Update User
+                    \Route::post('api/update_user', array('as' => 'apiUpdateUser', 'uses' => 'Lava\Accounts\UserController@postUpdate'));
+
+                    /* E# API End points */
                     /**
                      * USER API's
                      * 
                      */
-                    //Update User
-                    \Route::post('user/update', array('as' => 'userUpdate', 'uses' => 'Lava\Accounts\UserController@postUpdate'));
-
-                    //Get Profile Page
-                    \Route::get('user/profile', array('as' => 'userProfile', 'uses' => 'Lava\Accounts\UserController@getProfile'));
-
                     /**
                      * VEHICLE API's
                      */

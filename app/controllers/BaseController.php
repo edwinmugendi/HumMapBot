@@ -37,6 +37,8 @@ class BaseController extends Controller {
     public $imageable;
     //Owned by
     public $ownedBy = array();
+    //CrudId
+    protected $crudId = -1; //Create = 1, Update = 2, Read = 3, Delete = 4
 
     public function __construct() {
 
@@ -47,6 +49,7 @@ class BaseController extends Controller {
 
         //Cache ip
         $this->input['ip'] = \Request::getClientIp();
+        $this->input['agent'] = \Request::server('HTTP_USER_AGENT');
     }
 
 //E# __construct() function
@@ -520,7 +523,7 @@ class BaseController extends Controller {
         }//if else statement
         //Set per page to parameters
         $this->viewData['paginationAppends']['per_page'] = $parameters['paginate'] = $per_page;
-        
+
         //Set export
         if (array_key_exists('export', $this->input) && in_array($this->input['export'], array('pdf', 'print', 'csv', 'xls'))) {
             $this->viewData['export'] = $this->input['export'];
@@ -722,7 +725,7 @@ class BaseController extends Controller {
      * @param type $whereClause
      */
     public function setOwnedBy(&$whereClause) {
-       
+
         if ($this->ownedBy) {//Owned by is set
             foreach ($this->ownedBy as $singleOwnedBy) {
                 //Owned by current user
@@ -850,7 +853,7 @@ class BaseController extends Controller {
 
         //Set date format
         $js['date_format'] = $this->getDateFormat();
-
+        
         //Set crud id
         $js['crudId'] = $this->crudId;
 
@@ -1220,7 +1223,7 @@ class BaseController extends Controller {
             // dd($lazyLoad);
             $selectModel->with($lazyLoad)->get();
         }//E# if statement
-        
+
         if (array_key_exists('scope', $parameters)) {//Load Scope
             $lazyLoad = $this->buildScope($selectModel, $parameters['scope']);
         }//E# if statement
@@ -1386,7 +1389,6 @@ class BaseController extends Controller {
             $this->isInputValid();
         }//E# if statement
         //Hip Hip Hurrah!
-        
         //Create model
         $createdModel = $model::create($row);
 

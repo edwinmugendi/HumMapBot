@@ -2,7 +2,8 @@
 
 namespace Lava\Messages;
 
-use Clickatell\Clickatell;
+use Clickatell\Api\ClickatellHttp;
+
 /**
  * S# ClickatellController() function
  * Clickatell controller
@@ -21,10 +22,10 @@ class ClickatellController extends MessagesBaseController {
         parent::__construct();
 
         //Get configs
-        $configs = \Config::get($this->package . '::thirdParty.clickatell');
+        $configs = \Config::get('thirdParty.clickatell');
 
         //Instantiate SMS client
-        $this->smsClient = new Clickatell($configs['username'], $configs['password'], $configs['apiId']);
+        $this->smsClient = new ClickatellHttp($configs['username'], $configs['password'], $configs['apiId']);
     }
 
 //E# __construct() function
@@ -38,7 +39,8 @@ class ClickatellController extends MessagesBaseController {
      * @return int 1 is SMS is send, 0 otherwise
      */
     public function sms($sender, $recipient, $message) {
-        return (int) $this->smsClient->sendMessage($recipient, $message, $sender);
+
+        return (int) $this->smsClient->sendMessage($recipient, $message);
     }
 
 //E# sms() function

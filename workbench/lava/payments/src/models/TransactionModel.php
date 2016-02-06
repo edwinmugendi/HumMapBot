@@ -19,6 +19,7 @@ class TransactionModel extends \Eloquent {
         'product_id',
         'promotion_id',
         'location_id',
+        'currency_id',
         'amount',
         'currency',
         'description',
@@ -26,11 +27,18 @@ class TransactionModel extends \Eloquent {
         'card_token',
         'stamps_issued',
         'vrm',
+        'vehicle_id',
         'lat',
         'lng',
         'gateway',
         'gateway_tran_id',
         'gateway_code',
+        'user_smsed',
+        'user_emailed',
+        'user_pushed',
+        'merchant_smsed',
+        'merchant_emailed',
+        'workflow',
         'agent',
         'status',
         'created_by',
@@ -91,7 +99,7 @@ class TransactionModel extends \Eloquent {
      */
     public function getLocAttribute() {
         $locationModel = $this->location()->first();
-       
+
         $loc = array();
         if ($locationModel) {
             return $loc['loc'] = array(

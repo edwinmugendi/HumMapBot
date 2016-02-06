@@ -10,7 +10,8 @@
         "facebook/php-sdk": "*",
         "guzzlehttp/guzzle": "~4.0",
         "arcturial/clickatell": "*",
-        "stripe/stripe-php":"2.*"
+        "stripe/stripe-php": "2.*",
+        "gomoob/php-pushwoosh": "~1.0"
     },
     "autoload": {
         "classmap": [

@@ -13,8 +13,9 @@ class LoginModel extends \Eloquent {
     //Fillable fields
     protected $fillable = array(
         'user_id',
-        'ip_address',
         'date_time',
+        'agent',
+        'ip',
         'status',
         'created_by',
         'updated_by'
@@ -28,7 +29,7 @@ class LoginModel extends \Eloquent {
     //Create validation rules
     public $createRules = array(
         'user_id' => 'required|integer',
-        'ip_address' => 'ip',
+        'ip' => 'ip',
         'date_time' => 'date',
         'status' => 'required|integer',
         'created_by' => 'required|integer',

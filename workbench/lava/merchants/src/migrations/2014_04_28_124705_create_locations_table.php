@@ -35,7 +35,7 @@ class CreateLocationsTable extends Migration {
 
             //Loyalty Scheme
             $table->integer('loyalty_stamps');
-            $table->string('currency', 4);
+            $table->string('currency_id', 4);
             $table->float('surcharge');
 
             //Monday

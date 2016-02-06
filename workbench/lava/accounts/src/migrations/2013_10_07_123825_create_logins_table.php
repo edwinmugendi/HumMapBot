@@ -12,16 +12,19 @@ class CreateLoginsTable extends Migration {
      */
     public function up() {
         Schema::create('acc_logins', function(Blueprint $table) {
-                    $table->increments('id');
-                    //Relationships
-                    $table->integer('user_id')->unsigned();
-                    $table->string('ip_address', 255);
-                    $table->datetime('date_time');
-                    $table->integer('status')->unsigned();
-                    $table->integer('created_by')->unsigned();
-                    $table->integer('updated_by')->unsigned();
-                    $table->timestamps();
-                });
+            $table->increments('id');
+            //Relationships
+            $table->integer('user_id')->unsigned();
+            $table->string('ip', 255);
+            $table->datetime('date_time');
+            
+            $table->string('agent', 255);
+            $table->string('ip', 255);
+            $table->integer('status')->unsigned();
+            $table->integer('created_by')->unsigned();
+            $table->integer('updated_by')->unsigned();
+            $table->timestamps();
+        });
     }
 
     /**

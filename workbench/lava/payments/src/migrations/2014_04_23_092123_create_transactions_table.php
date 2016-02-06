@@ -22,19 +22,21 @@ class CreateTransactionsTable extends Migration {
             //Payment
             $table->float('amount')->unsigned();
             $table->float('refund')->unsigned(); //New
-            $table->string('currency', 3);
+            $table->string('currency_id', 3);
             $table->string('description', 255);
 
             //Card Used
             $table->string('card_used', 255);
             $table->string('card_token', 255);
-            
+
             //VRM
+            $table->integer('vehicle_id')->unsigned();
             $table->string('vrm', 255);
-            
+
+
             //Loyalty Stamps
             $table->integer('stamps_issued');
-            
+
             //Location
             $table->decimal('lat', 13, 10);
             $table->decimal('lng', 13, 10);
@@ -43,9 +45,17 @@ class CreateTransactionsTable extends Migration {
             $table->string('gateway', 255);
             $table->string('gateway_tran_id', 255);
             $table->string('gateway_code', 255); //New
+            //Notification
+            $table->boolean('user_smsed');
+            $table->boolean('user_emailed');
+            $table->boolean('user_pushed');
+
+            $table->boolean('merchant_smsed');
+            $table->boolean('merchant_emailed');
+
             //Agent
             $table->string('agent', 255);
-
+            $table->integer('workflow')->unsigned();
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();

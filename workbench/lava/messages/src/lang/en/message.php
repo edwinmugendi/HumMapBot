@@ -7,6 +7,11 @@ return array(
       |--------------------------------------------------------------------------
      */
     'communication' => array(
+        'transactionUserPromotion' => array(
+            'email' => ':product bought :productName at :location. :productName',
+            'sms' => 'Thanks. You bought :product for :vrm at :location on :day at :time. Ref no is :tranId. :productName',
+            'push' => 'Thanks. You bought :product for :vrm at :location on :day at :time. Ref no is :tranId. :productName',
+        ),
         'transactionUserCard' => array(
             'email' => ':product bought :productName at :location. :productName',
             'sms' => 'Thanks. You bought :product for :vrm at :location on :day at :time. Ref no is :tranId. :productName',
@@ -19,8 +24,13 @@ return array(
         ),
         'transactionMerchantCard' => array(
             'email' => ':product - :pdtId purchased by :vrm  at :location. :productName',
-            'sms' => ':vrm has purchased :product for :currency :amount at :day :time. Ref no :tranId',
-            'push' => ':vrm has purchased :product for :currency :amount at :day :time. Ref no :tranId',
+            'sms' => ':vrm has purchased :product for :currencyId :amount at :day :time. Ref no :tranId',
+            'push' => ':vrm has purchased :product for :currencyId :amount at :day :time. Ref no :tranId',
+        ),
+        'transactionMerchantPromotion' => array(
+            'email' => ':product - :pdtId purchased by :vrm  at :location. :productName',
+            'sms' => ':vrm has purchased :product for :currencyId :amount at :day :time. Ref no :tranId',
+            'push' => ':vrm has purchased :product for :currencyId :amount at :day :time. Ref no :tranId',
         ),
         'transactionMerchantStamps' => array(
             'email' => 'Promotion: :product - :pdtId purchased by :vrm  at :location. :productName',

@@ -13,13 +13,15 @@ class CreateProductsTable extends Migration {
     public function up() {
         Schema::create('pdt_products', function(Blueprint $table) {
             $table->increments('id');
+            $table->integer('merchant_id')->unsigned();
+            $table->string('currency_id', 3);
             $table->integer('location_id')->unsigned();
             $table->string('name', 255);
             $table->string('description', 255);
             $table->float('price_1');
             $table->float('price_2');
             $table->boolean('loyable');
-            
+
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();

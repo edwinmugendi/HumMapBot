@@ -308,10 +308,10 @@ class CardController extends PaymentsBaseController {
         $cardModel = $this->getModelByField('token', $token);
 
         if ($cardModel) {
-            return $cardModel->number;
+            return $cardModel->brand . ' XXX ' . $cardModel->last4;
         } else {
             return '';
-        }
+        }//E# if else statement
     }
 
 //E# getVerbativeCardUsed() function

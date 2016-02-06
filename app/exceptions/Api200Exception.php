@@ -20,7 +20,7 @@ class Api200Exception extends \BaseException {
      */
     public function __construct($data, $message) {
         parent::__construct();
-        $this->systemCode = 700;
+        $this->system_code = 700;
         $this->data = $data;
         $this->message = $message;
     }
@@ -36,10 +36,10 @@ class Api200Exception extends \BaseException {
     public function thrower() {
         //dd($this->data); 
         //Get and set notification
-        $this->notification = $this->getNotification($this->systemCode, 'developerMessage');
+        $this->notification = $this->getNotification($this->system_code, 'developer_message');
 
         //Return nofitication response
-        return \Response::make($this->notification['data'], $this->notification['httpStatusCode'])
+        return \Response::make($this->notification['data'], $this->notification['http_status_code'])
                         ->header('Content-Type', 'application/json');
     }
 

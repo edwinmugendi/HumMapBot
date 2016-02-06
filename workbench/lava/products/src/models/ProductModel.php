@@ -59,6 +59,16 @@ class ProductModel extends \BaseModel {
     }
 
 //E# location() function
+    
+        /**
+     * S# merchant() function
+     * Set one to one relationship to Location Model
+     */
+    public function merchant() {
+        return $this->belongsTo(\Util::buildNamespace('merchants', 'merchant', 2), 'merchant_id');
+    }
+
+//E# merchant() function
 
     /**
      * S# getCurrencyAttribute() function
