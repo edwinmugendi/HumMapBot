@@ -17,7 +17,7 @@ class VehicleController extends AccountsBaseController {
     public $searchableFields = array('vrm');
     //User Searchable relations
     public $userSearchableRelations = array('vehicles');
-
+    
     /**
      * S# controllerSpecificWhereClause() function
      * @author Edwin Mugendi
@@ -30,8 +30,22 @@ class VehicleController extends AccountsBaseController {
     public function controllerSpecificWhereClause(&$fields, &$whereClause, &$parameters) {
 
         if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//From API
-            //dd($this->input);
-            if (!array_key_exists('id', $this->input)) {
+            if (array_key_exists('id', $this->input)) {
+                //Get model by id
+                $vehicle_model = $this->getModelByField('id', $this->input['id']);
+                
+                if (!$vehicle_model || !$vehicle_model->user_owns) {
+                    //Set notification
+                    $this->notification = array(
+                        'field' => 'vehicle_id',
+                        'type' => 'Vehicle',
+                        'value' => $this->input['id'],
+                    );
+
+                    //Throw Vehicle not found error
+                    throw new \Api404Exception($this->notification);
+                }//E# if else statement
+            } else {
                 //Lazy load to load
                 $params['lazyLoad'] = array('vehicles');
 
@@ -123,66 +137,76 @@ class VehicleController extends AccountsBaseController {
         $parameters['lazyLoad'] = array($relation);
 
         //Get user by token
-        $userModel = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->input['token'], $parameters));
+        $user_model = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->input['token'], $parameters));
 
         //Get current vrm's
-        $currentVrmIds = $userModel->$relation->lists('id');
+        $currentVrmIds = $user_model->$relation->lists('id');
 
         if (!in_array($controllerModel->id, $currentVrmIds)) {
             $now = Carbon::now();
-            $userModel->vehicles()->attach($controllerModel->id, array('created_at' => $now, 'updated_at' => $now));
+            $user_model->vehicles()->attach($controllerModel->id, array('created_at' => $now, 'updated_at' => $now));
         }//E# if else statement
         //Get user by token
-        $userModel = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->input['token'], $parameters));
+        $user_model = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->input['token'], $parameters));
 
         //Count user vehicles
-        $userVehicles = $userModel->$relation->count();
+        $userVehicles = $user_model->$relation->count();
 
         //Save user
-        $saveUser = false;
+        $save_user = false;
 
         if ($userVehicles == 1) {//Only one vehicle exists
             //Default this vehicle
-            $userModel->vrm = $userModel->vehicles[0]->vrm;
+            $user_model->vrm = $user_model->vehicles[0]->vrm;
 
             //Update save user
-            $saveUser = true;
+            $save_user = true;
         }//E# if statement
 
         if ($userVehicles) {//Vehicles exists
-            foreach ($userModel->$relation as $singleVehicle) {//Loop via the vehicles
+            foreach ($user_model->$relation as $singleVehicle) {//Loop via the vehicles
                 //Data to update
-                $dataToUpdate = array();
+                $data_to_update = array();
 
                 if ($controllerModel->id == $singleVehicle->id) {
-                    $dataToUpdate['dropped_at'] = 'null';
+                    $data_to_update['dropped_at'] = 'null';
                     //Set is default
                     if (($this->input['is_default'])) {
                         //Default this vehicle
-                        $userModel->vrm = $singleVehicle->vrm;
+                        $user_model->vrm = $singleVehicle->vrm;
 
                         //Update save user
-                        $saveUser = true;
+                        $save_user = true;
+                    } else {
+                        //Default this vehicle
+                        $user_model->vrm = '';
+                        //Update save user
+                        $save_user = true;
                     }//E# if else statement
                     //Set force
-                    $dataToUpdate['force'] = $this->input['force'];
+                    $data_to_update['force'] = $this->input['force'];
 
                     //Set purpose
                     if (($this->input['purpose'])) {
-                        $dataToUpdate['purpose'] = $this->input['purpose'];
+                        $data_to_update['purpose'] = $this->input['purpose'];
                     }//E# if statement
                 }//E# if statement
 
-                if ($dataToUpdate) {//Update
+                if ($data_to_update) {//Update
+                    $data_to_update['status'] = 1;
+                    $data_to_update['created_by'] = $this->user['id'];
+                    $data_to_update['updated_by'] = $this->user['id'];
+                    $data_to_update['ip'] = $this->input['ip'];
+                    $data_to_update['agent'] = $this->input['agent'];
                     //Update pivot
-                    $this->updatePivotTable($userModel, $relation, $singleVehicle->id, $dataToUpdate);
+                    $this->updatePivotTable($user_model, $relation, $singleVehicle->id, $data_to_update);
                 }//E# if statement
             }//# if else statement
         }//E# if statement
 
-        if ($saveUser) {
+        if ($save_user) {
             //Save model
-            $userModel->save();
+            $user_model->save();
         }//E# if statement
     }
 

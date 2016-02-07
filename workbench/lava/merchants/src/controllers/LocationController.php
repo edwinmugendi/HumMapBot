@@ -11,8 +11,11 @@ class LocationController extends MerchantsBaseController {
 
     //Controller
     public $controller = 'location';
-
-    /*     * *
+    
+     //Lazy load
+    public $lazyLoad = array('products');
+    
+    /***
      * Location Search
      * Location search API is used to get perform 3 types of searches
      * 1. Spatial Search - This is search using lat, long and radius
@@ -35,7 +38,7 @@ class LocationController extends MerchantsBaseController {
             $this->validationRules = array(
                 'get_type' => 'required|in:spatial,single,felt', //Check description above
             );
-            
+
             //Validate location
             $this->isInputValid();
 
@@ -88,11 +91,10 @@ class LocationController extends MerchantsBaseController {
                     );
                 }//E# if else statement
             } else if ($this->input['get_type'] == 'felt') {//Felt
-                
                 $this->validationRules = array(
-                    'feel_type' => 'required|integer|between:1,3',
+                    'feel_type' => 'required|integer|between:1,4',
                 );
-                
+
                 //Validate location
                 $this->isInputValid();
 
@@ -127,7 +129,7 @@ class LocationController extends MerchantsBaseController {
                 if ($feel_model) {//Locations found
                     //Get location ids
                     $location_ids = $feel_model->lists('location_id');
-                    
+
                     //Build where clause
                     $whereClause[] = array(
                         'where' => 'whereIn',
@@ -150,6 +152,21 @@ class LocationController extends MerchantsBaseController {
                 );
                 //Validate location
                 $this->isInputValid();
+
+                //Get model by id
+                $location_model = $this->getModelByField('id', $this->input['id']);
+
+                if (!$location_model) {
+                    //Set notification
+                    $this->notification = array(
+                        'field' => 'location_id',
+                        'type' => 'Vehicle',
+                        'value' => $this->input['id'],
+                    );
+
+                    //Throw Vehicle not found error
+                    throw new \Api404Exception($this->notification);
+                }//E# if else statement
             }//E# if statement
         }//E# if statement
     }

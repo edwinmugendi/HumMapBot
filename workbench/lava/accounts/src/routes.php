@@ -14,6 +14,7 @@
                 return \Redirect::route('userRegistration', array('register'));
             }));
                 /* S# API End points */
+                //USER API'S
                 //Register User
                 \Route::post('api/register_user', array('as' => 'apiRegisterUser', 'uses' => 'Lava\Accounts\UserController@postCreate'));
 
@@ -50,50 +51,32 @@
 
                 \Route::group(array('before' => 'api'), function() {
                     /* S# API End points */
+                    //User API's
                     //Get Profile Page
                     \Route::get('api/get_user_profile', array('as' => 'apiGetUserProfile', 'uses' => 'Lava\Accounts\UserController@getProfile'));
 
                     //Update User
                     \Route::post('api/update_user', array('as' => 'apiUpdateUser', 'uses' => 'Lava\Accounts\UserController@postUpdate'));
 
-                    /* E# API End points */
-                    /**
-                     * USER API's
-                     * 
-                     */
-                    /**
-                     * VEHICLE API's
-                     */
+                    //VEHICLE API'S
                     //Add vehicle
-                    \Route::post('user/vehicle/add', array('as' => 'userAddVehicle', 'uses' => 'Lava\Accounts\VehicleController@postCreate'));
+                    \Route::post('api/add/vehicle', array('as' => 'apiAddVehicle', 'uses' => 'Lava\Accounts\VehicleController@postCreate'));
 
                     //Add vehicle
-                    \Route::post('user/vehicle/update', array('as' => 'userUpdateVehicle', 'uses' => 'Lava\Accounts\VehicleController@postUpdate'));
+                    \Route::post('api/update/vehicle', array('as' => 'apiUpdateVehicle', 'uses' => 'Lava\Accounts\VehicleController@postUpdate'));
 
                     //Delete vehicle
-                    \Route::post('user/vehicle/delete', array('as' => 'userVehicleDrop', 'uses' => 'Lava\Accounts\VehicleController@postDrop'));
+                    \Route::post('api/delete/vehicle', array('as' => 'userVehicleDrop', 'uses' => 'Lava\Accounts\VehicleController@postDrop'));
 
-                    //Get a single vehicle
-                    //\Route::get('user/vehicle/get/{field}/{value}', array('as' => 'userVehicleGetSingle', 'uses' => 'Lava\Accounts\VehicleController@getManyModelBelongingToUser'));
                     //Get users vehicles
-                    \Route::get('user/vehicle/get', array('as' => 'userVehicleGetAll', 'uses' => 'Lava\Accounts\VehicleController@getList'));
+                    \Route::get('api/get/vehicle', array('as' => 'apiGetVehicle', 'uses' => 'Lava\Accounts\VehicleController@getList'));
+                });
 
-                    /**
-                     * DEVICE API's
-                     */
-                    //Add device
-                    \Route::post('user/device/add', array('as' => 'userDeviceAdd', 'uses' => 'Lava\Accounts\DeviceController@postCreate'));
+                \Route::group(array('before' => 'auth'), function() {
+                    //Get Profile Page
+                    \Route::get('user/get_user_profile', array('as' => 'userGetUserProfile', 'uses' => 'Lava\Accounts\UserController@getProfile'));
 
-                    //Update device
-                    \Route::post('user/device/update/{field}/{value}', array('as' => 'userDeviceUpdate', 'uses' => 'Lava\Accounts\DeviceController@postUpdate'));
-
-                    //Delete device
-                    \Route::post('user/device/delete/{field}/{value}', array('as' => 'userDeleteDevice', 'uses' => 'Lava\Accounts\DeviceController@postDelete'));
-
-                    //Get a single device
-                    \Route::get('user/device/get/{field}/{value}', array('as' => 'userDeviceGetSingle', 'uses' => 'Lava\Accounts\DeviceController@getModelBelongingToUser'));
-
-                    //Get a single device
-                    \Route::get('user/device/get', array('as' => 'userDeviceGetAll', 'uses' => 'Lava\Accounts\DeviceController@getAllModelBelongingToUser'));
+                    //Update User
+                    \Route::post('user/update_user', array('as' => 'userUpdateUser', 'uses' => 'Lava\Accounts\UserController@postUpdate'));
                 });
                 

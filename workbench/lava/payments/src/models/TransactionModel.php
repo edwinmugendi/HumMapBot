@@ -7,7 +7,7 @@ namespace Lava\Payments;
  * @author Edwin Mugendi
  * Transaction Model
  */
-class TransactionModel extends \Eloquent {
+class TransactionModel extends \BaseModel {
 
     //Table
     protected $table = 'fnc_transactions';

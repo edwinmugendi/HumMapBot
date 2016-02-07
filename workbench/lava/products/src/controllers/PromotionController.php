@@ -141,13 +141,13 @@ class PromotionController extends ProductsBaseController {
 //E# isModelViewable() function
 
     /**
-     * S# postRedeemPromotion() function
-     * Redeem a promotion code if valid
+     * S# postClaimPromotion() function
+     * Claim a promotion code if valid
      * 
      * @param string $code Promotion code
      * @return boolean true if redeemed, false else
      */
-    public function postRedeemPromotion() {
+    public function postClaimPromotion() {
 
         //Define validation rules
         $this->validationRules = array(
@@ -157,7 +157,8 @@ class PromotionController extends ProductsBaseController {
         $this->isInputValid();
     }
 
-//E# postRedeemPromotion() function
+//E# postClaimPromotion() function
+
     /**
      * S# claimPromotionCode() function
      * Claim promotion code

@@ -13,6 +13,7 @@ class CardController extends PaymentsBaseController {
     public $controller = 'card';
     //Lazy load
     public $lazyLoad = array();
+    
     //Owned by
     public $ownedBy = array('user');
 
@@ -122,180 +123,6 @@ class CardController extends PaymentsBaseController {
 //E# afterCreating() function
 
     /**
-     * S# beforeDeleting() function
-     * @author Edwin Mugendi
-     * Call this just after deleting the model
-     * 
-     * @return; 
-     */
-    public function afterDeleting($controllerModel) {
-
-        //Delete card on app55 and db
-        $this->deleteApp55Card($controllerModel);
-        return;
-    }
-
-//E# afterDeleting() function
-
-    /**
-     * S# deleteApp55Card() function
-     * Delete card on app55 and database
-     * 
-     * @param id $app55UserId App55 user id
-     * @param string $cardModel Card Model
-     *
-     */
-    public function deleteApp55Card(&$cardModel) {
-
-        //Build delete data
-        $deleteData = array(
-            'app55UserId' => $cardModel->app55_id,
-            'token' => $cardModel->token
-        );
-
-        //Delete card on app55
-        $deleteCardResponse = $this->callController(\Util::buildNamespace('payments', 'app55', 1), 'deleteCard', array($deleteData));
-
-        if ($deleteCardResponse['status']) {//Card deleted on App55  
-            //Fields to select
-            $fields = array('id');
-
-            //Set where clause
-            $whereClause = array(
-                array(
-                    'where' => 'where',
-                    'column' => 'id',
-                    'operator' => '=',
-                    'operand' => $cardModel->id
-                )
-            );
-
-            //Set per page to parameters
-            $parameters['withTrashed'] = true;
-
-            //Select this users models
-            $cardModel = $this->select($fields, $whereClause, 2, $parameters);
-
-            if ($cardModel) {//Card founds
-                foreach ($cardModel as $singleModel) {
-                    $singleModel->forceDelete();
-                }//E# foreach statement
-            }//E# if statement
-        }//E# if else statement
-    }
-
-//E# deleteApp55Card() function
-
-    /**
-     * S# prepareModelToReturn() function
-     * Prepare model to relation
-     * 
-     * @param array $rawRelation Raw relation
-     */
-    public function prepareModelToReturn($rawRelation) {
-
-        array_except($rawRelation, array('pivot'));
-
-        return $rawRelation;
-    }
-
-//E# prepareModelToReturn() function
-
-    /**
-     * S# postSync() function
-     * Sync cards on App55
-     */
-    public function postSync() {
-        //Sync card on app55
-        $this->callController(\Util::buildNamespace('payments', 'app55', 1), 'sync');
-    }
-
-//E# postSync() function
-
-    /**
-     * S# deleteCard() function
-     * Delete card from db and app55
-     * 
-     * @param string $token Card token
-     */
-    public function deleteCard($token) {
-        $cardModel = $this->getCardIfItExists($token);
-
-        if ($cardModel) {//Card exists
-            if ($cardModel->user && ($cardModel->user->id == $this->user['id'])) {//User owns this card
-                //Build delete data
-                $deleteData = array(
-                    'app55UserId' => $cardModel->user->app55_id,
-                    'token' => $token
-                );
-                //Delete card on app55
-                $deleteCardResponse = $this->callController(\Util::buildNamespace('payments', 'app55', 1), 'deleteCard', array($deleteData));
-
-                if ($deleteCardResponse['status']) {//Card deleted
-                    //Delete card on our database
-                    $cardModel->delete();
-
-                    //Get success message
-                    $message = \Lang::get($this->package . '::' . $this->controller . '.api.delete', array('field' => 'token', 'value' => $this->input['token']));
-
-                    throw new \Api200Exception(array($this->input['token']), $message);
-                } else {//Error occur
-                    throw new \Api500Exception($deleteCardResponse['response']);
-                }//E# if else statemetn
-            } else {
-                //Set notification
-                $this->notification = array(
-                    'field' => 'token',
-                    'type' => 'Card',
-                    'value' => $this->input['token'],
-                );
-
-                //Throw 403 error
-                throw new \Api403Exception($this->notification);
-            }
-        } else {
-            //Set notification
-            $this->notification = array(
-                'field' => 'token',
-                'type' => 'Card',
-                'value' => $this->input['token'],
-            );
-
-            //Throw 404 error
-            throw new \Api404Exception($this->notification);
-        }//E# if else statement
-    }
-
-//E# deleteCard() function
-
-    /**
-     * S# getCardIfItExists() function
-     * Get card by token
-     * 
-     * @param string $token Card token
-     * @return Model Card Model if exists or false
-     */
-    private function getCardIfItExists($token) {
-        //Add token to inputs
-        $this->input['token'] = $token;
-
-        //Validation rules
-        $this->validationRules = array(
-            'token' => 'required'
-        );
-        //Validate inputs
-        $this->isInputValid();
-
-        //Parameters
-        $parameters['lazyLoad'] = array('user');
-
-        //Get card by token
-        return $this->getModelByField('token', $this->input['token'], $parameters);
-    }
-
-//E# getCardIfItExists() function
-
-    /**
      * S# getVerbativeCardUsed() function
      * @author Edwin Mugendi
      * Get the card used
@@ -331,6 +158,60 @@ class CardController extends PaymentsBaseController {
     }
 
 //E# postDrop() function
+
+    /**
+     * S# beforeViewing() function
+     * Prepare fields for list view
+     */
+    public function beforeViewing(&$singleModel) {
+    
+    }
+
+//E# beforeViewing() function
+
+    /**
+     * S# controllerSpecificWhereClause() function
+     * @author Edwin Mugendi
+     * 
+     * Set controller specific where clause
+     * @param array $fields Fields
+     * @param array $whereClause Where clause
+     * @param array $parameters Parameters
+     */
+    public function controllerSpecificWhereClause(&$fields, &$whereClause, &$parameters) {
+
+        if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//From API
+            if (array_key_exists('id', $this->input)) {
+
+                //Get model by id
+                $card_model = $this->getModelByField('id', $this->input['id']);
+
+                //dd($card_model->count());
+                if ($card_model && ($card_model->status == 1) && ($card_model->user_id == $this->user['id'])) {
+                    $message = \Lang::get($this->package . '::' . $this->controller . '.notification.list');
+
+                    $card_array = $card_model->toArray();
+
+                    unset($card_array['user']);
+
+                    //Throw Card not found error
+                    throw new \Api200Exception($card_array, $message);
+                } else {
+                    //Set notification
+                    $this->notification = array(
+                        'field' => 'card_id',
+                        'type' => 'Card',
+                        'value' => $this->input['id'],
+                    );
+
+                    //Throw Card not found error
+                    throw new \Api404Exception($this->notification);
+                }//E# if else statement
+            }//E# if statement
+        }//E# if statement
+    }
+
+//E# controllerSpecificWhereClause() function
 }
 
 //E# CardController() function

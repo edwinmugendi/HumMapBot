@@ -2,7 +2,7 @@
 
 namespace Lava\Merchants;
 
-use Lava\Accounts\UserController;
+use Lava\Payments\PaymentController;
 
 /**
  * S# LocationModel() Class
@@ -83,7 +83,6 @@ class LocationModel extends \BaseModel {
      * S# merchant() function
      * Set one to one relationship to Merchant Model
      */
-
     public function merchant() {
         return $this->belongsTo(\Util::buildNamespace('merchants', 'merchant', 2), 'merchant_id');
     }
@@ -115,7 +114,7 @@ class LocationModel extends \BaseModel {
      * Calculate average of the ratings and return the star rating
      */
     public function getStarRatingAttribute() {
-        return (string) $this->ratings()
+        return $this->ratings()
                         ->avg('feeling');
     }
 
@@ -137,13 +136,13 @@ class LocationModel extends \BaseModel {
      * Has user favoured this location
      */
     public function getFavouredAttribute() {
-        if (\Auth::check()) {
-            $favouriteModel = $this->favourites()
-                    ->count();
-            return (string) ($favouriteModel ? 1 : 0);
+        if (\Auth::check()&& \Request::has('token')) {
+            $favourite_model = $this->favourites()->count();
+            
+            return $favourite_model ? 1 : 0;
         } else {
-            return '-1';
-        }
+            return -1;
+        }//E# if else statement
     }
 
 //E# getFavouredAttribute() function
@@ -153,18 +152,18 @@ class LocationModel extends \BaseModel {
      * Get users stamps
      */
     public function getUserStampsAttribute() {
-        if ($this->loggedInUser) {
-            //Create user controller
-            $userController = new UserController();
+        if (\Auth::check()&& \Request::has('token')) {
+            //Create payment controller
+            $payment_controller = new PaymentController();
 
             //Get loyalty stamps
-            $stampModel = $userController->callController(\Util::buildNamespace('payments', 'payment', 1), 'getLocationStamps', array($this->attributes['id'], $this->loggedInUser->id));
+            $stamp_model = $payment_controller->getLocationStamps($this->attributes['id'], \Auth::user()->id);
 
-            if ($stampModel) {//Stamp found
-                return $stampModel->feeling;
+            if ($stamp_model) {//Stamp found
+                return $stamp_model->feeling;
             }//E# if statement
         }//E# if statement
-        return '0';
+        return 0;
     }
 
 //E# getUserStampsAttribute() function
@@ -174,14 +173,15 @@ class LocationModel extends \BaseModel {
      * Has user rated this location
      */
     public function getRatedAttribute() {
-        if (\Auth::check()) {
-            $feelingModel = $this->hasMany(\Util::buildNamespace('merchants', 'feel', 2), 'location_id')
+        if (\Auth::check() && \Request::has('token')) {
+            $feeling_model = $this->hasMany(\Util::buildNamespace('merchants', 'feel', 2), 'location_id')
                     ->whereType(2)
                     ->whereUserId(\Auth::user()->id)
                     ->first();
-            return (string) ($feelingModel ? $feelingModel->feeling : 0);
+            
+            return $feeling_model ? $feeling_model->feeling : 0;
         } else {
-            return '-1';
+            return -1;
         }//E# if else statement
     }
 

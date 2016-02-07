@@ -74,20 +74,11 @@ Route::filter('csrf', function() {
     }
 });
 
-Route::filter('subdomain', function($route, $request) {
-    //Get subdomain
-    $subdomain = explode('.', $request->getHost())[0] == 'api' ? 'api' : 'web';
-
-    //Store subdomain in session
-    Session::put('subdomain', $subdomain);
-});
-
 //API
 Route::filter('api', function($route, $request) {
     //TODO check that user is activated firstf
     //User controller
     $userController = new Lava\Accounts\UserController();
-
 
     if (array_key_exists('format', $userController->input) && ($userController->input['format'] == 'json')) {
 

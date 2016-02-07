@@ -279,7 +279,7 @@ class PaymentController extends PaymentsBaseController {
     public function process() {
         $this->validationRules = array(
             'product_id' => 'required',
-            'location' => 'latLng',
+            'location' => 'required|latLng',
             'card_token' => 'required',
             'promotion_id' => 'integer',
             'vehicle_id' => 'required|integer|processTransaction',

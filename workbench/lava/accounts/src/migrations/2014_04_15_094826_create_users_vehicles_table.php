@@ -18,6 +18,9 @@ class CreateUsersVehiclesTable extends Migration {
             $table->boolean('force');
             $table->string('purpose');
             $table->datetime('dropped_at');
+
+            $table->string('agent', 255);
+            $table->string('ip', 255);
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();

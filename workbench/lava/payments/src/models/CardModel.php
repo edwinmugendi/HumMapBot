@@ -43,20 +43,12 @@ class CardModel extends \BaseModel {
     );
     //Create validation rules
     public $createRules = array(
+        'stripe_token'=>'required',
     );
     //Update validation rules
     public $updateRules = array(
     );
-    //Delete validation rules
-    public $deleteRules = array(
-        'field' => 'required|in:id',
-        'value' => 'required|integer|exists:fnc_cards,id',
-    );
-    //Select validation rules
-    public $selectRules = array(
-        'field' => 'required|in:id',
-        'value' => 'required|integer|exists:fnc_cards,id',
-    );
+    
 
     /**
      * S# user() function

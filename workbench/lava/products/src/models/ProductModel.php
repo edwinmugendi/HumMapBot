@@ -22,7 +22,7 @@ class ProductModel extends \BaseModel {
     );
     //Appends fields
     protected $appends = array(
-        'currency',
+        'currency_id',
         'price',
         'price_1',
         'price_2'
@@ -71,16 +71,16 @@ class ProductModel extends \BaseModel {
 //E# merchant() function
 
     /**
-     * S# getCurrencyAttribute() function
+     * S# getCurrencyIdAttribute() function
      * Get product currency
      * 
      * @return string Currency
      */
-    public function getCurrencyAttribute() {
-        return $this->location()->first()->currency;
+    public function getCurrencyIdAttribute() {
+        return $this->location()->first()->currency_id;
     }
 
-//E# getCurrencyAttribute() function
+//E# getCurrencyIdAttribute() function
 
     /**
      * S# getPriceAttribute() function

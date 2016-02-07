@@ -12,23 +12,23 @@ return array(
     ),
     'api' => array(
         array(
-            'name' => 'Get Single Location',
-            'note' => 'Get a location by id',
-            'filtered' => 1,
-            'endpoint' => '/merchant/location/get/{id}',
+            'name' => 'Get Car wash by id when user NOT logged in',
+            'note' => 'Get Car wash by id. The returned json has a property \'products\' which are the products offered by that car wash',
+            'filtered' => 0,
+            'endpoint' => 'api/get/location_when_not_logged_in',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
-                    'field' => 'id',
-                    'dataType' => 'integer',
-                    'note' => 'Location id Set this in the url not query string',
+                    'field' => 'get_type',
+                    'dataType' => 'string',
+                    'note' => 'Must be set to \'single\'',
                     'required' => 1,
                 ),
                 array(
-                    'field' => 'token',
-                    'dataType' => 'string',
-                    'note' => 'User API token',
-                    'required' => 0,
+                    'field' => 'id',
+                    'dataType' => 'integer',
+                    'note' => 'Id of the location',
+                    'required' => 1,
                 )
             ),
             'returns' => array(
@@ -36,29 +36,35 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Location found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Location id 3 found.","data":{"id":"3","merchant_id":"1","name":"Product 1","fax":"","address":"","postal_code":"","lat":"1.0000000000","lng":"1.0000000000","loyalty_stamps":"0","currency":"","surcharge":"0.00","image":"carwash.png","created_at":"-0001-11-30 00:00:00","updated_at":"-0001-11-30 00:00:00","star_rating":"","favoured":"0","rated":"0","rating_count":"0","user_stamps":"0","products":[],"no_thumbnails":1,"image_url":"http:\/\/api.lv.dev\/media\/lava\/upload\/carwash.png","times":{"monday":{"open":"","close":""},"tuesday":{"open":"","close":""},"wednesday":{"open":"","close":""},"thursday":{"open":"","close":""},"friday":{"open":"","close":""},"saturday":{"open":"","close":""},"sunday":{"open":"","close":""},"holiday":{"open":"","close":""}}}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Location list","data":{"total":1,"per_page":30,"current_page":1,"last_page":1,"from":1,"to":1,"data":[{"id":"1","merchant_id":"1","name":"Location 1","fax":"","address":"","postal_code":"","lat":"-1.3920700000","lng":"36.8219500000","loyalty_stamps":"2","currency_id":"USD","surcharge":"0.00","image":"","created_at":"-0001-11-30 00:00:00","updated_at":"-0001-11-30 00:00:00","image_url":"","times":{"monday":{"open":"","close":""},"tuesday":{"open":"","close":""},"wednesday":{"open":"","close":""},"thursday":{"open":"","close":""},"friday":{"open":"","close":""},"saturday":{"open":"","close":""},"sunday":{"open":"","close":""},"holiday":{"open":"","close":""}},"star_rating":"5","favoured":"0","rated":"0","rating_count":"1","user_stamps":"0","products":[{"id":"1","location_id":"1","name":"Product 1","description":"Product 1","price_1":"1.00","price_2":"3.00","loyable":"1","created_at":"-0001-11-30 00:00:00","updated_at":"-0001-11-30 00:00:00","merchant_id":"1","currency":null,"price":"1.00"}]}]}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"id","error":"The id must be an integer."}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"id","error":"The id field is required."}]}'
                 ),
                 array(
                     'action' => 'Not found',
                     'httpCode' => 404,
                     'note' => 'Object not found',
-                    'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Location with id \'122\' not found.","data":{"field":"id","type":"Location","value":"122"}}'
+                    'example' => '{"http_status_code":404,"system_code":904,"message":"Vehicle not found.","data":{"field":"location_id","type":"Vehicle","value":"123"}}'
                 ),
             )
         ),
         array(
-            'name' => 'Get Merchants within radius',
-            'note' => 'Get Merchants withing a given radius',
+            'name' => 'Get Car washes within radius when user NOT logged in',
+            'note' => 'If no car wash is found, Lava will still return success but the \'data\' array will be empty or have 0 car washes<br>',
             'filtered' => 0,
-            'endpoint' => '/merchant/location/get',
+            'endpoint' => 'api/get/location_when_not_logged_in',
             'httpVerb' => 'GET',
             'parameters' => array(
+                array(
+                    'field' => 'get_type',
+                    'dataType' => 'string',
+                    'note' => 'Must be set to \'spatial\'',
+                    'required' => 1,
+                ),
                 array(
                     'field' => 'location',
                     'dataType' => array(
@@ -85,6 +91,159 @@ return array(
                     'required' => 1,
                 ),
                 array(
+                    'field' => 'per_page',
+                    'dataType' => 'integer',
+                    'note' => 'Number of locations to return in a given page eg return 20 locations (Defaults to 30)',
+                    'required' => 0,
+                ),
+                array(
+                    'field' => 'page',
+                    'dataType' => 'integer',
+                    'note' => 'The page of the pagination to return eg page 1, 2',
+                    'required' => 0,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Location found',
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Location list","data":{"total":2,"per_page":1,"current_page":1,"last_page":2,"from":1,"to":1,"data":[{"id":"2","merchant_id":"1","name":"Location 1","fax":"","address":"","postal_code":"","lat":"-1.3920700000","lng":"36.8219500000","loyalty_stamps":"0","currency_id":"USD","surcharge":"0.00","image":"","created_at":"-0001-11-30 00:00:00","updated_at":"-0001-11-30 00:00:00","image_url":"","times":{"monday":{"open":"","close":""},"tuesday":{"open":"","close":""},"wednesday":{"open":"","close":""},"thursday":{"open":"","close":""},"friday":{"open":"","close":""},"saturday":{"open":"","close":""},"sunday":{"open":"","close":""},"holiday":{"open":"","close":""}},"star_rating":"","favoured":"0","rated":"0","rating_count":"0","user_stamps":"0","products":[]}]}}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"location","error":"Latitude (range -90 to 90) or longitude (range 180 to -180) missing or not valid"}]}'
+                )
+            )
+        ),
+        array(
+            'name' => 'Get felt car wash when user NOT logged in',
+            'note' => 'Felt car wash means car wash that are either \'favoured, rated or reviews\'<br>'
+            . 'If no car wash is found, Lava will still return success but the \'data\' array will be empty or have 0 car washes<br>',
+            'filtered' => 1,
+            'endpoint' => 'api/get/location_when_not_logged_in',
+            'httpVerb' => 'GET',
+            'parameters' => array(
+                array(
+                    'field' => 'get_type',
+                    'dataType' => 'string',
+                    'note' => 'Must be set to \'felt\'',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'feel_type',
+                    'dataType' => 'integer',
+                    'note' => 'Must be set to <br>'
+                    . '1 = for favoured car washes <br>'
+                    . '2 = for rated car washes<br>'
+                    . '3 = for reviewed car washes<br>'
+                    . '4 = for car wash with loyalty stamps',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'per_page',
+                    'dataType' => 'integer',
+                    'note' => 'Number of locations to return in a given page eg return 20 locations (Defaults to 30)',
+                    'required' => 0,
+                ),
+                array(
+                    'field' => 'page',
+                    'dataType' => 'integer',
+                    'note' => 'The page of the pagination to return eg page 1, 2',
+                    'required' => 0,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Location found',
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Location list","data":{"total":2,"per_page":1,"current_page":1,"last_page":2,"from":1,"to":1,"data":[{"id":"2","merchant_id":"1","name":"Location 1","fax":"","address":"","postal_code":"","lat":"-1.3920700000","lng":"36.8219500000","loyalty_stamps":"0","currency_id":"USD","surcharge":"0.00","image":"","created_at":"-0001-11-30 00:00:00","updated_at":"-0001-11-30 00:00:00","image_url":"","times":{"monday":{"open":"","close":""},"tuesday":{"open":"","close":""},"wednesday":{"open":"","close":""},"thursday":{"open":"","close":""},"friday":{"open":"","close":""},"saturday":{"open":"","close":""},"sunday":{"open":"","close":""},"holiday":{"open":"","close":""}},"star_rating":"","favoured":"0","rated":"0","rating_count":"0","user_stamps":"0","products":[]}]}}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"feel_type","error":"The feel type field is required."}]}'
+                )
+            )
+        ),
+        array(
+            'name' => 'Get Car wash by id when user is logged in',
+            'note' => 'Get Car wash by id. The returned json has a property \'products\' which are the products offered by that car wash',
+            'filtered' => 0,
+            'endpoint' => 'api/get/location_when_logged_in',
+            'httpVerb' => 'GET',
+            'parameters' => array(
+                array(
+                    'field' => 'get_type',
+                    'dataType' => 'string',
+                    'note' => 'Must be set to \'single\'',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'id',
+                    'dataType' => 'integer',
+                    'note' => 'Id of the location',
+                    'required' => 1,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Location found',
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Location list","data":{"total":1,"per_page":30,"current_page":1,"last_page":1,"from":1,"to":1,"data":[{"id":"1","merchant_id":"1","name":"Location 1","fax":"","address":"","postal_code":"","lat":"-1.3920700000","lng":"36.8219500000","loyalty_stamps":"2","currency_id":"USD","surcharge":"0.00","image":"","created_at":"-0001-11-30 00:00:00","updated_at":"-0001-11-30 00:00:00","image_url":"","times":{"monday":{"open":"","close":""},"tuesday":{"open":"","close":""},"wednesday":{"open":"","close":""},"thursday":{"open":"","close":""},"friday":{"open":"","close":""},"saturday":{"open":"","close":""},"sunday":{"open":"","close":""},"holiday":{"open":"","close":""}},"star_rating":"5","favoured":"0","rated":"0","rating_count":"1","user_stamps":"0","products":[{"id":"1","location_id":"1","name":"Product 1","description":"Product 1","price_1":"1.00","price_2":"3.00","loyable":"1","created_at":"-0001-11-30 00:00:00","updated_at":"-0001-11-30 00:00:00","merchant_id":"1","currency":null,"price":"1.00"}]}]}}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"id","error":"The id field is required."}]}'
+                ),
+                array(
+                    'action' => 'Not found',
+                    'httpCode' => 404,
+                    'note' => 'Object not found',
+                    'example' => '{"http_status_code":404,"system_code":904,"message":"Vehicle not found.","data":{"field":"location_id","type":"Vehicle","value":"123"}}'
+                ),
+            )
+        ),
+        array(
+            'name' => 'Get Car washes within radius when user is logged in',
+            'note' => 'If no car wash is found, Lava will still return success but the \'data\' array will be empty or have 0 car washes<br>',
+            'filtered' => 0,
+            'endpoint' => 'api/get/location_when_logged_in',
+            'httpVerb' => 'GET',
+            'parameters' => array(
+                array(
+                    'field' => 'get_type',
+                    'dataType' => 'string',
+                    'note' => 'Must be set to \'spatial\'',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'location',
+                    'dataType' => array(
+                        array(
+                            'field' => 'lat',
+                            'dataType' => 'float',
+                            'note' => 'Latitude : range -90 to 90',
+                            'required' => 1,
+                        ),
+                        array(
+                            'field' => 'lng',
+                            'dataType' => 'float',
+                            'note' => 'Latitude : range -180 to 180',
+                            'required' => 1,
+                        ),
+                    ),
+                    'note' => 'Location array',
+                    'required' => 1,
+                ),
+                array(
                     'field' => 'radius',
                     'dataType' => 'integer',
                     'note' => 'Radius in meters',
@@ -101,11 +260,57 @@ return array(
                     'dataType' => 'integer',
                     'note' => 'The page of the pagination to return eg page 1, 2',
                     'required' => 0,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Location found',
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Location list","data":{"total":2,"per_page":1,"current_page":1,"last_page":2,"from":1,"to":1,"data":[{"id":"2","merchant_id":"1","name":"Location 1","fax":"","address":"","postal_code":"","lat":"-1.3920700000","lng":"36.8219500000","loyalty_stamps":"0","currency_id":"USD","surcharge":"0.00","image":"","created_at":"-0001-11-30 00:00:00","updated_at":"-0001-11-30 00:00:00","image_url":"","times":{"monday":{"open":"","close":""},"tuesday":{"open":"","close":""},"wednesday":{"open":"","close":""},"thursday":{"open":"","close":""},"friday":{"open":"","close":""},"saturday":{"open":"","close":""},"sunday":{"open":"","close":""},"holiday":{"open":"","close":""}},"star_rating":"","favoured":"0","rated":"0","rating_count":"0","user_stamps":"0","products":[]}]}}'
                 ),
                 array(
-                    'field' => 'token',
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"location","error":"Latitude (range -90 to 90) or longitude (range 180 to -180) missing or not valid"}]}'
+                )
+            )
+        ),
+        array(
+            'name' => 'Get felt car wash when user is logged in',
+            'note' => 'Felt car wash means car wash that are either \'favoured, rated or reviews\'<br>'
+            . 'If no car wash is found, Lava will still return success but the \'data\' array will be empty or have 0 car washes<br>',
+            'filtered' => 1,
+            'endpoint' => 'api/get/location_when_logged_in',
+            'httpVerb' => 'GET',
+            'parameters' => array(
+                array(
+                    'field' => 'get_type',
                     'dataType' => 'string',
-                    'note' => 'User API token',
+                    'note' => 'Must be set to \'felt\'',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'feel_type',
+                    'dataType' => 'integer',
+                    'note' => 'Must be set to <br>'
+                    . '1 = for favoured car washes <br>'
+                    . '2 = for rated car washes<br>'
+                    . '3 = for reviewed car washes<br>'
+                    . '4 = for car wash with loyalty stamps',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'per_page',
+                    'dataType' => 'integer',
+                    'note' => 'Number of locations to return in a given page eg return 20 locations (Defaults to 30)',
+                    'required' => 0,
+                ),
+                array(
+                    'field' => 'page',
+                    'dataType' => 'integer',
+                    'note' => 'The page of the pagination to return eg page 1, 2',
                     'required' => 0,
                 )
             ),
@@ -114,42 +319,13 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Location found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Locations list","data":{"list":[{"id":"3","merchant_id":"1","name":"Product 1","fax":"","address":"","postal_code":"","lat":"1.0000000000","lng":"1.0000000000","loyalty_stamps":"0","currency":"","surcharge":"0.00","image":"carwash.png","created_at":"-0001-11-30 00:00:00","updated_at":"-0001-11-30 00:00:00","image_url":"http:\/\/api.lv.dev\/media\/lava\/upload\/thumbnails\/carwash.png","times":{"monday":{"open":"","close":""},"tuesday":{"open":"","close":""},"wednesday":{"open":"","close":""},"thursday":{"open":"","close":""},"friday":{"open":"","close":""},"saturday":{"open":"","close":""},"sunday":{"open":"","close":""},"holiday":{"open":"","close":""}},"star_rating":"","favoured":"-1","rated":"-1","rating_count":"0","user_stamps":"0"}],"pagination":{"page":1,"last_page":9,"per_page":1,"total":9,"from":1,"to":1,"count":1}}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Location list","data":{"total":2,"per_page":1,"current_page":1,"last_page":2,"from":1,"to":1,"data":[{"id":"2","merchant_id":"1","name":"Location 1","fax":"","address":"","postal_code":"","lat":"-1.3920700000","lng":"36.8219500000","loyalty_stamps":"0","currency_id":"USD","surcharge":"0.00","image":"","created_at":"-0001-11-30 00:00:00","updated_at":"-0001-11-30 00:00:00","image_url":"","times":{"monday":{"open":"","close":""},"tuesday":{"open":"","close":""},"wednesday":{"open":"","close":""},"thursday":{"open":"","close":""},"friday":{"open":"","close":""},"saturday":{"open":"","close":""},"sunday":{"open":"","close":""},"holiday":{"open":"","close":""}},"star_rating":"","favoured":"0","rated":"0","rating_count":"0","user_stamps":"0","products":[]}]}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"id","error":"The id must be an integer."}]}'
-                )
-            )
-        ),
-        array(
-            'name' => 'Get User Favoured Locations',
-            'note' => 'Get User Favoured Locations',
-            'filtered' => 1,
-            'endpoint' => '/merchant/location/user/favoured',
-            'httpVerb' => 'GET',
-            'parameters' => array(
-                array(
-                    'field' => 'token',
-                    'dataType' => 'string',
-                    'note' => 'User API token',
-                    'required' => 1,
-                )
-            ),
-            'returns' => array(
-                array(
-                    'action' => 'Success',
-                    'httpCode' => 200,
-                    'note' => 'Location found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Locations list","data":{"location":{"lat":-1.28333,"long":-1.28333},"merchants":[{"id":"1","merchant_id":"0","name":"Kikuyu","fax":"","address":"","postal_code":"","lat":"0.000000","lng":"0.000000","loyalty_stamps":"0","monday_open":"","monday_close":"","tuesday_open":"","tuesday_close":"","wednesday_open":"","wednesday_close":"","thursday_open":"","thursday_close":"","friday_open":"","friday_close":"","saturday_open":"","saturday_close":"","sunday_open":"","sunday_close":"","holiday_open":"","holiday_close":"","image":"","created_at":"0000-00-00 00:00:00","updated_at":"0000-00-00 00:00:00","rating":2,"image_url":"http:\/\/api.lv.dev\/media\/upload\/merchant\/thumbnails","favoured":0,"rated":0}]}}'
-                ),
-                array(
-                    'action' => 'Error',
-                    'httpCode' => 400,
-                    'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"id","error":"The id must be an integer."}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"feel_type","error":"The feel type field is required."}]}'
                 )
             )
         ),
@@ -157,15 +333,9 @@ return array(
             'name' => 'Feel location (Favourite, Rate, Review)',
             'note' => 'Favourite, rate or review a location',
             'filtered' => 1,
-            'endpoint' => '/merchant/location/feel/{id}',
+            'endpoint' => 'api/feel/location',
             'httpVerb' => 'POST',
             'parameters' => array(
-                array(
-                    'field' => 'id',
-                    'dataType' => 'integer',
-                    'note' => 'Location id Set this in the url not query string',
-                    'required' => 1,
-                ),
                 array(
                     'field' => 'type',
                     'dataType' => 'integer',
@@ -193,19 +363,19 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Location found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Location id 1 found.","data":{"id":"1","merchant_id":"1","name":"Deluxe","fax":"","address":"","postal_code":"","latitude":"0.000000","longitude":"0.000000","loyalty_stamps":"0","image":"","created_at":"0000-00-00 00:00:00","updated_at":"0000-00-00 00:00:00","total_reviews":0,"star_rating":0,"image_url":"http:\/\/api.lv.dev\/media\/upload\/merchant\/thumbnails","is_favourite":0,"is_rated":0,"products":[{"id":"1","location_id":"1","name":"Delux","description":"Delux","price_4X2":"12.00","price_4X4":"12","loyable":"0","created_at":"0000-00-00 00:00:00","updated_at":"0000-00-00 00:00:00"}],"times":{"monday":{"open":"","close":""},"tuesday":{"open":"","close":""},"wednesday":{"open":"","close":""},"thursday":{"open":"","close":""},"friday":{"open":"","close":""},"saturday":{"open":"","close":""},"sunday":{"open":"","close":""},"holiday":{"open":"","close":""}}}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Location rated","data":{"id":"20"}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"id","error":"The id must be an integer."}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"type","error":"The type field is required."}]}'
                 ),
                 array(
                     'action' => 'Not found',
                     'httpCode' => 404,
                     'note' => 'Object not found',
-                    'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Location with id \'122\' not found.","data":{"field":"id","type":"Location","value":"122"}}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"location_id","error":"The selected location id does not exist."}]}'
                 ),
             )
         ),
@@ -213,15 +383,9 @@ return array(
             'name' => 'Un feel a location or Delete location\'s favourite, rate, review)',
             'note' => 'Delete a favourite, rate or review of a location',
             'filtered' => 1,
-            'endpoint' => '/merchant/location/unfeel/{id}',
+            'endpoint' => 'api/unfeel/location',
             'httpVerb' => 'POST',
             'parameters' => array(
-                array(
-                    'field' => 'id',
-                    'dataType' => 'integer',
-                    'note' => 'Location id Set this in the url not query string',
-                    'required' => 1,
-                ),
                 array(
                     'field' => 'type',
                     'dataType' => 'integer',
@@ -244,7 +408,7 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Location found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Location id 1 unfavoured","data":{"id":"7"}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Location de-rated","data":{"id":"20"}}'
                 ),
                 array(
                     'action' => 'Error',
@@ -256,7 +420,7 @@ return array(
                     'action' => 'Not found',
                     'httpCode' => 404,
                     'note' => 'Object not found',
-                    'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Favourites with id \'1\' not found.","data":{"field":"id","type":"Favourites","value":"1"}}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"location_id","error":"The selected location id does not exist."}]}'
                 ),
             )
         ),

@@ -19,6 +19,8 @@ class VehicleModel extends \BaseModel {
     protected $fillable = array(
         'vrm',
         'type',
+        'agent',
+        'ip',
         'status',
         'created_by',
         'updated_by'
@@ -56,11 +58,6 @@ class VehicleModel extends \BaseModel {
         'created_by' => 'integer',
         'updated_by' => 'integer',
     );
-    //Select validation rules
-    public $selectRules = array(
-        'field' => 'required|in:vrm',
-        'value' => 'required',
-    );
 
     /**
      * S# users() function
@@ -78,8 +75,8 @@ class VehicleModel extends \BaseModel {
      * Does the logged in user own this vehicle
      */
     public function getUserOwnsAttribute() {
-        return $this
-                        ->users()
+
+        return $this->users()
                         ->whereUserId(\Auth::user()->id)
                         ->count();
     }
@@ -92,8 +89,11 @@ class VehicleModel extends \BaseModel {
      */
     public function getIsDefaultAttribute() {
         //Get the logged in user vrm
-        //  $vrm = $this->users()->whereUserId(\Auth::user()->id)->first()->vrm;
-        //  return ($this->attributes['vrm'] == $vrm) ? 1 : 0;
+        $vehicle_model = $this->users()->whereUserId(\Auth::user()->id)->first();
+
+        $vrm = $vehicle_model ? $vehicle_model->vrm : '';
+
+        return ($this->attributes['vrm'] == $vrm) ? 1 : 0;
     }
 
 //E# getIsDefaultAttribute() function

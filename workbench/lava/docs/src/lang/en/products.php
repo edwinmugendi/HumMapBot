@@ -15,13 +15,13 @@ return array(
             'name' => 'Claim Promotion',
             'note' => 'Claim a promotion code',
             'filtered' => 1,
-            'endpoint' => '/product/promotion/redeem/{promotion_code}',
+            'endpoint' => 'api/claim/promotion',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
                     'field' => 'promotion_code',
                     'dataType' => 'string',
-                    'note' => 'Promotion Code. Set this in the url not query string',
+                    'note' => 'Promotion Code.',
                     'required' => 1,
                 ),
                 array(
@@ -36,19 +36,19 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Promotion claimed',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"code","error":"You have already claimed this promotion code PRO but not used it yet"}]}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Promotion code PROMO redeemed.","data":{"id":"1"}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"code","error":"You have already claimed this promotion code PROMO but not used it yet"}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"promotion_code","error":"You have already redeemed this promotion code PROMO"}]}'
                 ),
                 array(
                     'action' => 'Not found',
                     'httpCode' => 404,
                     'note' => 'Object not found',
-                    'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Promotion with code \'PROMO1\' not found.","data":{"field":"code","type":"Promotion","value":"PROMO1"}}'
+                    'example' => '{"http_status_code":404,"system_code":904,"message":"Promotion not found.","data":{"field":"code","type":"Promotion","value":"PROMOa"}}'
                 ),
             )
         ),

@@ -15,6 +15,9 @@ class CreateVehiclesTable extends Migration {
             $table->increments('id');
             $table->string('vrm', 255);
             $table->string('type', 3);
+            
+            $table->string('agent', 255);
+            $table->string('ip', 255);
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();

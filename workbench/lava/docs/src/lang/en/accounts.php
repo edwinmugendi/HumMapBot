@@ -14,7 +14,7 @@ return array(
         array(
             'name' => 'Register User',
             'note' => 'Register a user',
-            'filtered' => 1,
+            'filtered' => 0,
             'endpoint' => 'api/register_user',
             'httpVerb' => 'POST',
             'parameters' => array(
@@ -434,7 +434,7 @@ return array(
                 array(
                     'field' => 'send_to',
                     'dataType' => 'string',
-                    'note' => 'Can be either the users email or phone number',
+                    'note' => 'Can be either the users email or phone number. Lava will automatically send the reset code to email or SMS respectively',
                     'required' => 1,
                 ),
             ),
@@ -457,9 +457,15 @@ return array(
             'name' => 'Reset Password',
             'note' => 'Reset a user password',
             'filtered' => 0,
-            'endpoint' => '/user/reset_password',
+            'endpoint' => '/api/reset_password',
             'httpVerb' => 'POST',
             'parameters' => array(
+                array(
+                    'field' => 'format',
+                    'dataType' => 'string',
+                    'note' => 'Must be \'json\'',
+                    'required' => 1,
+                ),
                 array(
                     'field' => 'email',
                     'dataType' => 'string',
@@ -505,6 +511,12 @@ return array(
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
+                    'field' => 'format',
+                    'dataType' => 'string',
+                    'note' => 'Must be \'json\'',
+                    'required' => 1,
+                ),
+                array(
                     'field' => 'email',
                     'dataType' => 'string',
                     'note' => 'Email address',
@@ -527,12 +539,90 @@ return array(
             )
         ),
         array(
-            'name' => 'Add or Update Vehicle',
-            'note' => 'Add or update a user\s vehicle',
+            'name' => 'Add Vehicle',
+            'note' => 'Add vehicle',
             'filtered' => 1,
-            'endpoint' => '/user/vehicle/add',
+            'endpoint' => 'api/add/vehicle',
             'httpVerb' => 'POST',
             'parameters' => array(
+                array(
+                    'field' => 'format',
+                    'dataType' => 'string',
+                    'note' => 'Must be \'json\'',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'vrm',
+                    'dataType' => 'string',
+                    'note' => 'Vehicle registration mark',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'is_default',
+                    'dataType' => 'integer boolean',
+                    'note' => '1 to set VRM as default, 0 if you dont want to',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'force',
+                    'dataType' => 'integer boolean',
+                    'note' => 'Set \'1\' to force create, \'0\' if you don\'t want to force create. Only force create if the user says they own the vehicle and the VRM already exists in our database. This scenario might occur when one is a Lava user, and sells the car and the new owner also wants to add it',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'type',
+                    'dataType' => 'string',
+                    'note' => 'Set \'1\' for car and \'2\' for 4X4',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'purpose',
+                    'dataType' => 'string',
+                    'note' => 'Set \'personal\' or \'business\' in lowercase',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'token',
+                    'dataType' => 'string',
+                    'note' => 'User API token',
+                    'required' => 1,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Vehicle added',
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Vehicle added","data":{"id":16}}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"vrm","error":"VRM is in use"}]}'
+                ),
+            )
+        ),
+        array(
+            'name' => 'Update Vehicle',
+            'note' => 'Update vehicle<br>'
+            . 'The only difference between this API and the \'Add Vehicle API\' is that this API has an extra field of the id of the vehicle you are updating',
+            'filtered' => 1,
+            'endpoint' => 'api/update/vehicle',
+            'httpVerb' => 'POST',
+            'parameters' => array(
+                array(
+                    'field' => 'format',
+                    'dataType' => 'string',
+                    'note' => 'Must be \'json\'',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'id',
+                    'dataType' => 'integer',
+                    'note' => 'ID of the vehicle',
+                    'required' => 1,
+                ),
                 array(
                     'field' => 'vrm',
                     'dataType' => 'string',
@@ -554,7 +644,7 @@ return array(
                 array(
                     'field' => 'type',
                     'dataType' => 'string',
-                    'note' => 'Set \'1\' for car and 2 for 4X4',
+                    'note' => 'Set \'1\' for car and \'2\' for 4X4',
                     'required' => 1,
                 ),
                 array(
@@ -574,14 +664,14 @@ return array(
                 array(
                     'action' => 'Success',
                     'httpCode' => 200,
-                    'note' => 'Vehicle added',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Vehicle KANa added.","data":{"id":"1","vrm":"KANa"}}'
+                    'note' => 'Vehicle updated',
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Vehicle updated","data":{"id":"4","vrm":"LON","type":"2","created_at":"2016-01-24 18:23:31","updated_at":"2016-02-07 09:22:07","user_owns":1,"is_default":1}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"vrm","error":"The vrm field is required."}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"id","error":"The selected id does not exist."}]}'
                 ),
             )
         ),
@@ -589,13 +679,19 @@ return array(
             'name' => 'Delete Vehicle',
             'note' => 'Delete user vehicle',
             'filtered' => 1,
-            'endpoint' => '/user/vehicle/delete',
+            'endpoint' => '/api/delete/vehicle',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
-                    'field' => 'vrm',
+                    'field' => 'format',
                     'dataType' => 'string',
-                    'note' => 'Vehicle registration mark',
+                    'note' => 'Must be \'json\'',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'id',
+                    'dataType' => 'integer',
+                    'note' => 'Id of the vehicle',
                     'required' => 1,
                 ),
                 array(
@@ -610,39 +706,39 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Vehicle deleted',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Vehicle KANa deleted","data":{"id":"1","vrm":"KANa"}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Vehicle deleted","data":{"id":"14"}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"vrm","error":"The vrm field is required."}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
                 ),
                 array(
                     'action' => 'Not found',
                     'httpCode' => 404,
-                    'note' => 'Object not found',
-                    'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Vehicle with vrm \'KANaasd\' not found.","data":{"field":"vrm","type":"Vehicle","value":"KANaasd"}}'
+                    'note' => 'Vehicle not found',
+                    'example' => '{"http_status_code":404,"system_code":904,"message":"Vehicle not found.","data":{"field":"id","type":"Vehicle","value":"23"}}'
                 ),
             )
         ),
         array(
-            'name' => 'Get Single Vehicle by VRM',
-            'note' => 'Get a single vehicle\'s details by vrm',
+            'name' => 'Get Single Vehicle by id',
+            'note' => 'Get single vehicle by id. Id is preferred over VRM',
             'filtered' => 1,
-            'endpoint' => '/user/vehicle/get/{field}/{value}',
+            'endpoint' => 'api/get/vehicle',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
-                    'field' => 'field',
+                    'field' => 'format',
                     'dataType' => 'string',
-                    'note' => 'Must be set to \'vrm\'. Set this in the url not query string',
+                    'note' => 'Must be \'json\'',
                     'required' => 1,
                 ),
                 array(
-                    'field' => 'value',
-                    'dataType' => 'string',
-                    'note' => 'Actual vrm value. Set this in the url not query string',
+                    'field' => 'id',
+                    'dataType' => 'integer',
+                    'note' => 'Id of the vehicle',
                     'required' => 1,
                 ),
                 array(
@@ -657,54 +753,67 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Vehicle found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Vehicle vrm Kana found.","data":{"id":"3","vrm":"KANa","type":"2","combined_make":"","model_range_desc":"","drive_type":"","created_at":"2014-05-30 13:13:56","updated_at":"2014-05-30 13:13:56","user_owns":1,"is_default":0}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Vehicles list","data":{"total":1,"per_page":50,"current_page":1,"last_page":1,"from":1,"to":1,"data":[{"id":"19","vrm":"LON","type":"2","created_at":"2016-02-07 10:01:05","updated_at":"2016-02-07 10:01:16","ip":"127.0.0.1","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36","user_owns":1,"is_default":1}]}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"field","error":"The field field is required."}]}'
-                ),
-                array(
-                    'action' => 'Forbidden',
-                    'httpCode' => 403,
-                    'note' => 'Forbidden or Don\'t Own Object',
-                    'example' => '{"httpStatusCode":403,"systemCode":903,"message":"Forbidden or Don\'t own","data":{"field":"vrm","type":"Vehicle","value":"123"}}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
                 ),
                 array(
                     'action' => 'Not found',
                     'httpCode' => 404,
                     'note' => 'Object not found',
-                    'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Vehicle with vrm \'KANa11\' not found.","data":{"field":"vrm","type":"Vehicle","value":"KANa11"}}'
+                    'example' => '{"http_status_code":404,"system_code":904,"message":"Vehicle not found.","data":{"field":"vehicle_id","type":"Vehicle","value":"4"}}'
                 ),
             )
         ),
         array(
-            'name' => 'Get All Vehicle',
-            'note' => 'Get all users vehicles',
+            'name' => 'Get All Users Vehicle',
+            'note' => 'Get all users vehicles<br>'
+            . 'The endpoint is the same as the \'Get Single Vehicle by Id\' but if you pass parameter \'id\' in this API it will act as the \Get Single Vehicle by Id\' API',
             'filtered' => 1,
-            'endpoint' => '/user/vehicle/get',
+            'endpoint' => '/api/get/vehicle',
             'httpVerb' => 'GET',
             'parameters' => array(
+                array(
+                    'field' => 'format',
+                    'dataType' => 'string',
+                    'note' => 'Must be \'json\'',
+                    'required' => 1,
+                ),
                 array(
                     'field' => 'token',
                     'dataType' => 'string',
                     'note' => 'User API token',
                     'required' => 1,
-                )
+                ),
+                array(
+                    'field' => 'per_page',
+                    'dataType' => 'integer',
+                    'note' => 'Number of locations to return in a given page eg return 20 locations (Defaults to 30)',
+                    'required' => 0,
+                ),
+                array(
+                    'field' => 'page',
+                    'dataType' => 'integer',
+                    'note' => 'The page of the pagination to return eg page 1, 2',
+                    'required' => 0,
+                ),
             ),
             'returns' => array(
                 array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Vehicles found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Your vehicles list","data":[{"id":"3","vrm":"KANa","type":"2","combined_make":"","model_range_desc":"","drive_type":"","created_at":"2014-05-30 13:13:56","updated_at":"2014-05-30 13:13:56","user_owns":1,"is_default":0}]}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Vehicles list","data":{"total":2,"per_page":1,"current_page":2,"last_page":2,"from":2,"to":2,"data":[{"id":"20","vrm":"KANa","type":"2","created_at":"2016-02-07 10:07:25","updated_at":"2016-02-07 10:07:25","ip":"127.0.0.1","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36","user_owns":1,"is_default":0}]}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"vrm","error":"The vrm field is required."}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
                 ),
             )
         ),

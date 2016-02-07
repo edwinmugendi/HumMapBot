@@ -13,44 +13,19 @@
         console.log(response);
         if (response.error) {
         } else {
+            $('#idToken').html(response.id);
             // token contains id, last4, and card type
             var token = response.id;
-            /*
-             // Insert the token into the form so it gets submitted to the server
-             $form.append($('<input type="hidden" name="stripeToken" />').val(token));
-             // and re-submit
-             $form.get(0).submit();
-             */
         }
     };
 
     jQuery(function ($) {
-
-
-        $('#payment-form1').submit(function (e) {
-            var $form = $(this);
-            // Disable the submit button to prevent repeated clicks
-            $form.find('button').prop('disabled', true);
-           
-
-            Stripe.card.createToken({
-                number: $('.card-number').val(),
-                cvc: $('.card-cvc').val(),
-                exp_month: $('.exp-month').val(),
-                exp_year: $('.exp-year').val()
-            }, stripeResponseHandler);
-
-            // Prevent the form from submitting with the default action
-            return false;
-        });
-
         $('#idSubmit').click(function ($event) {
             $event.preventDefault();
             var $form = $(this);
             // Disable the submit button to prevent repeated clicks
             $form.find('button').prop('disabled', true);
             
-
             Stripe.card.createToken({
                 number: $('.card-number').val(),
                 cvc: $('.card-cvc').val(),
@@ -94,3 +69,4 @@
 
         <button id="idSubmit">Submit Payment</button>
     </form>
+    <h2>Token is: <span id="idToken"></span></h2>

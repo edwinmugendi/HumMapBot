@@ -97,7 +97,7 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
             $promotion_controller->notification = array(
                 'field' => 'code',
                 'type' => 'Promotion',
-                'value' => $code,
+                'value' => $promotion_code,
             );
 
 

@@ -20,6 +20,80 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
 
     //Message object
     private $message;
+    
+    /**
+     * S# validateDeleteCard() function
+     * Validate Id Delete
+     * @param array $attribute Validation attribute
+     * @param boolean $id The id
+     * @param array $parameters Parameters
+     */
+    public function validateDeleteCard($attribute, $id, $parameters) {
+        //Create card controller
+        $cardController = new \Lava\Payments\CardController();
+
+        //Set scope
+        $parameters['scope'] = array('statusOne');
+
+        //Get card by id
+        $cardModel = $cardController->getModelByField('id', $id, $parameters);
+
+        if ($cardModel) {//Card does not exist
+            //Instantiate a new user controller
+            $user_controller = new UserController();
+
+            //Get user model by token
+            $user_model = $user_controller->getModelByField('token', $this->data['token']);
+
+            if ($cardModel->created_by == $user_model->id) {
+
+                //Delete card on stripe
+                $stripe_controller = new \Lava\Payments\StripeController();
+                $stripe_response = $stripe_controller->deleteCard($user_model->stripe_id, $cardModel->token);
+                $cardModel->deleted_on_stripe = $stripe_response['status'] ? 1 : 0;
+
+                $cardModel->status = 2;
+                $cardModel->save();
+
+                if ($cardModel->token == $user_model->card) {
+                    $user_model->card = '';
+
+                    $user_model->save();
+                }//E# if statement
+                //Get success message
+                $message = \Lang::get($cardController->package . '::' . $cardController->controller . '.notification.deleted');
+
+                throw new \Api200Exception(array('id' => $cardModel->id, 'id' => $id), $message);
+            }
+        }//E# if statement
+        //Set notification
+        $cardController->notification = array(
+            'field' => 'id',
+            'type' => 'Card',
+            'value' => $id,
+        );
+
+        //Throw VRM not found error
+        throw new \Api404Exception($cardController->notification);
+
+        return false;
+    }
+
+//E# validateDeleteCard() function
+
+    /**
+     * S# replaceDeleteCard() function
+     * Replace status parameter in login validaion string
+     * @param $string $message The message
+     * @param $string $attribute The attribute
+     * @param $string $rule The rule
+     * @param array $parameters The parameters
+     */
+    protected function replaceDeleteCard($message, $attribute, $rule, $parameters) {
+        return $this->message;
+    }
+
+//E# replaceDeleteCard() function
 
     /**
      * S# calculateDistance() function
@@ -185,7 +259,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         );
 
                         //Throw not found error
-                        throw new \Api403Exception($payment_controller->notification);
+                        throw new \Api404Exception($payment_controller->notification);
                     }//E# if statement
                 } else {//Product not loyable or location does not have a loyalty stamps
                     //Set message

@@ -7,7 +7,7 @@
  */
 class BaseModel extends \Eloquent {
 
-        /**
+    /**
      * S# media() function
      * Set one to many relationship to Media Model
      */
@@ -107,7 +107,7 @@ class BaseModel extends \Eloquent {
                 $name .= ' ' . $user->middle_name;
             }//E# if statement
             //Append last name
-            $name .= ' '.$user->last_name;
+            $name .= ' ' . $user->last_name;
         }//E# if statement
         //Return employee name
         return $name;
@@ -138,8 +138,6 @@ class BaseModel extends \Eloquent {
     }
 
 //E# getUpdaterTextAttribute() function
-
-
 }
 
 //E# BaseModel() class

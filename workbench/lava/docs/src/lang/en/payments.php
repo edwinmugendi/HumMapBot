@@ -12,51 +12,18 @@ return array(
     ),
     'api' => array(
         array(
-            'name' => 'Sync Cards',
-            'note' => 'Sync cards on App55',
+            'name' => 'Create card',
+            'note' => 'Delete card on Stripe and our database<br>'
+            . 'Go to this link \'' . \URL::to('card/test/form') . '\' to generate test stripe token',
             'filtered' => 1,
-            'endpoint' => '/payment/card/sync',
+            'endpoint' => 'api/create/card',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
-                    'field' => 'token',
+                    'field' => 'stripe_token',
                     'dataType' => 'string',
-                    'note' => 'User API token',
-                    'required' => 1,
-                )
-            ),
-            'returns' => array(
-                array(
-                    'action' => 'Success',
-                    'httpCode' => 200,
-                    'note' => 'Card\'s synced',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Card\'s synced.","data":["NTQGu","Bulan"]}'
-                ),
-                array(
-                    'action' => 'Error',
-                    'httpCode' => 400,
-                    'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
-                ),
-            )
-        ),
-        array(
-            'name' => 'Delete Card by Id',
-            'note' => 'Delete card on App55 and database',
-            'filtered' => 1,
-            'endpoint' => '/payment/card/delete/{field}/{value}',
-            'httpVerb' => 'POST',
-            'parameters' => array(
-                array(
-                    'field' => 'field (in the url)',
-                    'dataType' => 'string',
-                    'note' => 'Must be set to \'id\'',
-                    'required' => 1,
-                ),
-                array(
-                    'field' => 'value (in the url)',
-                    'dataType' => 'integer',
-                    'note' => 'Actual card\'s id',
+                    'note' => 'Stripe token<br> Add the card to Stripe from the app and get a token. Use this token<br>'
+                    . 'Go to this link \'' . \URL::to('card/test/form') . '\' to generate test stripe token',
                     'required' => 1,
                 ),
                 array(
@@ -71,19 +38,54 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Card deleted',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Card token Bulan deleted","data":["Bulan"]}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Card created","data":{"user_id":"35","gateway":"stripe","token":"card_17bxGUHoXD8pWa1AENveEDFi","brand":"visa","last4":"4242","exp_month":12,"exp_year":2020,"address_city":"","address_zip":"","address_country":"","address_line1":"","status":1,"updated_at":"2016-02-07 18:28:19","created_at":"2016-02-07 18:28:19","id":28,"is_default":0,"stripe_id":"cus_7qwTckPJkETZwp","user":{"id":"35","first_name":"Edwin","last_name":"Mugendi","phone":"+254722906836","dob":"0000-00-00","gender":"","email":"edwinmugendi@gmail.com","address":"","postal_code":"","token":"jdkgnjniiflbye5xojemmphpdst0bsdw","vrm":"","card":"","fb_uid":"","lat":"90.0000000000","lng":"11.0000000000","points":"0","notify_sms":"1","notify_push":"1","notify_email":"1","os":"ios","push_token":"sdfaf","app_version":"asd","created_at":"2016-02-06 02:16:38","updated_at":"2016-02-07 10:07:26","stripe_id":"cus_7qwTckPJkETZwp","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36"}}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
                 ),
                 array(
                     'action' => 'Server Error',
                     'httpCode' => 500,
                     'note' => '3rd party or internal server',
-                    'example' => '{"httpStatusCode":400,"systemCode":1000,"message":"No such card found on app55","data":[]}'
+                    'example' => '{"http_status_code":500,"system_code":1000,"message":"Error while communicating with one of our backends.  Sorry about that!  We have been notified of the problem.  If you have any questions, we can help at https:\/\/support.stripe.com\/.","data":[]}'
+                ),
+            )
+        ),
+        array(
+            'name' => 'Delete Card by Id',
+            'note' => 'Delete card on Stripe and database',
+            'filtered' => 1,
+            'endpoint' => 'api/delete/card',
+            'httpVerb' => 'POST',
+            'parameters' => array(
+                array(
+                    'field' => 'id',
+                    'dataType' => 'integer',
+                    'note' => 'Lava Card id and not token',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'token',
+                    'dataType' => 'string',
+                    'note' => 'User API token',
+                    'required' => 1,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Card deleted',
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Card deleted","data":{"id":"28"}}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"http_status_code":404,"system_code":904,"message":"Card not found.","data":{"field":"id","type":"Card","value":"22323"}}'
                 ),
             )
         ),
@@ -91,19 +93,13 @@ return array(
             'name' => 'Get Single Card by Id',
             'note' => 'Get a single card\'s details by id',
             'filtered' => 1,
-            'endpoint' => '/payment/card/get/{field}/{value}',
+            'endpoint' => '/api/get/card',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
-                    'field' => 'field',
-                    'dataType' => 'string',
-                    'note' => 'Must be set to \'id\'. Set this in the url not query string',
-                    'required' => 1,
-                ),
-                array(
-                    'field' => 'value',
+                    'field' => 'id',
                     'dataType' => 'integer',
-                    'note' => 'Actual id. Set this in the url not query string',
+                    'note' => 'Id of the card',
                     'required' => 1,
                 ),
                 array(
@@ -118,13 +114,18 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Card found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Card id 1 found.","data":{"id":"1","user_id":"1","gateway_id":"1","name":"","number":"411111******1111","address_street":"8 Exchange Quay","address_city":"Manchester","address_postal_code":"M5 3EJ","address_country":"GB","token":"AlRui","expiry":"03\/2015","created_at":"2014-05-31 12:45:34","updated_at":"2014-05-31 12:45:34","is_default":1}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Card list","data":{"id":"28","user_id":"35","gateway":"stripe","exp_month":"12","exp_year":"2020","last4":"4242","brand":"visa","address_city":"","address_zip":"","address_country":"","address_line1":"","token":"card_17bxGUHoXD8pWa1AENveEDFi","status":"1","created_at":"2016-02-07 18:28:19","updated_at":"2016-02-07 18:31:04","deleted_on_stripe":"1","is_default":0,"stripe_id":"cus_7qwTckPJkETZwp"}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
-                    'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
+                    'note' => 'Validation Error',
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
+                ), array(
+                    'action' => 'Not found',
+                    'httpCode' => 404,
+                    'note' => 'Card not found',
+                    'example' => '{"http_status_code":404,"system_code":904,"message":"Card not found.","data":{"field":"card_id","type":"Card","value":"28"}}'
                 )
             )
         ),
@@ -132,7 +133,7 @@ return array(
             'name' => 'Get All Card',
             'note' => 'Get all users cards',
             'filtered' => 1,
-            'endpoint' => '/payment/card/get',
+            'endpoint' => 'api/get/card',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
@@ -147,13 +148,13 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Cards found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Card\'s list","data":{"list":[{"id":"8","user_id":"1","gateway_id":"1","name":"","number":"411111******1111","address_street":"8 Exchange Quay","address_city":"Manchester","address_postal_code":"M5 3EJ","address_country":"GB","token":"AlRui","expiry":"03\/2015","created_at":"2014-05-31 12:45:34","updated_at":"2014-05-31 12:45:34","is_default":1}],"pagination":{"current_page":1,"last_page":1,"per_page":30,"total":1,"from":1,"count":1}}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Card list","data":{"total":2,"per_page":1,"current_page":1,"last_page":2,"from":1,"to":1,"data":[{"id":"29","user_id":"35","gateway":"stripe","exp_month":"12","exp_year":"2020","last4":"4242","brand":"visa","address_city":"","address_zip":"","address_country":"","address_line1":"","token":"card_17bxTBHoXD8pWa1A4K6dgQSg","status":"1","created_at":"2016-02-07 18:41:33","updated_at":"2016-02-07 18:41:33","deleted_on_stripe":"0","is_default":0,"stripe_id":"cus_7qwTckPJkETZwp","user":{"id":"35","first_name":"Edwin","last_name":"Mugendi","phone":"+254722906836","dob":"0000-00-00","gender":"","email":"edwinmugendi@gmail.com","address":"","postal_code":"","token":"jdkgnjniiflbye5xojemmphpdst0bsdw","vrm":"","card":"","fb_uid":"","lat":"90.0000000000","lng":"11.0000000000","points":"0","notify_sms":"1","notify_push":"1","notify_email":"1","os":"ios","push_token":"sdfaf","app_version":"asd","created_at":"2016-02-06 02:16:38","updated_at":"2016-02-07 10:07:26","stripe_id":"cus_7qwTckPJkETZwp","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36"}}]}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
                 ),
             )
         ),
@@ -161,19 +162,13 @@ return array(
             'name' => 'Get Single Transaction by Id',
             'note' => 'Get a single transaction\'s details by id',
             'filtered' => 1,
-            'endpoint' => '/payment/transaction/get/{field}/{value}',
+            'endpoint' => '/api/get/transaction',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
-                    'field' => 'field',
+                    'field' => 'id',
                     'dataType' => 'string',
-                    'note' => 'Must be set to \'id\'. Set this in the url not query string',
-                    'required' => 1,
-                ),
-                array(
-                    'field' => 'value',
-                    'dataType' => 'integer',
-                    'note' => 'Actual id. Set this in the url not query string',
+                    'note' => 'Id of the transaction',
                     'required' => 1,
                 ),
                 array(
@@ -188,21 +183,27 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Transaction found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Transaction id 1 found.","data":{"id":"1","user_id":"1","product_id":"1","location_id":"0","promotion_id":"0","amount":"0.00","refund":"0.00","currency":"","description":"","card_used":"","lat":"0.000000","lng":"0.000000","gateway":"","gateway_tran_id":"","gateway_code":"","agent":"","created_at":"0000-00-00 00:00:00","updated_at":"0000-00-00 00:00:00"}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Transaction list","data":{"id":"4","user_id":"35","product_id":"1","location_id":"1","promotion_id":"0","amount":"2.00","refund":"0.00","currency_id":"USD","description":"Product 1 Location 1","card_used":"","card_token":"","vehicle_id":"9","vrm":"KANa","stamps_issued":"0","lat":"0.0000000000","lng":"0.0000000000","gateway":"","gateway_tran_id":"","gateway_code":"","user_smsed":"0","user_emailed":"0","user_pushed":"0","merchant_smsed":"0","merchant_emailed":"0","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36","workflow":"0","created_at":"2016-02-05 20:47:30","updated_at":"2016-02-05 20:47:30","loc":{"name":"Location 1","address":""}}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
+                ),
+                array(
+                    'action' => 'Not found',
+                    'httpCode' => 404,
+                    'note' => 'Transaction not found',
+                    'example' => '{"http_status_code":404,"system_code":904,"message":"Transaction not found.","data":{"field":"transaction_id","type":"Transaction","value":"4"}}'
                 )
             )
         ),
         array(
-            'name' => 'Get All Transaction',
+            'name' => 'Get All Users Transaction',
             'note' => 'Get all users transactions',
             'filtered' => 1,
-            'endpoint' => '/payment/transaction/get',
+            'endpoint' => 'api/get/transaction',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
@@ -212,7 +213,7 @@ return array(
                     'required' => 0,
                 ),
                 array(
-                    'field' => 'take',
+                    'field' => 'per_page',
                     'dataType' => 'integer',
                     'note' => 'No of transactions to return. Defaults to 30',
                     'required' => 0,
@@ -229,13 +230,13 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Transactions found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Transaction\'s list","data":{"list":[{"id":"2","user_id":"1","product_id":"0","location_id":"0","promotion_id":"0","amount":"0.00","refund":"0.00","currency":"","description":"","card_used":"","lat":"0.000000","lng":"0.000000","gateway":"","gateway_tran_id":"","gateway_code":"","agent":"","created_at":"0000-00-00 00:00:00","updated_at":"0000-00-00 00:00:00"},{"id":"1","user_id":"1","product_id":"1","location_id":"0","promotion_id":"0","amount":"0.00","refund":"0.00","currency":"","description":"","card_used":"","lat":"0.000000","lng":"0.000000","gateway":"","gateway_tran_id":"","gateway_code":"","agent":"","created_at":"0000-00-00 00:00:00","updated_at":"0000-00-00 00:00:00"}],"pagination":{"current_page":1,"last_page":1,"per_page":20,"total":2,"from":1,"count":2}}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Transaction list","data":{"total":1,"per_page":30,"current_page":1,"last_page":1,"from":1,"to":1,"data":[{"id":"4","user_id":"35","product_id":"1","location_id":"1","promotion_id":"0","amount":"2.00","refund":"0.00","currency_id":"USD","description":"Product 1 Location 1","card_used":"","card_token":"","vehicle_id":"9","vrm":"KANa","stamps_issued":"0","lat":"0.0000000000","lng":"0.0000000000","gateway":"","gateway_tran_id":"","gateway_code":"","user_smsed":"0","user_emailed":"0","user_pushed":"0","merchant_smsed":"0","merchant_emailed":"0","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36","workflow":"0","created_at":"2016-02-05 20:47:30","updated_at":"2016-02-05 20:47:30","loc":{"name":"Location 1","address":""}}]}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
                 ),
             )
         ),
@@ -243,7 +244,7 @@ return array(
             'name' => 'Prepare Transaction',
             'note' => 'Prepare a transaction',
             'filtered' => 1,
-            'endpoint' => '/payment/transaction/prepare',
+            'endpoint' => 'api/prepare/transaction',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -253,9 +254,9 @@ return array(
                     'required' => 1,
                 ),
                 array(
-                    'field' => 'vrm',
-                    'dataType' => 'string',
-                    'note' => 'Vehicle Registration Mark',
+                    'field' => 'vehicle_id',
+                    'dataType' => 'integer',
+                    'note' => 'Actual id of the vehicle and not VRM',
                     'required' => 0,
                 ),
                 array(
@@ -270,19 +271,19 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Transaction prepared',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Transaction prepared","data":{"card":{"id":"1","user_id":"1","gateway_id":"1","name":"","number":"442244******4444","address_street":"test address","address_city":"manchester","address_postal_code":"m13df","address_country":"GB","token":"NTQGu","expiry":"0000-00-00 00:00:00","created_at":"2014-05-07 17:08:35","updated_at":"2014-05-07 17:08:35"},"promotions":[{"id":"1","type":"2","value":"0"}],"vehicle":{"vrm":"KANa","drive_type":"4X2"},"product":{"id":"1","price_4X2":"12.00","price_4X4":"12"},"transaction":{"surcharge":"1.00","currency":"GBP"}}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Transaction prepared","data":{"card":{"id":"29","gateway":"stripe","exp_month":"12","exp_year":"2020","last4":"4242","brand":"visa","token":"card_17bxTBHoXD8pWa1A4K6dgQSg"},"vehicle":{"vehicle_id":"20","type":"2"},"transaction":{"amount":"3.00","currency_id":"USD","surcharge":"0.00","promotions":[{"price":"2","id":"1","description":"Promotion 1","expiry_date":"2016-02-20 00:00:00","code":"PROMO","type":"1","value":"1.00"}]}}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"vrm","error":"The vrm field is required."}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
                 ),
                 array(
                     'action' => 'Not found',
                     'httpCode' => 404,
                     'note' => 'Object not found',
-                    'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Product with id \'121\' not found.","data":{"field":"id","type":"Product","value":"121"}}'
+                    'example' => '{"http_status_code":404,"system_code":904,"message":"Product not found.","data":{"field":"id","type":"Product","value":"234"}}'
                 ),
             ),
         ),
@@ -290,7 +291,7 @@ return array(
             'name' => 'Process Transaction',
             'note' => 'Process a transaction',
             'filtered' => 1,
-            'endpoint' => '/payment/transaction/process',
+            'endpoint' => 'api/process/transaction',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -300,9 +301,9 @@ return array(
                     'required' => 1,
                 ),
                 array(
-                    'field' => 'vrm',
-                    'dataType' => 'string',
-                    'note' => 'Vehicle Registration Mark',
+                    'field' => 'vehicle_id',
+                    'dataType' => 'integer',
+                    'note' => 'Actual id of the vehicle and not VRM',
                     'required' => 1,
                 ),
                 array(
@@ -314,7 +315,7 @@ return array(
                 array(
                     'field' => 'card_token',
                     'dataType' => 'string',
-                    'note' => 'Card to be used',
+                    'note' => 'Card token to be used',
                     'required' => 1,
                 ),
                 array(
@@ -340,7 +341,7 @@ return array(
                         ),
                     ),
                     'note' => 'Location array',
-                    'required' => 0,
+                    'required' => 1,
                 ),
             ),
             'returns' => array(
@@ -348,30 +349,31 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Transaction processed',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Transaction succeeded","data":{"gateway":{"status":1,"message":"Transaction succeeded"},"transaction":{"gateway":"app55","gateway_tran_id":"140609074422_94612","gateway_code":"06603","amount":"11.88","currency":"GBP","promotion_id":"3","stamps_issued":1,"lat":"90","lng":"90","vrm":"KANa","user_id":"1","description":"Sapama Kikuyu","product_id":"1","location_id":"1","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/35.0.1916.114 Safari\/537.36","card_used":"411111******1111","card_token":"AlRui","updated_at":"2014-06-09 07:44:23","created_at":"2014-06-09 07:44:23","id":64,"loc":{"name":"Kikuyu","address":"10016 Nakuru"}},"stamps":{"issued":1,"user_total":24,"location_stamps":5}}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Transaction successful","data":{"gateway":{"status":1,"message":"Transaction successful"},"transaction":{"vehicle_id":"20","vrm":"KANa","user_id":"35","description":"Product 1 Location 1","product_id":"1","location_id":"1","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36","amount":"2","currency_id":"USD","stamps_issued":1,"updated_at":"2016-02-07 19:27:14","created_at":"2016-02-07 19:27:02","id":27,"lat":"-1.3920700000","lng":"36.8219500000","gateway":"stripe","workflow":1,"gateway_tran_id":"ch_17byBaHoXD8pWa1Ab0VuEpA2","promotion_id":"1","card_used":"visa XXX 4242","card_token":"card_17byAnHoXD8pWa1AEbP9694K","merchant_emailed":1,"merchant_smsed":1,"user_pushed":1,"user_smsed":1,"user_emailed":1,"loc":{"name":"Location 1","address":""}},"stamps":{"issued":1,"user_total":1,"location_stamps":2}}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"vrm","error":"The vrm field is required."}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
                 ),
                 array(
-                    'action' => 'Forbidden  or Don\'t own',
-                    'httpCode' => 403,
-                    'note' => 'Forbidden or Don\'t own',
-                    'example' => '{"httpStatusCode":403,"systemCode":903,"message":"Forbidden or Don\'t own","data":{"field":"vrm","type":"Vehicle","value":"KANa1"}}'
-                ), array(
                     'action' => 'Not found',
                     'httpCode' => 404,
                     'note' => 'Object not found',
-                    'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Product with id \'121\' not found.","data":{"field":"id","type":"Product","value":"121"}}'
+                    'example' => '{"http_status_code":404,"system_code":904,"message":"Product not found.","data":{"field":"id","type":"Product","value":"2"}}'
+                ),
+                array(
+                    'action' => 'Not allowed',
+                    'httpCode' => 403,
+                    'note' => 'Not allowed',
+                    'example' => '{"http_status_code":403,"system_code":903,"message":"Your not close enough to the Car Wash to process a transaction. Please attempt again when at the location.","data":{"field":"gps","type":"Distance","value":"Invalid"}}'
                 ),
                 array(
                     'action' => 'Internal server error',
                     'httpCode' => 500,
                     'note' => 'Internal Sever Error',
-                    'example' => '{"httpStatusCode":500,"systemCode":1000,"message":"Lost connection to the database","data":[]}'
+                    'example' => '{"http_status_code":500,"system_code":1000,"message":"Lost connection to the database","data":[]}'
                 ),
             ),
         ),
@@ -379,7 +381,7 @@ return array(
             'name' => 'Process Transaction with Loyalty Stamps',
             'note' => 'Process a transaction with Loyalty stamps',
             'filtered' => 1,
-            'endpoint' => '/payment/transaction/process/stamps',
+            'endpoint' => 'api/process/transaction_with_loyalty_stamps',
             'httpVerb' => 'POST',
             'parameters' => array(
                 array(
@@ -389,9 +391,9 @@ return array(
                     'required' => 1,
                 ),
                 array(
-                    'field' => 'vrm',
-                    'dataType' => 'string',
-                    'note' => 'Vehicle Registration Mark',
+                    'field' => 'vehicle_id',
+                    'dataType' => 'integer',
+                    'note' => 'Actual id of the vehicle and not VRM',
                     'required' => 1,
                 ),
                 array(
@@ -417,7 +419,7 @@ return array(
                         ),
                     ),
                     'note' => 'Location array',
-                    'required' => 0,
+                    'required' => 1,
                 ),
             ),
             'returns' => array(
@@ -425,24 +427,25 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Transaction processed',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":["id"],"data":{"transaction":{"gateway":"stamps","gateway_tran_id":0,"gateway_code":0,"amount":"1.00","currency":"GBP","description":"stamp","user_id":"1","product_id":"1","location_id":"1","vrm":"KANa","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/35.0.1916.114 Safari\/537.36","stamps_issued":0,"lat":"90","lng":"90","updated_at":"2014-05-31 13:16:36","created_at":"2014-05-31 13:16:36","id":35,"loc":{"name":"Kikuyu","address":"10016 Nakuru"}},"stamps":{"issued":0,"user_total":0,"location_stamps":"4"}}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Transaction successful","data":{"gateway":{"status":1,"message":"Transaction successful"},"transaction":{"vehicle_id":"20","vrm":"KANa","gateway":"stamps","amount":"3.00","currency_id":"USD","description":"Free Stamp Wash","user_id":"35","product_id":"1","location_id":"1","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36","stamps_issued":0,"workflow":3,"lat":"-1.3920700000","lng":"36.8219500000","updated_at":"2016-02-07 19:35:16","created_at":"2016-02-07 19:35:06","id":29,"merchant_emailed":1,"merchant_smsed":1,"user_pushed":1,"user_smsed":1,"user_emailed":1,"loc":{"name":"Location 1","address":""}},"stamps":{"issued":0,"user_total":0,"location_stamps":"2"}}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"vrm","error":"Sapama requires 4 but you have 2"}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"vehicle_id","error":"Product 1 requires 2 but you have 0"}]}'
                 ),
                 array(
-                    'action' => 'Forbidden  or Don\'t own',
-                    'httpCode' => 403,
-                    'note' => 'Forbidden or Don\'t own',
-                    'example' => '{"httpStatusCode":403,"systemCode":903,"message":"Forbidden or Don\'t own","data":{"field":"vrm","type":"Vehicle","value":"KANa1"}}'
-                ), array(
                     'action' => 'Not found',
                     'httpCode' => 404,
                     'note' => 'Object not found',
-                    'example' => '{"httpStatusCode":404,"systemCode":904,"message":"Product with id \'121\' not found.","data":{"field":"id","type":"Product","value":"121"}}'
+                    'example' => '{"http_status_code":404,"system_code":904,"message":"Product not found.","data":{"field":"id","type":"Product","value":"4"}}'
+                ),
+                array(
+                    'action' => 'Not allowed',
+                    'httpCode' => 403,
+                    'note' => 'Not allowed',
+                    'example' => '{"http_status_code":403,"system_code":903,"message":"Your not close enough to the Car Wash to process a transaction. Please attempt again when at the location.","data":{"field":"gps","type":"Distance","value":"Invalid"}}'
                 ),
                 array(
                     'action' => 'Internal server error',

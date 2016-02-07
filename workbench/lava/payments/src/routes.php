@@ -1,8 +1,8 @@
 <?php
 
-\Route::group(array('before' => 'subdomain|api'), function() {
+\Route::group(array('before' => 'api'), function() {
     /**
-     * APP55 API's
+     * Card API's
      * 
      */
     //Create Card
@@ -17,34 +17,19 @@
     //Get card
     \Route::get('api/get/card', array('as' => 'Get Card', 'uses' => 'Lava\Payments\CardController@getList'));
 
-    //Get all cards
-    \Route::get('payment/card/get', array('as' => 'cardGetAll', 'uses' => 'Lava\Payments\CardController@getAllModelBelongingToUser'));
-
-    //Delete Card
-    \Route::post('payment/card/delete/{field}/{value}', array('as' => 'cardDelete', 'uses' => 'Lava\Payments\CardController@postDelete'));
-
-    //Create User Page
-    \Route::get('payment/card/test/create/{id}/{email}/{password}', array('as' => 'paymentApp55Create', 'uses' => 'Lava\Payments\App55Controller@createCard'));
-
-    //Create Card Page
-    \Route::get('payment/card/test/create/card', array('as' => 'paymentApp55CreateCard', 'uses' => 'Lava\Payments\App55Controller@createCard'));
-
     /**
      * TRANSACTIONS API's
      * 
      */
     //Prepare transaction 
-    \Route::post('payment/transaction/prepare', array('as' => 'paymentTransactionPrepare', 'uses' => 'Lava\Payments\PaymentController@prepare'));
+    \Route::post('api/prepare/transaction', array('as' => 'paymentTransactionPrepare', 'uses' => 'Lava\Payments\PaymentController@prepare'));
 
     //Process Transaction
-    \Route::post('payment/transaction/process', array('as' => 'paymentTransactionProcess', 'uses' => 'Lava\Payments\PaymentController@process'));
+    \Route::post('api/process/transaction', array('as' => 'paymentTransactionProcess', 'uses' => 'Lava\Payments\PaymentController@process'));
 
     //Process Transaction with loyalty stamps
-    \Route::post('payment/transaction/process/stamps', array('as' => 'paymentTransactionProcessStamps', 'uses' => 'Lava\Payments\PaymentController@processWithStamps'));
+    \Route::post('api/process/transaction_with_loyalty_stamps', array('as' => 'paymentTransactionProcessStamps', 'uses' => 'Lava\Payments\PaymentController@processWithStamps'));
 
-    //Get single transactions
-    \Route::get('payment/transaction/get/{field}/{value}', array('as' => 'cardGetSingle', 'uses' => 'Lava\Payments\TransactionController@getModelBelongingToUser'));
-
-    //Get all transactions
-    \Route::get('payment/transaction/get', array('as' => 'cardGetAll', 'uses' => 'Lava\Payments\TransactionController@getAllModelBelongingToUser'));
+    //Get users transaction
+    \Route::get('api/get/transaction', array('as' => 'apiGetTransaction', 'uses' => 'Lava\Payments\TransactionController@getList'));
 });
