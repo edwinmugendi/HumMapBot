@@ -15,7 +15,6 @@ class CreateLoginsTable extends Migration {
             $table->increments('id');
             //Relationships
             $table->integer('user_id')->unsigned();
-            $table->string('ip', 255);
             $table->datetime('date_time');
             
             $table->string('agent', 255);
