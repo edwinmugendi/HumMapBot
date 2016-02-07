@@ -74,6 +74,9 @@ class CreateLocationsTable extends Migration {
             $table->text('image');
 
             $table->integer('views')->unsigned();
+            
+            $table->string('agent', 255);
+            $table->string('ip', 255);
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();

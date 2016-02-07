@@ -28,7 +28,9 @@ class CreateCardsTable extends Migration {
             $table->string('address_country');
             $table->string('address_line1');
             $table->string('token');
-
+            
+            $table->string('agent', 255);
+            $table->string('ip', 255);
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();

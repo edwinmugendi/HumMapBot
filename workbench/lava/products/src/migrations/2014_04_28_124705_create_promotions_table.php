@@ -22,7 +22,9 @@ class CreatePromotionsTable extends Migration {
 
             $table->boolean('new_customer');
             $table->datetime('expiry_date');
-
+            
+             $table->string('agent', 255);
+            $table->string('ip', 255);
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();

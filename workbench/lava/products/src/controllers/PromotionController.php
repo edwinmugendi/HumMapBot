@@ -39,7 +39,6 @@ class PromotionController extends ProductsBaseController {
                 $redeemable_promotions[] = $single_promotion;
             }//E# if else statement
         }//E# foreach statement
-        
         //Return prepared redeemable promotions
         return $this->prepareRedeemablePromotions($redeemable_promotions, $amount, $surcharge);
     }
@@ -76,7 +75,6 @@ class PromotionController extends ProductsBaseController {
             );
             $redeemable_promotions[] = $promo;
         }//E# foreach statement
-        
         //Return redeemable promotions
         return $redeemable_promotions;
     }
@@ -169,15 +167,16 @@ class PromotionController extends ProductsBaseController {
      */
     public function claimPromotionCode(&$promotion_controller, &$promotion_model) {
         //Claim
-        $promotion_model->users()->attach($promotion_controller->user['id'],
-                array(
-                    'status'=>1,
-                    'created_by'=>$promotion_controller->user['id'],
-                    'updated_by'=>$promotion_controller->user['id'],
-                    'created_at'=>Carbon::now(),
-                    'updated_at'=>Carbon::now(),
-                    )
-                );
+        $promotion_model->users()->attach($promotion_controller->user['id'], array(
+            'ip' => $this->input['ip'],
+            'agent' => $this->input['agent'],
+            'status' => 1,
+            'created_by' => $promotion_controller->user['id'],
+            'updated_by' => $promotion_controller->user['id'],
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+                )
+        );
 
         //Get success message
         $message = \Lang::get($this->package . '::' . $this->controller . '.api.redeemPromotion', array('code' => $promotion_model->code));

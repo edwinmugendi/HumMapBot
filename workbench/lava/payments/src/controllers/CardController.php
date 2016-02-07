@@ -101,6 +101,8 @@ class CardController extends PaymentsBaseController {
                     'address_zip' => (is_null($stripe_response['response']->address_zip) == false) ? $stripe_response['response']->address_zip : '',
                     'address_country' => (is_null($stripe_response['response']->address_country) == false) ? $stripe_response['response']->address_country : '',
                     'address_line1' => (is_null($stripe_response['response']->address_line1) == false) ? $stripe_response['response']->address_line1 : '',
+                    'ip'=>  $this->input['ip'],
+                    'agent'=>  $this->input['agent'],
                     'status' => 1,
                     'created_by' => 1,
                     'updated_by' => 1

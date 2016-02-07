@@ -55,6 +55,7 @@ class CreateTransactionsTable extends Migration {
 
             //Agent
             $table->string('agent', 255);
+            $table->string('ip', 255);
             $table->integer('workflow')->unsigned();
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();

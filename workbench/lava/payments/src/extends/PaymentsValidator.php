@@ -20,7 +20,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
 
     //Message object
     private $message;
-    
+
     /**
      * S# validateDeleteCard() function
      * Validate Id Delete
@@ -147,7 +147,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
         $product_controller = new ProductController();
 
         //Location
-        $parameters = array('location','merchant');
+        $parameters = array('location', 'merchant');
 
         //Get product by id
         $product_model = $product_controller->callController(\Util::buildNamespace('products', 'product', 1), 'getModelByField', array('id', $this->data['product_id'], $parameters));
@@ -171,7 +171,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     $stamp_model = $payment_controller->getLocationStamps($product_model->location->id, $user_model->id);
 
                     //Cache user stamps
-                    $user_stamps = (int) $stamp_model->feeling;
+                    $user_stamps = $stamp_model ? $stamp_model->feeling : 0;
 
                     //Get vehiclel model
                     $vehicle_model = $this->validateUserOwnsVehicle($attribute, $this->data['vehicle_id'], $parameters);
@@ -180,8 +180,8 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         if ($user_stamps >= $location_stamps) {//User has sufficient stamps
                             //Build transaction array
                             $transaction_array = array(
-                                'vehicle_id'=>$vehicle_model->id,
-                                'vrm'=>$vehicle_model->vrm,
+                                'vehicle_id' => $vehicle_model->id,
+                                'vrm' => $vehicle_model->vrm,
                                 'gateway' => 'stamps',
                                 'amount' => $vehicle_model->type == 2 ? $product_model->price_2 : $product_model->price_1,
                                 'currency_id' => $product_model->location->currency_id,
@@ -190,14 +190,15 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                                 'product_id' => $product_model->id,
                                 'location_id' => $product_model->location->id,
                                 'vehicle_id' => $this->data['vehicle_id'],
-                                'agent' => \Request::server('HTTP_USER_AGENT'),
+                                'ip' => $user_controller->input['ip'],
+                                'agent' => $user_controller->input['agent'],
                                 'stamps_issued' => 0,
                                 'status' => 1,
                                 'created_by' => $user_model->id,
                                 'updated_by' => $user_model->id,
-                                'workflow'=>3,
+                                'workflow' => 3,
                             );
-                            
+
                             if ($this->data['location']) {//Set transaction location
                                 $transaction_array['lat'] = $this->data['location']['lat'];
                                 $transaction_array['lng'] = $this->data['location']['lng'];
@@ -214,10 +215,10 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
 
                                 //After processing
                                 $payment_controller->afterProcessing('stamps', $transaction_model, $product_model, $user_model, $vehicle_model);
-                                
+
                                 //Save transaction
                                 $transaction_model->save();
-                                
+
                                 //Build stamps
                                 $stamps = array(
                                     'issued' => 0,
@@ -392,7 +393,8 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         'description' => $product_model->name . ' ' . $product_model->location->name,
                         'product_id' => $product_model->id,
                         'location_id' => $product_model->location->id,
-                        'agent' => \Request::server('HTTP_USER_AGENT'),
+                        'ip' => $user_controller->input['ip'],
+                        'agent' => $user_controller->input['agent'],
                         'amount' => $amount,
                         'currency_id' => $product_model->location->currency_id,
                         'stamps_issued' => ((int) $product_model->location->loyalty_stamps) ? 1 : 0,
@@ -498,7 +500,6 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                             $user_controller->updatePivotTable($user_model, 'promotions', $promotion_id, array('redeemed' => 1, 'transaction_id' => $transaction_model->id, 'updated_at' => Carbon::now()));
                         }//E# if statement
                     }//E# if else statement
-                    
                     //Get loyalty stamps
                     $stamp_model = $payment_controller->getLocationStamps($transaction_model->location_id, $user_model->id);
 

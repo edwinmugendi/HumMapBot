@@ -39,6 +39,7 @@ class TransactionModel extends \BaseModel {
         'merchant_smsed',
         'merchant_emailed',
         'workflow',
+        'ip',
         'agent',
         'status',
         'created_by',

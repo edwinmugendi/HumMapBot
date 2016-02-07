@@ -21,7 +21,9 @@ class CreateProductsTable extends Migration {
             $table->float('price_1');
             $table->float('price_2');
             $table->boolean('loyable');
-
+            
+             $table->string('agent', 255);
+            $table->string('ip', 255);
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();

@@ -33,6 +33,8 @@ class CardModel extends \BaseModel {
         'address_country',
         'address_line1',
         'token',
+        'ip',
+        'agent',
         'status',
         'created_by',
         'updated_by'
@@ -43,12 +45,11 @@ class CardModel extends \BaseModel {
     );
     //Create validation rules
     public $createRules = array(
-        'stripe_token'=>'required',
+        'stripe_token' => 'required',
     );
     //Update validation rules
     public $updateRules = array(
     );
-    
 
     /**
      * S# user() function

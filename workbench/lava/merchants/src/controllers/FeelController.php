@@ -156,6 +156,8 @@ class FeelController extends MerchantsBaseController {
                     'type' => $this->input['type'],
                     'feeling' => $feeling,
                     'status' => 1,
+                    'ip'=>  $this->input['ip'],
+                    'agent'=>  $this->input['agent'],
                     'created_by' => $this->user['id'],
                     'updated_by' => $this->user['id']
                 );

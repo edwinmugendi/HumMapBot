@@ -17,7 +17,9 @@ class CreateFeelsTable extends Migration {
             $table->integer('location_id')->unsigned();
             $table->integer('type')->unsigned();
             $table->string('feeling', 2000);
-
+            
+            $table->string('agent', 255);
+            $table->string('ip', 255);
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();
             $table->integer('updated_by')->unsigned();

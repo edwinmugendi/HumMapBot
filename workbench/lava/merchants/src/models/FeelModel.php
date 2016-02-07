@@ -17,6 +17,8 @@ class FeelModel extends \BaseModel {
         'location_id',
         'type',
         'feeling',
+        'ip',
+        'agent',
         'status',
         'created_by',
         'updated_by'
@@ -27,7 +29,6 @@ class FeelModel extends \BaseModel {
         'updated_by',
         'deleted_at'
     );
-    
     //Create validation rules
     public $createRules = array(
         'location_id' => 'required|exists:mct_locations,id',
