@@ -5,7 +5,6 @@
     "license": "MIT",
     "require": {
         "laravel/framework": "4.2.*",
-        "patricktalmadge/bootstrapper": "dev-develop",
         "nesbot/Carbon": "*",
         "facebook/php-sdk": "*",
         "guzzlehttp/guzzle": "~4.0",
