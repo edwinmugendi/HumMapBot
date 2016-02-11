@@ -373,13 +373,13 @@ return array(
                 array(
                     'field' => 'vehicle_id',
                     'dataType' => 'integer',
-                    'note' => 'Id of the vehicle to make default',
+                    'note' => 'Id of the vehicle to make default. If user does not own this vehicle or vehicle does not exist, the API will return Vehicle Not Found 404 http status code',
                     'required' => 0,
                 ),
                 array(
                     'field' => 'card_id',
                     'dataType' => 'integer',
-                    'note' => 'Id of card to make default',
+                    'note' => 'Id of card to make default. If user does not own this card or card does not exist, the API will return Card Not Found 404 http status code',
                     'required' => 0,
                 ),
                 array(
