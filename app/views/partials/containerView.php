@@ -1,21 +1,21 @@
-<?php if (trim($viewData['sideBar'])): ?>
+<?php if (trim($view_data['sideBar'])): ?>
     <div class="container">
         <div class="row">
             <div class="col-md-2">
-                <?php echo $viewData['sideBar']; ?>
+                <?php echo $view_data['sideBar']; ?>
             </div>
             <div class="col-md-10">
-                <?php echo $viewData['contentView']; ?>
+                <?php echo $view_data['contentView']; ?>
             </div>
         </div>
     </div>
 <?php else: ?>
     <div class="container">
-        <?php echo $viewData['contentView']; ?>
+        <?php echo $view_data['contentView']; ?>
     </div>
 <?php endif; ?>
-<?php if ($viewData['imageable']): ?>
-    <div id="viewImageModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-path="<?php echo $viewData['uploadPath']; ?>">
+<?php if ($view_data['imageable']): ?>
+    <div id="viewImageModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-path="<?php echo $view_data['uploadPath']; ?>">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

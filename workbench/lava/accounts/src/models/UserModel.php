@@ -13,9 +13,10 @@ class UserModel extends \BaseModel {
 
     //Table
     protected $table = 'acc_users';
-    
     //Fillable fields
     protected $fillable = array(
+        'vehicle_id',
+        'card_id',
         'first_name',
         'last_name',
         'phone',
@@ -33,9 +34,9 @@ class UserModel extends \BaseModel {
         'notify_email',
         'notify_push',
         'os',
-        'vrm',
-        'card',
-        'push_token',
+        'vehicle_id',
+        'card_token',
+        'device_token',
         'app_version',
         'role_id',
         'points',
@@ -78,16 +79,16 @@ class UserModel extends \BaseModel {
     );
     //Create update rules
     public $updateRules = array(
-        'id'=>'exists:acc_users',
+        'id' => 'exists:acc_users',
         'email' => 'unique:acc_users',
         'location' => 'latLng',
         'notify_sms' => 'integer|between:0,1',
         'notify_email' => 'integer|between:0,1',
         'notify_push' => 'integer|between:0,1',
-        'push_token' => '',
+        'device_token' => '',
         'os' => 'in:ios,android',
-        'vrm' => '',
-        'card' => '',
+        'vehicle_id' => 'vehicleId',
+        'card_id' => 'cardId',
         'old_password' => 'required_with:new_password',
         'new_password' => 'password',
     );

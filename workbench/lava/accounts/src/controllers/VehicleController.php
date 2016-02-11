@@ -13,11 +13,9 @@ class VehicleController extends AccountsBaseController {
 
     //Controller
     public $controller = 'vehicle';
-    //Searchable fields
-    public $searchableFields = array('vrm');
-    //User Searchable relations
-    public $userSearchableRelations = array('vehicles');
-    
+    //Owned by
+    public $ownedBy = array('user');
+
     /**
      * S# controllerSpecificWhereClause() function
      * @author Edwin Mugendi
@@ -31,10 +29,21 @@ class VehicleController extends AccountsBaseController {
 
         if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//From API
             if (array_key_exists('id', $this->input)) {
+
                 //Get model by id
                 $vehicle_model = $this->getModelByField('id', $this->input['id']);
-                
-                if (!$vehicle_model || !$vehicle_model->user_owns) {
+
+                //dd($vehicle_model->count());
+                if ($vehicle_model && ($vehicle_model->status == 1) && ($vehicle_model->user_id == $this->user['id'])) {
+                    $message = \Lang::get($this->package . '::' . $this->controller . '.notification.list');
+
+                    $vehicle_array = $vehicle_model->toArray();
+
+                    unset($vehicle_array['user']);
+
+                    //Throw Vehicle not found error
+                    throw new \Api200Exception($vehicle_array, $message);
+                } else {
                     //Set notification
                     $this->notification = array(
                         'field' => 'vehicle_id',
@@ -45,54 +54,11 @@ class VehicleController extends AccountsBaseController {
                     //Throw Vehicle not found error
                     throw new \Api404Exception($this->notification);
                 }//E# if else statement
-            } else {
-                //Lazy load to load
-                $params['lazyLoad'] = array('vehicles');
-
-                //Get user by token
-                $user_model = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->input['token'], $params));
-
-                $vehicle_ids = array();
-
-                if ($user_model && $user_model->vehicles) {
-                    foreach ($user_model->vehicles as $single_vehicle) {
-                        $vehicle_ids[] = $single_vehicle['id'];
-                    }//E# foreach statement
-                }//E# if statement
-
-                $vehicle_ids = $vehicle_ids ? $vehicle_ids : array(0);
-
-                if ($vehicle_ids) {
-                    //Set where clause
-                    $whereClause[] = array(
-                        'where' => 'whereIn',
-                        'column' => 'id',
-                        'operator' => '=',
-                        'operand' => $vehicle_ids
-                    );
-                }//E# if statement
             }//E# if statement
         }//E# if statement
     }
 
 //E# controllerSpecificWhereClause() function
-
-    /**
-     * S# beforeCreating() function
-     * @author Edwin Mugendi
-     * Call this just before creating the model
-     * Can be used to prepare the inputs
-     * @param array $input The input
-     * @return 
-     */
-    public function beforeCreating() {
-        $this->input['status'] = 1;
-        $this->input['created_by'] = $this->user['id'] ? $this->user['id'] : 1;
-        $this->input['updated_by'] = $this->user['id'] ? $this->user['id'] : 1;
-        return;
-    }
-
-//E# beforeCreating() function
 
     /**
      * S# afterCreating() function
@@ -103,8 +69,8 @@ class VehicleController extends AccountsBaseController {
      * @param object $contollerModel The model created
      * @return 
      */
-    public function afterCreating(&$controllerModel) {
-        $this->afterCreatingAndUpdating($controllerModel);
+    public function afterCreating(&$controller_model) {
+        $this->afterCreatingAndUpdating($controller_model);
     }
 
 //E# afterCreating() function
@@ -116,8 +82,8 @@ class VehicleController extends AccountsBaseController {
      * Can be used to perform post create actions
      * @return 
      */
-    public function afterUpdating(&$controllerModel) {
-        $this->afterCreatingAndUpdating($controllerModel);
+    public function afterUpdating(&$controller_model) {
+        $this->afterCreatingAndUpdating($controller_model);
     }
 
 //E# afterUpdating() function
@@ -129,88 +95,143 @@ class VehicleController extends AccountsBaseController {
      * Can be used to perform post create and update actions
      * @return 
      */
-    private function afterCreatingAndUpdating(&$controllerModel) {
-        //Cache relation
-        $relation = 'allVehicles';
+    private function afterCreatingAndUpdating($controller_model) {
+        if (array_key_exists('is_default', $this->input) && $this->input['is_default']) {
+            $this->makeVehicleDefault($controller_model->id, false);
+        }//E# if statement
+        //Get vehicle details
+        $dvlasearch_response = $this->callController(\Util::buildNamespace('accounts', 'dvlasearch', 1), 'getVehicleDetails', array($controller_model->vrm));
 
-        //Lazy load to load
-        $parameters['lazyLoad'] = array($relation);
+        if ($dvlasearch_response['status']) {
 
-        //Get user by token
-        $user_model = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->input['token'], $parameters));
+            if (array_key_exists('error', $dvlasearch_response['response'])) {
+                //Error = 0 - No vehicle
+                //Error = 1 - API error
+                $controller_model->api_status = $dvlasearch_response['response']['error'];
+                $controller_model->api_message = $dvlasearch_response['response']['message'];
+            } else {
+                $controller_model->api_status = 2; //Vehicle found
+                $controller_model->api_message = '';
 
-        //Get current vrm's
-        $currentVrmIds = $user_model->$relation->lists('id');
-
-        if (!in_array($controllerModel->id, $currentVrmIds)) {
-            $now = Carbon::now();
-            $user_model->vehicles()->attach($controllerModel->id, array('created_at' => $now, 'updated_at' => $now));
+                $controller_model->make = $dvlasearch_response['response']['make'];
+                $controller_model->model = $dvlasearch_response['response']['model'];
+                $controller_model->six_month_rate = $dvlasearch_response['response']['sixMonthRate'];
+                $controller_model->twelve_month_rate = $dvlasearch_response['response']['twelveMonthRate'];
+                $controller_model->date_of_first_registration = $dvlasearch_response['response']['dateOfFirstRegistration'];
+                $controller_model->year_of_manufacture = $dvlasearch_response['response']['yearOfManufacture'];
+                $controller_model->cylinder_capacity = $dvlasearch_response['response']['cylinderCapacity'];
+                $controller_model->co_2_emissions = $dvlasearch_response['response']['co2Emissions'];
+                $controller_model->fuel_type = $dvlasearch_response['response']['fuelType'];
+                $controller_model->tax_status = $dvlasearch_response['response']['taxStatus'];
+                $controller_model->colour = $dvlasearch_response['response']['colour'];
+                $controller_model->type_approval = $dvlasearch_response['response']['typeApproval'];
+                $controller_model->wheel_plan = $dvlasearch_response['response']['wheelPlan'];
+                $controller_model->revenue_weight = $dvlasearch_response['response']['revenueWeight'];
+                $controller_model->tax_details = $dvlasearch_response['response']['taxDetails'];
+                $controller_model->mot_details = $dvlasearch_response['response']['motDetails'];
+                $controller_model->taxed = (boolean) $dvlasearch_response['response']['taxed'];
+                $controller_model->mot = (boolean) $dvlasearch_response['response']['mot'];
+            }//E# if else statement
+        } else {
+            $controller_model->api_status = 3; //API failure
+            $controller_model->api_message = $dvlasearch_response['response'];
         }//E# if else statement
-        //Get user by token
-        $user_model = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->input['token'], $parameters));
-
-        //Count user vehicles
-        $userVehicles = $user_model->$relation->count();
-
-        //Save user
-        $save_user = false;
-
-        if ($userVehicles == 1) {//Only one vehicle exists
-            //Default this vehicle
-            $user_model->vrm = $user_model->vehicles[0]->vrm;
-
-            //Update save user
-            $save_user = true;
-        }//E# if statement
-
-        if ($userVehicles) {//Vehicles exists
-            foreach ($user_model->$relation as $singleVehicle) {//Loop via the vehicles
-                //Data to update
-                $data_to_update = array();
-
-                if ($controllerModel->id == $singleVehicle->id) {
-                    $data_to_update['dropped_at'] = 'null';
-                    //Set is default
-                    if (($this->input['is_default'])) {
-                        //Default this vehicle
-                        $user_model->vrm = $singleVehicle->vrm;
-
-                        //Update save user
-                        $save_user = true;
-                    } else {
-                        //Default this vehicle
-                        $user_model->vrm = '';
-                        //Update save user
-                        $save_user = true;
-                    }//E# if else statement
-                    //Set force
-                    $data_to_update['force'] = $this->input['force'];
-
-                    //Set purpose
-                    if (($this->input['purpose'])) {
-                        $data_to_update['purpose'] = $this->input['purpose'];
-                    }//E# if statement
-                }//E# if statement
-
-                if ($data_to_update) {//Update
-                    $data_to_update['status'] = 1;
-                    $data_to_update['created_by'] = $this->user['id'];
-                    $data_to_update['updated_by'] = $this->user['id'];
-                    $data_to_update['ip'] = $this->input['ip'];
-                    $data_to_update['agent'] = $this->input['agent'];
-                    //Update pivot
-                    $this->updatePivotTable($user_model, $relation, $singleVehicle->id, $data_to_update);
-                }//E# if statement
-            }//# if else statement
-        }//E# if statement
-
-        if ($save_user) {
-            //Save model
-            $user_model->save();
-        }//E# if statement
+        //Save controller
+        $controller_model->save();
     }
 
 //E# afterCreatingAndUpdating() function
+
+    /**
+     * S# makeVehicleDefault() function
+     * 
+     * Make vehicle default
+     * 
+     * @param int $vehicle_id Vehicle id
+     * @param boolean $save Should we save this vehicle as default if it's not yet saved
+     * 
+     */
+    public function makeVehicleDefault($vehicle_id, $save) {
+        if ($save) {
+            //Set where clause
+            $whereClause = array(
+                array(
+                    'where' => 'where',
+                    'column' => 'id',
+                    'operator' => '=',
+                    'operand' => $vehicle_id
+                )
+            );
+
+            $data_to_update = array(
+                'is_default' => 1
+            );
+
+            $this->massUpdate($whereClause, $data_to_update);
+        }//E# if statement
+        //Set where clause
+        $whereClause = array(
+            array(
+                'where' => 'where',
+                'column' => 'id',
+                'operator' => '=',
+                'operand' => $this->user['id']
+            )
+        );
+
+        $data_to_update = array(
+            'vehicle_id' => $vehicle_id
+        );
+
+        //Update user
+        $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'massUpdate', array($whereClause, $data_to_update));
+
+        //Fields
+        $fields = array('id');
+
+        //Set where clause
+        $whereClause = array(
+            array(
+                'where' => 'where',
+                'column' => 'user_id',
+                'operator' => '=',
+                'operand' => $this->user['id']
+            ),
+            array(
+                'where' => 'where',
+                'column' => 'is_default',
+                'operator' => '=',
+                'operand' => 1
+            )
+        );
+        $parameters['scope'] = array('statusOne');
+
+        $vehicle_model = $this->select($fields, $whereClause, 2, $parameters);
+
+        $vehicle_ids = $vehicle_model->lists('id');
+
+        $clean_vehicle_ids = array_diff($vehicle_ids, array($vehicle_id));
+
+        if ($clean_vehicle_ids) {
+            //Set where clause
+            $whereClause = array(
+                array(
+                    'where' => 'whereIn',
+                    'column' => 'id',
+                    'operator' => '=',
+                    'operand' => $clean_vehicle_ids
+                )
+            );
+
+            $data_to_update = array(
+                'is_default' => 0
+            );
+
+            $this->massUpdate($whereClause, $data_to_update);
+        }//E# if statement
+    }
+
+//E# makeVehicleDefault() function
 
     /**
      * S# postDrop() function

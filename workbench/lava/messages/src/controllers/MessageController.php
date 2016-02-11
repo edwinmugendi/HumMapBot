@@ -198,7 +198,7 @@ class MessageController extends MessagesBaseController {
     private function getMessageBody($type, $comCode, $parameters) {
         //Return the actual conversation
         return \View::make($this->package . '::' . $this->controller . '.' . \Config::get('app.locale') . '.' . $comCode . 'View')
-                        ->with('viewData', $parameters)
+                        ->with('view_data', $parameters)
                         ->render();
     }
 
@@ -221,7 +221,7 @@ class MessageController extends MessagesBaseController {
      */
     public function email($senderId, $sender, $recipientId, $recipient, $comCode, $lang, $parameters = array()) {
         //Define view data
-        $viewData = array();
+        $view_data = array();
 
         //Get body to inject into the template
         $parameters['body'] = $this->getMessageBody('email', $comCode, $parameters);
@@ -230,7 +230,7 @@ class MessageController extends MessagesBaseController {
         $comCodeConfig = \Config::get($this->package . '::' . $this->controller . '.communication.' . $comCode);
 
         //Set parameters as view data
-        $viewData['viewData'] = $parameters;
+        $view_data['view_data'] = $parameters;
 
         //Set the subject
         $subject = \Lang::get($this->package . '::' . $this->controller . '.communication.' . $comCode . '.email', $parameters);
@@ -241,7 +241,7 @@ class MessageController extends MessagesBaseController {
         );
 
         //Send email
-        $sent = \Mail::send($template, $viewData, function($message) use(&$recipient, &$senderName, &$subject) {
+        $sent = \Mail::send($template, $view_data, function($message) use(&$recipient, &$senderName, &$subject) {
                     if (is_array($recipient)) {//Send to many
                         //Set to
                         $message->to($recipient[0], $senderName)->subject($subject);

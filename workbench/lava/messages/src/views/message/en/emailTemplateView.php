@@ -5,7 +5,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="initial-scale=1.0">    <!-- So that mobile webkit will display zoomed in -->
         <meta name="format-detection" content="telephone=no"> <!-- disable auto telephone linking in iOS -->
-        <title><?php echo $viewData['productName']; ?></title>
+        <title><?php echo $view_data['productName']; ?></title>
         <style type="text/css">
             /* Resets: see reset.css for details */
             .ReadMsgBody { width: 100%; background-color: #ebebeb;}
@@ -49,13 +49,13 @@
 
                                 <!-- ### BEGIN CONTENT ### -->
                                 <div style="font-weight: bold; font-size: 18px; line-height: 60px; clear: both; width:100%" bgcolor="#ebebeb">
-                                    <div style="float: left"><img src="<?php echo \URL::to('/') . '/img/logo.png'; ?>" title="<?php echo $viewData['productName']; ?>"/></div>
+                                    <div style="float: left"><img src="<?php echo \URL::to('/') . '/img/logo.png'; ?>" title="<?php echo $view_data['productName']; ?>"/></div>
                                 </div>  
                                 <div style="clear:both; width: 100%">&nbsp;</div>
-                                <?php echo $viewData['body']; ?>
+                                <?php echo $view_data['body']; ?>
                                 <p style="font-weight: bold">
                                     Regards,<br/>
-                                    The <?php echo $viewData['productName']; ?> Team.
+                                    The <?php echo $view_data['productName']; ?> Team.
                                 </p>
                             </td>
                         </tr>

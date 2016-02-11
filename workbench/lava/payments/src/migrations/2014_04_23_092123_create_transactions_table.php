@@ -17,6 +17,7 @@ class CreateTransactionsTable extends Migration {
             $table->integer('user_id')->unsigned();
             $table->integer('product_id')->unsigned();
             $table->integer('location_id')->unsigned();
+            $table->integer('merchant_id')->unsigned();
             $table->integer('promotion_id')->unsigned();
 
             //Payment

@@ -50,6 +50,9 @@ class BaseController extends Controller {
         //Cache ip
         $this->input['ip'] = \Request::getClientIp();
         $this->input['agent'] = \Request::server('HTTP_USER_AGENT');
+
+        //Prep controller
+        $this->controller = camel_case($this->controller);
     }
 
 //E# __construct() function
@@ -66,6 +69,26 @@ class BaseController extends Controller {
     }
 
 //E# setupLayout() function
+
+    /**
+     * S# massUpdate() function
+     * @author Edwin Mugendi
+     * Mass update
+     */
+    public function massUpdate($whereClause, $dataToUpdate) {
+
+        //Build model namespace
+        $modelName = \Util::buildNamespace($this->package, $this->controller, 2);
+
+        //Create a model object
+        $model = new $modelName();
+
+        $this->buildWhereClause($model, $whereClause);
+
+        $model->update($dataToUpdate);
+    }
+
+//E# massUpdate() function
 
     /**
      * S# generateUniqueField () function
@@ -100,13 +123,13 @@ class BaseController extends Controller {
      * S# updatePivotTable() function
      * @author Edwin Mugendi
      * Update a users pivot table
-     * @param Model $controllerModel The parent model
+     * @param Model $controller_model The parent model
      * @param string $relation The relation
      * @param int $relationId The relation's model id 
      * @return none
      */
-    public function updatePivotTable(&$controllerModel, $relation, $relationId, $dataToUpdate) {
-        $controllerModel->$relation()->updateExistingPivot($relationId, $dataToUpdate, false);
+    public function updatePivotTable(&$controller_model, $relation, $relationId, $dataToUpdate) {
+        $controller_model->$relation()->updateExistingPivot($relationId, $dataToUpdate, false);
     }
 
 //E# updatePivotTable() function
@@ -150,14 +173,14 @@ class BaseController extends Controller {
         $this->isInputValid();
 
         //Get model by field
-        $controllerModel = $this->getModelByField($this->input['field'], $this->input['value']);
+        $controller_model = $this->getModelByField($this->input['field'], $this->input['value']);
 
-        if ($controllerModel) {//Model exists
-            if ($controllerModel->user_owns) {//User owns this model
+        if ($controller_model) {//Model exists
+            if ($controller_model->user_owns) {//User owns this model
                 //Get success message
                 $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => $this->input['field'], 'value' => $this->input['value']));
 
-                throw new \Api200Exception($this->prepareModelToReturn($controllerModel->toArray()), $message);
+                throw new \Api200Exception($this->prepareModelToReturn($controller_model->toArray()), $message);
             } else {//User does not own this model
                 //Set notification
                 $this->notification = array(
@@ -275,15 +298,15 @@ class BaseController extends Controller {
         $this->isInputValid();
 
         //Get model by field
-        $controllerModel = $this->getModelByField($this->input['field'], $this->input['value']);
+        $controller_model = $this->getModelByField($this->input['field'], $this->input['value']);
 
-        if ($controllerModel) {//Model exists
+        if ($controller_model) {//Model exists
             if ($this->subdomain == 'api') {//From API
                 //Get success message
                 $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => $this->input['field'], 'value' => $this->input['value']));
 
                 //Throw 200 Exception
-                throw new Api200Exception($this->prepareModelToReturn($controllerModel->toArray()), $message);
+                throw new Api200Exception($this->prepareModelToReturn($controller_model->toArray()), $message);
             }//E# if else statement
         } else {
             //Set notification
@@ -343,7 +366,7 @@ class BaseController extends Controller {
         $parameters['orderBy'][] = array('id' => 'desc');
 
         //Select this users models
-        $controllerModel = $this->select($fields, $whereClause, 2, $parameters);
+        $controller_model = $this->select($fields, $whereClause, 2, $parameters);
 
         if ($this->subdomain == 'api') {//From API
             //Get success message
@@ -352,20 +375,20 @@ class BaseController extends Controller {
             //Define relation array
             $relationArray = array();
 
-            foreach ($controllerModel as $singleRelation) {//Loop through the relations
+            foreach ($controller_model as $singleRelation) {//Loop through the relations
                 $relationArray[] = $this->prepareModelToReturn($singleRelation->toArray());
             }//E# foreach statement
             //Build notification
             $this->notification = array(
                 'list' => $relationArray,
                 'pagination' => array(
-                    'page' => $controllerModel->getCurrentPage(),
-                    'last_page' => $controllerModel->getLastPage(),
-                    'per_page' => $controllerModel->getPerPage(),
-                    'total' => $controllerModel->getTotal(),
-                    'from' => $controllerModel->getFrom(),
-                    'to' => $controllerModel->getTo(),
-                    'count' => $controllerModel->count()
+                    'page' => $controller_model->getCurrentPage(),
+                    'last_page' => $controller_model->getLastPage(),
+                    'per_page' => $controller_model->getPerPage(),
+                    'total' => $controller_model->getTotal(),
+                    'from' => $controller_model->getFrom(),
+                    'to' => $controller_model->getTo(),
+                    'count' => $controller_model->count()
                 )
             );
 
@@ -379,7 +402,7 @@ class BaseController extends Controller {
 
         return $this->find($findId)->$relation()->wherePivot($whereField, '=', $whereValue)->get();
 
-        //  return Lava\Accounts\UserModel::find($this->user['id'])->vehicles()->wherePivot($this->controller . '_id', '=', $controllerModel->id)->get();
+        //  return Lava\Accounts\UserModel::find($this->user['id'])->vehicles()->wherePivot($this->controller . '_id', '=', $controller_model->id)->get();
     }
 
     /**
@@ -453,16 +476,16 @@ class BaseController extends Controller {
     public function buildSingleList() {
 
         $controllerList = '';
-        foreach ($this->viewData['controllerModel'] as $singleController) {//Loop via the controller
+        foreach ($this->view_data['controller_model'] as $singleController) {//Loop via the controller
             //Prepare fields for list view
             $this->beforeViewing($singleController);
 
             //Set the single controller to view data
-            $this->viewData['singleModel'] = $singleController;
+            $this->view_data['singleModel'] = $singleController;
 
             //Set user controller to the view data
             $controllerList .= \View::make($this->package . '::' . $this->controller . '.' . $this->controller . 'ListSingleView')
-                            ->with('viewData', $this->viewData)->render();
+                            ->with('view_data', $this->view_data)->render();
         }//E#  foreach statement
 
         return $controllerList;
@@ -481,19 +504,19 @@ class BaseController extends Controller {
         $this->crudId = 3;
 
         //Prepare view data
-        $this->viewData = $this->prepareViewData('list');
+        $this->view_data = $this->prepareViewData('list');
 
         //Set layout's title
-        $this->layout->title = \Lang::get($this->viewData['package'] . '::' . $this->viewData['controller'] . '.' . $this->viewData['page'] . '.title');
+        $this->layout->title = \Lang::get($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['page'] . '.title');
 
         //Order
-        $this->viewData['dataSource']['per_page'] = \BaseArrayDataModel::getPerPageSelectOptions($this->package, $this->controller);
+        $this->view_data['dataSource']['per_page'] = \BaseArrayDataModel::getPerPageSelectOptions($this->package, $this->controller);
 
         //Order
-        $this->viewData['dataSource']['order'] = \BaseArrayDataModel::getOrderSelectOptions($this->package, $this->controller);
+        $this->view_data['dataSource']['order'] = \BaseArrayDataModel::getOrderSelectOptions($this->package, $this->controller);
 
         //Define parameters
-        $this->viewData['paginationAppends'] = $whereClause = $parameters = array();
+        $this->view_data['paginationAppends'] = $whereClause = $parameters = array();
 
         //Inject Data Sources
         $this->injectDataSources();
@@ -505,7 +528,7 @@ class BaseController extends Controller {
         $model = \Util::buildNamespace($this->package, $this->controller, 2);
 
         //Create a model
-        $viewData['model'] = new $model;
+        $view_data['model'] = new $model;
 
         //Fields to select
         $fields = array('*');
@@ -522,16 +545,16 @@ class BaseController extends Controller {
             $per_page = \Config::get('product.perPageMin');
         }//if else statement
         //Set per page to parameters
-        $this->viewData['paginationAppends']['per_page'] = $parameters['paginate'] = $per_page;
+        $this->view_data['paginationAppends']['per_page'] = $parameters['paginate'] = $per_page;
 
         //Set export
         if (array_key_exists('export', $this->input) && in_array($this->input['export'], array('pdf', 'print', 'csv', 'xls'))) {
-            $this->viewData['export'] = $this->input['export'];
+            $this->view_data['export'] = $this->input['export'];
             //Override per page
-            $this->viewData['paginationAppends']['per_page'] = $parameters['paginate'] = 1000;
+            $this->view_data['paginationAppends']['per_page'] = $parameters['paginate'] = 1000;
         }//if else statement
 
-        if (array_key_exists('sort', $this->input) && property_exists($viewData['model'], 'viewFields') && array_key_exists($this->input['sort'], $viewData['model']->viewFields)) {//Sort field
+        if (array_key_exists('sort', $this->input) && property_exists($view_data['model'], 'viewFields') && array_key_exists($this->input['sort'], $view_data['model']->viewFields)) {//Sort field
             if (array_key_exists('order', $this->input)) {//Order exists
                 if (\Str::lower($this->input['order']) == 'desc') {//Desc
                     //Order by field in acsending order
@@ -552,7 +575,7 @@ class BaseController extends Controller {
         $parameters['lazyLoad'] = $this->lazyLoad;
 
         //Search
-        $this->buildSearchWhereClause($fields, $whereClause, $parameters, $viewData['model']);
+        $this->buildSearchWhereClause($fields, $whereClause, $parameters, $view_data['model']);
 
         //Build where clause based on role
         $this->roleBasedWhereClause($fields, $whereClause, $parameters);
@@ -567,26 +590,26 @@ class BaseController extends Controller {
         $this->controllerSpecificWhereClause($fields, $whereClause, $parameters);
 
         //Select this users
-        $this->viewData['controllerModel'] = $this->select($fields, $whereClause, 2, $parameters);
+        $this->view_data['controller_model'] = $this->select($fields, $whereClause, 2, $parameters);
 
         //Prepare controller model
         $this->prepareControllerModel();
 
         //Build the user list and set to view data
-        $this->viewData['controllerList'] = $this->buildSingleList($this->viewData);
+        $this->view_data['controllerList'] = $this->buildSingleList($this->view_data);
 
-        //return $this->viewData['controllerModel'][0];
+        //return $this->view_data['controller_model'][0];
         //Get and set layout's inline javascript
-        $this->layout->inlineJs = $this->injectInlineJs($this->viewData);
+        $this->layout->inlineJs = $this->injectInlineJs($this->view_data);
 
         //Register css and js assets for this page
-        $this->layout->assets = $this->registerAssets($this->viewData);
+        $this->layout->assets = $this->registerAssets($this->view_data);
 
         //Set layout's top bar partial
         $this->layout->topBarPartial = $this->getTopBarPartialView();
 
         //Set list side bar
-        $this->viewData['sideBar'] = $this->getListSideBarPartialView();
+        $this->view_data['sideBar'] = $this->getListSideBarPartialView();
 
         if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {
 
@@ -596,11 +619,11 @@ class BaseController extends Controller {
             //Get success message
             $message = \Lang::get($this->package . '::' . $this->controller . '.notification.list');
 
-            throw new \Api200Exception($this->viewData['controllerModel']->toArray(), $message);
+            throw new \Api200Exception($this->view_data['controller_model']->toArray(), $message);
         }//E# if statement
         //Load content view
-        $this->viewData['contentView'] = \View::make($this->viewData['package'] . '::' . $this->viewData['controller'] . '.' . $this->viewData['view'])
-                ->with('viewData', $this->viewData);
+        $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])
+                ->with('view_data', $this->view_data);
 
         if (array_key_exists('export', $this->input) && in_array($this->input['export'], array('csv', 'xls'))) {
             return $this->exportToCsv();
@@ -611,7 +634,7 @@ class BaseController extends Controller {
         }//E# if statement
 
         if (array_key_exists('echo', $this->input)) {
-            return $this->viewData['contentView'];
+            return $this->view_data['contentView'];
         }//E# if statement
         //Set container view
         $this->layout->containerView = $this->getContainerViewPartialView();
@@ -682,7 +705,7 @@ class BaseController extends Controller {
                     if ($value) {
 
                         //Append to pagination
-                        $this->viewData['paginationAppends'][$key] = $value;
+                        $this->view_data['paginationAppends'][$key] = $value;
 
                         if ($model->viewFields[$key][2] == 'like') {
                             $value = '%' . $value . '%';
@@ -853,7 +876,7 @@ class BaseController extends Controller {
 
         //Set date format
         $js['date_format'] = $this->getDateFormat();
-        
+
         //Set crud id
         $js['crudId'] = $this->crudId;
 
@@ -873,7 +896,7 @@ class BaseController extends Controller {
         $js['lang']['current'] = \Config::get('app.locale');
 
         //Set property
-        $js['controllerModel'] = array_key_exists('controllerModel', $parameters) ? $parameters['controllerModel'] : false;
+        $js['controller_model'] = array_key_exists('controller_model', $parameters) ? $parameters['controller_model'] : false;
 
         if ($parameters['page'] == $this->controller . 'ListPage') {
             $js['lang']['actions'] = \Lang::get($this->package . '::' . $this->controller . '.view.actions');
@@ -977,7 +1000,7 @@ class BaseController extends Controller {
     public function getTopBarPartialView() {
         //Get and return the global top bar partial
         return \View::make('partials.topBar')
-                        ->with('viewData', $this->viewData);
+                        ->with('view_data', $this->view_data);
     }
 
 //E# getTopBarPartialView() method
@@ -991,7 +1014,7 @@ class BaseController extends Controller {
     public function getPostSideBarPartialView() {
         //Get and return the global side bar partial
         return \View::make('partials.sideBar')
-                        ->with('viewData', $this->viewData);
+                        ->with('view_data', $this->view_data);
     }
 
 //E# getPostSideBarPartialView() method
@@ -1005,7 +1028,7 @@ class BaseController extends Controller {
     public function getListSideBarPartialView() {
         //Get and return the global side bar partial
         return \View::make('partials.sideBar')
-                        ->with('viewData', $this->viewData);
+                        ->with('view_data', $this->view_data);
     }
 
 //E# getListSideBarPartialView() method
@@ -1019,7 +1042,7 @@ class BaseController extends Controller {
     public function getContainerViewPartialView() {
         //Get and return the global side bar partial
         return \View::make('partials.containerView')
-                        ->with('viewData', $this->viewData);
+                        ->with('view_data', $this->view_data);
     }
 
 //E# getContainerViewPartialView() method
@@ -1033,7 +1056,7 @@ class BaseController extends Controller {
     public function getFooterBarPartialView() {
         //Get and return the global footer bar partial
         return \View::make('partials.footerBar')
-                        ->with('viewData', $this->viewData);
+                        ->with('view_data', $this->view_data);
     }
 
 //E# getFooterBarPartialView() method
@@ -1084,65 +1107,65 @@ class BaseController extends Controller {
         $this->layout->meta_keywords = \Config::get('product.meta.keywords');
 
         //Set data source to view data
-        $this->viewData['dataSource'] = array();
+        $this->view_data['dataSource'] = array();
 
         //Set package to view data
-        $this->viewData['package'] = $this->package;
+        $this->view_data['package'] = $this->package;
 
         //Set controller to view data
-        $this->viewData['controller'] = $this->controller;
+        $this->view_data['controller'] = $this->controller;
 
         //Set carbon to view data
-        $this->viewData['Carbon'] = new Carbon;
+        $this->view_data['Carbon'] = new Carbon;
 
         //Set action to view data
-        $this->viewData['action'] = $action;
+        $this->view_data['action'] = $action;
 
         //Set theme to view data
-        $this->viewData['theme'] = $this->theme;
+        $this->view_data['theme'] = $this->theme;
 
         //Set logged in to view data
-        $this->layout->logged = $this->viewData['logged'] = \Auth::check();
+        $this->layout->logged = $this->view_data['logged'] = \Auth::check();
 
         //Set logged in user to view data
-        $this->viewData['user'] = $this->user;
+        $this->view_data['user'] = $this->user;
 
         //Set current user to view data
-        //$this->viewData['currentUser'] = $this->currentUser;
+        //$this->view_data['currentUser'] = $this->currentUser;
         //Set current user to view data
-        // $this->viewData['org'] = $this->org;
+        // $this->view_data['org'] = $this->org;
         //Set input data to view data
-        $this->viewData['input'] = $this->input;
+        $this->view_data['input'] = $this->input;
 
         //Set disable Fields to view data
-        //$this->viewData['disableFields'] = $this->disableFields;
+        //$this->view_data['disableFields'] = $this->disableFields;
         //Set segment to view data
-        $this->viewData['segments'] = \Request::segments();
+        $this->view_data['segments'] = \Request::segments();
 
         //Set environment to view data
-        $this->viewData['env'] = App::environment();
+        $this->view_data['env'] = App::environment();
 
         //Set date_format to view data
-        $this->viewData['date_format'] = $this->convertDateFormat($this->getDateFormat());
+        $this->view_data['date_format'] = $this->convertDateFormat($this->getDateFormat());
 
         //Set imageable to view data
-        $this->viewData['imageable'] = $this->imageable;
+        $this->view_data['imageable'] = $this->imageable;
 
         if ($this->imageable) {
             //Set uploadpath to view data
-            $this->viewData['uploadPath'] = \URL::to('/') . \Config::get('media::media.uploadPath');
+            $this->view_data['uploadPath'] = \URL::to('/') . \Config::get('media::media.uploadPath');
         }//E# if statement
         //Set view to view data
-        $this->viewData['view'] = camel_case($this->controller . '_' . $action . '_view');
+        $this->view_data['view'] = camel_case($this->controller . '_' . $action . '_view');
 
         //Set page to view data
-        $this->viewData['page'] = camel_case($this->controller . '_' . $action . '_page');
+        $this->view_data['page'] = camel_case($this->controller . '_' . $action . '_page');
 
         //Set layout's footer bar partial
-        $this->layout->footerBarPartial = $this->getFooterBarPartialView($this->viewData);
+        $this->layout->footerBarPartial = $this->getFooterBarPartialView($this->view_data);
 
         //Return prepared view data
-        return $this->viewData;
+        return $this->view_data;
     }
 
 //E# prepareViewData() method
@@ -1498,20 +1521,20 @@ class BaseController extends Controller {
 
             if ($should_create) {
                 //Create controller model
-                $controllerModel = $this->createIfValid($this->input, true);
+                $controller_model = $this->createIfValid($this->input, true);
 
                 //Just after creating the model
-                $this->afterCreating($controllerModel);
+                $this->afterCreating($controller_model);
             } else {
                 //Create controller model
-                $controllerModel = $this->afterCreating($this->input);
+                $controller_model = $this->afterCreating($this->input);
             }//E# if else statement
 
             if ($this->imageable) {//Imageable
-                $this->callController(\Util::buildNamespace('media', 'media', 1), 'relateToMedia', array(&$controllerModel, $this->controller));
+                $this->callController(\Util::buildNamespace('media', 'media', 1), 'relateToMedia', array(&$controller_model, $this->controller));
             }//E# if statement
             //Redirect to list
-            return $this->createRedirect($controllerModel);
+            return $this->createRedirect($controller_model);
         }//E# if else statement
     }
 
@@ -1553,7 +1576,7 @@ class BaseController extends Controller {
      * Can be used to perform post create actions
      * @return 
      */
-    public function afterCreating(&$controllerModel) {
+    public function afterCreating(&$controller_model) {
         return;
     }
 
@@ -1564,18 +1587,18 @@ class BaseController extends Controller {
      * @author Edwin Mugendi
      * Redirect after creating the model
      * 
-     * @param Model $controllerModel Controller model
+     * @param Model $controller_model Controller model
      * 
      * @return \Redirect if source is web redirect to controller list page
      * @return \API200Exception if source is "api" throw Success Exception 
      */
-    public function createRedirect($controllerModel) {
+    public function createRedirect($controller_model) {
 
         //Get success message
         $message = \Lang::get($this->package . '::' . $this->controller . '.notification.created');
 
         if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//From API
-            throw new \Api200Exception(array_only($controllerModel->toArray(), array('id')), $message);
+            throw new \Api200Exception(array_only($controller_model->toArray(), array('id')), $message);
         }//E# if else statement
         //Set notification
         $this->notification = array(
@@ -1627,18 +1650,18 @@ class BaseController extends Controller {
 
 
             //Update controller model
-            $controllerModel = $this->updateIfValid('id', $this->input['id'], $this->input, true);
+            $controller_model = $this->updateIfValid('id', $this->input['id'], $this->input, true);
 
 
-            if ($controllerModel) {//Model updated
+            if ($controller_model) {//Model updated
                 //Just after updating the model
-                $this->afterUpdating($controllerModel);
+                $this->afterUpdating($controller_model);
 
                 if ($this->imageable) {//Imageable
-                    $this->callController(\Util::buildNamespace('media', 'media', 1), 'relateToMedia', array(&$controllerModel, $this->controller));
+                    $this->callController(\Util::buildNamespace('media', 'media', 1), 'relateToMedia', array(&$controller_model, $this->controller));
                 }//E# if statement
                 //Redirect to list
-                return $this->updateRedirect($controllerModel);
+                return $this->updateRedirect($controller_model);
             }//E# if statement
         }//E# if else statement
     }
@@ -1684,7 +1707,7 @@ class BaseController extends Controller {
      * Can be used to perform post create actions
      * @return 
      */
-    public function afterUpdating(&$controllerModel) {
+    public function afterUpdating(&$controller_model) {
         return;
     }
 
@@ -1695,18 +1718,18 @@ class BaseController extends Controller {
      * @author Edwin Mugendi
      * Redirect after updating the model
      * 
-     * @param Model $controllerModel Controller model
+     * @param Model $controller_model Controller model
      * 
      * @return \Redirect if source is web redirect to controller list page
      * @return \API200Exception if source is "api" throw Success Exception 
      */
-    public function updateRedirect($controllerModel) {
+    public function updateRedirect($controller_model) {
 
         //Get success message
         $message = \Lang::get($this->package . '::' . $this->controller . '.notification.updated');
 
         if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//From API
-            throw new \Api200Exception($controllerModel->toArray(), $message);
+            throw new \Api200Exception($controller_model->toArray(), $message);
         }//E# if else statement
         //Set notification
         $this->notification = array(
@@ -1759,17 +1782,17 @@ class BaseController extends Controller {
         $validation = $this->isInputValid();
 
         //Get model by field
-        $controllerModel = $this->getModelByField($field, $value);
+        $controller_model = $this->getModelByField($field, $value);
 
-        if ($controllerModel) {//Model exists
-            if ($this->beforeDeleting($controllerModel)) {
-                $controllerModel->delete();
+        if ($controller_model) {//Model exists
+            if ($this->beforeDeleting($controller_model)) {
+                $controller_model->delete();
             }//E# if statement
             //After delete callback
-            $this->afterDeleting($controllerModel);
+            $this->afterDeleting($controller_model);
 
             //Delete Redirect
-            return $this->deleteRedirect($controllerModel);
+            return $this->deleteRedirect($controller_model);
         } else {
             //Set notification
             $this->notification = array(
@@ -1790,11 +1813,11 @@ class BaseController extends Controller {
      * @author Edwin Mugendi
      * Call this just before deleting the model
      * 
-     * @param Model $controllerModel Controller Model
+     * @param Model $controller_model Controller Model
      * 
      * @return boolean true to go aheading with deleting, false not to delete 
      */
-    public function beforeDeleting($controllerModel) {
+    public function beforeDeleting($controller_model) {
 
         return true;
     }
@@ -1806,11 +1829,11 @@ class BaseController extends Controller {
      * @author Edwin Mugendi
      * Call this just after deleting the model
      *
-     * @param Model $controllerModel Controller Model
+     * @param Model $controller_model Controller Model
      * 
      * @return; 
      */
-    public function afterDeleting($controllerModel) {
+    public function afterDeleting($controller_model) {
         return;
     }
 
@@ -1821,17 +1844,17 @@ class BaseController extends Controller {
      * @author Edwin Mugendi
      * Redirect after deleting the model
      * 
-     * @param Model $controllerModel Controller model
+     * @param Model $controller_model Controller model
      * 
      * @return \Redirect if source is web redirect to controller list page
      * @return \API200Exception if source is "api" throw Success Exception 
      */
-    public function deleteRedirect($controllerModel) {
+    public function deleteRedirect($controller_model) {
         if ($this->subdomain == 'api') {//From API
             //Get success message
-            $message = \Lang::get($this->package . '::' . $this->controller . '.api.delete', array('field' => 'id', 'value' => $controllerModel->id));
+            $message = \Lang::get($this->package . '::' . $this->controller . '.api.delete', array('field' => 'id', 'value' => $controller_model->id));
 
-            throw new \Api200Exception(array_only($controllerModel->toArray(), array('id')), $message);
+            throw new \Api200Exception(array_only($controller_model->toArray(), array('id')), $message);
         }//E# if else statement
 
         return \Redirect::route($this->controller . 'List');
@@ -1865,7 +1888,7 @@ class BaseController extends Controller {
             foreach ($this->ownedBy as $singleOwnedBy) {
                 //Owned by current user
                 if ($singleOwnedBy == 'user') {
-                    $this->input['user_id'] = $this->currentUser['id'];
+                    $this->input['user_id'] = $this->user['id'];
                 }//E# if statement
                 //Owned by current organization
                 if ($singleOwnedBy == 'organization') {

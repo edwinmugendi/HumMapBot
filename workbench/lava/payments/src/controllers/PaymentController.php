@@ -165,12 +165,12 @@ class PaymentController extends PaymentsBaseController {
             'time' => $date->format(' h:i A')
         );
         
-        if ($user_model->notify_push && $user_model->push_token && $user_model->os) {//Push
+        if ($user_model->notify_push && $user_model->device_token && $user_model->os) {//Push
             //Set os to parameters
             $parameters['os'] = $user_model->os;
             
             //Converse
-            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('push', null, null, $user_model->id, $user_model->push_token, $template, \Config::get('app.locale'), $parameters));
+            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('push', null, null, $user_model->id, $user_model->device_token, $template, \Config::get('app.locale'), $parameters));
 
             $transaction_model->user_pushed = 1;
         }//E# if statement

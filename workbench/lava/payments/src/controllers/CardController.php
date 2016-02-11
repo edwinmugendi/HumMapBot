@@ -31,26 +31,26 @@ class CardController extends PaymentsBaseController {
         $this->crudId = 1;
 
         //Prepare view data
-        $this->viewData = $this->prepareViewData('form');
+        $this->view_data = $this->prepareViewData('form');
 
         //Set layout's title
-        $this->layout->title = \Lang::get($this->viewData['package'] . '::' . $this->viewData['controller'] . '.' . $this->viewData['page'] . '.title');
+        $this->layout->title = \Lang::get($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['page'] . '.title');
 
         //Get and set layout's inline javascript
-        $this->layout->inlineJs = $this->injectInlineJs($this->viewData);
+        $this->layout->inlineJs = $this->injectInlineJs($this->view_data);
 
         //Register css and js assets for this page
-        $this->layout->assets = $this->registerAssets($this->viewData);
+        $this->layout->assets = $this->registerAssets($this->view_data);
 
         //Set layout's top bar partial
         $this->layout->topBarPartial = $this->getTopBarPartialView();
 
         //Load content view
-        $this->viewData['sideBar'] = '';
+        $this->view_data['sideBar'] = '';
 
         //Load content view
-        $this->viewData['contentView'] = \View::make($this->viewData['package'] . '::' . $this->viewData['controller'] . '.' . $this->viewData['view'])
-                ->with('viewData', $this->viewData);
+        $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])
+                ->with('view_data', $this->view_data);
 
         //Set container view
         $this->layout->containerView = $this->getContainerViewPartialView();
@@ -81,7 +81,7 @@ class CardController extends PaymentsBaseController {
      * Can be used to perform post create actions
      * @return 
      */
-    public function afterCreating(&$controllerModel) {
+    public function afterCreating(&$controller_model) {
         if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {
 
             //Attach card to user
@@ -160,16 +160,6 @@ class CardController extends PaymentsBaseController {
     }
 
 //E# postDrop() function
-
-    /**
-     * S# beforeViewing() function
-     * Prepare fields for list view
-     */
-    public function beforeViewing(&$singleModel) {
-    
-    }
-
-//E# beforeViewing() function
 
     /**
      * S# controllerSpecificWhereClause() function

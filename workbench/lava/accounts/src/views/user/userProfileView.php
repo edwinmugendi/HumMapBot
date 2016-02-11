@@ -1,15 +1,15 @@
 <div id="userProfileView" class="commonMaxWidth commonPositionCenter">
     <div id="profileCard" class="commonFloatLeft">
-        <h1><i class="glyphicon glyphicon-user commonColorRed"></i><?php echo $viewData['user']['name']; ?></h1>
-        <h4><i class="glyphicon glyphicon-envelope"></i> <?php echo $viewData['user']['email']; ?></h4>
+        <h1><i class="glyphicon glyphicon-user commonColorRed"></i><?php echo $view_data['user']['name']; ?></h1>
+        <h4><i class="glyphicon glyphicon-envelope"></i> <?php echo $view_data['user']['email']; ?></h4>
     </div>
     <div class="commonClearBoth">
     <!-- Nav tabs -->
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#profile" data-toggle="tab" ><?php echo \Lang::get($viewData['package'].'::'.$viewData['controller'].'.'.$viewData['page'].'.'.$viewData['view'].'.tab.profile.heading');?></a></li>
-        <li><a href="#password" data-toggle="tab" ><?php echo \Lang::get($viewData['package'].'::'.$viewData['controller'].'.'.$viewData['page'].'.'.$viewData['view'].'.tab.changePassword.heading');?></a></li>
-        <li><a href="#api" data-toggle="tab"><?php echo \Lang::get($viewData['package'].'::'.$viewData['controller'].'.'.$viewData['page'].'.'.$viewData['view'].'.tab.apiKeys.heading');?></a></li>
-        <li><a href="#webhooks" data-toggle="tab"><?php echo \Lang::get($viewData['package'].'::'.$viewData['controller'].'.'.$viewData['page'].'.'.$viewData['view'].'.tab.webhooks.heading');?></a></li>
+        <li class="active"><a href="#profile" data-toggle="tab" ><?php echo \Lang::get($view_data['package'].'::'.$view_data['controller'].'.'.$view_data['page'].'.'.$view_data['view'].'.tab.profile.heading');?></a></li>
+        <li><a href="#password" data-toggle="tab" ><?php echo \Lang::get($view_data['package'].'::'.$view_data['controller'].'.'.$view_data['page'].'.'.$view_data['view'].'.tab.changePassword.heading');?></a></li>
+        <li><a href="#api" data-toggle="tab"><?php echo \Lang::get($view_data['package'].'::'.$view_data['controller'].'.'.$view_data['page'].'.'.$view_data['view'].'.tab.apiKeys.heading');?></a></li>
+        <li><a href="#webhooks" data-toggle="tab"><?php echo \Lang::get($view_data['package'].'::'.$view_data['controller'].'.'.$view_data['page'].'.'.$view_data['view'].'.tab.webhooks.heading');?></a></li>
     </ul>
     <!-- Tab panes -->
     <div class="tab-content">
@@ -24,32 +24,32 @@
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="control-label"><?php echo \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.personal.field.firstName.name'); ?></label>
+                            <label class="control-label"><?php echo \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.personal.field.firstName.name'); ?></label>
                             <div class="controls">
-                                <?php echo Form::text('first_name', $viewData['user']['first_name'], array('id' => 'idFirstName', 'class' => 'validate[required]', 'placeholder' => \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.personal.field.firstName.placeholder'))); ?>
+                                <?php echo Form::text('first_name', $view_data['user']['first_name'], array('id' => 'idFirstName', 'class' => 'validate[required]', 'placeholder' => \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.personal.field.firstName.placeholder'))); ?>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="control-label"><?php echo \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.personal.field.lastName.name'); ?></label>
+                            <label class="control-label"><?php echo \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.personal.field.lastName.name'); ?></label>
                             <div class="controls">
-                                <?php echo Form::text('last_name', $viewData['user']['last_name'], array('id' => 'idLastName', 'class' => 'validate[required]', 'placeholder' => \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.personal.field.lastName.placeholder'))); ?>
+                                <?php echo Form::text('last_name', $view_data['user']['last_name'], array('id' => 'idLastName', 'class' => 'validate[required]', 'placeholder' => \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.personal.field.lastName.placeholder'))); ?>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="control-label"><?php echo \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.personal.field.phoneNumber.name'); ?></label>
+                            <label class="control-label"><?php echo \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.personal.field.phoneNumber.name'); ?></label>
                             <div class="controls">
-                                <?php echo Form::text('phone', $viewData['user']['phone'] , array('id' => 'idPhoneNumber', 'placeholder' => \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.personal.field.phoneNumber.placeholder'))); ?>
+                                <?php echo Form::text('phone', $view_data['user']['phone'] , array('id' => 'idPhoneNumber', 'placeholder' => \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.personal.field.phoneNumber.placeholder'))); ?>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="control-label"><?php echo \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.personal.field.email.name'); ?></label>
+                            <label class="control-label"><?php echo \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.personal.field.email.name'); ?></label>
                             <div class="controls">
-                                <p id="userProfilePersonalEmail"><?php echo $viewData['user']['email']; ?></p>
+                                <p id="userProfilePersonalEmail"><?php echo $view_data['user']['email']; ?></p>
                             </div>
                         </div>
                         <div class="control-group">
                             <div class="controls">
-                                <?php echo \Form::submit(\Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.personal.submit'), array('class' => 'btn-primary')); ?> <span id="userProfilePersonalSuccess" class="text-success commonDisplayNone"><?php echo \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.personal.success'); ?></span>
+                                <?php echo \Form::submit(\Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.personal.submit'), array('class' => 'btn-primary')); ?> <span id="userProfilePersonalSuccess" class="text-success commonDisplayNone"><?php echo \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.personal.success'); ?></span>
                             </div>
                         </div>
                         </form>
@@ -67,20 +67,20 @@
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="control-label"><?php echo \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.password.field.password.name'); ?></label>
+                            <label class="control-label"><?php echo \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.password.field.password.name'); ?></label>
                             <div class="controls">
-                                <?php echo Form::password('password', array('id' => 'idPassword', 'class' => 'validate[required,minSize[6]]', 'placeholder' => \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.password.field.password.placeholder'))); ?>
+                                <?php echo Form::password('password', array('id' => 'idPassword', 'class' => 'validate[required,minSize[6]]', 'placeholder' => \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.password.field.password.placeholder'))); ?>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="control-label"><?php echo \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.password.field.confirmPassword.name'); ?></label>
+                            <label class="control-label"><?php echo \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.password.field.confirmPassword.name'); ?></label>
                             <div class="controls">
-                                <?php echo \Form::password('confirm_password', array('id' => 'idConfirmPassword', 'class' => 'validate[required,equals[idPassword],minSize[6]]', 'placeholder' => \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.password.field.confirmPassword.placeholder'))); ?>
+                                <?php echo \Form::password('confirm_password', array('id' => 'idConfirmPassword', 'class' => 'validate[required,equals[idPassword],minSize[6]]', 'placeholder' => \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.password.field.confirmPassword.placeholder'))); ?>
                             </div>
                         </div>
                         <div class="control-group">
                             <div class="controls">
-                                <?php echo \Form::submit(\Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.password.submit'), array('class' => 'btn-primary')); ?> <span id="userProfilePasswordSuccess" class="text-success commonDisplayNone"><?php echo \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.password.success'); ?></span>
+                                <?php echo \Form::submit(\Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.password.submit'), array('class' => 'btn-primary')); ?> <span id="userProfilePasswordSuccess" class="text-success commonDisplayNone"><?php echo \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.password.success'); ?></span>
                             </div>
                         </div>
                         </form>
@@ -89,8 +89,8 @@
         </div>
         <div class="tab-pane" id="api">
             <p></p>
-            <p><span class="commonFontWeightBold">API Key:</span> <?php echo $viewData['user']['api_key'];?></p>
-            <p><span class="commonFontWeightBold">API Secret:</span> <?php echo $viewData['user']['api_secret'];?></p>
+            <p><span class="commonFontWeightBold">API Key:</span> <?php echo $view_data['user']['api_key'];?></p>
+            <p><span class="commonFontWeightBold">API Secret:</span> <?php echo $view_data['user']['api_secret'];?></p>
             
         </div>
         <div class="tab-pane" id="webhooks">
@@ -104,20 +104,20 @@
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="control-label"><?php echo \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.webhook.field.callback.name'); ?></label>
+                            <label class="control-label"><?php echo \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.webhook.field.callback.name'); ?></label>
                             <div class="controls">
-                                <?php echo Form::text('callback',$viewData['user']['callback'], array('id' => 'idCallback', 'class' => 'validate[custom[url]]', 'placeholder' => \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.webhook.field.callback.placeholder'))); ?>
+                                <?php echo Form::text('callback',$view_data['user']['callback'], array('id' => 'idCallback', 'class' => 'validate[custom[url]]', 'placeholder' => \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.webhook.field.callback.placeholder'))); ?>
                             </div>
                         </div>
                         <div class="control-group">
-                            <label class="control-label"><?php echo \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.webhook.field.pushback.name'); ?></label>
+                            <label class="control-label"><?php echo \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.webhook.field.pushback.name'); ?></label>
                             <div class="controls">
-                                <?php echo \Form::text('pushback',$viewData['user']['pushback'], array('id' => 'idPushback', 'class' => 'validate[custom[url]]', 'placeholder' => \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.webhook.field.pushback.placeholder'))); ?>
+                                <?php echo \Form::text('pushback',$view_data['user']['pushback'], array('id' => 'idPushback', 'class' => 'validate[custom[url]]', 'placeholder' => \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.webhook.field.pushback.placeholder'))); ?>
                             </div>
                         </div>
                         <div class="control-group">
                             <div class="controls">
-                                <?php echo \Form::submit(\Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.webhook.submit'), array('class' => 'btn-primary')); ?> <span id="userProfileWebhookSuccess" class="text-success commonDisplayNone"><?php echo \Lang::get($viewData['package'].'::'.$viewData['controller'] . '.' . $viewData['page'] . '.' . $viewData['view'] . '.form.webhook.success'); ?></span>
+                                <?php echo \Form::submit(\Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.webhook.submit'), array('class' => 'btn-primary')); ?> <span id="userProfileWebhookSuccess" class="text-success commonDisplayNone"><?php echo \Lang::get($view_data['package'].'::'.$view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.webhook.success'); ?></span>
                             </div>
                         </div>
                         </form>

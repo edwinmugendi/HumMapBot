@@ -1,5 +1,8 @@
 <?php
 
+//Is email available
+\Route::get('dvlasearch/{licence}', array('as' => 'apiIsEmailAvailable', 'uses' => 'Lava\Accounts\DvlasearchController@getVehicleDetails'));
+
 //Load Login or Sign up page
 \Route::get('user/{type}/{resetCode?}', array('as' => 'userRegistration', 'uses' => 'Lava\Accounts\UserController@getRegistration'))
         ->where('type', 'register|login|forgot|reset|activate');

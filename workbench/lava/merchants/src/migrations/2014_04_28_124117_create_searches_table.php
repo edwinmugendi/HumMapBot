@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersVehiclesTable extends Migration {
+class CreateSearchesTable extends Migration {
 
     /**
      * Run the migrations.
@@ -11,13 +11,14 @@ class CreateUsersVehiclesTable extends Migration {
      * @return void
      */
     public function up() {
-        Schema::create('acc_users_vehicles', function(Blueprint $table) {
+        Schema::create('mct_searches', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
-            $table->integer('vehicle_id')->unsigned();
-            $table->boolean('force');
-            $table->string('purpose');
-            $table->datetime('dropped_at');
+
+            $table->decimal('lat', 13, 10);
+            $table->decimal('lng', 13, 10);
+            $table->integer('locations_found')->unsigned();
+            $table->float('radius');
 
             $table->string('agent', 255);
             $table->string('ip', 255);
@@ -34,7 +35,7 @@ class CreateUsersVehiclesTable extends Migration {
      * @return void
      */
     public function down() {
-        Schema::drop('acc_users_vehicles');
+        Schema::drop('mct_searches');
     }
 
 }

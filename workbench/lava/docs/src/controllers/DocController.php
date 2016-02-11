@@ -26,29 +26,29 @@ class DocController extends DocsBaseController {
         $this->crudId = 1;
 
         //Prepare view data
-        $this->viewData = $this->prepareViewData('docs');
+        $this->view_data = $this->prepareViewData('docs');
 
         //Set module view to view data
-        $this->viewData['modulesView'] = $this->buildModuleDocs();
+        $this->view_data['modulesView'] = $this->buildModuleDocs();
 
         //Set layout's title
-        $this->layout->title = \Lang::get($this->viewData['package'] . '::' . $this->viewData['controller'] . '.' . $this->viewData['page'] . '.title');
+        $this->layout->title = \Lang::get($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['page'] . '.title');
 
         //Get and set layout's inline javascript
-        $this->layout->inlineJs = $this->injectInlineJs($this->viewData);
+        $this->layout->inlineJs = $this->injectInlineJs($this->view_data);
 
         //Register css and js assets for this page
-        $this->layout->assets = $this->registerAssets($this->viewData);
+        $this->layout->assets = $this->registerAssets($this->view_data);
 
         //Set layout's top bar partial
         $this->layout->topBarPartial = $this->getTopBarPartialView();
 
         //Load content view
-        $this->viewData['sideBar'] = '';
+        $this->view_data['sideBar'] = '';
 
         //Load content view
-        $this->viewData['contentView'] = \View::make($this->viewData['package'] . '::' . $this->viewData['controller'] . '.' . $this->viewData['view'])
-                ->with('viewData', $this->viewData);
+        $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])
+                ->with('view_data', $this->view_data);
 
         //Set container view
         $this->layout->containerView = $this->getContainerViewPartialView();
@@ -62,58 +62,58 @@ class DocController extends DocsBaseController {
     private function buildModuleDocs() {
         $docs = '';
         foreach ($this->modules as $singleModule) {
-            $viewData['docs'] = \Lang::get($this->package . '::' . $singleModule);
+            $view_data['docs'] = \Lang::get($this->package . '::' . $singleModule);
 
             //Set module view
             $docs .= \View::make($this->package . '::' . $this->controller . '.docSingleModuleView')
-                            ->with('viewData', $viewData)->render();
+                            ->with('view_data', $view_data)->render();
 
-            foreach ($viewData['docs']['api'] as $singleApi) {
-                $viewData['api'] = $singleApi;
+            foreach ($view_data['docs']['api'] as $singleApi) {
+                $view_data['api'] = $singleApi;
 
                 $docs .= \View::make($this->package . '::' . $this->controller . '.docSingleApiView')
-                                ->with('viewData', $viewData)->render();
+                                ->with('view_data', $view_data)->render();
 
-                $this->buildTable($viewData, $docs, $singleApi['parameters'], 'parameters');
+                $this->buildTable($view_data, $docs, $singleApi['parameters'], 'parameters');
 
-                $this->buildTable($viewData, $docs, $singleApi['returns'], 'returns');
+                $this->buildTable($view_data, $docs, $singleApi['returns'], 'returns');
             }
         }
         return $docs;
     }
 
-    public function buildTable(&$viewData, &$docs, $parameters, $type, $heading = null) {
+    public function buildTable(&$view_data, &$docs, $parameters, $type, $heading = null) {
 
         $tableBody = '';
         foreach ($parameters as $singleParameter) {
 
             //heading
-            $viewData['header'] = $heading ? $heading : \Str::title($type);
+            $view_data['header'] = $heading ? $heading : \Str::title($type);
 
-            $viewData['heading'][0] = $type == 'parameters' ? 'Field' : 'Action';
-            $viewData['heading'][1] = $type == 'parameters' ? 'Data type' : 'Http status code';
-            $viewData['heading'][2] = $type == 'parameters' ? 'Note' : 'Note';
-            $viewData['heading'][3] = $type == 'parameters' ? 'Required / Optional' : 'Example';
+            $view_data['heading'][0] = $type == 'parameters' ? 'Field' : 'Action';
+            $view_data['heading'][1] = $type == 'parameters' ? 'Data type' : 'Http status code';
+            $view_data['heading'][2] = $type == 'parameters' ? 'Note' : 'Note';
+            $view_data['heading'][3] = $type == 'parameters' ? 'Required / Optional' : 'Example';
 
             if ($type == 'parameters' && is_array($singleParameter['dataType'])) {
-                $this->buildTable($viewData, $docs, $singleParameter['dataType'], 'parameters', $singleParameter['field']);
+                $this->buildTable($view_data, $docs, $singleParameter['dataType'], 'parameters', $singleParameter['field']);
 
                 $singleParameter['dataType'] = 'array';
             }
 
-            $viewData['tableData'][0] = $type == 'parameters' ? $singleParameter['field'] : $singleParameter['action'];
-            $viewData['tableData'][1] = $type == 'parameters' ? $singleParameter['dataType'] : $singleParameter['httpCode'];
-            $viewData['tableData'][2] = $type == 'parameters' ? $singleParameter['note'] : $singleParameter['note'];
-            $viewData['tableData'][3] = $type == 'parameters' ? $singleParameter['required'] : $singleParameter['example'];
+            $view_data['tableData'][0] = $type == 'parameters' ? $singleParameter['field'] : $singleParameter['action'];
+            $view_data['tableData'][1] = $type == 'parameters' ? $singleParameter['dataType'] : $singleParameter['httpCode'];
+            $view_data['tableData'][2] = $type == 'parameters' ? $singleParameter['note'] : $singleParameter['note'];
+            $view_data['tableData'][3] = $type == 'parameters' ? $singleParameter['required'] : $singleParameter['example'];
 
 
             $tableBody .= \View::make($this->package . '::' . $this->controller . '.docTableRowView')
-                            ->with('viewData', $viewData)->render();
+                            ->with('view_data', $view_data)->render();
         }
-        $viewData['tableBody'] = $tableBody;
+        $view_data['tableBody'] = $tableBody;
 
         $docs .=\View::make($this->package . '::' . $this->controller . '.docTableView')
-                        ->with('viewData', $viewData)->render();
+                        ->with('view_data', $view_data)->render();
     }
 
 }

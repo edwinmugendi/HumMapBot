@@ -20,6 +20,7 @@ class LocationModel extends \BaseModel {
     //Fillable fields
     protected $fillable = array(
         'total_reviews',
+        'ip',
         'status',
         'created_by',
         'updated_by'
@@ -69,16 +70,6 @@ class LocationModel extends \BaseModel {
         'created_by' => 'required|integer',
         'updated_by' => 'required|integer',
     );
-
-    /**
-     * S# __construct() function
-     * Constuctor
-     */
-    public function __construct() {
-        parent::__construct();
-    }
-
-//E# __construct() function
     /**
      * S# merchant() function
      * Set one to one relationship to Merchant Model

@@ -333,10 +333,10 @@ class UserController extends AccountsBaseController {
             \Session::put('backUrl', $this->input['back_url']);
         }//E# if statement
         //Prepare view data
-        $this->viewData = $this->prepareViewData('registration');
+        $this->view_data = $this->prepareViewData('registration');
 
         //Add registration type to view data
-        $this->viewData['registrationType'] = $registrationType;
+        $this->view_data['registrationType'] = $registrationType;
 
 
         if (array_key_exists('reset_code', $this->input)) {//Reset password
@@ -348,23 +348,23 @@ class UserController extends AccountsBaseController {
             }//E# if statement       
         }//E# if statement
         //Set layout's title
-        $this->layout->title = \Lang::get($this->viewData['package'] . '::' . $this->viewData['controller'] . '.' . $this->viewData['page'] . '.title');
+        $this->layout->title = \Lang::get($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['page'] . '.title');
 
         //Get and set layout's inline javascript
-        $this->layout->inlineJs = $this->injectInlineJs($this->viewData);
+        $this->layout->inlineJs = $this->injectInlineJs($this->view_data);
 
         //Register css and js assets for this page
-        $this->layout->assets = $this->registerAssets($this->viewData);
+        $this->layout->assets = $this->registerAssets($this->view_data);
 
         //Set layout's top bar partial
         $this->layout->topBarPartial = $this->getTopBarPartialView();
 
         //Load content view
-        $this->viewData['sideBar'] = '';
+        $this->view_data['sideBar'] = '';
 
         //Load content view
-        $this->viewData['contentView'] = \View::make($this->viewData['package'] . '::' . $this->viewData['controller'] . '.' . $this->viewData['view'])
-                ->with('viewData', $this->viewData);
+        $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])
+                ->with('view_data', $this->view_data);
 
         //Set container view
         $this->layout->containerView = $this->getContainerViewPartialView();
@@ -453,7 +453,7 @@ class UserController extends AccountsBaseController {
         $this->validationRules = array(
             'location' => 'latLng',
             'os' => 'in:ios,android',
-            'push_token' => '',
+            'device_token' => '',
             'app_version' => '',
             'facebook_token' => 'required',
         );
@@ -514,8 +514,8 @@ class UserController extends AccountsBaseController {
                     $user_model->fb_uid = $fb_user_id;
 
                     //Push token
-                    if (array_key_exists('push_token', $this->input)) {
-                        $user_model->push_token = $this->input['push_token'];
+                    if (array_key_exists('device_token', $this->input)) {
+                        $user_model->device_token = $this->input['device_token'];
                     }//E# if else statement
                     //App version
                     if (array_key_exists('app_version', $this->input)) {
@@ -552,8 +552,8 @@ class UserController extends AccountsBaseController {
                     );
 
                     //Push token
-                    if (array_key_exists('push_token', $this->input)) {
-                        $newUser['push_token'] = $this->input['push_token'];
+                    if (array_key_exists('device_token', $this->input)) {
+                        $newUser['device_token'] = $this->input['device_token'];
                     }//E# if else statement
                     //App version
                     if (array_key_exists('app_version', $this->input)) {
@@ -923,26 +923,26 @@ class UserController extends AccountsBaseController {
             }
         }//E# if statement
         //Prepare view data
-        $viewData = $this->prepareViewData('profile');
+        $view_data = $this->prepareViewData('profile');
 
         //Set layout's title
-        $this->layout->title = \Lang::get($viewData['package'] . '::' . $viewData['controller'] . '.' . $viewData['page'] . '.title');
+        $this->layout->title = \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.title');
 
         //Get and set layout's inline javascript
-        $this->layout->inlineJs = $this->injectInlineJs($viewData['page'], $viewData);
+        $this->layout->inlineJs = $this->injectInlineJs($view_data['page'], $view_data);
 
         //Register css and js assets for this page
-        $this->layout->assets = $this->registerAssets($viewData['page']);
+        $this->layout->assets = $this->registerAssets($view_data['page']);
 
         //Set layout's top bar partial
-        $this->layout->topBarPartial = $this->getTopBarPartialView($viewData);
+        $this->layout->topBarPartial = $this->getTopBarPartialView($view_data);
 
         //Set layout's side bar partial
         $this->layout->sideBarPartial = '';
 
         //Set layout's content view
-        $this->layout->contentView = \View::make($viewData['package'] . '::' . $viewData['controller'] . '.' . $viewData['view'])
-                ->with('viewData', $viewData);
+        $this->layout->contentView = \View::make($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['view'])
+                ->with('view_data', $view_data);
 
         //Render page
         return $this->layout;

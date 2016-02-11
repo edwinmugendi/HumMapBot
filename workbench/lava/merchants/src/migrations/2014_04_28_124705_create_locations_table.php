@@ -32,7 +32,7 @@ class CreateLocationsTable extends Migration {
             $table->string('postal_code', 255);
             $table->decimal('lat', 13, 10);
             $table->decimal('lng', 13, 10);
-
+            
             //Loyalty Scheme
             $table->integer('loyalty_stamps');
             $table->string('currency_id', 4);

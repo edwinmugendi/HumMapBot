@@ -1,4 +1,4 @@
-<h1><?php echo $viewData['docs']['module']['name']; ?></h1>
-<?php if ($viewData['docs']['module']['note']): ?>
-    <p><?php echo $viewData['docs']['module']['note']; ?> </p>
+<h1><?php echo $view_data['docs']['module']['name']; ?></h1>
+<?php if ($view_data['docs']['module']['note']): ?>
+    <p><?php echo $view_data['docs']['module']['note']; ?> </p>
 <?php endif; ?>

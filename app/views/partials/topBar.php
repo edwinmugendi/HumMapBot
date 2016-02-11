@@ -1,6 +1,6 @@
-<?php if ($viewData['logged']): ?>
+<?php if ($view_data['logged']): ?>
         <p id="notification" class="text text-info commonTextAlignCenter"></p>
 <?php endif; ?>
-<?php if (!empty($viewData['topBarPartial'])): ?>
-    <? echo$viewData['topBarPartial']; ?>
+<?php if (!empty($view_data['topBarPartial'])): ?>
+    <? echo$view_data['topBarPartial']; ?>
 <?php endif; ?>

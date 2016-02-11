@@ -21,6 +21,7 @@ return array(
     ),
     'validation' => array(
         'prepareTransaction' => array(
+            'success' => 'Transaction prepared',
             'noCard' => 'User has not added a card',
             'dbError' => 'Lost connection to the database',
             'transaction' => array(

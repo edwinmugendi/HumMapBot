@@ -94,13 +94,13 @@ class BaseController1 extends Controller {
      * S# updatePivotTable() function
      * @author Edwin Mugendi
      * Update a users pivot table
-     * @param Model $controllerModel The parent model
+     * @param Model $controller_model The parent model
      * @param string $relation The relation
      * @param int $relationId The relation's model id 
      * @return none
      */
-    public function updatePivotTable(&$controllerModel, $relation, $relationId, $dataToUpdate) {
-        $controllerModel->$relation()->updateExistingPivot($relationId, $dataToUpdate, false);
+    public function updatePivotTable(&$controller_model, $relation, $relationId, $dataToUpdate) {
+        $controller_model->$relation()->updateExistingPivot($relationId, $dataToUpdate, false);
     }
 
 //E# updatePivotTable() function
@@ -144,14 +144,14 @@ class BaseController1 extends Controller {
         $this->isInputValid();
 
         //Get model by field
-        $controllerModel = $this->getModelByField($this->input['field'], $this->input['value']);
+        $controller_model = $this->getModelByField($this->input['field'], $this->input['value']);
 
-        if ($controllerModel) {//Model exists
-            if ($controllerModel->user_owns) {//User owns this model
+        if ($controller_model) {//Model exists
+            if ($controller_model->user_owns) {//User owns this model
                 //Get success message
                 $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => $this->input['field'], 'value' => $this->input['value']));
 
-                throw new \Api200Exception($this->prepareModelToReturn($controllerModel->toArray()), $message);
+                throw new \Api200Exception($this->prepareModelToReturn($controller_model->toArray()), $message);
             } else {//User does not own this model
                 //Set notification
                 $this->notification = array(
@@ -269,15 +269,15 @@ class BaseController1 extends Controller {
         $this->isInputValid();
 
         //Get model by field
-        $controllerModel = $this->getModelByField($this->input['field'], $this->input['value']);
+        $controller_model = $this->getModelByField($this->input['field'], $this->input['value']);
 
-        if ($controllerModel) {//Model exists
+        if ($controller_model) {//Model exists
             if ($this->subdomain == 'api') {//From API
                 //Get success message
                 $message = \Lang::get($this->package . '::' . $this->controller . '.api.getSingle', array('field' => $this->input['field'], 'value' => $this->input['value']));
 
                 //Throw 200 Exception
-                throw new Api200Exception($this->prepareModelToReturn($controllerModel->toArray()), $message);
+                throw new Api200Exception($this->prepareModelToReturn($controller_model->toArray()), $message);
             }//E# if else statement
         } else {
             //Set notification
@@ -337,7 +337,7 @@ class BaseController1 extends Controller {
         $parameters['orderBy'][] = array('id' => 'desc');
 
         //Select this users models
-        $controllerModel = $this->select($fields, $whereClause, 2, $parameters);
+        $controller_model = $this->select($fields, $whereClause, 2, $parameters);
 
         if ($this->subdomain == 'api') {//From API
             //Get success message
@@ -346,20 +346,20 @@ class BaseController1 extends Controller {
             //Define relation array
             $relationArray = array();
 
-            foreach ($controllerModel as $singleRelation) {//Loop through the relations
+            foreach ($controller_model as $singleRelation) {//Loop through the relations
                 $relationArray[] = $this->prepareModelToReturn($singleRelation->toArray());
             }//E# foreach statement
             //Build notification
             $this->notification = array(
                 'list' => $relationArray,
                 'pagination' => array(
-                    'page' => $controllerModel->getCurrentPage(),
-                    'last_page' => $controllerModel->getLastPage(),
-                    'per_page' => $controllerModel->getPerPage(),
-                    'total' => $controllerModel->getTotal(),
-                    'from' => $controllerModel->getFrom(),
-                    'to' => $controllerModel->getTo(),
-                    'count' => $controllerModel->count()
+                    'page' => $controller_model->getCurrentPage(),
+                    'last_page' => $controller_model->getLastPage(),
+                    'per_page' => $controller_model->getPerPage(),
+                    'total' => $controller_model->getTotal(),
+                    'from' => $controller_model->getFrom(),
+                    'to' => $controller_model->getTo(),
+                    'count' => $controller_model->count()
                 )
             );
 
@@ -373,25 +373,25 @@ class BaseController1 extends Controller {
 
         return $this->find($findId)->$relation()->wherePivot($whereField, '=', $whereValue)->get();
 
-        //  return Lava\Accounts\UserModel::find($this->user['id'])->vehicles()->wherePivot($this->controller . '_id', '=', $controllerModel->id)->get();
+        //  return Lava\Accounts\UserModel::find($this->user['id'])->vehicles()->wherePivot($this->controller . '_id', '=', $controller_model->id)->get();
     }
 
     /**
      * S# buidSingleList() function
      * Build a single list of controller
-     * @param array $viewData View Data
+     * @param array $view_data View Data
      * @return string Single list
      */
-    public function buildSingleList($viewData) {
+    public function buildSingleList($view_data) {
 
         $controllerList = '';
-        foreach ($viewData['controllerModel'] as $singleController) {//Loop via the controller
+        foreach ($view_data['controller_model'] as $singleController) {//Loop via the controller
             //Set the single controller to view data
-            $viewData['singleController'] = $singleController;
+            $view_data['singleController'] = $singleController;
 
             //Set user controller to the view data
             $controllerList .= \View::make($this->controller . '.' . $this->controller . 'ListSingleView')
-                            ->with('viewData', $viewData)->render();
+                            ->with('view_data', $view_data)->render();
         }//E#  foreach statement
 
         return $controllerList;
@@ -407,7 +407,7 @@ class BaseController1 extends Controller {
     public function getList() {
 
         //Prepare view data
-        $viewData = $this->prepareViewData('list');
+        $view_data = $this->prepareViewData('list');
 
         //Fields to select
         $fields = array('*');
@@ -425,32 +425,32 @@ class BaseController1 extends Controller {
         $parameters['lazyLoad'] = $this->lazyLoad;
 
         //Select this users
-        $viewData['controllerModel'] = $this->select($fields, array(), 2, $parameters);
+        $view_data['controller_model'] = $this->select($fields, array(), 2, $parameters);
 
         //Build the user list and set to view data
-        $viewData['controllerList'] = $this->buildSingleList($viewData);
+        $view_data['controllerList'] = $this->buildSingleList($view_data);
 
         //Set layout's title
-        $this->layout->title = \Lang::get($viewData['controller'] . '.' . $viewData['page'] . '.title');
+        $this->layout->title = \Lang::get($view_data['controller'] . '.' . $view_data['page'] . '.title');
 
         //Get and set layout's inline javascript
-        $this->layout->inlineJs = $this->injectInlineJs($viewData['page']);
+        $this->layout->inlineJs = $this->injectInlineJs($view_data['page']);
 
         //Register css and js assets for this page
-        $this->layout->assets = $this->registerAssets($viewData['page']);
+        $this->layout->assets = $this->registerAssets($view_data['page']);
 
         //Set top bar box to view data
-        $viewData['topBarBox'] = 'search';
+        $view_data['topBarBox'] = 'search';
 
         //Set layout's top bar partial
-        $this->layout->topBarPartial = $this->getTopBarPartialView($viewData);
+        $this->layout->topBarPartial = $this->getTopBarPartialView($view_data);
 
         //Set layout's side bar partial
-        $this->layout->sideBarPartial = $this->getSideBarPartialView($viewData);
+        $this->layout->sideBarPartial = $this->getSideBarPartialView($view_data);
 
         //Set layout's content view
-        $this->layout->contentView = \View::make($viewData['controller'] . '.' . $viewData['view'])
-                ->with('viewData', $viewData);
+        $this->layout->contentView = \View::make($view_data['controller'] . '.' . $view_data['view'])
+                ->with('view_data', $view_data);
 
         //Render page
         return $this->layout;
@@ -616,13 +616,13 @@ class BaseController1 extends Controller {
      * S# getTopBarPartialView() method
      * @author Edwin Mugendi
      * Return top bar partial view for each page
-     * @param array $viewData top bar partial view data
+     * @param array $view_data top bar partial view data
      * @return view the top bar partial view
      */
-    public function getTopBarPartialView($viewData) {
+    public function getTopBarPartialView($view_data) {
         //Get and return the global top bar partial
         return \View::make('partials.topBar')
-                        ->with('viewData', $viewData);
+                        ->with('view_data', $view_data);
     }
 
 //E# getTopBarPartialView() method
@@ -631,13 +631,13 @@ class BaseController1 extends Controller {
      * S# getSideBarPartialView() method
      * @author Edwin Mugendi
      * Return side bar partial view for each page
-     * @param array $viewData side bar partial view data
+     * @param array $view_data side bar partial view data
      * @return view the side bar partial view
      */
-    public function getSideBarPartialView($viewData) {
+    public function getSideBarPartialView($view_data) {
         //Get and return the global side bar partial
         return \View::make('partials.sideBar')
-                        ->with('viewData', $viewData);
+                        ->with('view_data', $view_data);
     }
 
 //E# getSideBarPartialView() method
@@ -646,13 +646,13 @@ class BaseController1 extends Controller {
      * S# getFooterBarPartialView() method
      * @author Edwin Mugendi
      * Return footer bar partial view for each page
-     * @param array $viewData footer bar partial view data
+     * @param array $view_data footer bar partial view data
      * @return view the footer bar partial view
      */
-    public function getFooterBarPartialView($viewData) {
+    public function getFooterBarPartialView($view_data) {
         //Get and return the global footer bar partial
         return \View::make('partials.footerBar')
-                        ->with('viewData', $viewData);
+                        ->with('view_data', $view_data);
     }
 
 //E# getFooterBarPartialView() method
@@ -698,43 +698,43 @@ class BaseController1 extends Controller {
     public function prepareViewData($action) {
 
         //Set package to view data
-        $viewData['package'] = $this->package;
+        $view_data['package'] = $this->package;
 
         //Set controller to view data
-        $viewData['controller'] = $this->controller;
+        $view_data['controller'] = $this->controller;
 
         //Set carbon to view data
-        $viewData['Carbon'] = new Carbon;
+        $view_data['Carbon'] = new Carbon;
 
         //Set action to view data
-        $viewData['action'] = $action;
+        $view_data['action'] = $action;
 
         //Set theme to view data
-        $viewData['theme'] = $this->theme;
+        $view_data['theme'] = $this->theme;
 
         //Set logged in to view data
-        $viewData['logged'] = \Auth::check();
+        $view_data['logged'] = \Auth::check();
 
         //Set logged in to view data
-        $viewData['user'] = $this->user;
+        $view_data['user'] = $this->user;
 
         //Set input data to view data
-        $viewData['input'] = $this->input;
+        $view_data['input'] = $this->input;
 
         //Set first segment to view data
-        $viewData['firstSegment'] = \Request::segment(1);
+        $view_data['firstSegment'] = \Request::segment(1);
 
         //Set view to view data
-        $viewData['view'] = camel_case($this->controller . '_' . $action . '_view');
+        $view_data['view'] = camel_case($this->controller . '_' . $action . '_view');
 
         //Set page to view data
-        $viewData['page'] = camel_case($this->controller . '_' . $action . '_page');
+        $view_data['page'] = camel_case($this->controller . '_' . $action . '_page');
 
         //Set layout's footer bar partial
-        $this->layout->footerBarPartial = $this->getFooterBarPartialView($viewData);
+        $this->layout->footerBarPartial = $this->getFooterBarPartialView($view_data);
 
         //Return prepared view data
-        return $viewData;
+        return $view_data;
     }
 
 //E# prepareViewData() method
@@ -1104,13 +1104,13 @@ class BaseController1 extends Controller {
             $this->beforeCreating();
 
             //Create controller model
-            $controllerModel = $this->createIfValid($this->input, true);
+            $controller_model = $this->createIfValid($this->input, true);
 
             //Just after creating the model
-            $this->afterCreating($controllerModel);
+            $this->afterCreating($controller_model);
 
             //Redirect to list
-            return $this->createRedirect($controllerModel);
+            return $this->createRedirect($controller_model);
         }//E# if else statement
     }
 
@@ -1139,7 +1139,7 @@ class BaseController1 extends Controller {
      * Can be used to perform post create actions
      * @return 
      */
-    public function afterCreating(&$controllerModel) {
+    public function afterCreating(&$controller_model) {
         return;
     }
 
@@ -1150,17 +1150,17 @@ class BaseController1 extends Controller {
      * @author Edwin Mugendi
      * Redirect after creating the model
      * 
-     * @param Model $controllerModel Controller model
+     * @param Model $controller_model Controller model
      * 
      * @return \Redirect if source is web redirect to controller list page
      * @return \API200Exception if source is "api" throw Success Exception 
      */
-    public function createRedirect($controllerModel) {
+    public function createRedirect($controller_model) {
         if ($this->subdomain == 'api') {//From API
             //Get success message
-            $message = \Lang::get($this->package . '::' . $this->controller . '.api.create', array('field' => 'id', 'value' => $controllerModel->id));
+            $message = \Lang::get($this->package . '::' . $this->controller . '.api.create', array('field' => 'id', 'value' => $controller_model->id));
 
-            throw new \Api200Exception(array_only($controllerModel->toArray(), array('id')), $message);
+            throw new \Api200Exception(array_only($controller_model->toArray(), array('id')), $message);
         }//E# if else statement
 
         return \Redirect::route($this->controller . 'List');
@@ -1203,14 +1203,14 @@ class BaseController1 extends Controller {
             $this->beforeUpdating();
 
             //Update controller model
-            $controllerModel = $this->updateIfValid($value, $this->input, true);
+            $controller_model = $this->updateIfValid($value, $this->input, true);
 
-            if ($controllerModel) {//Model updated
+            if ($controller_model) {//Model updated
                 //Just after updating the model
-                $this->afterUpdating($controllerModel);
+                $this->afterUpdating($controller_model);
 
                 //Redirect to list
-                return $this->updateRedirect($controllerModel);
+                return $this->updateRedirect($controller_model);
             }//E# if statement
         }//E# if else statement
     }
@@ -1240,7 +1240,7 @@ class BaseController1 extends Controller {
      * Can be used to perform post create actions
      * @return 
      */
-    public function afterUpdating(&$controllerModel) {
+    public function afterUpdating(&$controller_model) {
         return;
     }
 
@@ -1251,18 +1251,18 @@ class BaseController1 extends Controller {
      * @author Edwin Mugendi
      * Redirect after updating the model
      * 
-     * @param Model $controllerModel Controller model
+     * @param Model $controller_model Controller model
      * 
      * @return \Redirect if source is web redirect to controller list page
      * @return \API200Exception if source is "api" throw Success Exception 
      */
-    public function updateRedirect($controllerModel) {
+    public function updateRedirect($controller_model) {
 
         if ($this->subdomain == 'api') {//From API
             //Get success message
-            $message = \Lang::get($this->package . '::' . $this->controller . '.api.update', array('field' => 'id', 'value' => $controllerModel->id));
+            $message = \Lang::get($this->package . '::' . $this->controller . '.api.update', array('field' => 'id', 'value' => $controller_model->id));
 
-            throw new \Api200Exception(array_only($controllerModel->toArray(), array('id')), $message);
+            throw new \Api200Exception(array_only($controller_model->toArray(), array('id')), $message);
         }//E# if else statement
 
         return \Redirect::route($this->controller . 'List');
@@ -1325,17 +1325,17 @@ class BaseController1 extends Controller {
         $validation = $this->isInputValid();
 
         //Get model by field
-        $controllerModel = $this->getModelByField($field, $value);
+        $controller_model = $this->getModelByField($field, $value);
 
-        if ($controllerModel) {//Model exists
-            if ($this->beforeDeleting($controllerModel)) {
-                $controllerModel->delete();
+        if ($controller_model) {//Model exists
+            if ($this->beforeDeleting($controller_model)) {
+                $controller_model->delete();
             }//E# if statement
             //After delete callback
-            $this->afterDeleting($controllerModel);
+            $this->afterDeleting($controller_model);
 
             //Delete Redirect
-            return $this->deleteRedirect($controllerModel);
+            return $this->deleteRedirect($controller_model);
         } else {
             //Set notification
             $this->notification = array(
@@ -1356,11 +1356,11 @@ class BaseController1 extends Controller {
      * @author Edwin Mugendi
      * Call this just before deleting the model
      * 
-     * @param Model $controllerModel Controller Model
+     * @param Model $controller_model Controller Model
      * 
      * @return boolean true to go aheading with deleting, false not to delete 
      */
-    public function beforeDeleting($controllerModel) {
+    public function beforeDeleting($controller_model) {
 
         return true;
     }
@@ -1372,11 +1372,11 @@ class BaseController1 extends Controller {
      * @author Edwin Mugendi
      * Call this just after deleting the model
      *
-     * @param Model $controllerModel Controller Model
+     * @param Model $controller_model Controller Model
      * 
      * @return; 
      */
-    public function afterDeleting($controllerModel) {
+    public function afterDeleting($controller_model) {
         return;
     }
 
@@ -1387,17 +1387,17 @@ class BaseController1 extends Controller {
      * @author Edwin Mugendi
      * Redirect after deleting the model
      * 
-     * @param Model $controllerModel Controller model
+     * @param Model $controller_model Controller model
      * 
      * @return \Redirect if source is web redirect to controller list page
      * @return \API200Exception if source is "api" throw Success Exception 
      */
-    public function deleteRedirect($controllerModel) {
+    public function deleteRedirect($controller_model) {
         if ($this->subdomain == 'api') {//From API
             //Get success message
-            $message = \Lang::get($this->package . '::' . $this->controller . '.api.delete', array('field' => 'id', 'value' => $controllerModel->id));
+            $message = \Lang::get($this->package . '::' . $this->controller . '.api.delete', array('field' => 'id', 'value' => $controller_model->id));
 
-            throw new \Api200Exception(array_only($controllerModel->toArray(), array('id')), $message);
+            throw new \Api200Exception(array_only($controller_model->toArray(), array('id')), $message);
         }//E# if else statement
 
         return \Redirect::route($this->controller . 'List');

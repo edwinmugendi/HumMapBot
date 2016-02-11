@@ -123,7 +123,7 @@ return array(
                     'required' => 0,
                 ),
                 array(
-                    'field' => 'push_token',
+                    'field' => 'device_token',
                     'dataType' => 'String',
                     'note' => 'Pushwoosh push token',
                     'required' => 0,
@@ -159,7 +159,7 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Logged in!',
-                    'example' => '{"http_status_code":200,"system_code":700,"message":"Logged in!","data":{"id":"30","first_name":"Edwin","last_name":"Mugendi","phone":"+254722906836","dob":"0000-00-00","gender":"","email":"edwinmugendi@gmail.com","address":"","postal_code":"","token":"pjimbrfgccjbprshe7akqgxkmvuk7ouy","vrm":"","card":"","fb_uid":"","lat":"90.0000000000","lng":"11.0000000000","points":"0","notify_sms":"1","notify_push":"1","notify_email":"1","os":"","push_token":"","app_version":"","created_at":"2016-02-06 01:17:12","updated_at":"2016-02-06 01:19:09","stripe_id":"cus_7qvW8niFCRsB0W","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36","ip":"127.0.0.1","logins":[]}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Logged in!","data":{"id":"30","first_name":"Edwin","last_name":"Mugendi","phone":"+254722906836","dob":"0000-00-00","gender":"","email":"edwinmugendi@gmail.com","address":"","postal_code":"","token":"pjimbrfgccjbprshe7akqgxkmvuk7ouy","vrm":"","card":"","fb_uid":"","lat":"90.0000000000","lng":"11.0000000000","points":"0","notify_sms":"1","notify_push":"1","notify_email":"1","os":"","device_token":"","app_version":"","created_at":"2016-02-06 01:17:12","updated_at":"2016-02-06 01:19:09","stripe_id":"cus_7qvW8niFCRsB0W","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36","ip":"127.0.0.1","logins":[]}}'
                 ),
                 array(
                     'action' => 'Error',
@@ -197,7 +197,7 @@ return array(
                     'required' => 0,
                 ),
                 array(
-                    'field' => 'push_token',
+                    'field' => 'device_token',
                     'dataType' => 'String',
                     'note' => 'Pushwoosh push token',
                     'required' => 0,
@@ -233,7 +233,7 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Logged in',
-                    'example' => '{"http_status_code":200,"system_code":700,"message":"Logged in!","data":{"id":"34","first_name":"Donna","last_name":"Bushakman","phone":"","dob":"1980-08-08","gender":"female","email":"gkivacm_bushakman_1415013488@tfbnw.net","address":"","postal_code":"","token":"padarez8egpew0njvpqt7lcblcfrspyr7evtk2sfyfnxlirv","vrm":"","card":"","fb_uid":"1495733417344044","lat":"0.0000000000","lng":"0.0000000000","points":"0","notify_sms":"1","notify_push":"1","notify_email":"1","os":"ios","push_token":"push_token","app_version":"App Verssion","created_at":"2016-02-06 02:14:10","updated_at":"2016-02-06 02:26:08","stripe_id":"cus_7qwRvxDu44ijq7","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36"}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Logged in!","data":{"id":"34","first_name":"Donna","last_name":"Bushakman","phone":"","dob":"1980-08-08","gender":"female","email":"gkivacm_bushakman_1415013488@tfbnw.net","address":"","postal_code":"","token":"padarez8egpew0njvpqt7lcblcfrspyr7evtk2sfyfnxlirv","vrm":"","card":"","fb_uid":"1495733417344044","lat":"0.0000000000","lng":"0.0000000000","points":"0","notify_sms":"1","notify_push":"1","notify_email":"1","os":"ios","device_token":"device_token","app_version":"App Verssion","created_at":"2016-02-06 02:14:10","updated_at":"2016-02-06 02:26:08","stripe_id":"cus_7qwRvxDu44ijq7","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36"}}'
                 ),
                 array(
                     'action' => 'Error',
@@ -268,7 +268,7 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Got profile',
-                    'example' => '{"http_status_code":200,"system_code":700,"message":"Succeed.","data":{"id":"35","first_name":"Edwin","last_name":"Mugendi","phone":"+254722906836","dob":"0000-00-00","gender":"","email":"edwinmugendi@gmail.com","address":"","postal_code":"","token":"jdkgnjniiflbye5xojemmphpdst0bsdw","vrm":"","card":"","fb_uid":"","lat":"90.0000000000","lng":"11.0000000000","points":"0","notify_sms":"1","notify_push":"1","notify_email":"1","os":"ios","push_token":"sdfaf","app_version":"asd","created_at":"2016-02-06 02:16:38","updated_at":"2016-02-06 02:24:39","stripe_id":"cus_7qwTckPJkETZwp","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36"}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Succeed.","data":{"id":"35","first_name":"Edwin","last_name":"Mugendi","phone":"+254722906836","dob":"0000-00-00","gender":"","email":"edwinmugendi@gmail.com","address":"","postal_code":"","token":"jdkgnjniiflbye5xojemmphpdst0bsdw","vrm":"","card":"","fb_uid":"","lat":"90.0000000000","lng":"11.0000000000","points":"0","notify_sms":"1","notify_push":"1","notify_email":"1","os":"ios","device_token":"sdfaf","app_version":"asd","created_at":"2016-02-06 02:16:38","updated_at":"2016-02-06 02:24:39","stripe_id":"cus_7qwTckPJkETZwp","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36"}}'
                 ),
                 array(
                     'action' => 'Error',
@@ -359,7 +359,7 @@ return array(
                     'required' => 0,
                 ),
                 array(
-                    'field' => 'push_token',
+                    'field' => 'device_token',
                     'dataType' => 'String',
                     'note' => 'Pushwoosh push token',
                     'required' => 0,
@@ -371,14 +371,14 @@ return array(
                     'required' => 0,
                 ),
                 array(
-                    'field' => 'vrm',
-                    'dataType' => 'String',
-                    'note' => 'VRM to make default',
+                    'field' => 'vehicle_id',
+                    'dataType' => 'integer',
+                    'note' => 'Id of the vehicle to make default',
                     'required' => 0,
                 ),
                 array(
-                    'field' => 'card',
-                    'dataType' => 'String',
+                    'field' => 'card_token',
+                    'dataType' => 'string',
                     'note' => 'Card token to make default',
                     'required' => 0,
                 ),
@@ -407,7 +407,7 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'User updated',
-                    'example' => '{"http_status_code":200,"system_code":700,"message":"User updated","data":{"id":"35","first_name":"Edwin","last_name":"Mugendi","phone":"+254722906836","dob":"0000-00-00","gender":"","email":"edwinmugendi@gmail.com","address":"","postal_code":"","token":"jdkgnjniiflbye5xojemmphpdst0bsdw","vrm":"","card":"","fb_uid":"","lat":"90.0000000000","lng":"11.0000000000","points":"0","notify_sms":"1","notify_push":"1","notify_email":"1","os":"ios","push_token":"sdfaf","app_version":"asd","created_at":"2016-02-06 02:16:38","updated_at":"2016-02-06 02:36:45","stripe_id":"cus_7qwTckPJkETZwp","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36"}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"User updated","data":{"id":"35","first_name":"Edwin","last_name":"Mugendi","phone":"+254722906836","dob":"0000-00-00","gender":"","email":"edwinmugendi@gmail.com","address":"","postal_code":"","token":"jdkgnjniiflbye5xojemmphpdst0bsdw","vrm":"","card":"","fb_uid":"","lat":"90.0000000000","lng":"11.0000000000","points":"0","notify_sms":"1","notify_push":"1","notify_email":"1","os":"ios","device_token":"sdfaf","app_version":"asd","created_at":"2016-02-06 02:16:38","updated_at":"2016-02-06 02:36:45","stripe_id":"cus_7qwTckPJkETZwp","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36"}}'
                 ),
                 array(
                     'action' => 'Error',
@@ -558,18 +558,6 @@ return array(
                     'required' => 1,
                 ),
                 array(
-                    'field' => 'is_default',
-                    'dataType' => 'integer boolean',
-                    'note' => '1 to set VRM as default, 0 if you dont want to',
-                    'required' => 1,
-                ),
-                array(
-                    'field' => 'force',
-                    'dataType' => 'integer boolean',
-                    'note' => 'Set \'1\' to force create, \'0\' if you don\'t want to force create. Only force create if the user says they own the vehicle and the VRM already exists in our database. This scenario might occur when one is a Lava user, and sells the car and the new owner also wants to add it',
-                    'required' => 1,
-                ),
-                array(
                     'field' => 'type',
                     'dataType' => 'string',
                     'note' => 'Set \'1\' for car and \'2\' for 4X4',
@@ -586,7 +574,13 @@ return array(
                     'dataType' => 'string',
                     'note' => 'User API token',
                     'required' => 1,
-                )
+                ),
+                array(
+                    'field' => 'is_default',
+                    'dataType' => 'integer boolean',
+                    'note' => '1 to set VRM as default, Or leave it if you don\'t',
+                    'required' => 0,
+                ),
             ),
             'returns' => array(
                 array(
@@ -630,18 +624,6 @@ return array(
                     'required' => 1,
                 ),
                 array(
-                    'field' => 'is_default',
-                    'dataType' => 'integer boolean',
-                    'note' => '1 to set VRM as default, 0 if you dont want to',
-                    'required' => 1,
-                ),
-                array(
-                    'field' => 'force',
-                    'dataType' => 'integer boolean',
-                    'note' => '1 to force create, 0 if you dont want to force create',
-                    'required' => 1,
-                ),
-                array(
                     'field' => 'type',
                     'dataType' => 'string',
                     'note' => 'Set \'1\' for car and \'2\' for 4X4',
@@ -658,7 +640,13 @@ return array(
                     'dataType' => 'string',
                     'note' => 'User API token',
                     'required' => 1,
-                )
+                ),
+                array(
+                    'field' => 'is_default',
+                    'dataType' => 'integer boolean',
+                    'note' => '1 to set VRM as default, Or leave it if you don\'t',
+                    'required' => 0,
+                ),
             ),
             'returns' => array(
                 array(

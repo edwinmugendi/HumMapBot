@@ -8,6 +8,9 @@ return array(
       | The name of the product
       |
      */
+    'dvlasearch' => array(
+        'api_key' => 'DvlaSearchDemoAccount',
+    ),
     'facebook' => array(
         'appId' => '291512857637270',
         'appSecret' => '1c4a3dcef631bf5104ed9f8239bfb139',

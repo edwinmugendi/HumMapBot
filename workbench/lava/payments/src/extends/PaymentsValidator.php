@@ -55,8 +55,8 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                 $cardModel->status = 2;
                 $cardModel->save();
 
-                if ($cardModel->token == $user_model->card) {
-                    $user_model->card = '';
+                if ($cardModel->token == $user_model->card_token) {
+                    $user_model->card_token = '';
 
                     $user_model->save();
                 }//E# if statement
@@ -152,7 +152,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
         //Get product by id
         $product_model = $product_controller->callController(\Util::buildNamespace('products', 'product', 1), 'getModelByField', array('id', $this->data['product_id'], $parameters));
 
-        if ($product_model) {//Product found
+        if ($product_model && $product_model->location && $product_model->merchant) {//Product found
             //Calculate Distance
             $distance = $this->calculateDistance($this->data['location']['lat'], $this->data['location']['lng'], $product_model->location->lat, $product_model->location->lng, 'K');
 
@@ -192,6 +192,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                                 'vehicle_id' => $this->data['vehicle_id'],
                                 'ip' => $user_controller->input['ip'],
                                 'agent' => $user_controller->input['agent'],
+                                'merchant_id' => $product_model->merchant->id,
                                 'stamps_issued' => 0,
                                 'status' => 1,
                                 'created_by' => $user_model->id,
@@ -341,7 +342,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
         //Get product by id
         $product_model = $product_controller->callController(\Util::buildNamespace('products', 'product', 1), 'getModelByField', array('id', $this->data['product_id'], $parameters));
 
-        if ($product_model) {//Product found
+        if ($product_model && $product_model->location && $product_model->merchant) {//Product found
             //Calculate Distance
             $distance = $this->calculateDistance($this->data['location']['lat'], $this->data['location']['lng'], $product_model->location->lat, $product_model->location->lng, 'K');
 
@@ -398,6 +399,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         'amount' => $amount,
                         'currency_id' => $product_model->location->currency_id,
                         'stamps_issued' => ((int) $product_model->location->loyalty_stamps) ? 1 : 0,
+                        'merchant_id' => $product_model->merchant->id,
                         'status' => 1,
                         'created_by' => $user_controller->user['id'],
                         'updated_by' => $user_controller->user['id'],
@@ -608,44 +610,33 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
             //Get user model by id
             $user_model = $user_controller->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('token', $this->data['token'], $parameters));
 
-            $vehicle_id = '';
-            if (isset($this->data['vehicle_id'])) {
-                //Get vehiclel model
-                $vehicle_model = $this->validateUserOwnsVehicle($attribute, $this->data['vehicle_id'], $parameters);
+            $vehicle_id = isset($this->data['vehicle_id']) ? $this->data['vehicle_id'] : $user_model->vehicle_id;
 
-                //Set vehicle_id
-                $vehicle_id = $this->data['vehicle_id'];
-            } else {
-                //Get vehicle model
-                $vehicle_model = $user_controller->callController(\Util::buildNamespace('accounts', 'vehicle', 1), 'getModelByField', array('vehicle_id', $user_model->vehicle_id));
-
-                //Set vehicle_id
-                $vehicle_id = $user_model->vehicle_id;
-            }//E# if else statement
-
+            //Get vehiclel model
+            $vehicle_model = $this->validateUserOwnsVehicle($attribute, $this->data['vehicle_id'], $parameters);
             if ($vehicle_model) {//Vehicle exists
                 if ($user_model->cards->count()) {//User has cards
-                    $defaultCardFound = false;
+                    $default_card = false;
 
                     //Card fields to return
                     $card_fields = array('id', 'token', 'gateway', 'exp_month', 'exp_year', 'last4', 'brand');
 
-                    foreach ($user_model->cards as $singleCard) {
-                        if ($singleCard->token == $user_model->card) {//User has specified a default card
-                            $defaultCardFound = true;
-                            $user_controller->notification['card'] = array_only($singleCard->toArray(), $card_fields);
+                    foreach ($user_model->cards as $single_card) {
+                        if ($single_card->id == $user_model->card_id) {//User has specified a default card
+                            $default_card = $single_card->token;
+                            $user_controller->notification['card'] = array_only($single_card->toArray(), $card_fields);
                             break;
                         }//E# if statement
                     }//E# foreach statement
 
-                    if (!$defaultCardFound) {//Set default card as the last added card
+                    if (!$default_card) {//Set default card as the last added card
                         //Last card
                         $last_card = $user_model->cards[((int) $user_model->cards->count() - 1)]->toArray();
 
                         $user_controller->notification['card'] = array_only($last_card, $card_fields);
 
                         //Save default card
-                        $user_model->card = $last_card['token'];
+                        $user_model->card_id = $last_card['id'];
 
                         //Save user
                         $user_model->save();
@@ -656,12 +647,6 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         'type' => $vehicle_model->type
                     );
 
-                    /*
-                      $user_controller->notification['product'] = array(
-                      'id' => $product_model->id,
-                      'price' => ((int)$vehicle_model->type == 2)  ? $product_model->price_2 : $product_model->price_1,
-                      );
-                     */
                     //PROMOTIONS
                     $promotions = array();
                     $amount = ((int) $vehicle_model->type == 2) ? $product_model->price_2 : $product_model->price_1;
@@ -682,27 +667,15 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
 
                     $user_controller->notification['transaction'] = $transaction;
 
-                    //GET MERCHANT
-                    //Location controller
-                    $locationController = new LocationController();
-
-                    $parameters['lazyLoad'] = array('merchant');
-
-                    //Get location by id
-                    $location_model = $locationController->callController(\Util::buildNamespace('merchants', 'location', 1), 'getModelByField', array('id', $product_model->location_id, $parameters));
-
                     //Get success message
-                    $message = \Lang::get('payments::payment.api.prepareTransaction');
+                    $message = \Lang::get('payments::payment.validation.prepareTransaction.success');
 
                     throw new \Api200Exception($user_controller->notification, $message);
                 } else {
                     //Set error message
                     $this->message = \Lang::get('payments::payment.validation.prepareTransaction.noCard');
-                }
-            } else {//User don't own this car
-                //Set message
-                $this->message = \Lang::get('accounts::vehicle.validation.userOwns', array('vehicle_id' => $vehicle_id));
-            }//E# if else statement
+                }//E# if else statement
+            }//E# if statement
         } else {//No such product
             //Set notification
             $product_controller->notification = array(

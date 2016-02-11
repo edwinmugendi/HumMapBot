@@ -20,6 +20,7 @@ class TransactionModel extends \BaseModel {
         'promotion_id',
         'location_id',
         'currency_id',
+        'merchant_id',
         'amount',
         'currency',
         'description',

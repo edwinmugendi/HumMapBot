@@ -11,11 +11,10 @@ class LocationController extends MerchantsBaseController {
 
     //Controller
     public $controller = 'location';
-    
-     //Lazy load
+    //Lazy load
     public $lazyLoad = array('products');
-    
-    /***
+
+    /*     * *
      * Location Search
      * Location search API is used to get perform 3 types of searches
      * 1. Spatial Search - This is search using lat, long and radius
@@ -61,8 +60,27 @@ class LocationController extends MerchantsBaseController {
                 //Get locations within radius
                 $fluent_locations = \DB::select(\DB::raw("SELECT *, (6371 * acos(cos(radians(?)) * cos(radians(lat)) * cos( radians(lng) - radians(?)) + sin(radians(?)) * sin(radians(lat)))) AS distance FROM sp_mct_locations Having distance < ? ORDER BY distance"), $geo_parameters);
 
-                //dd($fluent_locations);
-                if ($fluent_locations) {//Locations found
+                $locations_found = count($fluent_locations);
+
+                $user_id = \Auth::check() ? $this->user['id'] : 1; //If 1 it means that the user is not logged in
+
+                $search_array = array(
+                    'user_id' => $user_id,
+                    'lat' => $this->input['location']['lat'],
+                    'lng' => $this->input['location']['lng'],
+                    'radius' => $this->input['radius'],
+                    'locations_found' => $locations_found,
+                    'ip' => $this->input['ip'],
+                    'agent' => $this->input['agent'],
+                    'status' => 1,
+                    'created_by' => $user_id,
+                    'updated_by' => $user_id
+                );
+
+                //Create search
+                $search_model = $this->callController(\Util::buildNamespace('merchants', 'search', 1), 'createIfValid', array($search_array, true));
+
+                if ($locations_found) {//Locations found
                     //Get location ids
                     $location_ids = array_fetch($fluent_locations, 'id');
 

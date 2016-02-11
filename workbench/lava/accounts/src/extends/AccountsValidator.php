@@ -3,6 +3,7 @@
 namespace Lava\Accounts;
 
 use Symfony\Component\Translation\TranslatorInterface;
+use Lava\Payments\CardController;
 use Carbon\Carbon;
 
 class AccountsValidator extends \Illuminate\Validation\Validator {
@@ -11,6 +12,135 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
     private $message;
 
     //TODO Set message fro the 2 validators and more accurate
+
+    /**
+     * S# validateNewVehicleId() function
+     * Validate vehicle id belongs to the user
+     * @param array $attribute Validation attribute
+     * @param string $vehicle_id Vehicle Id
+     * @param array $parameters Parameters
+     */
+    public function validateVehicleId($attribute, $vehicle_id, $parameters) {
+
+        //Instantiate a new user controller
+        $vehicle_controller = new VehicleController();
+
+        //Fields to select
+        $fields = array('*');
+
+        //Build where clause
+        $whereClause = array(
+            array(
+                'where' => 'where',
+                'column' => 'user_id',
+                'operator' => '=',
+                'operand' => $vehicle_controller->user['id']
+            ),
+            array(
+                'where' => 'where',
+                'column' => 'id',
+                'operator' => '=',
+                'operand' => $this->data['vehicle_id']
+            ),
+            array(
+                'where' => 'where',
+                'column' => 'status',
+                'operator' => '=',
+                'operand' => 1
+            )
+        );
+
+        //Get vehicle
+        $vehicle_model = $vehicle_controller->select($fields, $whereClause, 1);
+
+        if (!$vehicle_model) {
+            //Set notification
+            $vehicle_controller->notification = array(
+                'field' => 'id',
+                'type' => 'Vehicle',
+                'value' => $this->data['vehicle_id'],
+            );
+
+            //Throw not found error
+            throw new \Api404Exception($vehicle_controller->notification);
+        }//E# if statement
+        return true;
+    }
+
+//E# validateVehicleId() function
+
+    /**
+     * S# validateCardId() function
+     * Validate card id belongs to the user
+     * @param array $attribute Validation attribute
+     * @param string $card_id Card Id
+     * @param array $parameters Parameters
+     */
+    public function validateCardId($attribute, $card_id, $parameters) {
+
+        //Instantiate a new user controller
+        $card_controller = new CardController();
+
+        //Fields to select
+        $fields = array('*');
+
+        //Build where clause
+        $whereClause = array(
+            array(
+                'where' => 'where',
+                'column' => 'user_id',
+                'operator' => '=',
+                'operand' => $card_controller->user['id']
+            ),
+            array(
+                'where' => 'where',
+                'column' => 'id',
+                'operator' => '=',
+                'operand' => $this->data['card_id']
+            ),
+            array(
+                'where' => 'where',
+                'column' => 'status',
+                'operator' => '=',
+                'operand' => 1
+            )
+        );
+
+        //Get card
+        $card_model = $card_controller->select($fields, $whereClause, 1);
+
+        if (!$card_model) {
+            //Set notification
+            $card_controller->notification = array(
+                'field' => 'id',
+                'type' => 'Card',
+                'value' => $this->data['card_id'],
+            );
+
+            //Throw not found error
+            throw new \Api404Exception($card_controller->notification);
+        }//E# if statement
+        return true;
+    }
+
+//E# validateCardId() function
+
+    /**
+     * S# replaceVehicleId() function
+     * Replace all place-holders for the new_password rule.
+     *
+     * @author Edwin Mugendi <edwinmugendi@gmail.com>
+     * @param  string  $message
+     * @param  string  $attribute
+     * @param  string  $rule
+     * @param  array   $parameters
+     * @return string
+     */
+    protected function replaceVehicleId($message, $attribute, $rule, $parameters) {
+        return $this->message;
+    }
+
+//E# replaceVehicleId() function
 
     /**
      * S# validateNewPassword() function
@@ -221,8 +351,8 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
 
                     if (array_key_exists('format', $this->data) && ($this->data['format'] == 'json')) {//API
                         //Push token
-                        if (array_key_exists('push_token', $this->data)) {
-                            $user_model->push_token = $this->data['push_token'];
+                        if (array_key_exists('device_token', $this->data)) {
+                            $user_model->device_token = $this->data['device_token'];
                         }//E# if else statement
                         //App version
                         if (array_key_exists('app_version', $this->data)) {
@@ -377,45 +507,33 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
      */
     public function validateDeleteVehicle($attribute, $id, $parameters) {
         //Create vehicle controller
-        $vehicleController = new VehicleController();
+        $vehicle_controller = new VehicleController();
 
+        $parameters['scope'] = array('statusOne');
         //Get vehicle by id
-        $vehicleModel = $vehicleController->getModelByField('id', $id);
+        $vehicle_model = $vehicle_controller->getModelByField('id', $id, $parameters);
 
-        if ($vehicleModel) {//Vehicle does not exist
-            if ($vehicleModel->user_owns) {
-                //Instantiate a new user controller
-                $user_controller = new UserController();
+        if ($vehicle_model) {//Vehicle does not exist
+            if ($vehicle_model->user_id = \Auth::user()->id) {
 
-                //Get user model by token
-                $user_model = $user_controller->getModelByField('token', $this->data['token']);
+                $vehicle_model->status = 2;
 
-                //Delete this vehicle in the pivot table
-                $vehicleController->updatePivotTable($user_model, 'vehicles', $vehicleModel->id, array('dropped_at' => Carbon::now()));
-
-                if ($user_model && \Str::lower($user_model->vrm) == \Str::lower($vehicleModel->vrm)) {//User exists
-                    //Clear users default
-                    $user_model->vrm = '';
-
-                    //TODO update default
-                    //Save user
-                    $user_model->save();
-                }//E# if statement
+                $vehicle_model->save();
                 //Get success message
-                $message = \Lang::get($vehicleController->package . '::' . $vehicleController->controller . '.notification.deleted');
+                $message = \Lang::get($vehicle_controller->package . '::' . $vehicle_controller->controller . '.notification.deleted');
 
-                throw new \Api200Exception(array('id' => $vehicleModel->id, 'id' => $id), $message);
+                throw new \Api200Exception(array('id' => $vehicle_model->id, 'id' => $id), $message);
             }//E# if statement
         }//E# if statement
         //Set notification
-        $vehicleController->notification = array(
+        $vehicle_controller->notification = array(
             'field' => 'id',
             'type' => 'Vehicle',
             'value' => $id,
         );
 
         //Throw VRM not found error
-        throw new \Api404Exception($vehicleController->notification);
+        throw new \Api404Exception($vehicle_controller->notification);
 
         return false;
     }
@@ -436,7 +554,6 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
 
 //E# replaceDeleteVehicle() function
 
-    
     /**
      * S# validateUserOwnsVehicle() function
      * Validate user owns this vehicle_id
@@ -449,27 +566,27 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
      */
     protected function validateUserOwnsVehicle($attribute, $vehicle_id, $parameters) {
         //Intialize a vehicle controller object
-        $vehicleController = new VehicleController();
+        $vehicle_controller = new VehicleController();
 
-        $vehicleModel = $vehicleController->getModelByField('id', $vehicle_id);
+        $vehicle_model = $vehicle_controller->getModelByField('id', $vehicle_id);
 
-        if ($vehicleModel) {//Vehicle exists
-            if ($vehicleModel->user_owns) {//Logged in user owns this vehicle
-                return $vehicleModel;
+        if ($vehicle_model) {//Vehicle exists
+            if ($vehicle_model->user_id == \Auth::user()->id) {//Logged in user owns this vehicle
+                return $vehicle_model;
             } else {//Don't own
                 //Set message
-                $this->message = \Lang::get($vehicleController->package . '::' . $vehicleController->controller . '.notification.user_owns', array('vehicle_id' => $vehicle_id));
+                $this->message = \Lang::get($vehicle_controller->package . '::' . $vehicle_controller->controller . '.notification.user_owns', array('vehicle_id' => $vehicle_id));
             }//E# if else statement
         } else {//Vehicle does exists
             //Set notification
-            $vehicleController->notification = array(
+            $vehicle_controller->notification = array(
                 'field' => 'vehicle_id',
                 'type' => 'Vehicle',
                 'value' => $vehicle_id,
             );
 
             //Throw VRM not found error
-            throw new \Api404Exception($vehicleController->notification);
+            throw new \Api404Exception($vehicle_controller->notification);
         }//E# if else statement
         return false;
     }
