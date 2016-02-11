@@ -377,9 +377,9 @@ return array(
                     'required' => 0,
                 ),
                 array(
-                    'field' => 'card_token',
-                    'dataType' => 'string',
-                    'note' => 'Card token to make default',
+                    'field' => 'card_id',
+                    'dataType' => 'integer',
+                    'note' => 'Id of card to make default',
                     'required' => 0,
                 ),
                 array(
