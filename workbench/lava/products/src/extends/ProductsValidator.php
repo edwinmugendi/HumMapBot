@@ -89,7 +89,7 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
                     }//E# if else statement
                 } else {//Expired
                     //Set error message
-                    $this->message = \Lang::get($promotion_controller->package . '::' . $promotion_controller->controller . '.notification.is_promotion_code_valid.expired', array('code' => $code));
+                    $this->message = \Lang::get($promotion_controller->package . '::' . $promotion_controller->controller . '.notification.is_promotion_code_valid.expired', array('code' => $promotion_code));
                 }//E# if else statement
             }//E# if else statement
         } else {//Don't exist
