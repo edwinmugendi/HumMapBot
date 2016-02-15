@@ -30,8 +30,10 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
 
         $promotion_controller = new PromotionController();
 
+        $parameters['scope'] = array('statusOne');
         //Get promotion model by code
-        $promotion_model = $promotion_controller->getModelByField('code', $promotion_code);
+        $promotion_model = $promotion_controller->getModelByField('code', $promotion_code, $parameters);
+        
 
         if ($promotion_model) {//Exists
             if ($promotion_model->claimed) {//Claimed
@@ -40,7 +42,7 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
                     $this->message = \Lang::get($promotion_controller->package . '::' . $promotion_controller->controller . '.notification.is_promotion_code_valid.redeemed', array('code' => $promotion_code));
                 } else {
                     //Set error message
-                    $this->message = \Lang::get($promotion_controller->package . '::' . $promotion_controller->controller . '.notification.is_promotion_code_valid.claimed', array('code' => $promotion_code));
+                    $this->message = \Lang::get($promotion_controller->package . '::' . $promotion_controller->controller . '.notification.is_promotion_code_valid.already_claimed', array('code' => $promotion_code));
                 }//E# if else statement
             } else {//Has not claimed
                 //Now
@@ -72,7 +74,6 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
                                 'operand' => $promotion_model->location_id
                             );
                         }//E# if statement
-                        
                         //Get transaction model
                         $transaction_model = $promotion_controller->callController(\Util::buildNamespace('payments', 'transaction', 1), 'select', array($fields, $whereClause, 1));
 

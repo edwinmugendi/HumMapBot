@@ -9,7 +9,7 @@ use Carbon\Carbon;
  * @author Edwin Mugendi
  * Promotion Model
  */
-class PromotionModel extends \Eloquent {
+class PromotionModel extends \BaseModel {
 
     //Table
     protected $table = 'pdt_promotions';

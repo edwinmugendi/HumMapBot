@@ -179,7 +179,7 @@ class PromotionController extends ProductsBaseController {
         );
 
         //Get success message
-        $message = \Lang::get($this->package . '::' . $this->controller . '.api.redeemPromotion', array('code' => $promotion_model->code));
+        $message = \Lang::get($this->package . '::' . $this->controller . '.notification.is_promotion_code_valid.claimed', array('code' => $promotion_model->code));
 
         //Throw new API Success Exception
         throw new \Api200Exception(array_only($promotion_model->toArray(), array('id')), $message);
