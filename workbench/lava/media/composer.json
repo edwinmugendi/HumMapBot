@@ -1,0 +1,25 @@
+{
+    "name": "lava/media",
+    "description": "Media Module",
+    "authors": [
+        {
+            "name": "Edwin Mugendi",
+            "email": "edwinmugendi@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "4.2.*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations",
+            "src/controllers",
+            "src/models"
+        ],
+        "psr-0": {
+            "Lava\\Media\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}

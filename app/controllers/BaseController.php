@@ -19,6 +19,8 @@ class BaseController extends Controller {
     public $lazyLoad = array();
     //Validation rules
     protected $validationRules = array();
+    //Add validation 
+    protected $add_validation_assets = false;
     //Assets
     public $assets = array();
     //Inline Js
@@ -26,7 +28,7 @@ class BaseController extends Controller {
     //Notification
     public $notification;
     //User
-    public $user, $currentUser, $org;
+    public $user, $currentUser, $merchant;
     //Inputs
     public $input = array();
     //Searchable fields
@@ -39,10 +41,15 @@ class BaseController extends Controller {
     public $ownedBy = array();
     //CrudId
     protected $crudId = -1; //Create = 1, Update = 2, Read = 3, Delete = 4
+    //Disable fields
+    public $disableFields = false;
 
     public function __construct() {
-
+        //Current user
         $this->user = $this->sessionedUser();
+
+        //Current merchant
+        $this->merchant = $this->sessionedMerchant();
 
         //Get POSTed data
         $this->input = \Input::get();
@@ -145,6 +152,20 @@ class BaseController extends Controller {
     }
 
 //E# sessionedUser() function
+
+    /**
+     * S# sessionedMerchant() function
+     * @author Edwin Mugendi
+     * 
+     * Get logged in user's merchant
+     * 
+     * @return array The logged in user's merchant
+     */
+    protected function sessionedMerchant() {
+        return \Session::get('merchant');
+    }
+
+//E# sessionedMerchant() function
 
     /**
      * S# getManyModelBelongingToUser() function
@@ -413,8 +434,8 @@ class BaseController extends Controller {
      * @return str date format
      */
     public function getDateFormat() {
-        if (\Auth::check() && $this->org['date_format']) {
-            $date_format = \Str::upper($this->org['date_format']);
+        if (\Auth::check() && $this->merchant['date_format']) {
+            $date_format = \Str::upper($this->merchant['date_format']);
         } else {
             $date_format = 'DD/MM/YYYY';
         }//E# if else statement
@@ -492,6 +513,354 @@ class BaseController extends Controller {
     }
 
 //E# buildSingleList() function
+
+    /**
+     * S# getDetailed() function
+     * @author Edwin Mugendi
+     * Load controller's detailed page
+     * 
+     * @param int $id Controller id
+     * 
+     * @return View Detailed view
+     */
+    public function getDetailed($id) {
+        //Set crudId
+        $this->crudId = 4;
+
+        //Prepare view data
+        $this->view_data = $this->prepareViewData('detailed');
+
+        //Fields to select
+        $fields = array('*');
+
+        //Define parameters
+        $parameters = array();
+
+        $parameters['lazyLoad'] = $this->lazyLoad;
+
+        //Set where clause
+        $whereClause = array(
+            array(
+                'where' => 'where',
+                'column' => 'id',
+                'operator' => '=',
+                'operand' => (int) $id
+            )
+        );
+
+        //Select this controller model
+        $this->view_data['controller_model'] = $this->select($fields, $whereClause, 1, $parameters);
+
+        //Inject data sources
+        $this->injectDataSources();
+
+        //Prepare fields for detailed view
+        $this->beforeViewing($this->view_data['controller_model']);
+
+        //Get this controller's model
+        $modelObject = $this->getModelObject();
+
+        $title_array = array();
+        foreach ($modelObject->viewFields as $key => $single_field) {
+            if (array_key_exists(3, $single_field)) {
+                if ($single_field[1] == 'select') {
+                    $field = $key . '_text';
+                    $title_array[] = $this->view_data['controller_model'][$field];
+                } else {
+                    $title_array[] = $this->view_data['controller_model'][$key];
+                }//E# if else statement
+            }//E# if statement
+        }//E# foreach statement
+
+        $title = implode(' ', $title_array);
+
+        //Set view fields to view data
+        $this->view_data['viewFields'] = $modelObject->viewFields;
+
+        if ($this->imageable) {//Is imageable
+            //Set the media description to media view data
+            $this->view_data['media'] = \Lang::get($this->package . '::' . $this->controller . '.' . camel_case($this->view_data['controller'] . '_post_page') . '.' . $this->controller . 'PostView.form.media');
+
+            //Set media controller to media view data
+            $this->view_data['mediaController'] = $this->controller;
+
+            //Get and set media view to data source
+            $this->view_data['dataSource']['mediaView'] = $this->callController(\Util::buildNamespace('media', 'media', 1), 'getDetailedPageView', array($this->view_data));
+        }//E# if else statement
+        //Set layout's title
+        $this->layout->title = $this->view_data['title'] = \Lang::get($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['page'] . '.title', array('title' => $title, 'id' => $this->view_data['controller_model']['id']));
+
+        //Get and set layout's inline javascript
+        $this->layout->inlineJs = $this->injectInlineJs($this->view_data);
+
+        //Register css and js assets for this page
+        $this->layout->assets = $this->registerAssets($this->view_data);
+
+        //Set layout's top bar partial
+        $this->layout->topBarPartial = $this->getTopBarPartialView();
+
+        //Set list side bar
+        $this->view_data['sideBar'] = $this->getListSideBarPartialView();
+
+        //Set layout's content view
+        $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])
+                ->with('view_data', $this->view_data);
+
+        if (array_key_exists('export', $this->input) && in_array($this->input['export'], array('pdf', 'print'))) {
+            return $this->exportToPdf();
+        }//E# if statement
+
+        if (array_key_exists('echo', $this->input)) {
+            return $this->view_data['contentView'];
+        }//E# if statement
+        //Set container view
+        $this->layout->containerView = $this->getContainerViewPartialView();
+
+        //Register templates
+        $this->layout->containerView .= $this->registerDetailedTemplates();
+
+        //Render page
+        return $this->layout;
+    }
+
+//E# getDetailed() function
+    
+    /**
+     * S# registerDetailedTemplates() method
+     * @author Edwin Mugendi
+     * 
+     * Register detailed templates
+     * 
+     * @return return template
+     */
+    public function registerDetailedTemplates() {
+        
+    }
+
+//E# registerDetailedTemplates() function
+
+    /**
+     * S# getPost() function
+     * Post a new or update contorller
+     * @author Edwin Mugendi
+     * 
+     * @param string $crudAction "new" if we are organizationing a new organization or "update" if we are editing an already existing organization
+     * @return page load the create or update page
+     */
+    public function getPost($id = null, $detailed = null) {
+
+        //Prepare $this->view_data
+        $this->view_data = $this->prepareViewData('post');
+
+        //Define organization and datasource array
+        $controller_model = $locations = $inlineJsData = $registerAssetsData = array();
+        //TODO: Check if the logged in user organization id is the same as this id
+
+        if ($id) {//Update Controller
+            if ($detailed == 'detailed') {
+                
+            }//
+            //Set crud id
+            $this->view_data['crudId'] = $this->crudId = 2;
+
+            //Fields to select
+            $fields = array('*');
+
+            //Build where clause
+            $whereClause = array(
+                array(
+                    'where' => 'where',
+                    'column' => 'id',
+                    'operator' => '=',
+                    'operand' => $id
+                )
+            );
+
+            //Build extra parameters
+            $parameters = array();
+
+            $parameters['convertTo'] = 'toArray';
+
+            $parameters['lazyLoad'] = $this->lazyLoad;
+
+            //Select this controller
+            $controller_model = $this->select($fields, $whereClause, 1, $parameters);
+
+            if ($this->controller == 'user') {
+
+                \Session::put('currentUser', $controller_model);
+
+                //Set current user
+                $this->view_data['currentUser'] = $controller_model;
+            }//E# if statement
+        } else {//New controller
+            //Set crud id
+            $this->view_data['crudId'] = $this->crudId = 1;
+
+            $controller_model['id'] = -1;
+        }//E# if else statement
+        //TODO: Set the organization id from the session
+        $controller_model['merchant_id'] = $this->merchant['id'];
+
+        //Set organization to inline js data
+        $this->view_data['controller_model'] = $controller_model;
+
+        //Inject data sources
+        $this->injectDataSources();
+
+        if ($this->imageable) {//Is imageable
+            //Set the media description to media view data
+            $this->view_data['media'] = \Lang::get($this->package . '::' . $this->controller . '.' . $this->view_data['page'] . '.' . $this->controller . 'PostView.form.media');
+
+            //Set media controller to media view data
+            $this->view_data['mediaController'] = $this->controller;
+
+            //Get and set media view to data source
+            $this->view_data['dataSource']['mediaView'] = $this->callController(\Util::buildNamespace('media', 'media', 1), 'getMediaView', array($this->view_data));
+        }//E# if else statement
+        //Set locations to inline js data
+        $this->view_data['locations'] = array(); //Set to $locations;
+        //Get and set organization organization form to view data
+        $form = \Lang::get($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['page'] . '.' . $this->view_data['controller'] . 'PostView.form.' . camel_case($this->view_data['controller'] . '_' . $this->view_data['action']));
+
+        //Set layout's title
+        $this->layout->title = \Lang::get($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['page'] . '.actionTitle.' . $this->view_data['crudId']);
+
+        //Get and set layout's inline javascript
+        $this->layout->inlineJs = $this->injectInlineJs($this->view_data);
+
+        //Register css and js assets for this page
+        $this->layout->assets = $this->registerAssets($this->view_data);
+
+        //Set layout's top bar partial
+        $this->layout->topBarPartial = $this->getTopBarPartialView();
+
+        //Set side bar
+        $this->view_data['sideBar'] = $this->getPostSideBarPartialView();
+
+        //Add form to view data
+        $this->view_data['form'] = \View::make('form.formBuilder')
+                ->with('form', $form)
+                ->with('crudId', $this->view_data['crudId'])
+                ->with('model', $this->view_data['controller_model'])
+                ->with('disableFields', $this->disableFields)
+                ->with('dataSource', $this->view_data['dataSource'])
+                ->with('date_format', $this->convertDateFormat($this->getDateFormat()))
+                ->with('Carbon', $this->view_data['Carbon']);
+
+        if (array_key_exists('echo', $this->input)) {
+            return $this->view_data['form'];
+        }//E# if statement
+        //Load content view
+        $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])
+                ->with('view_data', $this->view_data);
+
+        //Set container view
+        $this->layout->containerView = $this->getContainerViewPartialView();
+
+        //Register templates
+        $this->layout->containerView .= $this->registerPostTemplates();
+
+        //Render page
+        return $this->layout;
+    }
+
+//E# getPost() function
+
+    /**
+     * S# registerPostTemplates() method
+     * @author Edwin Mugendi
+     * 
+     * Register location picker component templates
+     * 
+     * @param array $this->view_data View data
+     * 
+     * @return return template
+     */
+    public function registerPostTemplates() {
+        
+    }
+
+//E# registerPostTemplates() function
+
+    /**
+     * S# exportToCsv() function
+     * Export to CSV
+     * 
+     * @return CSV download or text to show on browser
+     */
+    public function exportToCsv() {
+        return \Excel::create($this->merchant['name'] . '-' . $this->layout->title, function($excel) {
+
+                    // Set the title
+                    $excel->setTitle($this->merchant['name'] . '-' . $this->layout->title);
+                    $excel->setCreator($this->user['first_name'] . ' ' . $this->user['last_name']);
+                    $excel->setCompany($this->merchant['name']);
+
+                    // Call them separately
+                    $excel->setDescription($this->layout->title);
+
+                    if (is_array($this->view_data['controller_model'])) {
+                        $data_array = $this->view_data['controller_model'];
+                    } else {
+                        $data_array = $this->view_data['controller_model']->toArray();
+                        $data_array = $data_array['data'];
+                    }//E# if else statement
+
+                    $excel->sheet('Sheet 1', function($sheet) use($data_array) {
+
+                        $sheet->fromArray($data_array);
+                    });
+                })->export($this->input['export']);
+    }
+
+//E# exportToCsv() function
+
+    /**
+     * S# exportToPdf() function
+     * Export to PDF
+     * 
+     * @return PDF download or text to show on browser
+     */
+    public function exportToPdf() {
+        //Set title to view data
+        $this->view_data['title'] = $this->layout->title;
+
+        //Get Pdf content
+        $pdf_content = \View::make('reports.pdfView')
+                ->with('view_data', $this->view_data);
+
+        //Download or show
+        $download_or_show = $this->input['export'] == 'pdf' ? 'download' : 'show';
+
+        //Set orientation
+        $orientation = \Lang::has($this->package . '::' . $this->controller . '.pdf') ? \Lang::get($this->package . '::' . $this->controller . '.pdf') : 'portrait';
+
+        if ($orientation == 'portrait' && $this->imageable) {
+            $orientation = 'landscape';
+        }//E# if statement
+        //Return PDF
+        $this->pdf($pdf_content, $orientation, 'A4', $download_or_show, $this->merchant['name'] . '-' . $this->layout->title);
+    }
+
+//E# exportToPdf() function
+
+    /**
+     * S# pdf() function
+     * @param str $content Content
+     * @param str $orientation Pdf orientation
+     * @param str $size Page size
+     * @param str $download_or_show_or_output Download or show output
+     * @param str $name name to be used to save the pdf (Optional)
+     * 
+     * @return OBJECT PDF
+     */
+    public function pdf($content, $orientation, $size, $download_or_show_or_output, $name = null) {
+        //Return PDF
+        return ($name) ? \PDF::load($content, $size, $orientation)->$download_or_show_or_output($name) : \PDF::load($content, $size, $orientation)->$download_or_show_or_output();
+    }
+
+    //E# pdf() function
 
     /**
      * S# getList() function
@@ -760,13 +1129,13 @@ class BaseController extends Controller {
                         'operand' => $this->user['id']
                     );
                 }//E# if statement
-                //Owned by current organization
-                if ($singleOwnedBy == 'organization') {
+                //Owned by current merchant
+                if ($singleOwnedBy == 'merchant') {
                     $whereClause[] = array(
                         'where' => 'where',
-                        'column' => 'organization_id',
+                        'column' => 'merchant_id',
                         'operator' => '=',
-                        'operand' => $this->org['id']
+                        'operand' => $this->merchant['id']
                     );
                 }//E# if statement
             }//E# foreach statement
@@ -855,6 +1224,7 @@ class BaseController extends Controller {
     }
 
 //E# getLanguageString() function
+
     /**
      * S# injectInlineJs() method
      * @author Edwin Mugendi
@@ -877,6 +1247,7 @@ class BaseController extends Controller {
         //Set date format
         $js['date_format'] = $this->getDateFormat();
 
+
         //Set crud id
         $js['crudId'] = $this->crudId;
 
@@ -898,7 +1269,7 @@ class BaseController extends Controller {
         //Set property
         $js['controller_model'] = array_key_exists('controller_model', $parameters) ? $parameters['controller_model'] : false;
 
-        if ($parameters['page'] == $this->controller . 'ListPage') {
+        if ($parameters['page'] == $this->controller . 'ListPage' || $parameters['page'] == $this->controller . 'DetailedPage') {
             $js['lang']['actions'] = \Lang::get($this->package . '::' . $this->controller . '.view.actions');
 
             $js['imageable'] = 1;
@@ -959,21 +1330,75 @@ class BaseController extends Controller {
      * @param string $page the current page
      * @return array assets array
      */
-    public function registerAssets($page, $parameters = array()) {
+    public function registerAssets($parameters = array()) {
         //Register global css assets
         $this->assets['css'][] = \HTML::style('bootstrap/css/bootstrap.min.css');
         $this->assets['css'][] = \HTML::style('bootstrap/css/bootstrap-theme.min.css');
+        $this->assets['css'][] = \HTML::style('bootstrap/css/icons.css');
 
         //Register global js assets
         $this->assets['js'][] = \HTML::script('bootstrap/js/bootstrap.min.js');
 
+        //Notification Js
+        $this->assets['js'][] = \HTML::script('js/pnotify/jquery.pnotify.min.js');
+
+        //Dialog Box Js
+        $this->assets['js'][] = \HTML::script('js/bootbox/bootbox.min.js');
+
+        //Date Picker js
+        // $this->assets['js'][] = \HTML::script('js/datePicker/moment.min.js');
+        $this->assets['js'][] = \HTML::script('js/datePicker/bootstrap-datetimepicker-and-moment.min.js');
+
+        if ($parameters['page'] == ($this->controller . 'PostPage') || $this->add_validation_assets) {//Load Location picker component
+            //Validation Engine js
+            $this->assets['js'][] = \HTML::script('js/validationEngine/languages/jquery.validationEngine-' . \Config::get('app.locale') . '.js');
+            $this->assets['js'][] = \HTML::script('js/validationEngine/jquery.validationEngine.js');
+        }//E# if else statement
+
+        if ($this->imageable && $parameters['page'] == ($this->controller . 'PostPage')) {//Load Media picker component
+            //LinkedIn Frontend Templating js
+            $this->assets['js'][] = \HTML::script('js/linkedInDust/dust-full-2.0.0.min.js');
+
+            //Sortable js
+            $this->assets['js'][] = \HTML::script('js/sortable/jquery.sortable.min.js');
+
+            //Image upload js
+            $this->assets['js'][] = \HTML::script('js/fileupload/vendor/jquery.ui.widget.js');
+            $this->assets['js'][] = \HTML::script('js/fileupload/load-image.min.js');
+            $this->assets['js'][] = \HTML::script('js/fileupload/canvas-to-blob.min.js');
+            $this->assets['js'][] = \HTML::script('js/fileupload/jquery.iframe-transport.js');
+            $this->assets['js'][] = \HTML::script('js/fileupload/jquery.fileupload.js');
+            $this->assets['js'][] = \HTML::script('js/fileupload/jquery.fileupload-process.js');
+            $this->assets['js'][] = \HTML::script('js/fileupload/jquery.fileupload-image.js');
+            $this->assets['js'][] = \HTML::script('js/fileupload/jquery.fileupload-validate.js');
+            $this->assets['js'][] = \HTML::script('js/fileupload/jquery.fileupload-ui.js');
+            $this->assets['js'][] = \HTML::script('js/fileupload/main.js');
+        }//E# if statement
+        // dd($parameters['page']);
         //Switch through the pages
-        switch ($page) {
-            case 'docDocPage': {//Docs Page
+        switch ($parameters['page']) {
+            case 'organizationPostPage': {//Organization Post page
                     //Validation Engine js
                     $this->assets['js'][] = \HTML::script('js/validationEngine/languages/jquery.validationEngine-' . \Config::get('app.locale') . '.js');
                     $this->assets['js'][] = \HTML::script('js/validationEngine/jquery.validationEngine.js');
+                    break;
+                }//E# case
+            case 'aboutHomePage': {//About home page
+                    //Galleria js
+                    $this->assets['js'][] = \HTML::script('js/galleria/galleria-1.2.9.min.js');
+                    break;
+                }//E# case
+            case 'dashboardDashboardPage': {//User Dashboard Page
+                    //Charting Flot plugin
+                    $this->assets['js'][] = \HTML::script('js/flot/jquery.flot.min.js');
 
+                    //Charting Flot Pie plugin
+                    $this->assets['js'][] = \HTML::script('js/flot/jquery.flot.pie.min.js');
+                    break;
+                }//E# case
+            case 'applicationPostPage': {//Organization Post page
+                    //Moment Js
+                    $this->assets['js'][] = \HTML::script('js/moment/moment.min.js');
                     break;
                 }//E# case
 
@@ -981,7 +1406,7 @@ class BaseController extends Controller {
                 break;
         }//E# switch statement
         //Register css assets
-        $this->assets['css'][] = \HTML::style('css/themes/' . $this->theme . '/' . $this->theme . '.css');
+        $this->assets['css'][] = \HTML::style('css/themes/' . $this->theme . '/' . $this->theme . '.css?time=' . time());
 
         //Register js assets
         $this->assets['js'][] = \HTML::script('js/themes/' . $this->theme . '/' . $this->theme . '.js?time=' . time());
@@ -1133,12 +1558,15 @@ class BaseController extends Controller {
         //Set current user to view data
         //$this->view_data['currentUser'] = $this->currentUser;
         //Set current user to view data
-        // $this->view_data['org'] = $this->org;
+        $this->view_data['merchant'] = $this->merchant;
+
+        //dd($this->view_data['merchant']);
         //Set input data to view data
         $this->view_data['input'] = $this->input;
 
         //Set disable Fields to view data
-        //$this->view_data['disableFields'] = $this->disableFields;
+        $this->view_data['disableFields'] = $this->disableFields;
+
         //Set segment to view data
         $this->view_data['segments'] = \Request::segments();
 
@@ -1890,9 +2318,9 @@ class BaseController extends Controller {
                 if ($singleOwnedBy == 'user') {
                     $this->input['user_id'] = $this->user['id'];
                 }//E# if statement
-                //Owned by current organization
-                if ($singleOwnedBy == 'organization') {
-                    $this->input['organization_id'] = $this->org['id'];
+                //Owned by current merchant
+                if ($singleOwnedBy == 'merchant') {
+                    $this->input['merchant_id'] = $this->merchant['id'];
                 }//E# if statement
             }//E# foreach statement
         }//E# if statement

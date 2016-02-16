@@ -1,0 +1,134 @@
+<?php if ($view_data['logged']): ?>
+    <nav class="navbar navbar-default container topBar" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="<?php echo \URL::to('/'); ?>"><?php echo $view_data['org']['name']; ?></a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="<?php echo $view_data['segments'][0] == 'dashboard' ? 'active' : '' ?>"><a href="<?php echo \URL::route('userDashboard'); ?>">Dashboard</a></li>
+                    <li class="dropdown <?php echo $view_data['segments'][0] == 'organizations' ? 'active' : '' ?>">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Organization setup<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="<?php echo \URL::route('organizationsPostOrganization', array($view_data['org']['id'])); ?>">Edit organization</a></li>
+                            <li><a href="<?php echo \URL::route('organizationsListLocation'); ?>">Locations</a></li>
+                            <li><a href="<?php echo \URL::route('organizationsListDepartment'); ?>">Departments</a></li>
+                            <li><a href="<?php echo \URL::route('organizationsListHoliday'); ?>">Holidays</a></li>
+                            <li><a href="<?php echo \URL::route('organizationsListDocument'); ?>">Documents</a></li>
+                            <li><a href="<?php echo \URL::route('organizationsListJobCategory'); ?>">Job Categories</a></li>
+                            <li><a href="<?php echo \URL::route('organizationsListShift'); ?>">Work shifts</a></li>
+                            <li><a href="<?php echo \URL::route('organizationsListEmploymentStatus'); ?>">Employment status</a></li>
+                            <li><a href="<?php echo \URL::route('organizationsListEducation'); ?>">Education</a></li>
+                            <li><a href="<?php echo \URL::route('organizationsListGrade'); ?>">Pay grade</a></li>
+                            <li><a href="<?php echo \URL::route('organizationsListTermination'); ?>">Termnination reason</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown  <?php echo $view_data['segments'][0] == 'accounts' ? 'active' : '' ?>"">
+                        <a href="<?php echo \URL::route('accountsListUser'); ?>" class="dropdown-toggle" data-toggle="dropdown">Employee<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="<?php echo \URL::route('accountsPostUser'); ?>">Add employee</a></li>
+                            <li><a href="<?php echo \URL::route('accountsListUser'); ?>">Employee list</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown  <?php echo $view_data['segments'][0] == 'payroll' ? 'active' : '' ?>"">
+                        <a href="<?php echo \URL::route('accountsListUser'); ?>" class="dropdown-toggle" data-toggle="dropdown">Payroll Settings<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="<?php echo \URL::route('payrollListFormula'); ?>">Formula</a></li>
+                            <li><a href="<?php echo \URL::route('payrollListBenefitTax'); ?>">Benefits taxes</a></li>
+                            <li><a href="<?php echo \URL::route('payrollListBenefit'); ?>">Benefits</a></li>
+                            <li><a href="<?php echo \URL::route('payrollListRelief'); ?>">Reliefs</a></li>
+                            <li><a href="<?php echo \URL::route('payrollListDeduction'); ?>">Deductions</a></li>
+                            <li><a href="<?php echo \URL::route('payrollPostSettingsOvertime'); ?>">Overtime rates</a></li>
+                            <li><a href="<?php echo \URL::route('payrollListLoan'); ?>">Loans</a></li>
+                            <li><a href="<?php echo \URL::route('payrollListMlr'); ?>">Market lending rates</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown  <?php echo $view_data['segments'][0] == 'payroll' ? 'active' : '' ?>"">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Payroll<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="<?php echo \URL::route('payrollCreatePayroll'); ?>">Create payroll</a></li>
+                            <li><a href="<?php echo \URL::route('payrollListPayroll'); ?>">Payslips</a></li>
+                            <li><a href="<?php echo \URL::route('payrollListAdvance'); ?>">Advance</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown  <?php echo $view_data['segments'][0] == 'leave' ? 'active' : '' ?>"">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Leave<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="<?php echo \URL::route('leaveListType'); ?>">Leave types</a></li>
+                            <li><a href="<?php echo \URL::route('leaveGetWeek'); ?>">Work week</a></li>
+                            <li><a href="<?php echo \URL::route('leaveListEntitlement'); ?>">Entitlement</a></li>
+                            <li><a href="<?php echo \URL::route('leaveListApplication'); ?>">Application</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Attendance<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="<?php echo \URL::route('payrollListOvertime'); ?>">Overtime</a></li>
+                        </ul>
+                    </li>
+
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="<?php echo \URL::route('userSignOut'); ?>">Signout</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+<?php else: ?>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="<?php echo \URL::to('/'); ?>"><?php echo $product_name = \Config::get('product.name'); ?></a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="scroll active"><a href="<?php echo \URL::to('/'); ?>#slider">Home</a></li>
+                    <li class="scroll"><a href="<?php echo \URL::to('/'); ?>#features">Features / Modules</a></li>
+                    <li class="scroll"><a href="<?php echo \URL::to('/'); ?>#benefits">Benefits</a></li>
+                    <li class="scroll"><a href="<?php echo \URL::to('/'); ?>#pricing">Pricing</a></li>
+                    <li class="scroll"><a href="<?php echo \URL::to('/'); ?>#about">About us</a></li>
+                    <li class="scroll"><a href="<?php echo \URL::to('/'); ?>#contact">Contact us</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="<?php echo \URL::route('userRegistration', array('login')); ?>">Login</a></li>
+                    <li><a class="fancyButton" href="<?php echo \URL::route('userRegistration', array('register')); ?>">Get started for free</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+<?php endif; ?>
+<?php if (\Session::has('notification')): ?>
+    <?php
+    $notification = \Session::get('notification');
+    $show = '';
+    $type = 'alert-' . $notification['type'];
+    $message = $notification['message'];
+    ?>
+<?php else: ?>
+    <?php
+    $show = 'hidden';
+    $type = '';
+    $message = '';
+    ?>
+<?php endif; ?>
+<div class="row <?php echo $show; ?>"">
+    <div class="col-md-8  col-md-offset-2">
+        <p id="notification" class="alert text-center <?php echo $type; ?>"><span id="notificationMessage"><?php echo $message; ?></span>
+            <button type="button" class="close" id="closeNotification"><i class="glyphicon glyphicon-trash"></i></button></p>
+    </div>
+</div>

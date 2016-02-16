@@ -50,7 +50,6 @@ class UserModel extends \BaseModel {
         'reset_code',
         'reset_time',
         'last_login',
-        'role_id',
         'ip',
         'verification_code',
         'username',
@@ -176,6 +175,16 @@ class UserModel extends \BaseModel {
     }
 
 //E# favourites() function
+
+    /**
+     * S# merchants() function
+     * Set one to one relationship to Merchants Model
+     */
+    public function merchants() {
+        return $this->hasMany(\Util::buildNamespace('merchants', 'merchant', 2), 'user_id');
+    }
+
+//E# merchants() function
 }
 
 //E# UserModel() Class

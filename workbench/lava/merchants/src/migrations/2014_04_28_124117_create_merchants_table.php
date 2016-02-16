@@ -13,14 +13,14 @@ class CreateMerchantsTable extends Migration {
     public function up() {
         Schema::create('mct_merchants', function(Blueprint $table) {
             $table->increments('id');
-            $table->integer('type')->unsigned();
             $table->integer('plan_id')->unsigned();
+            $table->integer('default')->unsigned();
+            $table->integer('user_id')->unsigned();
 
             //About
             $table->string('name', 255);
-            $table->string('registration_number', 255);
+            $table->string('reg_no', 255);
             $table->string('tax_id', 255);
-            $table->string('vat', 255);
 
             //Philosophy
             $table->string('vision', 255);
@@ -29,25 +29,37 @@ class CreateMerchantsTable extends Migration {
             $table->text('about');
 
             //Contacts
-            $table->string('landline', 255);
-            $table->string('mobile', 255);
-            $table->string('fax', 255);
+            $table->string('phone', 255);
             $table->string('email', 255);
 
             //Location
-            $table->integer('country_id')->unsigned();
-            $table->integer('town_id')->unsigned();
             $table->string('address', 255);
+            $table->string('street', 255);
+            $table->string('city', 255);
+            $table->string('province', 255);
             $table->string('postal_code', 255);
+            $table->string('country_id', 255);
+            
+            //Currency
+            $table->integer('currency_id')->unsigned();
+            $table->string('date_format', 10);
+            $table->integer('timezone_id');
+
 
             //Social
             $table->string('website', 255);
             $table->string('facebook', 255);
             $table->string('twitter', 255);
 
-            //Image
-            $table->text('image');
-            
+            //Bank
+            $table->string('bank_name', 255);
+            $table->string('bank_sort_code', 255);
+            $table->string('bank_account_name', 255);
+            $table->string('bank_account_number', 255);
+            $table->string('bank_postal_code', 255);
+
+
+            $table->integer('workflow')->unsigned();
             $table->string('agent', 255);
             $table->string('ip', 255);
             $table->integer('status')->unsigned();

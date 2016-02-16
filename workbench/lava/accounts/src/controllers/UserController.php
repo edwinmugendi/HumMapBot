@@ -17,7 +17,7 @@ class UserController extends AccountsBaseController {
      * @throws \Api200Exception if call is from API
      */
     public function getIsEmailAvailable() {
-        
+
         //Get the validation rules
         $this->validationRules = array(
             'email' => 'required|email'
@@ -168,7 +168,7 @@ class UserController extends AccountsBaseController {
      * @param Model $controller_model User model
      */
     public function updateLoginSpecificFields(&$controller, &$controller_model) {
-        
+
         $controller_model->token = $this->generateUniqueField('token', 48);
 
         //Update user login details
@@ -182,8 +182,11 @@ class UserController extends AccountsBaseController {
         //Save this user
         $controller_model->save();
 
+        //Set parameters
+        $parameters['lazyLoad'] = array('merchants');
+
         //Get user model
-        $user_model = $this->getModelByField('token', $controller_model->token);
+        $user_model = $this->getModelByField('token', $controller_model->token, $parameters);
 
         //Session this user
         $controller->sessionUser($user_model);
@@ -390,24 +393,16 @@ class UserController extends AccountsBaseController {
 
         //Get user
         $user = $user_model->toArray();
+        
+        if ($user_model->role_id != 3) {
+            //Session org
+            $this->callController(\Util::buildNamespace('merchants', 'merchant', 1), 'sessionMerchant', array($user));
+        }
+        //Unset organization
+        unset($user['merchant']);
 
-        //Define user to session
-        $userToSession = array();
-
-        //Set fields of user to session
-        $userToSession['name'] = $user['first_name'] . ' ' . $user['last_name'];
-        $userToSession['id'] = $user['id'];
-        $userToSession['first_name'] = $user['first_name'];
-        $userToSession['last_name'] = $user['last_name'];
-        $userToSession['email'] = $user['email'];
-        $userToSession['phone'] = isset($user['phone']) ? $user['phone'] : '';
-        $userToSession['token'] = $user['token'];
-        $userToSession['vrm'] = isset($user['vrm']) ? $user['vrm'] : '';
-        $userToSession['stripe_id'] = $user['stripe_id'];
-
-        // $userToSession['api_secret'] = $user['api_secret'];
         //Put the user in session
-        \Session::put('user', $userToSession);
+        \Session::put('user', $user);
     }
 
 //E# sessionUser() function
@@ -431,7 +426,7 @@ class UserController extends AccountsBaseController {
         $validation = $this->isInputValid();
 
         if ($validation->passes()) {//Validation passed
-            return \Redirect::intended('userProfile');
+            return \Redirect::intended('profile');
         }//E# if else statement
         //Build parameters to redirect to
         $parameters = array('login');
@@ -904,12 +899,11 @@ class UserController extends AccountsBaseController {
 
                 //Save user
                 $user_model->save();
-                
-                $message = \Lang::get($this->package.'::'.$this->controller.'.notification.list');
-                
+
+                $message = \Lang::get($this->package . '::' . $this->controller . '.notification.list');
+
                 //Return user
                 throw new \Api200Exception($user_model->toArray(), $message);
-                
             } else {
                 //Set notification
                 $this->notification = array(
@@ -923,26 +917,29 @@ class UserController extends AccountsBaseController {
             }
         }//E# if statement
         //Prepare view data
-        $view_data = $this->prepareViewData('profile');
+        $this->view_data = $this->prepareViewData('profile');
 
         //Set layout's title
-        $this->layout->title = \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.title');
+        $this->layout->title = \Lang::get($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['page'] . '.title');
 
         //Get and set layout's inline javascript
-        $this->layout->inlineJs = $this->injectInlineJs($view_data['page'], $view_data);
+        $this->layout->inlineJs = $this->injectInlineJs($this->view_data);
 
         //Register css and js assets for this page
-        $this->layout->assets = $this->registerAssets($view_data['page']);
+        $this->layout->assets = $this->registerAssets($this->view_data);
 
         //Set layout's top bar partial
-        $this->layout->topBarPartial = $this->getTopBarPartialView($view_data);
+        $this->layout->topBarPartial = $this->getTopBarPartialView();
 
-        //Set layout's side bar partial
-        $this->layout->sideBarPartial = '';
+        //Load content view
+        $this->view_data['sideBar'] = '';
 
-        //Set layout's content view
-        $this->layout->contentView = \View::make($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['view'])
-                ->with('view_data', $view_data);
+        //Load content view
+        $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])
+                ->with('view_data', $this->view_data);
+
+        //Set container view
+        $this->layout->containerView = $this->getContainerViewPartialView();
 
         //Render page
         return $this->layout;

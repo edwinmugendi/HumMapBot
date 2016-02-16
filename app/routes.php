@@ -11,9 +11,6 @@
   |
  */
 
-Route::get('/', function() {
-    return View::make('hello');
-});
 
 if (\App::environment() == 'local') {
     DB::listen(function($sql, $bindings, $time) {

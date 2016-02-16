@@ -14,7 +14,8 @@ class CreateUsersTable extends Migration {
         Schema::create('acc_users', function(Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('role_id');
+            $table->integer('merchant_id')->unsigned();
+            $table->integer('role_id')->unsigned();
 
             //About
             $table->string('first_name', 255);
@@ -70,6 +71,7 @@ class CreateUsersTable extends Migration {
             $table->string('device_token');
             $table->string('app_version');
 
+            $table->text('remember_token');
             $table->string('agent', 255);
             $table->string('ip', 255);
             $table->integer('status')->unsigned();

@@ -1,8 +1,8 @@
-(function($) {
-    $.fn.validationEngineLanguage = function() {
+(function ($) {
+    $.fn.validationEngineLanguage = function () {
     };
     $.validationEngineLanguage = {
-        newLang: function() {
+        newLang: function () {
             $.validationEngineLanguage.allRules = {
                 "required": {// Add your regex rules here, you can take telephone as an example
                     "regex": "none",
@@ -12,7 +12,7 @@
                     "alertTextDateRange": "* Both date range fields are required"
                 },
                 "requiredInFunction": {
-                    "func": function(field, rules, i, options) {
+                    "func": function (field, rules, i, options) {
                         return (field.val() == "test") ? true : false;
                     },
                     "alertText": "* Field must equal test"
@@ -96,7 +96,7 @@
                 },
                 "date": {
                     //	Check if date is valid by leap year
-                    "func": function(field) {
+                    "func": function (field) {
                         var pattern = new RegExp(/^(\d{4})[\/\-\.](0?[1-9]|1[012])[\/\-\.](0?[1-9]|[12][0-9]|3[01])$/);
                         var match = pattern.exec(field.val());
                         if (match == null)
@@ -117,7 +117,7 @@
                 },
                 "url": {
                     "regex": /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i,
-                    "alertText": "* Invalid URL should start with http:// or https:// eg "+inlineJs.baseUrl
+                    "alertText": "* Invalid URL should start with http:// or https:// eg " + inlineJs.baseUrl
                 },
                 "onlyNumberSp": {
                     "regex": /^[0-9\ ]+$/,
@@ -185,13 +185,11 @@
                 //Edwin
                 "isEmailAvailable": {
                     "url": inlineJs.baseUrl + "/is_email_available",
+                    "extraData": "app=sapama",
                     "alertText": "* This email is already taken",
                     "alertTextOk": "* This email is available",
                     "alertTextLoad": "* Checking if email is available"
-                },
-                "cardDate": {
-                    "alertText": "* Set future date"
-                },
+                }
             };
 
         }

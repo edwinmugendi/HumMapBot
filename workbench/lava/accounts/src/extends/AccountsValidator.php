@@ -314,7 +314,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
 
         //Get user by email
         $user_model = $user_controller->getModelByField('email', $credentials['email'], $parameters);
-
+        
         if ($user_model) {//User with this email exist
             //Previous logins deleted
             $deleted = 0;
@@ -369,7 +369,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                         }//E# if else statement
                         //Save user
                         $user_model->save();
-
+                        
                         //Get success message
                         $message = \Lang::get($user_controller->package . '::' . $user_controller->controller . '.notification.login');
 
