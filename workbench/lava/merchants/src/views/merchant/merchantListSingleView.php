@@ -22,21 +22,13 @@
                                         <td><?php echo $view_data['singleModel']['reg_no']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['tax_id']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['vision']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['mission']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['about']; ?></td>
-                                 
+                                                                     
                                         <td><?php echo $view_data['singleModel']['phone_1']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['phone_2']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['email']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['address']; ?></td>
-                                                                        <td><?php echo $view_data['singleModel']['country_id_text']; ?></td>
+                                                                                    <td><?php echo $view_data['singleModel']['country_id_text']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['province']; ?></td>
                                  
@@ -45,23 +37,7 @@
                                         <td><?php echo $view_data['singleModel']['street']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['postal_code']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['website']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['facebook']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['twitter']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['bank_name']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['bank_sort_code']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['bank_account_name']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['bank_account_number']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['bank_postal_code']; ?></td>
-                <?php if (!array_key_exists('export', $view_data)): ?>    <td>
+                                                                                                                <?php if (!array_key_exists('export', $view_data)): ?>    <td>
         <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get('common.view.actions.detailed.detailed'); ?>"><span class="icon-data-dashboard icon-data-2x text-primary"></span></a>
         <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_post_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get('common.view.actions.edit.edit'); ?>"><span class="icon-data-edit icon-data-2x text-primary"></span></a>
         <a href="#" data-id="<?php echo $view_data['singleModel']['id']; ?>"  data-ids="<?php echo $view_data['singleModel']['id']; ?>" class="deleteRow" title="<?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.actions.delete.delete'); ?>"><span class="icon-data-delete icon-data-2x text-danger"></span></a>

@@ -30,6 +30,7 @@ class CreateLocationsTable extends Migration {
             //Location
             $table->string('address', 255);
             $table->string('postal_code', 255);
+            
             $table->decimal('lat', 13, 10);
             $table->decimal('lng', 13, 10);
             

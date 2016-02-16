@@ -14,6 +14,7 @@ class CreateProductsTable extends Migration {
         Schema::create('pdt_products', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('merchant_id')->unsigned();
+            
             $table->string('currency_id', 3);
             $table->integer('location_id')->unsigned();
             $table->string('name', 255);

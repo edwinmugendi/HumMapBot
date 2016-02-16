@@ -18,26 +18,26 @@ class MerchantModel extends \BaseModel {
         'workflow' => array(1, 'select', '='),
         'reg_no' => array(1, 'text', 'like'),
         'tax_id' => array(1, 'text', 'like'),
-        'vision' => array(1, 'text', 'like'),
-        'mission' => array(1, 'text', 'like'),
-        'about' => array(1, 'text', 'like'),
+        'vision' => array(0, 'text', 'like'),
+        'mission' => array(0, 'text', 'like'),
+        'about' => array(0, 'text', 'like'),
         'phone_1' => array(1, 'text', 'like'),
         'phone_2' => array(1, 'text', 'like'),
         'email' => array(1, 'text', 'like'),
-        'address' => array(1, 'text', 'like'),
+        'address' => array(0, 'text', 'like'),
         'country_id' => array(1, 'select', '='),
         'province' => array(1, 'text', 'like'),
         'city' => array(1, 'text', 'like'),
         'street' => array(1, 'text', 'like'),
         'postal_code' => array(1, 'text', 'like'),
-        'website' => array(1, 'text', 'like'),
-        'facebook' => array(1, 'text', 'like'),
-        'twitter' => array(1, 'text', 'like'),
-        'bank_name' => array(1, 'text', 'like'),
-        'bank_sort_code' => array(1, 'text', 'like'),
-        'bank_account_name' => array(1, 'text', 'like'),
-        'bank_account_number' => array(1, 'text', 'like'),
-        'bank_postal_code' => array(1, 'text', 'like'),
+        'website' => array(0, 'text', 'like'),
+        'facebook' => array(0, 'text', 'like'),
+        'twitter' => array(0, 'text', 'like'),
+        'bank_name' => array(0, 'text', 'like'),
+        'bank_sort_code' => array(0, 'text', 'like'),
+        'bank_account_name' => array(0, 'text', 'like'),
+        'bank_account_number' => array(0, 'text', 'like'),
+        'bank_postal_code' => array(0, 'text', 'like'),
     );
     //Fillable fields
     protected $fillable = array(
@@ -84,6 +84,12 @@ class MerchantModel extends \BaseModel {
     );
     //Create validation rules
     public $createRules = array(
+        'name' => 'required',
+        'workflow' => 'required',
+    );
+    
+    //Create validation rules
+    public $updateRules = array(
         'name' => 'required',
         'workflow' => 'required',
     );
