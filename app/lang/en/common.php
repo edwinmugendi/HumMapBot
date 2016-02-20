@@ -19,7 +19,7 @@ return array(
             'desc' => 'Desc',
         ),
         'per_page' => array(
-            -1 => 'Per 1page',
+            -1 => 'Per page',
             '25' => 25,
             '50' => 50,
             '75' => 75,
@@ -27,6 +27,7 @@ return array(
         ),
     ),
     'back_to_list' => 'Back to list',
+    'detailed_view'=>'Detailed view',
     'edit' => 'Edit',
     'save' => 'Save',
     'cancel' => 'Cancel',
@@ -49,7 +50,7 @@ return array(
                 'edit' => 'Edit'
             ),
             'detailed' => array(
-                'detailed' => 'View detailed'
+                'detailed' => 'Detailed view'
             ),
             'export' => array(
                 'export' => 'Export to'

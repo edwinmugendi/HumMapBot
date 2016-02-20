@@ -6,9 +6,4 @@ return array(
       | Timezone Language Lines
       |--------------------------------------------------------------------------
      */
-    'data' => array(
-        -1 => 'Select timezone',
-        'EN' => 'Kenya',
-        'GH'=>'Ghana'
-    )
 );

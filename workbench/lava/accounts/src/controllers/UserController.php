@@ -109,8 +109,9 @@ class UserController extends AccountsBaseController {
                 'status' => $controller_model->status
             );
 
+            $recipient['to'] = $controller_model->email;
             //Send welcome email
-            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $controller_model->id, $controller_model->email, 'welcome', \Config::get('app.locale'), $parameters));
+            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $controller_model->id, $recipient, 'welcome', \Config::get('app.locale'), $parameters));
         } else {
             
         }//E# if else statement
@@ -393,11 +394,12 @@ class UserController extends AccountsBaseController {
 
         //Get user
         $user = $user_model->toArray();
-        
+
         if ($user_model->role_id != 3) {
             //Session org
             $this->callController(\Util::buildNamespace('merchants', 'merchant', 1), 'sessionMerchant', array($user));
         }
+
         //Unset organization
         unset($user['merchant']);
 
@@ -815,7 +817,7 @@ class UserController extends AccountsBaseController {
                         //Converse
                         $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('sms', null, null, $user_model->id, array($user_model->phone), 'forgotPassword', \Config::get('app.locale'), $parameters));
                     } catch (\Exception $e) {
-                        throw new \Api500Exception(\Lang::get($this->package . '::' . $this->controller . '.api.sending_sms_failed'));
+                        throw new \Api500Exception(\Lang::get($this->package . '::' . $this->controller . '.notification.sending_sms_failed'));
                     }//E# try catch block
                 } else {
                     $queryStrArray = array(
@@ -838,10 +840,11 @@ class UserController extends AccountsBaseController {
                     );
 
                     try {
+                        $recipient['to'] = $user_model->email;
                         //Converse
-                        $isSent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $user_model->id, $user_model->email, 'forgotPassword', \Config::get('app.locale'), $parameters));
+                        $isSent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $user_model->id, $recipient, 'forgotPassword', \Config::get('app.locale'), $parameters));
                     } catch (\Exception $e) {
-                        throw new \Api500Exception(\Lang::get($this->package . '::' . $this->controller . '.api.sending_email_failed'));
+                        throw new \Api500Exception(\Lang::get($this->package . '::' . $this->controller . '.notification.sending_email_failed'));
                     }//E# try catch block
                 }
 

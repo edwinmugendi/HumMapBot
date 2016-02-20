@@ -23,12 +23,10 @@
                                  
                                         <td><?php echo $view_data['singleModel']['tax_id']; ?></td>
                                                                      
-                                        <td><?php echo $view_data['singleModel']['phone_1']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['phone_2']; ?></td>
+                                        <td><?php echo $view_data['singleModel']['phone']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['email']; ?></td>
-                                                                                    <td><?php echo $view_data['singleModel']['country_id_text']; ?></td>
+                                                                        <td><?php echo $view_data['singleModel']['country_id_text']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['province']; ?></td>
                                  
@@ -37,6 +35,9 @@
                                         <td><?php echo $view_data['singleModel']['street']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['postal_code']; ?></td>
+                                                                        <td><?php echo $view_data['singleModel']['timezone_id_text']; ?></td>
+                                                                        <td><?php echo $view_data['singleModel']['currency_id_text']; ?></td>
+                                                                        <td><?php echo $view_data['singleModel']['date_format_text']; ?></td>
                                                                                                                 <?php if (!array_key_exists('export', $view_data)): ?>    <td>
         <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get('common.view.actions.detailed.detailed'); ?>"><span class="icon-data-dashboard icon-data-2x text-primary"></span></a>
         <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_post_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get('common.view.actions.edit.edit'); ?>"><span class="icon-data-edit icon-data-2x text-primary"></span></a>
@@ -64,13 +65,9 @@
                      
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.about') .': '.$view_data['singleModel']['about']; ?> </div>
                      
-                                        <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.phone_1') .': '.$view_data['singleModel']['phone_1']; ?> </div>
-                     
-                                        <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.phone_2') .': '.$view_data['singleModel']['phone_2']; ?> </div>
+                                        <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.phone') .': '.$view_data['singleModel']['phone']; ?> </div>
                      
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.email') .': '.$view_data['singleModel']['email']; ?> </div>
-                     
-                                        <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.address') .': '.$view_data['singleModel']['address']; ?> </div>
                                                             <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.country_id') .': '.$view_data['singleModel']['country_id_text']; ?> </div>
                      
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.province') .': '.$view_data['singleModel']['province']; ?> </div>
@@ -80,6 +77,9 @@
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.street') .': '.$view_data['singleModel']['street']; ?> </div>
                      
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.postal_code') .': '.$view_data['singleModel']['postal_code']; ?> </div>
+                                                            <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.timezone_id') .': '.$view_data['singleModel']['timezone_id_text']; ?> </div>
+                                                            <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.currency_id') .': '.$view_data['singleModel']['currency_id_text']; ?> </div>
+                                                            <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.date_format') .': '.$view_data['singleModel']['date_format_text']; ?> </div>
                      
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.website') .': '.$view_data['singleModel']['website']; ?> </div>
                      

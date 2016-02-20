@@ -53,7 +53,7 @@ class LocationsBaseController extends \BaseController {
 			$selectOptionsCache = array();
 
 			//Prepend the array with the "Select Country"
-			$selectOptionsCache[''] = \Lang::get($this->package . '::' . $this->controller . '.data.-1');
+			$selectOptionsCache[''] = \Lang::get('common.select');
 
 			if ($countryModel) {//Country Model exist
 				foreach ($countryModel as $singleCountryModel) {//Loop through country model

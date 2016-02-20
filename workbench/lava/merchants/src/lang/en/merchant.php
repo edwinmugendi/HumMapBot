@@ -13,6 +13,12 @@ return array(
             2 => 'Inactive',
             3 => 'Suspended',
         ),
+        'date_format' => array(
+            '' => 'Select',
+            'dd/mm/yyyy' => 'dd/mm/yyyy',
+            'mm/dd/yyyy' => 'mm/dd/yyyy',
+            'yyyy/mm/dd' => 'yyyy/mm/dd'
+        ),
     ),
     'notification' => array(
         'created' => 'Merchant created',
@@ -30,15 +36,16 @@ return array(
             'vision' => 'Vision',
             'mission' => 'Mission',
             'about' => 'About',
-            'phone_1' => 'Phone 1',
-            'phone_2' => 'Phone 2',
+            'phone' => 'Phone',
             'email' => 'Email',
-            'address' => 'Address',
             'country_id' => 'Country',
             'province' => 'Province',
             'city' => 'City',
             'street' => 'Street',
             'postal_code' => 'Postal code',
+            'timezone_id' => 'Timezone',
+            'currency_id' => 'Currency',
+            'date_format' => 'Date format',
             'website' => 'Website',
             'facebook' => 'Facebook',
             'twitter' => 'Twitter',
@@ -67,6 +74,9 @@ return array(
             'add' => 'Add merchant',
             'found' => '{0} :count merchants | {1} :count merchant | [2,Inf] :count merchants',
         )
+    ),
+    'merchantDetailedPage' => array(
+        'title' => 'Merchant: :title #:id'
     ),
     'merchantListPage' => array(
         'title' => 'List of merchants'
@@ -192,7 +202,7 @@ return array(
                                             'name' => 'Tax id',
                                             'type' => 'text',
                                             'prepend' => 'user',
-                                            'htmlName' => 'tax id',
+                                            'htmlName' => 'tax_id',
                                             'displayed' => 1,
                                             'disabled' => 0,
                                             'placeholder' => 'Type the tax id eg \'TAX123\'',
@@ -249,7 +259,7 @@ return array(
                                 array(
                                     'fields' => array(
                                         array(
-                                            'name' => 'Phone',
+                                            'name' => 'Phone (comma separated for multiple)',
                                             'type' => 'text',
                                             'prepend' => 'user',
                                             'htmlName' => 'phone',
@@ -261,7 +271,7 @@ return array(
                                             )
                                         ),
                                         array(
-                                            'name' => 'Email',
+                                            'name' => 'Email (comma separated for multiple)',
                                             'type' => 'text',
                                             'prepend' => 'user',
                                             'htmlName' => 'email',
@@ -372,7 +382,7 @@ return array(
                                             'name' => 'Account name',
                                             'type' => 'text',
                                             'prepend' => 'user',
-                                            'htmlName' => 'account_name',
+                                            'htmlName' => 'bank_account_name',
                                             'displayed' => 1,
                                             'disabled' => 0,
                                             'placeholder' => 'Type the account name eg \'Car Wash XYY\'',
@@ -384,12 +394,64 @@ return array(
                                             'name' => 'Account number',
                                             'type' => 'text',
                                             'prepend' => 'user',
-                                            'htmlName' => 'account_number',
+                                            'htmlName' => 'bank_account_number',
                                             'displayed' => 1,
                                             'disabled' => 0,
                                             'placeholder' => 'Type the account number eg \'01010143231\'',
                                             'help' => '<strong>Description: </strong>The account number of this merchant.<br/><strong>Do: </strong>Type the account number of this merchant.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'01010143231\'.',
                                             'validator' => array(
+                                            )
+                                        ),
+                                    )
+                                ),
+                            )
+                        ),
+                        array(
+                            'id' => 'settings',
+                            'title' => 'Currency and time',
+                            'heading' => 'Please set the currency and time settings of this merchant.',
+                            'help' => 'Please set the currency and time settings of this merchant.',
+                            'stared' => 0,
+                            'rows' => array(
+                                array(
+                                    'fields' => array(
+                                        array(
+                                            'name' => 'Time zone',
+                                            'type' => 'select',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'timezone_id',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Select time zone',
+                                            'help' => '<strong>Description: </strong>The time zone of this merchant<br/><strong>Do: </strong>Select the time zone of this merchant.<br/></strong>Star:</strong> %s',
+                                            'validator' => array(
+                                                'required' => 1,
+                                            )
+                                        ),
+                                        array(
+                                            'name' => 'Currency',
+                                            'type' => 'select',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'currency_id',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Select currency',
+                                            'help' => '<strong>Description: </strong>The currency of this merchant<br/><strong>Do: </strong>Select the currency of this merchant.<br/></strong>Star:</strong> %s',
+                                            'validator' => array(
+                                                'required' => 1,
+                                            )
+                                        ),
+                                        array(
+                                            'name' => 'Date format',
+                                            'type' => 'select',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'date_format',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Select date format',
+                                            'help' => '<strong>Description: </strong>The date format of this merchant<br/><strong>Do: </strong>Select the date format of this merchant.<br/></strong>Star:</strong> %s',
+                                            'validator' => array(
+                                                'required' => 1,
                                             )
                                         ),
                                     )

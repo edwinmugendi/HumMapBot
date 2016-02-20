@@ -272,6 +272,7 @@ div.formCell .inline{
 
 /*S# Map view*/
 div#mapCanvas{
+    width:85%;
     height:400px;
 }
 div#mapCanvas img{

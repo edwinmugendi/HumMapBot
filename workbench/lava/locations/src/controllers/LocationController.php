@@ -42,9 +42,13 @@ class LocationController extends LocationsBaseController {
      * @param array $view_data media data array
      * @return view media view to upload media
      */
-    public function getMapView() {
+    public function getMapView($lat, $lng) {
+        
         //Return media view to upload media
-        return \View::make($this->package . '::' . $this->controller . '.mapView')->render();
+        return \View::make('locations::location.mapView')
+                        ->with('lat', $lat)
+                        ->with('lng', $lng)
+                        ->render();
     }
 
 //E# getMapView() function
@@ -57,7 +61,7 @@ class LocationController extends LocationsBaseController {
     public function getLocationSelectOptions() {
         //Build the function name
         $function = camel_case('get_' . $this->controller . 'SelectOptions');
-        
+
         //Return this locations select options
         return ArrayDataModel::$function($this->package, $this->controller);
     }
@@ -98,25 +102,25 @@ class LocationController extends LocationsBaseController {
                     'operator' => '=',
                     'operand' => 67 //Nairobi
                 ),
-                 array(
+                array(
                     'where' => 'orWhere',
                     'column' => 'id',
                     'operator' => '=',
                     'operand' => 36 //Kikuyu
                 ),
-                 array(
+                array(
                     'where' => 'orWhere',
                     'column' => 'id',
                     'operator' => '=',
                     'operand' => 81 //Ruiru
                 ),
-                 array(
+                array(
                     'where' => 'orWhere',
                     'column' => 'id',
                     'operator' => '=',
                     'operand' => 1 //Athi River / Mavoko
                 ),
-                 array(
+                array(
                     'where' => 'orWhere',
                     'column' => 'id',
                     'operator' => '=',
@@ -259,7 +263,7 @@ class LocationController extends LocationsBaseController {
                 'issuer_id' => 1,
                 'issuee_id' => 1,
                 'controller' => $this->controller,
-                'description' => json_encode(array($this->controller => \Str::title($this->input['location']),'id' => $this->input[$locationKey])),
+                'description' => json_encode(array($this->controller => \Str::title($this->input['location']), 'id' => $this->input[$locationKey])),
                 'priority' => 1,
                 'status' => 1,
                 'created_by' => $this->user['id'], //USER_ID
@@ -267,7 +271,7 @@ class LocationController extends LocationsBaseController {
             );
 
             //Create issue model
-            $this->callController(\Util::buildNamespace('system','issue', 1), 'createIfValid', array($issueRow));
+            $this->callController(\Util::buildNamespace('system', 'issue', 1), 'createIfValid', array($issueRow));
         }//E# if else statement
         //Return the notification a as JSON
         return \Response::json($this->notification);

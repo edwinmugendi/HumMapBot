@@ -6,7 +6,5 @@ return array(
 	 | Country Language Lines
 	 |--------------------------------------------------------------------------
 	*/
-    'data' => array(
-	   -1 => 'Select country',
-    )
+    
 );

@@ -36,23 +36,27 @@ class BaseController extends Controller {
     //User Searchable relations
     public $userSearchableRelations;
     //Imageable
-    public $imageable;
+    public $imageable = false;
+    //Mappable
+    public $mappable = false;
     //Owned by
     public $ownedBy = array();
     //CrudId
     protected $crudId = -1; //Create = 1, Update = 2, Read = 3, Delete = 4
     //Disable fields
     public $disableFields = false;
+    //Soft delete
+    public $softDelete = true;
 
     public function __construct() {
         //Current user
         $this->user = $this->sessionedUser();
 
-        //Current merchant
-        $this->merchant = $this->sessionedMerchant();
-
         //Get POSTed data
         $this->input = \Input::get();
+
+        //Current merchant
+        $this->merchant = $this->sessionedMerchant();
 
         //Cache ip
         $this->input['ip'] = \Request::getClientIp();
@@ -501,6 +505,21 @@ class BaseController extends Controller {
             //Prepare fields for list view
             $this->beforeViewing($singleController);
 
+            if ($this->imageable) {//Imageable
+                $singleController['main_url'] = $singleController['thumbnail_url'] = '';
+                $singleController['image_count'] = count($singleController['media']);
+                if ($singleController['image_count']) {
+                    //Get and set media view to data source
+                    $media_response = $this->callController(\Util::buildNamespace('media', 'media', 1), 'formatMediaResponse', array($singleController['media'][0]));
+
+                    $singleController['main_url'] = $singleController['thumbnail_url'] = $media_response['thumbnail_url'];
+
+                    if ($singleController['media'][0]['is_image']) {
+                        //Main Url
+                        $singleController['main_url'] = $this->view_data['uploadPath'] . '/' . $singleController['media'][0]['name'];
+                    }//E# if  statement
+                }//E# if statement
+            }//E# if statement
             //Set the single controller to view data
             $this->view_data['singleModel'] = $singleController;
 
@@ -562,7 +581,7 @@ class BaseController extends Controller {
 
         $title_array = array();
         foreach ($modelObject->viewFields as $key => $single_field) {
-            if (array_key_exists(3, $single_field)) {
+            if (array_key_exists(3, $single_field) && $single_field[3]) {
                 if ($single_field[1] == 'select') {
                     $field = $key . '_text';
                     $title_array[] = $this->view_data['controller_model'][$field];
@@ -624,7 +643,7 @@ class BaseController extends Controller {
     }
 
 //E# getDetailed() function
-    
+
     /**
      * S# registerDetailedTemplates() method
      * @author Edwin Mugendi
@@ -657,9 +676,6 @@ class BaseController extends Controller {
         //TODO: Check if the logged in user organization id is the same as this id
 
         if ($id) {//Update Controller
-            if ($detailed == 'detailed') {
-                
-            }//
             //Set crud id
             $this->view_data['crudId'] = $this->crudId = 2;
 
@@ -698,6 +714,8 @@ class BaseController extends Controller {
             $this->view_data['crudId'] = $this->crudId = 1;
 
             $controller_model['id'] = -1;
+            $controller_model['lat'] = -1;
+            $controller_model['lng'] = -1;
         }//E# if else statement
         //TODO: Set the organization id from the session
         $controller_model['merchant_id'] = $this->merchant['id'];
@@ -718,8 +736,12 @@ class BaseController extends Controller {
             //Get and set media view to data source
             $this->view_data['dataSource']['mediaView'] = $this->callController(\Util::buildNamespace('media', 'media', 1), 'getMediaView', array($this->view_data));
         }//E# if else statement
+
+        if ($this->mappable) {//Is mappable
+            //Get and set map view to data source
+            $this->view_data['dataSource']['mapView'] = $this->callController(\Util::buildNamespace('locations', 'location', 1), 'getMapView', array($controller_model['lat'], $controller_model['lng']));
+        }//E# if else statement
         //Set locations to inline js data
-        $this->view_data['locations'] = array(); //Set to $locations;
         //Get and set organization organization form to view data
         $form = \Lang::get($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['page'] . '.' . $this->view_data['controller'] . 'PostView.form.' . camel_case($this->view_data['controller'] . '_' . $this->view_data['action']));
 
@@ -1247,7 +1269,6 @@ class BaseController extends Controller {
         //Set date format
         $js['date_format'] = $this->getDateFormat();
 
-
         //Set crud id
         $js['crudId'] = $this->crudId;
 
@@ -1256,6 +1277,9 @@ class BaseController extends Controller {
 
         //Set controller
         $js['controller'] = $this->controller;
+
+        //Set mappable
+        $js['mappable'] = $this->mappable;
 
         //Set base url
         $js['baseUrl'] = \URL::to('/');
@@ -1283,6 +1307,11 @@ class BaseController extends Controller {
             $js['lang']['media']['fileNotAllowed'] = $this->callController(\Util::buildNamespace('media', 'media', 1), 'getLanguageString', array('inlineJs.error.fileupload.description.fileNotAllowed'));
             $js['lang']['media']['fileTooBig'] = $this->callController(\Util::buildNamespace('media', 'media', 1), 'getLanguageString', array('inlineJs.error.fileupload.description.fileTooBig'));
             $js['lang']['media']['fileTooSmall'] = $this->callController(\Util::buildNamespace('media', 'media', 1), 'getLanguageString', array('inlineJs.error.fileupload.description.fileTooSmall'));
+        }//E# if statement
+
+        if ($this->mappable && (($parameters['page'] == $this->controller . 'PostPage') || ($parameters['page'] == $this->controller . 'DetailedPage'))) {//Load map picker component
+            //Set google maps link
+            $js['googleMaps'] = "https://maps.googleapis.com/maps/api/js?key=" . \Config::get('thirdParty.google.api_key') . "&callback=zoomTo&language=" . \Config::get('app.locale');
         }//E# if statement
         //Inject controller specific js
         $this->injectControllerSpecificJs($js);
@@ -2186,55 +2215,123 @@ class BaseController extends Controller {
 
     /**
      * S# postDelete() function
+     * 
      * Delete model associated with this controller
-     * 
-     * @param string $field Field
-     * @param string $value Value
-     * 
-     * @return function deleteRedirect
+     *  
      */
-    public function postDelete($field, $value) {
+    public function postDelete() {
+        //TODO: Check if user owns this model or 
+        //TODO: Is owned by his organization
         //Get this controller's model
         $modelObject = $this->getModelObject();
 
-        //Add field and value to input
-        $this->addFieldValueToInput($field, $value);
+        foreach ($this->input['ids'] as $id) {
+            $response = array();
 
-        //Get and set the model's delete validation rules
-        $this->validationRules = $modelObject->deleteRules;
+            //Validate model is owned by a user
+            //$this->validateModelIsUserOwned($modelObject);
+            //Set scope
+            $parameters['scope'] = array('statusOne');
 
-        //Validate model is owned by a user
-        $this->validateModelIsUserOwned($modelObject);
+            //Get model by field
+            $controller_model = $this->getModelByField('id', $id, $parameters);
 
-        //Validate row to be deleted
-        $validation = $this->isInputValid();
+            if ($controller_model) {//Model exists
+                if ($this->beforeDeleting($controller_model, $response)) {
+                    if ($this->softDelete) {//Soft delete
+                        $controller_model->status = 2;
+                        $controller_model->save();
+                    } else {//Actual delete
+                        $controller_model->delete();
+                    }//E# if else statement
+                    //Set reponse for this model
+                    $response = array(
+                        'id' => $id,
+                        'code' => 200,
+                        'message' => \Lang::get($this->package . '::' . $this->controller . '.notification.deleted', array('field' => 'id', 'value' => $controller_model->id))
+                    );
+                }//E# if statement
+                //After delete callback
+                $this->afterDeleting($controller_model);
 
-        //Get model by field
-        $controller_model = $this->getModelByField($field, $value);
+                //Delete Redirect
+                //return $this->deleteRedirect($controller_model);
+            } else {
+                //Set notification
+                $parameters = array(
+                    'field' => 'id',
+                    'type' => Str::title($this->controller),
+                    'value' => $id,
+                );
 
-        if ($controller_model) {//Model exists
-            if ($this->beforeDeleting($controller_model)) {
-                $controller_model->delete();
-            }//E# if statement
-            //After delete callback
-            $this->afterDeleting($controller_model);
+                //Set reponse for this model
+                $response = array(
+                    'id' => $id,
+                    'code' => 404,
+                    'message' => \Lang::get('httpStatus.systemCode.904.developerMessage', $parameters)
+                );
+            }//E# if else statement
 
-            //Delete Redirect
-            return $this->deleteRedirect($controller_model);
-        } else {
-            //Set notification
-            $this->notification = array(
-                'field' => $this->input['field'],
-                'type' => Str::title($this->controller),
-                'value' => $this->input['value'],
-            );
+            $this->notification[] = $response;
+        }//E# foreach statement
 
-            //Throw 404 error
-            throw new \Api404Exception($this->notification);
-        }//E# if else statement
+        return $this->notification;
     }
 
 //E# postDelete() function
+
+    /**
+     * S# postUndelete() function
+     * Un delete
+     */
+    public function postUndelete() {
+        //Get this controller's model
+        $modelObject = $this->getModelObject();
+
+        foreach ($this->input['ids'] as $id) {
+            $response = array();
+
+            //Validate model is owned by a user
+            //$this->validateModelIsUserOwned($modelObject);
+            //Set scope
+            $parameters['scope'] = array('statusTwo');
+
+            //Get model by field
+            $controller_model = $this->getModelByField('id', $id, $parameters);
+
+            if ($controller_model) {//Model exists
+                if ($this->softDelete) {//Un delete
+                    $controller_model->status = 1;
+                    $controller_model->save();
+
+                    //Set reponse for this model
+                    $response = array(
+                        'id' => $id,
+                        'code' => 200,
+                        'message' => \Lang::get($this->package . '::' . $this->controller . '.notification.deleted', array('field' => 'id', 'value' => $controller_model->id))
+                    );
+                }//E# if else statement
+            } else {
+                //Set notification
+                $parameters = array(
+                    'field' => 'id',
+                    'type' => Str::title($this->controller),
+                    'value' => $id,
+                );
+
+                //Set reponse for this model
+                $response = array(
+                    'id' => $id,
+                    'code' => 404,
+                    'message' => \Lang::get('httpStatus.systemCode.904.developerMessage', $parameters)
+                );
+            }//E# if else statement
+
+            $this->notification[] = $response;
+        }//E# foreach statement
+
+        return $this->notification;
+    }
 
     /**
      * S# beforeDeleting() function

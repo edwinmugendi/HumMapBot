@@ -16,17 +16,130 @@ class LocationModel extends \BaseModel {
     //View fields
     public $viewFields = array(
         'id' => array(1, 'text', '='),
+        'name' => array(1, 'text', 'like', 1),
+        'about' => array(1, 'text', 'like', 0),
+        'phone' => array(1, 'text', 'like', 0),
+        'email' => array(1, 'text', 'like', 0),
+        'country_id' => array(1, 'select', '='),
+        'province' => array(1, 'text', 'like'),
+        'city' => array(1, 'text', 'like'),
+        'street' => array(1, 'text', 'like'),
+        'postal_code' => array(1, 'text', 'like', 0),
+        'lat' => array(1, 'text', 'like', 0),
+        'lng' => array(1, 'text', 'like', 0),
+        'timezone_id' => array(0, 'select', '='),
+        'currency_id' => array(1, 'select', '='),
+        'date_format' => array(0, 'select', '='),
+        'loyalty_stamps' => array(1, 'text', 'like', 0),
+        'surcharge' => array(0, 'text', 'like', 0),
+        'bank_name' => array(0, 'text', 'like'),
+        'pay_location' => array(0, 'select', '='),
+        'bank_name' => array(0, 'text', 'like'),
+        'bank_sort_code' => array(0, 'text', 'like'),
+        'bank_account_name' => array(0, 'text', 'like'),
+        'bank_account_number' => array(0, 'text', 'like'),
+        'bank_postal_code' => array(0, 'text', 'like'),
+        'is_monday_open' => array(0, 'select', '=', 0),
+        'monday_opens_at' => array(0, 'text', 'like', 0),
+        'monday_closes_at' => array(0, 'text', 'like', 0),
+        'is_tuesday_open' => array(0, 'select', '=', 0),
+        'tuesday_opens_at' => array(0, 'text', 'like', 0),
+        'tuesday_closes_at' => array(0, 'text', 'like', 0),
+        'is_wednesday_open' => array(0, 'select', '=', 0),
+        'wednesday_opens_at' => array(0, 'text', 'like', 0),
+        'wednesday_closes_at' => array(0, 'text', 'like', 0),
+        'is_thursday_open' => array(0, 'select', '=', 0),
+        'thursday_opens_at' => array(0, 'text', 'like', 0),
+        'thursday_closes_at' => array(0, 'text', 'like', 0),
+        'is_friday_open' => array(0, 'select', '=', 0),
+        'friday_opens_at' => array(0, 'text', 'like', 0),
+        'friday_closes_at' => array(0, 'text', 'like', 0),
+        'is_saturday_open' => array(0, 'select', '=', 0),
+        'saturday_opens_at' => array(0, 'text', 'like', 0),
+        'saturday_closes_at' => array(0, 'text', 'like', 0),
+        'is_sunday_open' => array(0, 'select', '=', 0),
+        'sunday_opens_at' => array(0, 'text', 'like', 0),
+        'sunday_closes_at' => array(0, 'text', 'like', 0),
+        'is_holiday_open' => array(0, 'select', '=', 0),
+        'holiday_opens_at' => array(0, 'text', 'like', 0),
+        'holiday_closes_at' => array(0, 'text', 'like', 0),
+        'website' => array(0, 'text', 'like'),
+        'facebook' => array(0, 'text', 'like'),
+        'twitter' => array(0, 'text', 'like'),
     );
     //Fillable fields
     protected $fillable = array(
-        'total_reviews',
+        'name',
+        'about',
+        'phone',
+        'email',
+        'address',
+        'country_id',
+        'province',
+        'city',
+        'street',
+        'postal_code',
+        'lat',
+        'lng',
+        'currency_id',
+        'timezone_id',
+        'date_format',
+        'loyalty_stamps',
+        'surcharge',
+        'pay_location',
+        'bank_name',
+        'bank_sort_code',
+        'bank_account_name',
+        'bank_account_number',
+        'bank_postal_code',
+        'is_monday_open',
+        'monday_opens_at',
+        'monday_closes_at',
+        'is_tuesday_open',
+        'tuesday_opens_at',
+        'tuesday_closes_at',
+        'is_wednesday_open',
+        'wednesday_opens_at',
+        'wednesday_closes_at',
+        'is_thursday_open',
+        'thursday_opens_at',
+        'thursday_closes_at',
+        'is_friday_open',
+        'friday_opens_at',
+        'friday_closes_at',
+        'is_saturday_open',
+        'saturday_opens_at',
+        'saturday_closes_at',
+        'is_sunday_open',
+        'sunday_opens_at',
+        'sunday_closes_at',
+        'is_holiday_open',
+        'holiday_opens_at',
+        'holiday_closes_at',
+        'website',
+        'facebook',
+        'twitter',
+        'agent',
         'ip',
         'status',
         'created_by',
-        'updated_by'
+        'updated_by',
     );
     //Appends fields
     protected $appends = array(
+        'is_monday_open_text',
+        'is_tuesday_open_text',
+        'is_wednesday_open_text',
+        'is_thursday_open_text',
+        'is_friday_open_text',
+        'is_saturday_open_text',
+        'is_sunday_open_text',
+        'is_holiday_open_text',
+        'pay_location_text',
+        'country_id_text',
+        'workflow_text',
+        'currency_id_text',
+        'timezone_id_text',
         'star_rating',
         'favoured',
         'rated',
@@ -66,10 +179,191 @@ class LocationModel extends \BaseModel {
     );
     //Create validation rules
     public $createRules = array(
-        'status' => 'required|integer',
-        'created_by' => 'required|integer',
-        'updated_by' => 'required|integer',
+        'name' => 'required',
     );
+    //Update validation rules
+    public $updateRules = array(
+        'name' => 'required',
+    );
+
+    /**
+     * S# getPayLocationTextAttribute() function
+     * Get PayLocation Text
+     */
+    public function getPayLocationTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['pay_location'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getPayLocationTextAttribute() function
+
+    /**
+     * S# getIsMondayOpenTextAttribute() function
+     * Get IsMondayOpen Text
+     */
+    public function getIsMondayOpenTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['is_monday_open'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getIsMondayOpenTextAttribute() function
+
+    /**
+     * S# getIsTuesdayOpenTextAttribute() function
+     * Get IsTuesdayOpen Text
+     */
+    public function getIsTuesdayOpenTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['is_tuesday_open'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getIsTuesdayOpenTextAttribute() function
+    /**
+     * S# getIsWednesdayOpenTextAttribute() function
+     * Get IsWednesdayOpen Text
+     */
+    public function getIsWednesdayOpenTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['is_wednesday_open'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getIsWednesdayOpenTextAttribute() function
+    /**
+     * S# getIsThursdayOpenTextAttribute() function
+     * Get IsThursdayOpen Text
+     */
+    public function getIsThursdayOpenTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['is_thursday_open'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getIsThursdayOpenTextAttribute() function
+    /**
+     * S# getIsFridayOpenTextAttribute() function
+     * Get IsFridayOpen Text
+     */
+    public function getIsFridayOpenTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['is_friday_open'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getIsFridayOpenTextAttribute() function
+    /**
+     * S# getIsSaturdayOpenTextAttribute() function
+     * Get IsSaturdayOpen Text
+     */
+    public function getIsSaturdayOpenTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['is_saturday_open'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getIsSaturdayOpenTextAttribute() function
+
+    /**
+     * S# getIsSundayOpenTextAttribute() function
+     * Get IsSundayOpen Text
+     */
+    public function getIsSundayOpenTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['is_sunday_open'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getIsSundayOpenTextAttribute() function
+
+    /**
+     * S# getIsHolidayOpenTextAttribute() function
+     * Get IsHolidayOpen Text
+     */
+    public function getIsHolidayOpenTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['is_holiday_open'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getIsHolidayOpenTextAttribute() function
+
+    /**
+     * S# getWorkflowTextAttribute() function
+     * Get Workflow Text
+     */
+    public function getWorkflowTextAttribute() {
+        $label = '';
+        if ($this->attributes['workflow'] == 1) {
+            $label = 'label label-success';
+        } else if ($this->attributes['workflow'] == 2) {
+            $label = 'label label-warning';
+        } else if ($this->attributes['workflow'] == 3) {
+            $label = 'label label-danger';
+        }//E# if else statement
+
+        return \Lang::has('merchants::merchant.data.workflow.' . $this->attributes['workflow']) ? '<span class="' . $label . '">' . \Lang::get('merchants::merchant.data.workflow.' . $this->attributes['workflow']) . '</span>' : '';
+    }
+
+//E# getWorkflowTextAttribute() function
+
+    /**
+     * S# currency() function
+     * Set one to one relationship to Currency Model
+     */
+    public function currency() {
+        return $this->belongsTo(\Util::buildNamespace('locations', 'currency', 2), 'currency_id');
+    }
+
+//E# currency() function
+
+    /**
+     * S# getCurrencyIdTextAttribute() function
+     * Get Currency Text
+     */
+    public function getCurrencyIdTextAttribute() {
+        //Get currency model
+        $currency_model = $this->currency()->first();
+        //Return name
+        return $currency_model ? $currency_model->name : '';
+    }
+
+//E# getCurrencyIdTextAttribute() function
+
+    /**
+     * S# timezone() function
+     * Set one to one relationship to Timezone Model
+     */
+    public function timezone() {
+        return $this->belongsTo(\Util::buildNamespace('locations', 'timezone', 2), 'timezone_id');
+    }
+
+//E# timezone() function
+
+    /**
+     * S# getTimezoneIdTextAttribute() function
+     * Get Timezone Text
+     */
+    public function getTimezoneIdTextAttribute() {
+        //Get timezone model
+        $timezone_model = $this->timezone()->first();
+        //Return name
+        return $timezone_model ? $timezone_model->name : '';
+    }
+
+//E# getTimezoneIdTextAttribute() function
+
     /**
      * S# merchant() function
      * Set one to one relationship to Merchant Model
@@ -79,6 +373,41 @@ class LocationModel extends \BaseModel {
     }
 
 //E# merchant() function
+
+    /**
+     * S# getDateFormatTextAttribute() function
+     * Get DateFormat Text
+     */
+    public function getDateFormatTextAttribute() {
+        return \Lang::has('merchants::merchant.data.date_format.' . $this->attributes['date_format']) ? \Lang::get('merchants::merchant.data.date_format.' . $this->attributes['date_format']) : '';
+    }
+
+//E# getDateFormatTextAttribute() function
+
+    /**
+     * S# country() function
+     * Set one to one relationship to Country Model
+     */
+    public function country() {
+        return $this->belongsTo(\Util::buildNamespace('locations', 'country', 2), 'country_id');
+    }
+
+//E# country() function
+
+    /**
+     * S# getCountryIdTextAttribute() function
+     * Get Country Text
+     */
+    public function getCountryIdTextAttribute() {
+
+        //Get country model
+        $country_model = $this->country()->first();
+
+        //Return name
+        return $country_model ? $country_model->name : '';
+    }
+
+//E# getCountryIdTextAttribute() function
 
     /**
      * S# products() function
@@ -127,9 +456,9 @@ class LocationModel extends \BaseModel {
      * Has user favoured this location
      */
     public function getFavouredAttribute() {
-        if (\Auth::check()&& \Request::has('token')) {
+        if (\Auth::check() && \Request::has('token')) {
             $favourite_model = $this->favourites()->count();
-            
+
             return $favourite_model ? 1 : 0;
         } else {
             return -1;
@@ -143,7 +472,7 @@ class LocationModel extends \BaseModel {
      * Get users stamps
      */
     public function getUserStampsAttribute() {
-        if (\Auth::check()&& \Request::has('token')) {
+        if (\Auth::check() && \Request::has('token')) {
             //Create payment controller
             $payment_controller = new PaymentController();
 
@@ -169,7 +498,7 @@ class LocationModel extends \BaseModel {
                     ->whereType(2)
                     ->whereUserId(\Auth::user()->id)
                     ->first();
-            
+
             return $feeling_model ? $feeling_model->feeling : 0;
         } else {
             return -1;

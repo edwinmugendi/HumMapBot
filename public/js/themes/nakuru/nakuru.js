@@ -15,6 +15,206 @@ var $notification = $('#notification');
 var $notificationAnimation;
 
 var $deletedRows = [];
+
+/**
+ *S# onDragStart() closure
+ *@author Edwin Mugendi
+ *@link Google Maps https://developers.google.com/maps/
+ *Close map info window
+ **/
+var onDragStart = function () {//Close $infoWindow
+    $infoWindow.close();
+};//E# onDragStart() closure
+
+/**
+ *S# OnDragEnd() closure
+ *@author Edwin Mugendi
+ *@link Google Maps https://developers.google.com/maps/
+ *Geocode to get latitude and longitude, set map and marker center and position respectively, set info window content and open it, set current latitude and longitude
+ */
+var onDragEnd = function (event) {
+    $latLng = event.latLng;
+    $geocoder.geocode({
+        'latLng': $latLng
+    }, function (results, status) {
+        if (status === google.maps.GeocoderStatus.OK) {//Geocoding succeeded
+            $center = results[0].geometry.location;
+            $address = results[0].formatted_address;
+        } else {//Geocoding failed
+            $center = new google.maps.LatLng(-0.023559, 37.90619300000003);
+            $address = 'Kenya';
+        }//E# if else statement
+        //Set $map and $marker center and position respectively
+        $map.setCenter($center);
+        $marker.setPosition($center);
+        $infoWindow.setContent($address);
+        $infoWindow.open($map, $marker);
+
+        //Set latitude and longitude values respectively
+        $('input#idLat').val($center.lat());
+        $('input#idLng').val($center.lng());
+    });
+};//E# onDragEnd() closure
+
+
+/**
+ * S# $centerMap() closure
+ * @author Edwin Mugendi
+ * Set the maps center and lat and long to the fields
+ * @param {object} $center google maps center object
+ */
+$centerMap = function ($center) {
+    //Set $map and $marker center and position respectively
+    $map.setCenter($center);
+    $marker.setPosition($center);
+    //Set latitude and longitude values respectively
+    $('input#idLatitude').val($center.lat());
+    $('input#idLongitude').val($center.lng());
+
+};//E# $centerMap() closure
+
+/**
+ *S# zoomTo() function
+ *@author Edwin Mugendi
+ *@link Google Maps https://developers.google.com/maps/
+ *Zoom the map to a given address
+ *@param string $address the address to zoom to
+ *@param int $zoom the map zoom level
+ */
+function zoomTo($address, $zoom) {
+    //Define $infoWindow & $geocoder
+    $infoWindow = new google.maps.InfoWindow({});
+    $geocoder = new google.maps.Geocoder();
+
+    if ($address === undefined) {
+        if (inlineJs.crudId == 1) {
+            $address = 'London, UK'
+        } else {
+            $address = {
+                lat: inlineJs.controller_model.lat,
+                long: inlineJs.controller_model.lng
+            }
+        }
+    }//E# if statement
+    console.log($address);
+
+    //$zoom is not set, Hence default to 7
+    $zoom = ($zoom === undefined) ? 15 : $zoom;
+
+    //Create a $map object
+    $map = new google.maps.Map(document.getElementById('mapCanvas'), {
+        zoom: $zoom,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+
+    //Create $marker object
+    $marker = new google.maps.Marker({
+        title: 'Drag marker to exact location',
+        map: $map,
+        draggable: true
+    });
+
+    if ($address.hasOwnProperty('lat') && $address.hasOwnProperty('long')) {//$address is has lat and long co-ordinate (mostly updating property)
+        $center = new google.maps.LatLng($address.lat, $address.long);
+        $centerMap($center);
+
+    } else {//$address is string
+        //Geocode and zoom
+        $geocoder.geocode({
+            'address': $address
+        }, function (results, status) {
+            if (status === google.maps.GeocoderStatus.OK) {//Geocoding succeeded
+                $center = results[0].geometry.location;
+            } else {//Geocoding failed
+                $center = new google.maps.LatLng(-0.023559, 37.90619300000003);
+            }//E# if else statement
+            $centerMap($center);
+        });//E# geocode() function
+
+    }//E# if else statement
+
+    //Listen to Click event
+    google.maps.event.addListener($marker, 'click', onDragEnd);
+
+    //Listen to DragEnd event
+    google.maps.event.addListener($map, 'click', onDragEnd);
+
+    //Listen to DragEnd event
+    google.maps.event.addListener($marker, 'dragend', onDragEnd);
+
+    //Listen to DragStart event
+    google.maps.event.addListener($marker, 'dragstart', onDragStart);
+}
+;//E# zoomTo() function
+/**
+ *S# loadMap() function
+ *@author Edwin Mugendi
+ *@link Google Maps https://developers.google.com/maps/
+ *Zoom the map to a given address
+ *@param string $address the address to zoom to
+ *@param int $zoom the map zoom level
+ */
+function loadMap($address, $zoom) {
+    //Define $infoWindow & $geocoder
+    $infoWindow = new google.maps.InfoWindow({});
+    $geocoder = new google.maps.Geocoder();
+
+    if ($address === undefined) {
+        var $address = {
+            lat: inlineJs.controllerModel.latitude,
+            long: inlineJs.controllerModel.longitude,
+        }
+    }//E# if statement
+
+    //$zoom is not set, Hence default to global zoom that is set on page load
+    $zoom = ($zoom === undefined) ? inlineJs.zoom : $zoom;
+
+    //Create a $map object
+    $map = new google.maps.Map(document.getElementById('mapGala'), {
+        zoom: $zoom,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+
+    //Create $marker object
+    $marker = new google.maps.Marker({
+        map: $map,
+        icon: inlineJs.baseUrl + '/media/homes/theme/mapIcon.png'
+    });
+
+    if ($address.hasOwnProperty('lat') && $address.hasOwnProperty('long')) {//$address is has lat and long co-ordinate (mostly updating property)
+        $center = new google.maps.LatLng($address.lat, $address.long);
+        $centerMap($center);
+
+    } else {//$address is string
+        //Geocode and zoom
+        $geocoder.geocode({
+            'address': $address
+        }, function (results, status) {
+            if (status === google.maps.GeocoderStatus.OK) {//Geocoding succeeded
+                $center = results[0].geometry.location;
+            } else {//Geocoding failed
+                $center = new google.maps.LatLng(-0.023559, 37.90619300000003);
+            }//E# if else statement
+            $centerMap($center);
+
+        });//E# geocode() function
+
+    }//E# if else statement
+}//E# loadMap function
+
+/**
+ *S# injectGMaps() function
+ *@author Edwin Mugendi
+ *@link Google Maps https://developers.google.com/maps/
+ *load Google Maps Library
+ **/
+function injectGMaps() {
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = inlineJs.googleMaps;
+    document.body.appendChild(script);
+}//E# injectGMaps() function
+
 /**
  *S# changeOrg
  *
@@ -1222,7 +1422,14 @@ function crmRegisterRelatedToLoader($controller, $relatedTo) {
     //Delete
     ajaxify($ajaxOptions);
 }
+
 jQuery(document).ready(function ($) {
+    /*Load Maps*/
+    if (inlineJs.mappable) {
+
+        //Call injectGMaps on window load
+        window.onload = injectGMaps;
+    }
     //Stick footer to the bottom
     var docHeight = $(window).height();
     var footerHeight = $('#footer').outerHeight();
@@ -1315,606 +1522,5 @@ jQuery(document).ready(function ($) {
     });
 
     if (inlineJs.page === 'payrollOvertimeListPage') {//Payroll Overtime List Page
-        //Disable buttons
-        disableButtons('#idCheckUnCheckRow', '#idDisapproveRow,#idApproveRow');
-        //Row is checked
-        rowIsCheck('.rowToCheck', '#idDisapproveRow,#idApproveRow');
-        //Register approve attendance workflow
-        registerWorkflow('#idApproveRow,.approveRow', 'approve');
-        //Register disapprove attendance workflow
-        registerWorkflow('#idDisapproveRow,.disapproveRow', 'disapprove');
-    } else if (inlineJs.page === 'payrollPayrollListPage') {//Payroll Payroll List Page
-        //Disable buttons
-        disableButtons('#idCheckUnCheckRow', '#idUnpublishRow,#idPublishRow,#idEmailRow');
-        //Row is checked
-        rowIsCheck('.rowToCheck', '#idUnpublishRow,#idPublishRow,#idEmailRow');
-        //Register publish event
-        registerWorkflow('#idPublishRow,.publishRow', 'publish');
-        //Register unpublished event
-        registerWorkflow('#idUnpublishRow,.unpublishRow', 'unpublish');
-        //Register email event
-        registerWorkflow('#idEmailRow,.emailRow', 'email');
-
-        //Register view payroll
-        registerViewPayroll();
-
-    } else if (inlineJs.page === 'payrollAdvancePostPage') {//Payroll Advance Post Page
-        selectAllEmployees();
-    } else if (inlineJs.page === 'accountsUserPostPage') {//Accounts User Post Page
-
-        if (inlineJs.role_id == 3) {
-            $('#idEnabled,#idEmploymentDate,#idContractEndDate,#idRetirementDate,#idNotice,#idEmployeeNo,#idLocationId,#idDepartmentId,#idJobCategoryId,#idShiftId,#idEmploymentStatusId,#idGradeId,#idUserId,#idMonday,#idTuesday,#idWednesday,#idThursday,#idFriday,#idSaturday,#idSunday,#idHours,#idBasicSalary,#idKin,#idKinRelationship,#idKinPhone,#idTerminationId').prop('disabled', true);
-            //$('#idEmploymentDate,#idContractEndDate,#idRetirementDate').prop('disabled', true);
-        }
-        $('#idCreateLogin').click(function () {
-            if ($(this).prop('checked')) {//Checked
-                $('#idUsername,#idPassword,#idConfirmPassword,#idEnabled').prop('disabled', false);
-            } else {//Unchecked
-                $('#idUsername,#idPassword,#idConfirmPassword,#idEnabled').prop('disabled', true);
-            }//E# if else statement
-        });
-    } else if (inlineJs.page === 'accountsDependentPostPage') {//Accounts Dependent Post Page
-        //Register field shower/ hider
-        showFieldWhenOtherFieldChangesTo('idOther', 'idRelationship', 3, 'equal');
-        //Call change event on the relationship field
-        $('#idRelationship').change();
-    } else if (inlineJs.page === 'payrollFormulaPostPage') {//Payroll Formula Post Page
-
-        //Add  row
-        $('#bracketView').on('click', 'a#linkAddBracket', function ($event) {
-            //Find first row
-            var $tr = $('#tableBracket').find('tr.rowBracket').first();
-            //Clone the row
-            var $clone = $tr.clone();
-            //Clear text
-            $clone.find(':text').val('0.00');
-            //Inject it
-            $('#tableBracket').find('tr.rowBracket').last().after($clone);
-            //Table changed event
-            tableRowChanged();
-            //Prevent default
-            $event.preventDefault();
-        });
-
-        //Delete row
-        $('#tableBracket').on('click', 'a.deleteBracket', function ($event) {
-
-            var $rowCount = $('#tableBracket tr.rowBracket').length;
-            if ($rowCount > 1) {
-                //Find row
-                var $tr = $(this).closest('tr.rowBracket');
-                //Fade out and remove
-                $tr.fadeOut(400, function () {
-                    //Remove tr
-                    $tr.remove();
-                    //Table changed event
-                    tableRowChanged();
-                });
-            }
-            //Prevent default
-            $event.preventDefault();
-        });
-
-
-        //Use a given formula
-        $('#bracketView').on('click', 'a.rateBracket', function ($event) {
-            var $that = $(this);
-            var $rateBracket = $that.data('rate');
-
-            //Remove all row apart from the first
-            $('#tableBracket tr.rowBracket').each(function () {
-                var $rowCount = $('#tableBracket tr.rowBracket').length;
-                if ($rowCount == 1) {
-                    return false;
-                } else {
-                    //Remove
-                    $(this).remove();
-                }//E# if else statement
-            });
-
-            $.each(inlineJs.rates[$rateBracket]['brackets'], function ($index, $bracket) {
-                //Find first row
-                var $tr = $('#tableBracket').find('tr.rowBracket').first();
-                //Clone the row
-                var $clone = $tr.clone();
-                //Set from text
-                $clone.find(':text').eq(0).val(numberFormat($bracket['from']));
-                //Set to text
-                $clone.find(':text').eq(1).val(numberFormat($bracket['to']));
-
-                if ($bracket['type'] == 1) {//Amount
-                    //Set amount text
-                    $clone.find(':text').eq(2).val(numberFormat($bracket['value']));
-                    //Set percentage text
-                    $clone.find(':text').eq(3).val('0.00');
-                } else {
-                    //Set amount text
-                    $clone.find(':text').eq(2).val('0.00');
-                    //Set percentage text
-                    $clone.find(':text').eq(3).val(numberFormat($bracket['value']));
-
-                }//E# if else statement
-                //Inject it
-                $('#tableBracket').find('tr.rowBracket').last().after($clone);
-
-            });
-
-            //Set above
-            $('#tableBracket input[name="above_from"]').val(numberFormat(inlineJs.rates[$rateBracket]['above']['from']));
-
-            if (inlineJs.rates[$rateBracket]['above']['type'] == 1) {//Amount
-                //Set amount text
-                $('#tableBracket input[name="above_amount"]').val(numberFormat(inlineJs.rates[$rateBracket]['above']['value']));
-                //Set percentage text
-                $('#tableBracket input[name="above_percentage"]').val('0.00');
-            } else {
-                //Set amount text
-                $('#tableBracket input[name="above_amount"]').val('0.00');
-                //Set percentage text
-                $('#tableBracket input[name="above_percentage"]').val(numberFormat(inlineJs.rates[$rateBracket]['above']['value']));
-            }//E# if else statement
-
-            //Remove first bracket
-            var $rowCount = $('#tableBracket tr.rowBracket').length;
-
-            if ($rowCount > 1) {
-                $('#tableBracket').find('tr.rowBracket').first().remove();
-            }//E# if statement
-            //Table changed event
-            tableRowChanged();
-
-            //Prevent default
-            $event.preventDefault();
-        });
-
-    } else if (inlineJs.page === 'accountsUserProfilePage') {//Load User Profile Page js
-        /*S# PLUGIN: Validation Engine*/
-        $('.userProfileForm').validationEngine({
-            autoPositionUpdate: true,
-            onValidationComplete: function ($form, $status) {
-                if ($status === true) {//Validation passed
-                    $.ajax({
-                        url: inlineJs.baseUrl + '/update_user',
-                        data: $form.serialize(),
-                        type: 'POST',
-                        dataType: 'JSON',
-                    }).done(function ($jsonData) {
-                        //Show success message
-
-                        $that = $('#userProfile' + $form.data('form') + 'Success').fadeIn();
-                        //Hide success message after after some seconds
-                        setTimeout(function () {
-                            $that.fadeOut();
-                        }, 5000);
-                    }).error(function ($jqXHR) {
-                        //Get Response
-                        $response = jQuery.parseJSON($jqXHR.responseText);
-                        if ($response.httpStatusCode === 400) {//Bad request error
-                            //Build errors
-                            $errors = buildErrorMessage($response.errors);
-                            //Display the errors
-                            $('#user' + $form.data('form') + 'Error').html($errors).fadeIn();
-                        }//E# if statement
-                    });
-                }//E# if statement
-            }
-        });
-        /*E# PLUGIN: Validation Engine*/
-
-        /*S# PLUGIN: Validation Engine*/
-        $('#userProfilePasswordForm').validationEngine({
-            autoPositionUpdate: true,
-            onValidationComplete: function ($form, $status) {
-                if ($status === true) {//Validation passed
-                    $.ajax({
-                        url: inlineJs.baseUrl + '/update_user',
-                        data: $form.serialize(),
-                        type: 'POST',
-                        dataType: 'JSON',
-                    }).done(function ($jsonData) {
-                        //Show success message
-                        var $that = $('#userProfilePasswordSuccess').fadeIn();
-                        //Hide success message after after some seconds
-                        setTimeout(function () {
-                            $that.fadeOut();
-                            //Clear the password and confirm password fields
-                            $('#idPassword,#idConfirmPassword').val("");
-                        }, 5000);
-                    }).error(function ($jqXHR) {
-                        //Get Response
-                        var $response = jQuery.parseJSON($jqXHR.responseText);
-                        if ($response.httpStatusCode === 400) {//Bad request error
-                            //Build errors
-                            $errors = buildErrorMessage($response.errors);
-                            //Display the errors
-                            $('#userPasswordError').html($errors).fadeIn();
-                        }//E# if statement
-                    });
-                }//E# if statement
-            }
-        });
-        /*E# PLUGIN: Validation Engine*/
-
-    } else if (inlineJs.page === 'leaveEntitlementPostPage') {//Load Leave Entitlement Post Page
-
-        var $idAddMultiple = $('#idAddMultiple');
-
-        //Add span
-        $idAddMultiple.siblings('label').append('<span id="idMatchedEmployees"><span>');
-
-        $idAddMultiple.click(function () {
-            var $that = $(this);
-            var $idDepartmentLocationIds = $('#idDepartmentId,#idLocationId');
-            var $idUserId = $('#idUserId');
-
-            $idDepartmentLocationIds.change(function () {
-                pageEntitlementGetMatchedEmployees();
-            });
-            if ($that.prop('checked')) {//Checked
-                console.log("asd");
-                //Show department and location id cells
-                $idDepartmentLocationIds
-                        .prop('disabled', false)
-                        .parents('div.formCell')
-                        .removeClass('commonDisplayNoneImportant');
-                //Hide user id cell
-                $idUserId
-                        .prop('disabled', true)
-                        .parents('div.formCell')
-                        .addClass('commonDisplayNoneImportant');
-                pageEntitlementGetMatchedEmployees();
-            } else {
-                //Hide department and location id cells
-                $idDepartmentLocationIds
-                        .prop('disabled', true)
-                        .parents('div.formCell')
-                        .addClass('commonDisplayNoneImportant');
-                //Show user id cell
-                $idUserId
-                        .prop('disabled', false)
-                        .parents('div.formCell')
-                        .removeClass('commonDisplayNoneImportant');
-                $('#idMatchedEmployees').empty();
-            }//E# if else statement
-        });
-    } else if (inlineJs.page === 'leavePeriodDefinePage') {//Load Leave Period Define Page
-        var $form = $('#idDefinePeriodForm');
-
-        $('#idResetDefinePeriod').click(function ($event) {
-            $('#idEndDateText').html(function () {
-                return $('#idOriginalEndDateText').html();
-            });
-            $form[0].reset();
-            $event.preventDefault();
-        });
-
-        $('#idStartMonth,#idStartDay').change(function () {
-            var $startMonth = $('#idStartMonth').val();
-            var $startDay = $('#idStartDay').val();
-            if ($startMonth && $startDay) {
-                //Cache notification
-                var $notification = $('#notification');
-
-                //Setup ajax to delete
-                var $ajaxOptions = new AjaxOptions('/' + inlineJs.package + '/end_date_text/' + $startMonth + '/' + $startDay);
-                $ajaxOptions.type = 'GET';
-                $ajaxOptions.dataType = 'HTML';
-
-                //Register done callback
-                $ajaxOptions.done = function ($data) {
-                    $('#idEndDateText').html($data);
-                }//E# done() function
-
-                //Register always callback
-                $ajaxOptions.always = function ($jqXHR, $textStatus) {
-
-                }//E# alwats() function
-
-                //Delete
-                ajaxify($ajaxOptions);
-            }
-        });
-    } else if (inlineJs.page === 'leaveApplicationPostPage') {//Load Leave Application Post Page
-        //Leave application date changed
-        leaveApplicationDateChanged();
-
-        leaveApplicationSpecialTime('#idStartTime', '#idEndTime', '#idHours');
-        leaveApplicationSpecialTime('#idStartTime2', '#idEndTime2', '#idHours2');
-        leaveApplicationSpecialTime('#idStartTime3', '#idEndTime3', '#idHours3');
-
-        leaveApplicationDuration('');
-        leaveApplicationDuration('2');
-        leaveApplicationDuration('3');
-
-        $('#idPartialDays').change(function () {
-            var $partialDaysValue = parseInt($(this).val());
-            if ($partialDaysValue === 0) {//None
-                hideShowField('#idDuration2,#idAmPm2,#idStartTime2,#idEndTime2,#idHours2,#idDuration3,#idAmPm3,#idStartTime3,#idEndTime3,#idHours3', 'hide');
-            } else if ($partialDaysValue >= 1 && $partialDaysValue <= 3) {//All day
-                hideShowField('#idDuration2,#idAmPm2,#idStartTime2,#idEndTime2,#idHours2,#idDuration3,#idAmPm3,#idStartTime3,#idEndTime3,#idHours3', 'hide');
-                hideShowField('#idDuration2,#idAmPm2', 'show');
-            } else if ($partialDaysValue === 4) {//Start and end day
-                hideShowField('#idDuration2,#idAmPm2,#idStartTime2,#idEndTime2,#idHours2,#idDuration3,#idAmPm3,#idStartTime3,#idEndTime3,#idHours3', 'hide');
-                hideShowField('#idDuration2,#idAmPm2,#idDuration3,#idAmPm3', 'show');
-            }//E# if else statement
-        });
-
-    } else if (inlineJs.page === 'leaveApplicationListPage') {//Load Leave Application List Page
-
-        //Checkbox all is clicked
-        $('#idCheckboxAll').click(function () {
-            $('#idAllChecked').val(1);
-            if ($(this).prop('checked')) {
-                $('#idCheckboxRejected,#idCheckboxCanceled,#idCheckboxPendingHrApproval,#idCheckboxPendingSupervisorApproval,#idCheckboxScheduled,#idCheckboxTaken').prop('checked', true);
-            } else {
-                $('#idCheckboxRejected,#idCheckboxCanceled,#idCheckboxPendingHrApproval,#idCheckboxPendingSupervisorApproval,#idCheckboxScheduled,#idCheckboxTaken').prop('checked', false);
-            }//E# if else statement
-        });
-
-        $('#idCheckboxRejected,#idCheckboxCanceled,#idCheckboxPendingApproval,#idCheckboxScheduled,#idCheckboxTaken').click(function () {
-            if ($('#idCheckboxRejected').prop('checked') &&
-                    $('#idCheckboxCanceled').prop('checked') &&
-                    $('#idCheckboxPendingApproval').prop('checked') &&
-                    $('#idCheckboxScheduled').prop('checked') &&
-                    $('#idCheckboxTaken').prop('checked')) {
-                $('#idCheckboxAll').prop('checked', true);
-            } else {
-                $('#idCheckboxAll').prop('checked', false);
-
-            }//E# if else statement
-
-        });
-        var $idCommentModal = $('#idCommentModal');
-
-        /*Comment*/
-        $('.comment').click(function ($event) {
-            $('#idCommentLoading').show();
-            $('#idCommentContainer').empty();
-            $('#idComment').val('');
-            $idCommentModal.modal('show');
-            var $that = $(this);
-            var $row = $that.parents('tr.singleRow');
-            $("#idOrganizationId").val($row.data('organization-id'));
-            $("#idUserId").val($row.data('user-id'));
-            $("#idApplicationId").val($row.data('id'));
-
-            var $ajaxOptions = new AjaxOptions('/leave/comment/application');
-            $ajaxOptions.type = 'GET';
-            $ajaxOptions.dataType = 'JSON';
-            $ajaxOptions.data = {
-                application_id: $row.data('id'),
-            }
-            $ajaxOptions.done = function ($data) {
-                $('#idCommentLoading').hide();
-
-                if ($data.message) {
-                    $('#idCommentContainer').html($data.message);
-                }//E# if statement
-            }//E# done function
-
-            ajaxify($ajaxOptions);
-
-            $event.preventDefault();
-        });
-
-        //Modal save button clicked
-        $('#idSaveModal').click(function () {
-            var $ajaxOptions = new AjaxOptions('/leave/comment/application');
-            $ajaxOptions.type = 'POST';
-            $ajaxOptions.dataType = 'JSON';
-            $ajaxOptions.data = $('#idCommentForm').serialize();
-            $ajaxOptions.done = function ($data) {
-                $idCommentModal.modal('hide');
-                showNotificationBar($data);
-            }//E# done function
-
-            ajaxify($ajaxOptions);
-        });
-        var $idSave = $('#idSave');
-        var $idListTable = $('#idListTable');
-        var $idWorkflowForm = $('#idWorkflowForm');
-        $idSave.click(function () {
-            var $submit = false;
-            //Remove injected input
-            $idWorkflowForm.find('input[class="workflowArray"]').remove();
-
-            $('#idListTable tr.singleRow').each(function (i, row) {
-                // reference all the stuff you need first
-                var $row = $(row);
-                var $workflowSelect = $row.find('select[name="workflow"]');
-                var $workflow = parseInt($workflowSelect.val());
-                if ($workflowSelect.length && !isNaN($workflow)) {
-                    $submit = true;
-                    $idWorkflowForm.append('<input class="workflowArray" name="workflow_array[' + $row.data('id') + ']" type="hidden" value="' + $workflow + '">')
-                }//E# if statement
-            });
-
-            if ($submit) {
-                $idWorkflowForm.submit();
-            } else {
-                return false;
-            }//E# if statement
-        });
-    } else if (inlineJs.page === 'payrollAdvanceCreatePage') {//Load Adance Create Page
-        //Select employees
-        selectAllEmployees();
-
-        //Validate form
-        validateForm('form#idProcessAdvanceForm');
-
-    } else if (inlineJs.page === 'payrollAdvanceListPage') {//Load Adance List Page
-        //Disable buttons
-        disableButtons('#idCheckUnCheckRow', '#idDisapproveRow,#idApproveRow');
-        //Row is checked
-        rowIsCheck('.rowToCheck', '#idDisapproveRow,#idApproveRow');
-        //Register approve attendance workflow
-        registerWorkflow('#idApproveRow,.approveRow', 'approve');
-        //Register disapprove attendance workflow
-        registerWorkflow('#idDisapproveRow,.disapproveRow', 'disapprove');
-
-    } else if (inlineJs.page === 'payrollPayrollCreatePage') {//Load Leave Payroll Create Page
-
-        validateForm('form#idProcessPayrollForm');
-
-        //Select employees
-        selectAllEmployees();
-
-        //Verify Modal
-        var $idVerifyModal = $('#idVerifyModal');
-
-        //Show verify modal on click
-        $('#idVerifyPayroll').click(function ($event) {
-            $idVerifyModal.modal('show');
-            $event.preventDefault();
-        });
-
-        //Register on click event
-        $('#idModalType,#idModalUserId').change(function () {
-
-            //Set values
-            var $type = $('#idModalType').val();
-            var $user_id = $('#idModalUserId').val();
-
-            if ($type && $user_id) {
-                console.log($user_id);
-                var $ajaxOptions = new AjaxOptions('/accounts/verify_payroll/' + $type);
-                $ajaxOptions.type = 'GET';
-                $ajaxOptions.dataType = 'JSON';
-                $ajaxOptions.data = {
-                    user_id: $user_id
-                };
-                $ajaxOptions.done = function ($data) {
-                    $('#idVerifyContainer').html($data.message);
-                }//E# done function
-
-                ajaxify($ajaxOptions);
-            } else {
-                $('#idVerifyContainer').html('Select settings and employee');
-            }//E# if else statement
-        });
-    } else if (inlineJs.page === 'accountsAboutHomePage') {//Accounts About Home Page
-        $(window).scroll(function (event) {
-            Scroll();
-        });
-
-        $('.navbar-collapse ul li a,#bottomLinks li a').click(function () {
-            $('html, body').animate({scrollTop: $(this.hash).offset().top - 10}, 1000);
-            return false;
-        });
-        /*
-         /*S# Load image gallery
-         Galleria.loadTheme('js/galleria/classic/galleria.classic.min.js');
-         
-         Galleria.configure({
-         imageCrop: 'landscape',
-         carousel: 'false',
-         autoplay: 5000,
-         easing: 'galleria',
-         idleMode: 'hover',
-         idleSpeed: 100,
-         overlayBackground: '#fff',
-         showCounter: false,
-         showInfo: false,
-         thumbnails: false,
-         });
-         // Initialize Galleria
-         Galleria.run('#galleria');
-         E# Load image gallery*/
-    } else if (inlineJs.page === 'accountsDashboardDashboardPage') {//Load User Dashboard Page js
-
-        //Show locations pie chart
-        showPieChart('#idLocations', inlineJs.pie_chart.locations);
-        //Show departments pie chart
-        showPieChart('#idDepartments', inlineJs.pie_chart.departments);
-        //Show job categories pie chart
-        showPieChart('#idJobCategories', inlineJs.pie_chart.job_categories);
-
-        //Show grades pie chart
-        showPieChart('#idGrades', inlineJs.pie_chart.grades);
-
-    } else if (inlineJs.page === 'accountsLeadListPage') {//Load Accounts Lead ListPage js
-        $('.leadAction').change(function () {
-
-            //Get lead id
-            var $that = $(this);
-            var $leadId = $that.data('id');
-
-            if ($that.val()) {
-                var $bootBoxOptions = {
-                    message: 'Confirm',
-                    buttons: {
-                        cancel: {
-                            label: 'Cancel',
-                            className: "btn"
-                        },
-                        confirm: {
-                            label: 'Confirm',
-                            className: "btn-danger"
-                        }
-                    },
-                    callback: function ($yes) {
-                        if ($yes) {
-                            //Setup ajax to delete
-                            var $ajaxOptions = new AjaxOptions('/' + inlineJs.package + '/workflow/' + inlineJs.controller);
-                            $ajaxOptions.type = 'POST';
-                            $ajaxOptions.dataType = 'JSON';
-                            $ajaxOptions.data = {
-                                source: 'ajax',
-                                action: $that.val(),
-                                id: $leadId
-                            };
-                            //Register done callback
-                            $ajaxOptions.done = function ($jsonData) {
-                                showNotificationBar($jsonData);
-                            }//E# done() function
-
-                            //Register always callback
-                            $ajaxOptions.always = function ($jqXHR, $textStatus) {
-                                registerNotificationAnimation();
-                            }//E# alwats() function
-
-                            //Delete
-                            ajaxify($ajaxOptions);
-                        }//E# if statement
-                    },
-                }//E# bootBoxOptions
-                //Confirm delet
-                bootbox.confirm($bootBoxOptions);
-            }//E# if else statement
-        });
-    } else if (inlineJs.page === 'payrollDeductionPostPage') {//Load Payroll Deduction Post Page js
-        showFieldWhenOtherFieldChangesTo('idDeducted', 'idClass', 1, 'not_equal');
-        $('#idClass').change();
-    } else if (inlineJs.page === 'accountsDeductionPostPage') {//Load Accounts Deduction Post Page js
-        //If Deduction's class == 3, show the interest field
-        $('select#idDeductionId').change(function () {
-            //Get class
-            var $class = $(this).find(':selected').attr('class');
-
-            //Show Interest field if class == to mortgage (3)
-            showOrHideField($('#idInterest'), ($class == 3));
-        });
-
-        $('select#idDeductionId').change();
-    } else if (inlineJs.page === 'crmTaskPostPage') {//Load Crm Task Post Page js
-
-        $('select#idRelatedTo').change(function () {
-            var $relatedTo = $(this).val();
-
-            if ($relatedTo) {
-                crmRegisterRelatedToLoader('task', $relatedTo);
-            }
-        });
-
-    } else if (inlineJs.page === 'crmEventPostPage') {//Load Crm Event Post Page js
-
-        $('select#idRelatedTo').change(function () {
-            var $relatedTo = $(this).val();
-
-            if ($relatedTo) {
-                crmRegisterRelatedToLoader('event', $relatedTo);
-            }
-        });
-
     }//E# if else statement
 });

@@ -16,6 +16,7 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'merchant') ? 'active' : '' ?>"><a href="<?php echo \URL::route('merchantsListMerchant'); ?>">Merchants</a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'location') ? 'active' : '' ?>"><a href="<?php echo \URL::route('merchantsListLocation'); ?>">Locations</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">

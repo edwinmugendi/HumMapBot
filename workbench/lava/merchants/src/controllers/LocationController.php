@@ -13,6 +13,45 @@ class LocationController extends MerchantsBaseController {
     public $controller = 'location';
     //Lazy load
     public $lazyLoad = array('products');
+    public $imageable = true;
+    public $mappable = true;
+
+    /**
+     * S# injectDataSources() function
+     * @author Edwin Mugendi
+     * Inject data source. This are mainly select
+     * 
+     * @param array $dataSource Data source
+     */
+    public function injectDataSources() {
+
+        //Get and set country options for this country
+        $this->view_data['dataSource']['country_id'] = $this->callController(\Util::buildNamespace('locations', 'country', 1), 'getSelectOptions');
+
+        //Get and set timezone options for this country
+        $this->view_data['dataSource']['timezone_id'] = $this->callController(\Util::buildNamespace('locations', 'timezone', 1), 'getSelectOptions');
+
+        //Get and set currency options for this country
+        $this->view_data['dataSource']['currency_id'] = $this->callController(\Util::buildNamespace('locations', 'currency', 1), 'getSelectOptions');
+
+        //Get and set workflow options to data source
+        $this->view_data['dataSource']['workflow'] = \Lang::get($this->package . '::' . $this->controller . '.data.workflow');
+
+        //Get and set yes no options to data source
+        $this->view_data['dataSource']['pay_location'] = $this->view_data['dataSource']['is_monday_open'] = $this->view_data['dataSource']['is_tuesday_open'] = $this->view_data['dataSource']['is_wednesday_open'] = $this->view_data['dataSource']['is_thursday_open'] = $this->view_data['dataSource']['is_friday_open'] = $this->view_data['dataSource']['is_saturday_open'] = $this->view_data['dataSource']['is_sunday_open'] = $this->view_data['dataSource']['is_holiday_open'] = \Lang::get($this->package . '::' . $this->controller . '.data.yes_no');
+
+        //Get and set hours options to data source
+        $this->view_data['dataSource']['monday_opens_at'] = $this->view_data['dataSource']['monday_closes_at'] = $this->view_data['dataSource']['tuesday_opens_at'] = $this->view_data['dataSource']['tuesday_closes_at'] = $this->view_data['dataSource']['wednesday_opens_at'] = $this->view_data['dataSource']['wednesday_closes_at'] = $this->view_data['dataSource']['thursday_opens_at'] = $this->view_data['dataSource']['thursday_closes_at'] = $this->view_data['dataSource']['friday_opens_at'] = $this->view_data['dataSource']['friday_closes_at'] = $this->view_data['dataSource']['saturday_opens_at'] = $this->view_data['dataSource']['saturday_closes_at'] = $this->view_data['dataSource']['sunday_opens_at'] = $this->view_data['dataSource']['sunday_closes_at'] = $this->view_data['dataSource']['holiday_opens_at'] = $this->view_data['dataSource']['holiday_closes_at'] = \Lang::get($this->package . '::' . $this->controller . '.data.hours');
+
+        //Get and set loyalty_stamps options to data source
+        $this->view_data['dataSource']['loyalty_stamps'] = \Lang::get($this->package . '::' . $this->controller . '.data.loyalty_stamps');
+
+        //Get and set date format options to data source
+        $this->view_data['dataSource']['date_format'] = \Lang::get($this->package . '::' . $this->controller . '.data.date_format');
+    }
+
+//E# injectDataSources() function
+
 
     /*     * *
      * Location Search

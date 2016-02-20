@@ -178,7 +178,7 @@
                         $order = 'asc';
                         $is_ordered = false;
                         ?>
-                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'phone_1'): ?>
+                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'phone'): ?>
                              <?php $is_ordered = true;?>
                                 <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
                                 <?php
@@ -192,44 +192,16 @@
                         <?php endif ?>
 
                         <?php if ($view_data['paginationAppends']): ?>
-                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=phone_1'; ?>
+                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=phone'; ?>
                         <?php else: ?>
-                            <?php $url = 'order=' . $order . '&sort=phone_1';?>
+                            <?php $url = 'order=' . $order . '&sort=phone';?>
                         <?php endif;?>                            <th>   
                                 <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
-                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.phone_1'); ?>                                    <?php if ($is_ordered): ?>                                    <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
+                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.phone'); ?>                                    <?php if ($is_ordered): ?>                                    <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
                                     <?php endif; ?>                                </a>
                             </th>
                             <?php else: ?>                            <th>
-                                <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.phone_1'); ?>                            </th>
-                                <?php endif; ?>                                                                                                        <?php if (!array_key_exists('export', $view_data)): ?>                            <?php
-                        $order = 'asc';
-                        $is_ordered = false;
-                        ?>
-                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'phone_2'): ?>
-                             <?php $is_ordered = true;?>
-                                <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
-                                <?php
-                                $order = 'asc';
-                                ?>
-                            <?php else: ?>
-                                <?php
-                                $order = 'desc';
-                                ?>
-                            <?php endif; ?>
-                        <?php endif ?>
-
-                        <?php if ($view_data['paginationAppends']): ?>
-                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=phone_2'; ?>
-                        <?php else: ?>
-                            <?php $url = 'order=' . $order . '&sort=phone_2';?>
-                        <?php endif;?>                            <th>   
-                                <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
-                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.phone_2'); ?>                                    <?php if ($is_ordered): ?>                                    <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
-                                    <?php endif; ?>                                </a>
-                            </th>
-                            <?php else: ?>                            <th>
-                                <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.phone_2'); ?>                            </th>
+                                <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.phone'); ?>                            </th>
                                 <?php endif; ?>                                                                                                        <?php if (!array_key_exists('export', $view_data)): ?>                            <?php
                         $order = 'asc';
                         $is_ordered = false;
@@ -258,7 +230,7 @@
                             </th>
                             <?php else: ?>                            <th>
                                 <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.email'); ?>                            </th>
-                                <?php endif; ?>                                                                                                                                                        <?php if (!array_key_exists('export', $view_data)): ?>                            <?php
+                                <?php endif; ?>                                                                                                        <?php if (!array_key_exists('export', $view_data)): ?>                            <?php
                         $order = 'asc';
                         $is_ordered = false;
                         ?>
@@ -398,6 +370,90 @@
                             </th>
                             <?php else: ?>                            <th>
                                 <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.postal_code'); ?>                            </th>
+                                <?php endif; ?>                                                                                                        <?php if (!array_key_exists('export', $view_data)): ?>                            <?php
+                        $order = 'asc';
+                        $is_ordered = false;
+                        ?>
+                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'timezone_id'): ?>
+                             <?php $is_ordered = true;?>
+                                <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
+                                <?php
+                                $order = 'asc';
+                                ?>
+                            <?php else: ?>
+                                <?php
+                                $order = 'desc';
+                                ?>
+                            <?php endif; ?>
+                        <?php endif ?>
+
+                        <?php if ($view_data['paginationAppends']): ?>
+                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=timezone_id'; ?>
+                        <?php else: ?>
+                            <?php $url = 'order=' . $order . '&sort=timezone_id';?>
+                        <?php endif;?>                            <th>   
+                                <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
+                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.timezone_id'); ?>                                    <?php if ($is_ordered): ?>                                    <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
+                                    <?php endif; ?>                                </a>
+                            </th>
+                            <?php else: ?>                            <th>
+                                <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.timezone_id'); ?>                            </th>
+                                <?php endif; ?>                                                                                                        <?php if (!array_key_exists('export', $view_data)): ?>                            <?php
+                        $order = 'asc';
+                        $is_ordered = false;
+                        ?>
+                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'currency_id'): ?>
+                             <?php $is_ordered = true;?>
+                                <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
+                                <?php
+                                $order = 'asc';
+                                ?>
+                            <?php else: ?>
+                                <?php
+                                $order = 'desc';
+                                ?>
+                            <?php endif; ?>
+                        <?php endif ?>
+
+                        <?php if ($view_data['paginationAppends']): ?>
+                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=currency_id'; ?>
+                        <?php else: ?>
+                            <?php $url = 'order=' . $order . '&sort=currency_id';?>
+                        <?php endif;?>                            <th>   
+                                <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
+                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.currency_id'); ?>                                    <?php if ($is_ordered): ?>                                    <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
+                                    <?php endif; ?>                                </a>
+                            </th>
+                            <?php else: ?>                            <th>
+                                <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.currency_id'); ?>                            </th>
+                                <?php endif; ?>                                                                                                        <?php if (!array_key_exists('export', $view_data)): ?>                            <?php
+                        $order = 'asc';
+                        $is_ordered = false;
+                        ?>
+                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'date_format'): ?>
+                             <?php $is_ordered = true;?>
+                                <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
+                                <?php
+                                $order = 'asc';
+                                ?>
+                            <?php else: ?>
+                                <?php
+                                $order = 'desc';
+                                ?>
+                            <?php endif; ?>
+                        <?php endif ?>
+
+                        <?php if ($view_data['paginationAppends']): ?>
+                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=date_format'; ?>
+                        <?php else: ?>
+                            <?php $url = 'order=' . $order . '&sort=date_format';?>
+                        <?php endif;?>                            <th>   
+                                <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
+                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.date_format'); ?>                                    <?php if ($is_ordered): ?>                                    <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
+                                    <?php endif; ?>                                </a>
+                            </th>
+                            <?php else: ?>                            <th>
+                                <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.date_format'); ?>                            </th>
                                 <?php endif; ?>                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <?php if (!array_key_exists('export', $view_data)): ?>                    <th><?php echo \Lang::get('common.view.actions.actions'); ?></th>
                     <?php endif; ?>                </tr>
             <tbody>
@@ -424,15 +480,11 @@
                                                 
                                                 
                                                                         <td>
-                                                                    <?php echo \Form::text('phone_1', isset($view_data['input']['phone_1']) ? $view_data['input']['phone_1'] : '', array('class' => 'form-control')); ?>                                                            </td>
-                            
-                                                                        <td>
-                                                                    <?php echo \Form::text('phone_2', isset($view_data['input']['phone_2']) ? $view_data['input']['phone_2'] : '', array('class' => 'form-control')); ?>                                                            </td>
+                                                                    <?php echo \Form::text('phone', isset($view_data['input']['phone']) ? $view_data['input']['phone'] : '', array('class' => 'form-control')); ?>                                                            </td>
                             
                                                                         <td>
                                                                     <?php echo \Form::text('email', isset($view_data['input']['email']) ? $view_data['input']['email'] : '', array('class' => 'form-control')); ?>                                                            </td>
                             
-                                                
                                                                         <td>
                                                                     <?php echo \Form::compositeSelect('country_id', $view_data['dataSource']['country_id'], isset($view_data['input']['country_id']) ? $view_data['input']['country_id'] : '', array('class' => 'form-control')); ?>                                                            </td>
                             
@@ -447,6 +499,15 @@
                             
                                                                         <td>
                                                                     <?php echo \Form::text('postal_code', isset($view_data['input']['postal_code']) ? $view_data['input']['postal_code'] : '', array('class' => 'form-control')); ?>                                                            </td>
+                            
+                                                                        <td>
+                                                                    <?php echo \Form::compositeSelect('timezone_id', $view_data['dataSource']['timezone_id'], isset($view_data['input']['timezone_id']) ? $view_data['input']['timezone_id'] : '', array('class' => 'form-control')); ?>                                                            </td>
+                            
+                                                                        <td>
+                                                                    <?php echo \Form::compositeSelect('currency_id', $view_data['dataSource']['currency_id'], isset($view_data['input']['currency_id']) ? $view_data['input']['currency_id'] : '', array('class' => 'form-control')); ?>                                                            </td>
+                            
+                                                                        <td>
+                                                                    <?php echo \Form::compositeSelect('date_format', $view_data['dataSource']['date_format'], isset($view_data['input']['date_format']) ? $view_data['input']['date_format'] : '', array('class' => 'form-control')); ?>                                                            </td>
                             
                                                 
                                                 

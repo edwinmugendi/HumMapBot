@@ -92,7 +92,6 @@ class SonicController extends ProductsBaseController {
         $sonicModel = $this->select($fields, $whereClause, 1);
 
         if ($sonicModel) {//Negative
-            
             if (((int) $sonicModel->negated == 0) && (\Request::segment(3) == 'negative')) {
                 //Reduce points
                 $sonicModel->points = ($sonicModel->points - $this->input['points']);
@@ -259,6 +258,7 @@ class SonicController extends ProductsBaseController {
                 'promoCode' => $promoCode,
                 'promoValue' => $promotionValue
             );
+
             //Send sms
             $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('sms', null, null, $userModel->id, array($userModel->phone), 'sonicPromotion', \Config::get('app.locale'), $parameters));
 

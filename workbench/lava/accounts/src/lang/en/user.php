@@ -13,10 +13,10 @@ return array(
         'list' => 'User profile',
         'forgot_password' => 'We\'ve sent you reset email.',
         'reset_password' => 'Your password has been reset',
-    ),
-    'api' => array(
         'sending_email_failed' => 'Sending email failed. Kindly try again later',
         'sending_sms_failed' => 'Sending sms failed. Kindly try again later',
+    ),
+    'api' => array(
     ),
     'validation' => array(
         'api' => 'Invalid login token',

@@ -14,22 +14,23 @@ class MerchantModel extends \BaseModel {
     //View fields
     public $viewFields = array(
         'id' => array(1, 'text', '='),
-        'name' => array(1, 'text', 'like'),
+        'name' => array(1, 'text', 'like', 1),
         'workflow' => array(1, 'select', '='),
         'reg_no' => array(1, 'text', 'like'),
         'tax_id' => array(1, 'text', 'like'),
         'vision' => array(0, 'text', 'like'),
         'mission' => array(0, 'text', 'like'),
         'about' => array(0, 'text', 'like'),
-        'phone_1' => array(1, 'text', 'like'),
-        'phone_2' => array(1, 'text', 'like'),
+        'phone' => array(1, 'text', 'like'),
         'email' => array(1, 'text', 'like'),
-        'address' => array(0, 'text', 'like'),
         'country_id' => array(1, 'select', '='),
         'province' => array(1, 'text', 'like'),
         'city' => array(1, 'text', 'like'),
         'street' => array(1, 'text', 'like'),
         'postal_code' => array(1, 'text', 'like'),
+        'timezone_id' => array(1, 'select', '='),
+        'currency_id' => array(1, 'select', '='),
+        'date_format' => array(1, 'select', '='),
         'website' => array(0, 'text', 'like'),
         'facebook' => array(0, 'text', 'like'),
         'twitter' => array(0, 'text', 'like'),
@@ -49,10 +50,11 @@ class MerchantModel extends \BaseModel {
         'vision',
         'mission',
         'about',
-        'phone_1',
-        'phone_2',
+        'phone',
         'email',
-        'address',
+        'currency_id',
+        'timezone_id',
+        'date_format',
         'country_id',
         'province',
         'city',
@@ -80,14 +82,12 @@ class MerchantModel extends \BaseModel {
         'timezone_id_text'
     );
     //Hidden fields
-    protected $hidden = array(
-    );
+    protected $hidden = array();
     //Create validation rules
     public $createRules = array(
         'name' => 'required',
         'workflow' => 'required',
     );
-    
     //Create validation rules
     public $updateRules = array(
         'name' => 'required',
@@ -165,10 +165,29 @@ class MerchantModel extends \BaseModel {
      * Get Workflow Text
      */
     public function getWorkflowTextAttribute() {
-        return \Lang::has('lava::merchant.data.workflow.' . $this->attributes['workflow']) ? \Lang::get('lava::merchant.data.workflow.' . $this->attributes['workflow']) : '';
+        $label = '';
+        if ($this->attributes['workflow'] == 1) {
+            $label = 'label label-success';
+        } else if ($this->attributes['workflow'] == 2) {
+            $label = 'label label-warning';
+        } else if ($this->attributes['workflow'] == 3) {
+            $label = 'label label-danger';
+        }//E# if else statement
+
+        return \Lang::has('merchants::merchant.data.workflow.' . $this->attributes['workflow']) ? '<span class="' . $label . '">' . \Lang::get('merchants::merchant.data.workflow.' . $this->attributes['workflow']) . '</span>' : '';
     }
 
 //E# getWorkflowTextAttribute() function
+
+    /**
+     * S# getDateFormatTextAttribute() function
+     * Get DateFormat Text
+     */
+    public function getDateFormatTextAttribute() {
+        return \Lang::has('merchants::merchant.data.date_format.' . $this->attributes['date_format']) ? \Lang::get('merchants::merchant.data.date_format.' . $this->attributes['date_format']) : '';
+    }
+
+//E# getDateFormatTextAttribute() function
 
     /**
      * S# country() function

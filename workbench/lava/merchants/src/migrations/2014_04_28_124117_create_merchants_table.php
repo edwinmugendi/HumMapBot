@@ -33,7 +33,6 @@ class CreateMerchantsTable extends Migration {
             $table->string('email', 255);
 
             //Location
-            $table->string('address', 255);
             $table->string('street', 255);
             $table->string('city', 255);
             $table->string('province', 255);
@@ -44,7 +43,6 @@ class CreateMerchantsTable extends Migration {
             $table->integer('currency_id')->unsigned();
             $table->string('date_format', 10);
             $table->integer('timezone_id');
-
 
             //Social
             $table->string('website', 255);

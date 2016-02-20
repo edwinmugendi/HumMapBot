@@ -164,11 +164,11 @@ class PaymentController extends PaymentsBaseController {
             'day' => $date->format('d/m/y'),
             'time' => $date->format(' h:i A')
         );
-        
+
         if ($user_model->notify_push && $user_model->device_token && $user_model->os) {//Push
             //Set os to parameters
             $parameters['os'] = $user_model->os;
-            
+
             //Converse
             $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('push', null, null, $user_model->id, $user_model->device_token, $template, \Config::get('app.locale'), $parameters));
 
@@ -184,8 +184,10 @@ class PaymentController extends PaymentsBaseController {
 
 
         if ($user_model->notify_email) {//Email
+            $recipient['to'] = $user_model->email;
+           
             //Converse
-            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $user_model->id, $user_model->email, $template, \Config::get('app.locale'), $parameters));
+            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $user_model->id, $recipient, $template, \Config::get('app.locale'), $parameters));
 
             $transaction_model->user_emailed = 1;
         }//E# if statement
@@ -229,16 +231,21 @@ class PaymentController extends PaymentsBaseController {
         //Define email recipients
         $email_recipients = array();
 
-        if ($product_model->location->email_1) {//Add email
-            $email_recipients[] = $product_model->location->email_1;
-        }//E# if statement
+        if ($emails = $product_model->location->email) {//Email
+            $email_array = array_unique(explode(',', $emails));
 
-        if ($product_model->location->email_2) {//Add email
-            $email_recipients[] = $product_model->location->email_2;
-        }//E# if statement
+            $index = 0;
+            foreach ($email_array as $single_email) {
+                if (filter_var($single_email, FILTER_VALIDATE_EMAIL)) {
+                    if ($index == 0) {
+                        $email_recipients['to'] = $single_email;
+                    } else {
+                        $email_recipients['cc'][] = $single_email;
+                    }//E# if else statement
 
-        if ($product_model->location->email_3) {//Add email
-            $email_recipients[] = $product_model->location->email_3;
+                    $index++;
+                }//E# if statement
+            }//E# foreach statement
         }//E# if statement
 
         if ($email_recipients) {//Email
@@ -250,17 +257,9 @@ class PaymentController extends PaymentsBaseController {
         //Define sms recipients    
         $sms_recipients = array();
 
-        if ($product_model->location->phone_1) {//Add phone
-            $sms_recipients[] = $product_model->location->phone_1;
+        if ($phones = $product_model->location->phone) {//Phone
+            $sms_recipients = array_unique(explode(',', $phones));
         }//E# if statement
-
-        if ($product_model->location->phone_2) {//Add phone
-            $sms_recipients[] = $product_model->location->phone_2;
-        }//E# if statement
-
-        if ($product_model->location->phone_3) {//Add phone
-            $sms_recipients[] = $product_model->location->phone_3;
-        }//E# if statement 
 
         if ($sms_recipients) {//SMS
             //Converse

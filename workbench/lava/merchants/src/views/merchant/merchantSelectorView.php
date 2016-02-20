@@ -17,7 +17,7 @@
             </ul>
         </li>
     </ul>
-    <?php echo \Form::open(array('id' => 'idChangeOrgForm', 'route' => 'merchantsChangeOrganization')); ?>
+    <?php echo \Form::open(array('id' => 'idChangeOrgForm', 'route' => 'merchantsChangeMerchant')); ?>
     <?php echo \Form::hidden('merchant_id', '', array('id' => 'idChangeOrgId')); ?>
     <?php echo \Form::close(); ?>
 <?php endif; ?>

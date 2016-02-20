@@ -17,65 +17,88 @@ class CreateLocationsTable extends Migration {
 
             //About
             $table->string('name', 255);
+            $table->text('about');
 
             //Contacts
-            $table->string('fax', 255);
-            $table->string('phone_1', 30);
-            $table->string('phone_2', 30);
-            $table->string('phone_3', 30);
-            $table->string('email_1', 50);
-            $table->string('email_2', 50);
-            $table->string('email_3', 50);
+            $table->string('phone', 255);
+            $table->string('email', 255);
+
+            //Social
+            $table->string('website', 255);
+            $table->string('facebook', 255);
+            $table->string('twitter', 255);
 
             //Location
-            $table->string('address', 255);
+            $table->string('street', 255);
+            $table->string('city', 255);
+            $table->string('province', 255);
             $table->string('postal_code', 255);
-            
+            $table->string('country_id', 255);
+
+            //Currency
+            $table->integer('currency_id')->unsigned();
+            $table->string('date_format', 10);
+            $table->integer('timezone_id');
+
             $table->decimal('lat', 13, 10);
             $table->decimal('lng', 13, 10);
-            
+
             //Loyalty Scheme
             $table->integer('loyalty_stamps');
-            $table->string('currency_id', 4);
             $table->float('surcharge');
 
             //Monday
-            $table->string('monday_open', 255);
-            $table->string('monday_close', 255);
+            $table->boolean('is_monday_open');
+            $table->string('monday_opens_at', 255);
+            $table->string('monday_closes_at', 255);
 
             //Tuesday
-            $table->string('tuesday_open', 255);
-            $table->string('tuesday_close', 255);
+            $table->boolean('is_tuesday_open');
+            $table->string('tuesday_opens_at', 255);
+            $table->string('tuesday_closes_at', 255);
 
             //Wednesday
-            $table->string('wednesday_open', 255);
-            $table->string('wednesday_close', 255);
+            $table->boolean('is_wednesday_open');
+            $table->string('wednesday_opens_at', 255);
+            $table->string('wednesday_closes_at', 255);
 
             //Thursday
-            $table->string('thursday_open', 255);
-            $table->string('thursday_close', 255);
+            $table->boolean('is_thursday_open');
+            $table->string('thursday_opens_at', 255);
+            $table->string('thursday_closes_at', 255);
 
             //Friday
-            $table->string('friday_open', 255);
-            $table->string('friday_close', 255);
+            $table->boolean('is_friday_open');
+            $table->string('friday_opens_at', 255);
+            $table->string('friday_closes_at', 255);
 
             //Saturday
-            $table->string('saturday_open', 255);
-            $table->string('saturday_close', 255);
+            $table->boolean('is_saturday_open');
+            $table->string('saturday_opens_at', 255);
+            $table->string('saturday_closes_at', 255);
 
             //Sunday
-            $table->string('sunday_open', 255);
-            $table->string('sunday_close', 255);
+            $table->boolean('is_sunday_open');
+            $table->string('sunday_opens_at', 255);
+            $table->string('sunday_closes_at', 255);
 
             //Public holidays
-            $table->string('holiday_open', 255);
-            $table->string('holiday_close', 255);
-
-            //Image
-            $table->text('image');
+            $table->boolean('is_holiday_open');
+            $table->string('holiday_opens_at', 255);
+            $table->string('holiday_closes_at', 255);
 
             $table->integer('views')->unsigned();
-            
+
+            //Bank
+            $table->boolean('pay_location');
+            $table->string('bank_name', 255);
+            $table->string('bank_sort_code', 255);
+            $table->string('bank_account_name', 255);
+            $table->string('bank_account_number', 255);
+            $table->string('bank_postal_code', 255);
+
+            $table->integer('workflow')->unsigned();
+
             $table->string('agent', 255);
             $table->string('ip', 255);
             $table->integer('status')->unsigned();

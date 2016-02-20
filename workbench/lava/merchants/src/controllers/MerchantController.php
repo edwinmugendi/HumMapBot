@@ -11,6 +11,7 @@ class MerchantController extends MerchantsBaseController {
 
     //Controller
     public $controller = 'merchant';
+    
     public $imageable = true;
 
     /**

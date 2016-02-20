@@ -6,7 +6,5 @@ return array(
 	 | Currency Language Lines
 	 |--------------------------------------------------------------------------
 	*/
-    'data' => array(
-	   -1 => 'Select currency',
-    )
+    
 );

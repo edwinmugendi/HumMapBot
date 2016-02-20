@@ -114,6 +114,8 @@ return array(
         'Lava\Products\ProductsServiceProvider',
         //Register Media Service Provider
         'Lava\Media\MediaServiceProvider',
+        //Register Location Service Provider
+        'Lava\Locations\LocationsServiceProvider',
     ),
     /*
       |--------------------------------------------------------------------------

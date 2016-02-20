@@ -7,6 +7,7 @@ class GeneratorController extends BaseController {
     private $controllers = array(
         //Merchants
         'Lava\Merchants\MerchantController',
+        'Lava\Merchants\LocationController',
     );
 
     public function generateViews() {

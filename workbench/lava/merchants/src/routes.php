@@ -20,6 +20,9 @@
     /**
      * Merchant routes
      */
+    //Change a merchant
+    \Route::post('merchants/change/merchant', array('as' => 'merchantsChangeMerchant', 'uses' => 'Erp\Merchants\MerchantController@postChangeOrg'));
+
     //Detailed merchant
     \Route::get('merchants/detailed/merchant/{id}', array('as' => 'merchantsDetailedMerchant', 'uses' => 'Lava\Merchants\MerchantController@getDetailed'));
 
@@ -40,6 +43,30 @@
 
     //Un-Delete merchant
     \Route::post('merchants/undelete/merchant', array('as' => 'merchantsUndeleteMerchant', 'uses' => 'Lava\Merchants\MerchantController@postUndelete'));
+
+    /**
+     * Location routes
+     */
+    //Detailed location
+    \Route::get('merchants/detailed/location/{id}', array('as' => 'merchantsDetailedLocation', 'uses' => 'Lava\Merchants\LocationController@getDetailed'));
+
+    //List location
+    \Route::get('merchants/list/location', array('as' => 'merchantsListLocation', 'uses' => 'Lava\Merchants\LocationController@getList'));
+
+    //Post location
+    \Route::get('merchants/post/location/{id?}', array('as' => 'merchantsPostLocation', 'uses' => 'Lava\Merchants\LocationController@getPost'));
+
+    //Create a location
+    \Route::post('merchants/create/location', array('as' => 'merchantsCreateLocation', 'before' => 'csrf', 'uses' => 'Lava\Merchants\LocationController@postCreate'));
+
+    //Update a location
+    \Route::post('merchants/update/location', array('as' => 'merchantsUpdateLocation', 'before' => 'csrf', 'uses' => 'Lava\Merchants\LocationController@postUpdate'));
+
+    //Delete location
+    \Route::post('merchants/delete/location', array('as' => 'merchantsDeleteLocation', 'uses' => 'Lava\Merchants\LocationController@postDelete'));
+
+    //Un-Delete location
+    \Route::post('merchants/undelete/location', array('as' => 'merchantsUndeleteLocation', 'uses' => 'Lava\Merchants\LocationController@postUndelete'));
 });
 
 

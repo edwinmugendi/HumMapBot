@@ -179,7 +179,7 @@ class FeelController extends MerchantsBaseController {
             $feelModel = $this->createIfValid($feelingRow, true);
         }//E# if statement
         //Get success message
-        $message = \Lang::get($this->package . '::' . $this->controller . '.api.feel.' . $this->input ['type']);
+        $message = \Lang::get($this->package . '::' . $this->controller . '.notification.feel.' . $this->input ['type']);
 
         //Throw API success Exception
         throw new \Api200Exception(array_only($feelModel->toArray(), array('id')), $message);

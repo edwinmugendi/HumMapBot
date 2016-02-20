@@ -74,4 +74,3 @@ $height = \Config::get($view_data['package'] . '::media.thumbnailHeight');
     </li>
 </script>
 <?php //E# The template to display files available for upload  ?>
-</div>

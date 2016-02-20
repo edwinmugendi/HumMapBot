@@ -1,13 +1,9 @@
 <?php
 
 return array(
-    /*
-      |--------------------------------------------------------------------------
-      | Product Name
-      |--------------------------------------------------------------------------
-      | The name of the product
-      |
-     */
+    'google' => array(
+        'api_key' => 'AIzaSyAOipzmRP_vDquiIuzvifQ6ldiEA-se6YU'
+    ),
     'dvlasearch' => array(
         'api_key' => 'DvlaSearchDemoAccount',
     ),
