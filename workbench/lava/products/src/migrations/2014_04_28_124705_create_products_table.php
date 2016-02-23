@@ -15,7 +15,6 @@ class CreateProductsTable extends Migration {
             $table->increments('id');
             $table->integer('merchant_id')->unsigned();
             
-            $table->string('currency_id', 3);
             $table->integer('location_id')->unsigned();
             $table->string('name', 255);
             $table->string('description', 255);

@@ -11,8 +11,33 @@ class TransactionModel extends \BaseModel {
 
     //Table
     protected $table = 'fnc_transactions';
-    //User owned
-    public $userOwned = true;
+    //View fields
+    public $viewFields = array(
+        'id' => array(1, 'text', '=', 0),
+        'user_id' => array(1, 'select', '=', 0),
+        'product_id' => array(1, 'select', '=', 1),
+        'location_id' => array(1, 'select', '=', 1),
+        'merchant_id' => array(1, 'select', '=', 0),
+        'promotion_id' => array(0, 'select', '=', 0),
+        'amount' => array(1, 'text', 'like', 0),
+        'refund' => array(0, 'text', 'like', 0),
+        'currency_id' => array(1, 'text', 'like', 0),
+        'description' => array(0, 'text', 'like', 0),
+        'card_used' => array(0, 'text', 'like', 0),
+        'card_token' => array(1, 'text', '=', 0),
+        'stamps_issued' => array(0, 'text', 'like', 0),
+        'lat' => array(0, 'text', 'like', 0),
+        'lng' => array(0, 'text', 'like', 0),
+        'gateway' => array(1, 'select', '=', 0),
+        'workflow' => array(1, 'select', '=', 0),
+        'gateway_tran_id' => array(0, 'text', 'like', 0),
+        'gateway_code' => array(0, 'text', 'like', 0),
+        'user_smsed' => array(0, 'select', '=', 0),
+        'user_emailed' => array(0, 'select', '=', 0),
+        'user_pushed' => array(0, 'select', '=', 0),
+        'merchant_smsed' => array(0, 'select', '=', 0),
+        'merchant_emailed' => array(0, 'select', '=', 0),
+    );
     //Fillable fields
     protected $fillable = array(
         'user_id',
@@ -22,7 +47,7 @@ class TransactionModel extends \BaseModel {
         'currency_id',
         'merchant_id',
         'amount',
-        'currency',
+        'currency_id',
         'description',
         'card_used',
         'card_token',
@@ -48,7 +73,14 @@ class TransactionModel extends \BaseModel {
     );
     //Appends fields
     protected $appends = array(
-        'loc'
+        'user_id_text',
+        'location_id_text',
+        'merchant_id_text',
+        'product_id_text',
+        'promotion_id_text',
+        'loc',
+        'workflow_text',
+        'gateway_text',
     );
     protected $hidden = array(
         'status',
@@ -76,6 +108,78 @@ class TransactionModel extends \BaseModel {
     );
 
     /**
+     * S# getWorkflowTextAttribute() function
+     * Get Workflow Text
+     */
+    public function getWorkflowTextAttribute() {
+        return \Lang::has('payments::transaction.data.workflow.' . $this->attributes['workflow']) ? \Lang::get('payments::transaction.data.workflow.' . $this->attributes['workflow']) : '';
+    }
+
+//E# getWorkflowTextAttribute() function
+
+    /**
+     * S# getGatewayTextAttribute() function
+     * Get Gateway Text
+     */
+    public function getGatewayTextAttribute() {
+        return \Lang::has('payments::transaction.data.gateway.' . $this->attributes['gateway']) && $this->attributes['gateway'] ? \Lang::get('payments::transaction.data.gateway.' . $this->attributes['gateway']) : '';
+    }
+
+//E# getGatewayTextAttribute() function
+
+    /**
+     * S# location() function
+     * Set one to one relationship to Location Model
+     */
+    public function location() {
+        return $this->belongsTo(\Util::buildNamespace('merchants', 'location', 2), 'location_id');
+    }
+
+//E# location() function
+
+    /**
+     * S# getLocationIdTextAttribute() function
+     * 
+     * Get Location Text
+     */
+    public function getLocationIdTextAttribute() {
+
+        //Get location model
+        $location_model = $this->location()->first();
+
+        //Return name
+        return $location_model ? $location_model->name : '';
+    }
+
+//E# getLocationIdTextAttribute() function
+
+    /**
+     * S# merchant() function
+     * Set one to one relationship to Location Model
+     */
+    public function merchant() {
+        return $this->belongsTo(\Util::buildNamespace('merchants', 'merchant', 2), 'merchant_id');
+    }
+
+//E# merchant() function
+
+    /**
+     * S# getMerchantIdTextAttribute() function
+     * 
+     * Get Merchant Text
+     */
+    public function getMerchantIdTextAttribute() {
+
+        //Get merchant model
+        $merchant_model = $this->merchant()->first();
+
+        //Return name
+        return $merchant_model ? $merchant_model->name : '';
+    }
+
+//E# getMerchantIdTextAttribute() function
+
+    /**
      * S# user() function
      * Set one to one relationship to User Model
      */
@@ -86,14 +190,20 @@ class TransactionModel extends \BaseModel {
 //E# user() function
 
     /**
-     * S# location() function
-     * Set one to one relationship to Location Model
+     * S# getUserIdTextAttribute() function
+     * 
+     * Get User Text
      */
-    public function location() {
-        return $this->belongsTo(\Util::buildNamespace('merchants', 'location', 2), 'location_id', 'id');
+    public function getUserIdTextAttribute() {
+
+        //Get user model
+        $user_model = $this->user()->first();
+
+        //Return name
+        return $user_model ? $user_model->first_name . ' ' . $user_model->last_name : '';
     }
 
-//E# location() function
+//E# getUserIdTextAttribute() function
 
     /**
      * S# getLocAttribute() function

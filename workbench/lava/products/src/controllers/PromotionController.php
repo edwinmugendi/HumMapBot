@@ -15,6 +15,48 @@ class PromotionController extends ProductsBaseController {
     public $controller = 'promotion';
 
     /**
+     * S# injectDataSources() function
+     * @author Edwin Mugendi
+     * Inject data source. This are mainly select
+     * 
+     * @param array $dataSource Data source
+     */
+    public function injectDataSources() {
+
+        //Get this organization merchant id
+        $this->view_data['dataSource']['merchant_id'] = array('' => 'Select', $this->merchant['id'] => $this->merchant['name']);
+
+        //Get this organization location id
+        $this->view_data['dataSource']['location_id'] = $this->callController(\Util::buildNamespace('merchants', 'location', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('name'), \Lang::get('common.select')));
+
+        //Get and set type options to data source
+        $this->view_data['dataSource']['type'] = \Lang::get($this->package . '::' . $this->controller . '.data.type');
+
+        //Get and set new customer options to data source
+        $this->view_data['dataSource']['new_customer'] = \Lang::get($this->package . '::' . $this->controller . '.data.new_customer');
+    }
+
+//E# injectDataSources() function
+
+    /**
+     * S# appendCustomValidationRules() function
+     * 
+     * Append custom validation rules.
+     * 
+     * This mainly happens when we need to access the id of object. Eg when updating an object with unique validation rule in it
+     * 
+     * Make sure you have if else for create and update
+     * if($this->crudId == 2){}
+     */
+    public function appendCustomValidationRules() {
+        if ($this->crudId == 2) {
+            $this->validationRules['code'] = 'required|unique:pdt_promotions,code,' . $this->input['id'] . ',id,status,1';
+        }//E# if statement
+    }
+
+//E# appendCustomValidationRules() function
+
+    /**
      * S# locationRedeemablePromotions() function
      * Get the redeemable promotions for this location
      * 

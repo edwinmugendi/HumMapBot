@@ -131,6 +131,160 @@ class BaseController extends Controller {
 //E# generateUniqueField() function
 
     /**
+     * S# getMerchantsModels() function
+     * 
+     * Get merchantanization's models
+     * 
+     * @param int $merchantId Merchant id
+     * @param array $whereClause Where clause
+     * @param array $parameters Parameters
+     * 
+     * @return array Merchant's model
+     */
+    public function getMerchantsModels($merchantId, $whereClause = array(), $parameters = array()) {
+        //Fields to select
+        $fields = array('*');
+
+        //Build where clause
+        $whereClause[] = array(
+            'where' => 'where',
+            'column' => 'merchant_id',
+            'operator' => '=',
+            'operand' => $merchantId
+        );
+
+        //Set scope
+        $parameters['scope'] = array('statusOne');
+
+        //Select models
+        return $this->select($fields, $whereClause, 2, $parameters);
+    }
+
+//E# getMerchantsModels() function
+
+    /**
+     * S# getMerchantsHtmlSelect() function
+     * 
+     * Get merchantanizations html select
+     * 
+     * @param int $merchantId Merchant id
+     * @param string $fieldId Field to be the id
+     * @param mixed $fieldName Fields to the text
+     * @param str $firstLabel First Label
+     * @param str $separator field name separator
+     * @param array $optionAttributes Fields to add as option attributes
+     * @param array $specific_where_clause Specific where clause
+     * 
+     * 
+     */
+    public function getMerchantsHtmlSelect($merchantId, $fieldId, $fieldName, $firstLabel = null, $separator = '-', $optionAttributes = null, $specific_where_clause = null) {
+        //Fields to select
+        $fields = array('*');
+
+        //Build where clause
+        $whereClause = array(
+            array(
+                'where' => 'where',
+                'column' => 'merchant_id',
+                'operator' => '=',
+                'operand' => $merchantId
+            )
+        );
+        /*
+          if ($this->controller == 'user') {
+          $whereClause[] = array(
+          'where' => 'where',
+          'column' => 'role_id',
+          'operator' => '=',
+          'operand' => 3//Employee
+          );
+
+          if ($this->user['role_id'] == 3) {//Employee
+          $whereClause[] = array(
+          'where' => 'where',
+          'column' => 'id',
+          'operator' => '=',
+          'operand' => $this->user['id']
+          );
+          }//E# if statement
+          }//E# if statement
+         */
+        if ($specific_where_clause) {
+            $whereClause = array_merge($whereClause, $specific_where_clause);
+        }//E# if statement
+        //Set scope
+        $parameters['scope'] = array('statusOne');
+
+        if (is_array($fieldName)) {
+            $order_field = $fieldName[0];
+        } else {
+            $order_field = $fieldName;
+        }//E# if else statement
+        //Order by
+        $parameters['orderBy'][] = array($order_field => 'asc');
+
+        //Select models
+        $model = $this->select($fields, $whereClause, 2, $parameters);
+
+        return $this->buildHtmlSelectArray($model, $fieldId, $fieldName, $firstLabel, $separator, $optionAttributes);
+    }
+
+//E# getMerchantsHtmlSelect() function
+
+    /**
+     * S# buildHtmlSelectArray() function
+     * 
+     * Get html select data
+     * 
+     * 
+     * @param array $dataArray Data model
+     * @param string $fieldId Field to be the id
+     * @param mixed $fieldName Fields to the text
+     * @param str $firstLable First Label
+     * @param str $separator field name separator
+     * @param array $optionAttributes Fields to add as option attributes
+     * 
+     */
+    public function buildHtmlSelectArray($dataArray, $fieldId, $fieldName, $firstLabel, $separator, $optionAttributes) {
+        $selectData = array();
+
+        if ($firstLabel) {
+            $selectData[''] = $firstLabel;
+        }//E# if statement
+
+        if ($dataArray) {
+            foreach ($dataArray as $singleData) {
+                if (is_array($fieldName)) {
+                    $selectName = '';
+                    $selectNameArray = array();
+                    foreach ($fieldName as $singleField) {
+
+                        $selectNameArray[] = $singleData[$singleField];
+                    }//E# foreach statement
+
+                    $selectName = implode($separator, $selectNameArray);
+                } else {
+                    $selectName = $singleData[$fieldName];
+                }
+
+                if ($optionAttributes) {
+                    //Attributes
+                    $attributes = array_only($singleData->toArray(), $optionAttributes);
+                    $attributes['text'] = $selectName;
+                    $attributes['id'] = $singleData[$fieldId];
+
+                    $selectData[] = $attributes;
+                } else {
+                    $selectData[$singleData[$fieldId]] = $selectName;
+                }//E# if else statement
+            }//E# foreach statement
+        }//E# statement
+        return $selectData;
+    }
+
+//E# buildHtmlSelectArray() function
+
+    /**
      * S# updatePivotTable() function
      * @author Edwin Mugendi
      * Update a users pivot table
@@ -1957,6 +2111,9 @@ class BaseController extends Controller {
         //Get and set the model's create validation rules
         $this->validationRules = $modelObject->createRules;
 
+        //Append custom validation rules
+        $this->appendCustomValidationRules();
+
         //Set owned by
         $this->assignOwnedBy();
 
@@ -2069,6 +2226,23 @@ class BaseController extends Controller {
 //E# createRedirect() function
 
     /**
+     * S# appendCustomValidationRules() function
+     * 
+     * Append custom validation rules.
+     * 
+     * This mainly happens when we need to access the id of object. Eg when updating an object with unique validation rule in it
+     * 
+     * Make sure you have if else for create and update
+     * if($this->crudId == 2){}
+     */
+    public function appendCustomValidationRules() {
+
+        return;
+    }
+
+//E# appendCustomValidationRules() function
+
+    /**
      * S# postUpdate() function
      * @author Edwin Mugendi
      * Update model associated with this controller
@@ -2087,6 +2261,9 @@ class BaseController extends Controller {
 
         //Get and set the model's update validation rules
         $this->validationRules = $modelObject->updateRules;
+
+        //Append custom validation rules
+        $this->appendCustomValidationRules();
 
         //Validate model is owned by a user
         $this->validateModelIsUserOwned($modelObject);

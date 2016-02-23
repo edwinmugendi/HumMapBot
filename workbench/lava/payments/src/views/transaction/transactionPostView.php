@@ -285,34 +285,6 @@
                             </th>
                             <?php else: ?>                            <th>
                                 <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.gateway'); ?>                            </th>
-                                <?php endif; ?>                                                                                                        <?php if (!array_key_exists('export', $view_data)): ?>                            <?php
-                        $order = 'asc';
-                        $is_ordered = false;
-                        ?>
-                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'workflow'): ?>
-                             <?php $is_ordered = true;?>
-                                <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
-                                <?php
-                                $order = 'asc';
-                                ?>
-                            <?php else: ?>
-                                <?php
-                                $order = 'desc';
-                                ?>
-                            <?php endif; ?>
-                        <?php endif ?>
-
-                        <?php if ($view_data['paginationAppends']): ?>
-                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=workflow'; ?>
-                        <?php else: ?>
-                            <?php $url = 'order=' . $order . '&sort=workflow';?>
-                        <?php endif;?>                            <th>   
-                                <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
-                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.workflow'); ?>                                    <?php if ($is_ordered): ?>                                    <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
-                                    <?php endif; ?>                                </a>
-                            </th>
-                            <?php else: ?>                            <th>
-                                <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.workflow'); ?>                            </th>
                                 <?php endif; ?>                                                                                                                                                                                                                                                                                                                                                                                                                            <?php if (!array_key_exists('export', $view_data)): ?>                    <th><?php echo \Lang::get('common.view.actions.actions'); ?></th>
                     <?php endif; ?>                </tr>
             <tbody>
@@ -352,9 +324,6 @@
                                                 
                                                                         <td>
                                                                     <?php echo \Form::compositeSelect('gateway', $view_data['dataSource']['gateway'], isset($view_data['input']['gateway']) ? $view_data['input']['gateway'] : '', array('class' => 'form-control')); ?>                                                            </td>
-                            
-                                                                        <td>
-                                                                    <?php echo \Form::compositeSelect('workflow', $view_data['dataSource']['workflow'], isset($view_data['input']['workflow']) ? $view_data['input']['workflow'] : '', array('class' => 'form-control')); ?>                                                            </td>
                             
                                                 
                                                 

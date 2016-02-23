@@ -10,8 +10,48 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
 
     //Message object
     private $message;
+    //Data object
+    private $custom_data = array();
 
     //TODO Set message fro the 2 validators and more accurate
+
+    /**
+     * S# validateCheckDate() function
+     * Validate check date
+     * @param array $attribute Validation attribute
+     * @param string $date $date
+     * @param array $parameters Parameters
+     */
+    public function validateCheckDate($attribute, $date, $parameters) {
+        $user_model = new UserController();
+
+        $this->custom_data['date_format'] = $date_format = $user_model->getDateFormat();
+
+        $db_format = $user_model->convertDateFormat($date_format);
+
+        $parsed = date_parse_from_format($db_format, $date);
+
+        return $parsed['error_count'] === 0 && $parsed['warning_count'] === 0;
+    }
+
+//E# validateCheckDate() function
+
+    /**
+     * S# replaceCheckDate() function
+     * Replace all place-holders for the check_date rule.
+     *
+     * @author Edwin Mugendi <edwinmugendi@gmail.com>
+     * @param  string  $message
+     * @param  string  $attribute
+     * @param  string  $rule
+     * @param  array   $parameters
+     * @return string
+     */
+    protected function replaceCheckDate($message, $attribute, $rule, $parameters) {
+        return str_replace(':format', $this->custom_data['date_format'], $message);
+    }
+
+//E# replaceCheckDate() function
 
     /**
      * S# validateNewVehicleId() function
@@ -314,7 +354,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
 
         //Get user by email
         $user_model = $user_controller->getModelByField('email', $credentials['email'], $parameters);
-        
+
         if ($user_model) {//User with this email exist
             //Previous logins deleted
             $deleted = 0;
@@ -369,7 +409,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                         }//E# if else statement
                         //Save user
                         $user_model->save();
-                        
+
                         //Get success message
                         $message = \Lang::get($user_controller->package . '::' . $user_controller->controller . '.notification.login');
 

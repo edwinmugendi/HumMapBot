@@ -13,6 +13,7 @@ class CreatePromotionsTable extends Migration {
     public function up() {
         Schema::create('pdt_promotions', function(Blueprint $table) {
             $table->increments('id');
+            $table->integer('merchant_id')->unsigned();
             $table->integer('location_id')->unsigned();
 
             $table->string('code', 255);
@@ -21,9 +22,9 @@ class CreatePromotionsTable extends Migration {
             $table->float('value');
 
             $table->boolean('new_customer');
-            $table->datetime('expiry_date');
-            
-             $table->string('agent', 255);
+            $table->date('expiry_date');
+
+            $table->string('agent', 255);
             $table->string('ip', 255);
             $table->integer('status')->unsigned();
             $table->integer('created_by')->unsigned();

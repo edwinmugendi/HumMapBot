@@ -13,8 +13,42 @@ class TransactionController extends PaymentsBaseController {
     public $controller = 'transaction';
     //Lazy load
     public $lazyLoad = array();
-    //Owned by
-    public $ownedBy = array('user');
+
+    /**
+     * S# injectDataSources() function
+     * @author Edwin Mugendi
+     * Inject data source. This are mainly select
+     * 
+     * @param array $dataSource Data source
+     */
+    public function injectDataSources() {
+
+        //Get this organization user id
+        $this->view_data['dataSource']['user_id'] = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('first_name', 'last_name'), \Lang::get('common.select')));
+
+        //Get this organization promotion id
+        $this->view_data['dataSource']['promotion_id'] = $this->callController(\Util::buildNamespace('products', 'promotion', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('code'), \Lang::get('common.select')));
+
+        //Get this organization product id
+        $this->view_data['dataSource']['product_id'] = $this->callController(\Util::buildNamespace('products', 'product', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('name'), \Lang::get('common.select')));
+
+        //Get this organization location id
+        $this->view_data['dataSource']['location_id'] = $this->callController(\Util::buildNamespace('merchants', 'location', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('name'), \Lang::get('common.select')));
+
+        //Get this organization merchant id
+        $this->view_data['dataSource']['merchant_id'] = array('' => 'Select', $this->merchant['id'] => $this->merchant['name']);
+
+        //Get and set workflow options to data source
+        $this->view_data['dataSource']['workflow'] = \Lang::get($this->package . '::' . $this->controller . '.data.workflow');
+
+        //Get and set gateway options to data source
+        $this->view_data['dataSource']['gateway'] = \Lang::get($this->package . '::' . $this->controller . '.data.gateway');
+
+        //Get and set gateway options to data source
+        $this->view_data['dataSource']['gateway'] = \Lang::get($this->package . '::' . $this->controller . '.data.gateway');
+    }
+
+//E# injectDataSources() function
 
     /**
      * S# controllerSpecificWhereClause() function

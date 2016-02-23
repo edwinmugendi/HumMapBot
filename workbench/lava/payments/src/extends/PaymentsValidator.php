@@ -197,7 +197,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                                 'status' => 1,
                                 'created_by' => $user_model->id,
                                 'updated_by' => $user_model->id,
-                                'workflow' => 3,
+                                'workflow' => 5,//Stamps
                             );
 
                             if ($this->data['location']) {//Set transaction location
@@ -400,6 +400,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         'currency_id' => $product_model->location->currency_id,
                         'stamps_issued' => ((int) $product_model->location->loyalty_stamps) ? 1 : 0,
                         'merchant_id' => $product_model->merchant->id,
+                        'workflow' => 1,//Started
                         'status' => 1,
                         'created_by' => $user_controller->user['id'],
                         'updated_by' => $user_controller->user['id'],
@@ -443,7 +444,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
 
                         if ($transaction_response['status']) {//Gateway transaction succeeded
                             //Set workflow
-                            $transaction_model->workflow = 1;
+                            $transaction_model->workflow = 3;
 
                             //Set transaction id
                             $transaction_model->gateway_tran_id = $transaction_response['response']->id;
@@ -452,7 +453,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                             $transaction_model->promotion_id = $promotion_id ? $promotion_id : 0;
                         } else {//Gateway transaction failed
                             //Set workflow
-                            $transaction_model->workflow = 0;
+                            $transaction_model->workflow = 2;
 
                             //Set stamp
                             $transaction_model->stamps_issued = 0;
@@ -462,7 +463,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         $transaction_model->card_token = $this->data['card_token'];
                     } else {
                         $transaction_model->gateway = 'promotion';
-                        $transaction_model->workflow = 2;
+                        $transaction_model->workflow = 4;
                     }//E# if else statement
 
                     if ($amount) {//Amount is greater than 0

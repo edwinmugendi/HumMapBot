@@ -34,7 +34,6 @@ class CreateTransactionsTable extends Migration {
             $table->integer('vehicle_id')->unsigned();
             $table->string('vrm', 255);
 
-
             //Loyalty Stamps
             $table->integer('stamps_issued');
 

@@ -8,6 +8,11 @@ class GeneratorController extends BaseController {
         //Merchants
         'Lava\Merchants\MerchantController',
         'Lava\Merchants\LocationController',
+        //Products
+        'Lava\Products\ProductController',
+        'Lava\Products\PromotionController',
+        //Payments
+        'Lava\Payments\TransactionController',
     );
 
     public function generateViews() {

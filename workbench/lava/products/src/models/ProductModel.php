@@ -14,41 +14,68 @@ class ProductModel extends \BaseModel {
 
     //Table
     protected $table = 'pdt_products';
+    //View fields
+    public $viewFields = array(
+        'id' => array(1, 'text', '=', 0),
+        'name' => array(1, 'text', 'like', 1),
+        'description' => array(0, 'text', 'like', 0),
+        'merchant_id' => array(1, 'select', '=', 0),
+        'location_id' => array(1, 'select', '=', 0),
+        'price_1' => array(1, 'text', '=', 0),
+        'price_2' => array(1, 'text', '=', 0),
+        'loyable' => array(1, 'select', '=', 0),
+    );
     //Fillable fields
     protected $fillable = array(
+        'id',
+        'name',
+        'merchant_id',
+        'location_id',
+        'description',
+        'price_1',
+        'price_2',
+        'loyable',
+        'agent',
+        'ip',
         'status',
         'created_by',
-        'updated_by'
+        'updated_by',
     );
     //Appends fields
     protected $appends = array(
+        /*
+          'merchant_id_text',
+          'location_id_text',
+          'loyable_text',
+         * 
+         */
         'currency_id',
         'price',
         'price_1',
         'price_2'
     );
-    protected $hidden = array(
-        'status',
-        'created_by',
-        'updated_by',
-        'deleted_at'
-    );
+    protected $hidden = array();
     //Create validation rules
     public $createRules = array(
-        'status' => 'required|integer',
-        'created_by' => 'required|integer',
-        'updated_by' => 'required|integer',
+        'name' => 'required',
     );
-  
+    //Update validation rules
+    public $updateRules = array(
+        'name' => 'required',
+    );
+
     /**
-     * S# __construct() function
-     * Constuctor
+     * S# getLoyableTextAttribute() function
+     * Get Loyable Text
      */
-    public function __construct() {
-        parent::__construct();
+    public function getLoyableTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['loyable'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
     }
 
-//E# __construct() function
+//E# getLoyableTextAttribute() function
 
     /**
      * S# location() function
@@ -59,8 +86,24 @@ class ProductModel extends \BaseModel {
     }
 
 //E# location() function
-    
-        /**
+
+    /**
+     * S# getLocationIdTextAttribute() function
+     * 
+     * Get Location Text
+     */
+    public function getLocationIdTextAttribute() {
+
+        //Get location model
+        $location_model = $this->location()->first();
+
+        //Return name
+        return $location_model ? $location_model->name : '';
+    }
+
+//E# getLocationIdTextAttribute() function
+
+    /**
      * S# merchant() function
      * Set one to one relationship to Location Model
      */
@@ -71,13 +114,29 @@ class ProductModel extends \BaseModel {
 //E# merchant() function
 
     /**
+     * S# getMerchantIdTextAttribute() function
+     * 
+     * Get Merchant Text
+     */
+    public function getMerchantIdTextAttribute() {
+
+        //Get merchant model
+        $merchant_model = $this->merchant()->first();
+
+        //Return name
+        return $merchant_model ? $merchant_model->name : '';
+    }
+
+//E# getMerchantIdTextAttribute() function
+
+    /**
      * S# getCurrencyIdAttribute() function
      * Get product currency
      * 
      * @return string Currency
      */
     public function getCurrencyIdAttribute() {
-        return $this->location()->first()->currency_id;
+        return $this->location()->first()->currency->code;
     }
 
 //E# getCurrencyIdAttribute() function
@@ -91,13 +150,12 @@ class ProductModel extends \BaseModel {
     public function getPriceAttribute() {
 
         //Create vehicle controller
-        $vehicleController = new VehicleController();
+        $vehicle_controller = new VehicleController();
+        if (\Auth::check() && \Request::has('token') && $vehicle_id = \Auth::user()->vehicle_id) {
+            //Get vehicle by id
+            $vehicle_model = $vehicle_controller->getModelByField('id', $vehicle_id);
 
-        if ($this->loggedInUser && $this->loggedInUser->vrm) {//User exists
-            //Get vehicle by vrm
-            $vehicleModel = $vehicleController->getModelByField('vrm', $this->loggedInUser->vrm);
-
-            if ($vehicleModel) {//Model exists
+            if ($vehicle_model) {//Model exists
                 return $vehicleModel->type == 2 ? $this->getPrice2Attribute() : $this->getPrice1Attribute();
             }//E# if else statement
         }//E# if statement
@@ -116,19 +174,19 @@ class ProductModel extends \BaseModel {
      */
     public function getPrice1Attribute() {
         //Create user controller
-        $userController = new UserController();
+        $user_controller = new UserController();
 
         if ($this->attributes['loyable']) {//This product is loyable
-            if ($this->loggedInUser) {//User exists
+            if (\Auth::check()) {//User exists
                 //Cache location stamps
-                $locationStamps = $this->location()->first()->loyalty_stamps;
-                if ($locationStamps) {
+                $location_stamps = $this->location()->first()->loyalty_stamps;
+                if ($location_stamps) {
                     //Get loyalty stamps
-                    $stampModel = $userController->callController(\Util::buildNamespace('payments', 'payment', 1), 'getLocationStamps', array($this->location()->first()->id, $this->loggedInUser->id));
+                    $stamp_model = $user_controller->callController(\Util::buildNamespace('payments', 'payment', 1), 'getLocationStamps', array($this->location()->first()->id, \Auth::user()->id));
 
-                    if ($stampModel) {//Stamp found
-                        if ((int) $stampModel->feeling >= $locationStamps) {//User qualifies for a free wash
-                            return $this->freePrice = \Lang::get('products::product.api.freePrice');
+                    if ($stamp_model) {//Stamp found
+                        if ((int) $stamp_model->feeling >= $location_stamps) {//User qualifies for a free wash
+                            return $this->freePrice = \Lang::get('products::product.notification.free_price');
                         }//E# if statement
                     }//E# if statement
                 }//E# if statement
@@ -149,19 +207,19 @@ class ProductModel extends \BaseModel {
      */
     public function getPrice2Attribute() {
         //Create user controller
-        $userController = new UserController();
+        $user_controller = new UserController();
 
         if ($this->attributes['loyable']) {//This product is loyable
-            if ($this->loggedInUser) {//User exists
+            if (\Auth::check()) {//User exists
                 //Cache location stamps
-                $locationStamps = $this->location()->first()->loyalty_stamps;
-                if ($locationStamps) {
+                $location_stamps = $this->location()->first()->loyalty_stamps;
+                if ($location_stamps) {
                     //Get loyalty stamps
-                    $stampModel = $userController->callController(\Util::buildNamespace('payments', 'payment', 1), 'getLocationStamps', array($this->location()->first()->id, $this->loggedInUser->id));
+                    $stamp_model = $user_controller->callController(\Util::buildNamespace('payments', 'payment', 1), 'getLocationStamps', array($this->location()->first()->id, \Auth::user()->id));
 
-                    if ($stampModel) {//Stamp found
-                        if ((int) $stampModel->feeling >= $locationStamps) {//User qualifies for a free wash
-                            return $this->freePrice = \Lang::get('products::product.api.freePrice');
+                    if ($stamp_model) {//Stamp found
+                        if ((int) $stamp_model->feeling >= $location_stamps) {//User qualifies for a free wash
+                            return $this->freePrice = \Lang::get('products::product.notification.free_price');
                         }//E# if statement
                     }//E# if statement
                 }//E# if statement

@@ -3,7 +3,7 @@
 return array(
     /*
       |--------------------------------------------------------------------------
-      | Vehicle Language Lines
+      | Location Language Lines
       |--------------------------------------------------------------------------
      */
     'notification' => array(
@@ -245,7 +245,7 @@ return array(
                     'icons' => array(
                         array(
                             'name' => 'Photo',
-                            'icon' => 'hand-down'
+                            'icon' => 'arrow-down'
                         )
                     ),
                     'heading' => 'How to upload ',
@@ -450,14 +450,15 @@ return array(
                                 array(
                                     'fields' => array(
                                         array(
-                                            'name' => 'Pay location instead of merchant',
-                                            'type' => 'select',
+                                            'name' => 'Pay to location bank instead of merchants?',
+                                            'type' => 'checkbox',
                                             'prepend' => 'user',
                                             'htmlName' => 'pay_location',
+                                            'checked'=>0,
                                             'displayed' => 1,
                                             'disabled' => 0,
                                             'placeholder' => 'Select pay location or not',
-                                            'help' => '<strong>Description: </strong>The payment option of this location<br/><strong>Do: </strong>Select the payment option of this location.<br/></strong>Star:</strong> %s',
+                                            'help' => '<strong>Description: </strong>The payment option of this location<br/><strong>Do: </strong>Check to pay to location\'s bank.<br/></strong>Star:</strong> %s',
                                             'validator' => array(
                                                 'required' => 1,
                                             )
@@ -679,15 +680,15 @@ return array(
                                     'fields' => array(
                                         array(
                                             'name' => 'Is Monday opens?',
-                                            'type' => 'select',
+                                            'type' => 'checkbox',
                                             'prepend' => 'user',
                                             'htmlName' => 'is_monday_open',
+                                            'checked' => 0,
                                             'displayed' => 1,
                                             'disabled' => 0,
-                                            'placeholder' => 'Select whether or not you open on Monday',
-                                            'help' => '<strong>Description: </strong>Do you open on Monday?<br/><strong>Do: </strong>Select whether or not you open on Monday<br/><strong>Star: </strong> %s',
+                                            'placeholder' => 'Check if location is open on Monday',
+                                            'help' => '<strong>Description: </strong>Do you open on Monday?<br/><strong>Do: </strong>Check if location is open on Monday<br/><strong>Star: </strong> %s',
                                             'validator' => array(
-                                                'required' => 1
                                             )
                                         ),
                                         array(
@@ -720,15 +721,15 @@ return array(
                                     'fields' => array(
                                         array(
                                             'name' => 'Is Tuesday opens?',
-                                            'type' => 'select',
+                                            'type' => 'checkbox',
                                             'prepend' => 'user',
                                             'htmlName' => 'is_tuesday_open',
+                                            'checked' => 0,
                                             'displayed' => 1,
                                             'disabled' => 0,
-                                            'placeholder' => 'Select whether or not you open on Tuesday',
-                                            'help' => '<strong>Description: </strong>Do you open on Tuesday?<br/><strong>Do: </strong>Select whether or not you open on Tuesday<br/><strong>Star: </strong> %s',
+                                            'placeholder' => 'Check if location is open on Tuesday',
+                                            'help' => '<strong>Description: </strong>Do you open on Tuesday?<br/><strong>Do: </strong>Check if location is open on Tuesday<br/><strong>Star: </strong> %s',
                                             'validator' => array(
-                                                'required' => 1
                                             )
                                         ),
                                         array(
@@ -761,15 +762,15 @@ return array(
                                     'fields' => array(
                                         array(
                                             'name' => 'Is Wednesday opens?',
-                                            'type' => 'select',
+                                            'type' => 'checkbox',
                                             'prepend' => 'user',
                                             'htmlName' => 'is_wednesday_open',
+                                            'checked' => 0,
                                             'displayed' => 1,
                                             'disabled' => 0,
-                                            'placeholder' => 'Select whether or not you open on Wednesday',
-                                            'help' => '<strong>Description: </strong>Do you open on Wednesday?<br/><strong>Do: </strong>Select whether or not you open on Wednesday<br/><strong>Star: </strong> %s',
+                                            'placeholder' => 'Check if location is open on Wednesday',
+                                            'help' => '<strong>Description: </strong>Do you open on Wednesday?<br/><strong>Do: </strong>Check if location is open on Wednesday<br/><strong>Star: </strong> %s',
                                             'validator' => array(
-                                                'required' => 1
                                             )
                                         ),
                                         array(
@@ -802,15 +803,15 @@ return array(
                                     'fields' => array(
                                         array(
                                             'name' => 'Is Thursday opens?',
-                                            'type' => 'select',
+                                            'type' => 'checkbox',
                                             'prepend' => 'user',
                                             'htmlName' => 'is_thursday_open',
+                                            'checked' => 0,
                                             'displayed' => 1,
                                             'disabled' => 0,
-                                            'placeholder' => 'Select whether or not you open on Thursday',
-                                            'help' => '<strong>Description: </strong>Do you open on Thursday?<br/><strong>Do: </strong>Select whether or not you open on Thursday<br/><strong>Star: </strong> %s',
+                                            'placeholder' => 'Check if location is open on Thursday',
+                                            'help' => '<strong>Description: </strong>Do you open on Thursday?<br/><strong>Do: </strong>Check if location is open on Thursday<br/><strong>Star: </strong> %s',
                                             'validator' => array(
-                                                'required' => 1
                                             )
                                         ),
                                         array(
@@ -843,15 +844,15 @@ return array(
                                     'fields' => array(
                                         array(
                                             'name' => 'Is Friday opens?',
-                                            'type' => 'select',
+                                            'type' => 'checkbox',
                                             'prepend' => 'user',
                                             'htmlName' => 'is_friday_open',
+                                            'checked' => 0,
                                             'displayed' => 1,
                                             'disabled' => 0,
-                                            'placeholder' => 'Select whether or not you open on Friday',
-                                            'help' => '<strong>Description: </strong>Do you open on Friday?<br/><strong>Do: </strong>Select whether or not you open on Friday<br/><strong>Star: </strong> %s',
+                                            'placeholder' => 'Check if location is open on Friday',
+                                            'help' => '<strong>Description: </strong>Do you open on Friday?<br/><strong>Do: </strong>Check if location is open on Friday<br/><strong>Star: </strong> %s',
                                             'validator' => array(
-                                                'required' => 1
                                             )
                                         ),
                                         array(
@@ -884,15 +885,15 @@ return array(
                                     'fields' => array(
                                         array(
                                             'name' => 'Is Saturday opens?',
-                                            'type' => 'select',
+                                            'type' => 'checkbox',
                                             'prepend' => 'user',
                                             'htmlName' => 'is_saturday_open',
+                                            'checked' => 0,
                                             'displayed' => 1,
                                             'disabled' => 0,
-                                            'placeholder' => 'Select whether or not you open on Saturday',
-                                            'help' => '<strong>Description: </strong>Do you open on Saturday?<br/><strong>Do: </strong>Select whether or not you open on Saturday<br/><strong>Star: </strong> %s',
+                                            'placeholder' => 'Check if location is open on Saturday',
+                                            'help' => '<strong>Description: </strong>Do you open on Saturday?<br/><strong>Do: </strong>Check if location is open on Saturday<br/><strong>Star: </strong> %s',
                                             'validator' => array(
-                                                'required' => 1
                                             )
                                         ),
                                         array(
@@ -925,15 +926,15 @@ return array(
                                     'fields' => array(
                                         array(
                                             'name' => 'Is Sunday opens?',
-                                            'type' => 'select',
+                                            'type' => 'checkbox',
                                             'prepend' => 'user',
                                             'htmlName' => 'is_sunday_open',
+                                            'checked' => 0,
                                             'displayed' => 1,
                                             'disabled' => 0,
-                                            'placeholder' => 'Select whether or not you open on Sunday',
-                                            'help' => '<strong>Description: </strong>Do you open on Sunday?<br/><strong>Do: </strong>Select whether or not you open on Sunday<br/><strong>Star: </strong> %s',
+                                            'placeholder' => 'Check if location is open on Sunday',
+                                            'help' => '<strong>Description: </strong>Do you open on Sunday?<br/><strong>Do: </strong>Check if location is open on Sunday<br/><strong>Star: </strong> %s',
                                             'validator' => array(
-                                                'required' => 1
                                             )
                                         ),
                                         array(
@@ -966,15 +967,15 @@ return array(
                                     'fields' => array(
                                         array(
                                             'name' => 'Is Holiday opens?',
-                                            'type' => 'select',
+                                            'type' => 'checkbox',
                                             'prepend' => 'user',
                                             'htmlName' => 'is_holiday_open',
+                                            'checked' => 0,
                                             'displayed' => 1,
                                             'disabled' => 0,
-                                            'placeholder' => 'Select whether or not you open on Holiday',
-                                            'help' => '<strong>Description: </strong>Do you open on Holiday?<br/><strong>Do: </strong>Select whether or not you open on Holiday<br/><strong>Star: </strong> %s',
+                                            'placeholder' => 'Check if location is open on Holidays',
+                                            'help' => '<strong>Description: </strong>Do you open on Holiday?<br/><strong>Do: </strong>Check if location is open on Holidays<br/><strong>Star: </strong> %s',
                                             'validator' => array(
-                                                'required' => 1
                                             )
                                         ),
                                         array(
@@ -1007,9 +1008,9 @@ return array(
                         ),
                         array(
                             'id' => 'logo',
-                            'title' => 'Scanned Image',
-                            'heading' => 'Please upload the scanned image of the location.',
-                            'help' => 'Please upload the scanned image of the location.',
+                            'title' => 'Images',
+                            'heading' => 'Please upload the images of the location.',
+                            'help' => 'Please upload the images of the location.',
                             'stared' => 0,
                             'rows' => array(
                                 array(

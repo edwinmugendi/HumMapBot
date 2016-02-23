@@ -96,7 +96,7 @@ return array(
                     'icons' => array(
                         array(
                             'name' => 'Photo',
-                            'icon' => 'hand-down'
+                            'icon' => 'arrow-down'
                         )
                     ),
                     'heading' => 'How to upload ',
@@ -546,9 +546,9 @@ return array(
                         ),
                         array(
                             'id' => 'logo',
-                            'title' => 'Scanned Image',
-                            'heading' => 'Please upload the scanned image of the merchant.',
-                            'help' => 'Please upload the scanned image of the merchant.',
+                            'title' => 'Images',
+                            'heading' => 'Please upload the images of the merchant.',
+                            'help' => 'Please upload the images of the merchant.',
                             'stared' => 0,
                             'rows' => array(
                                 array(
