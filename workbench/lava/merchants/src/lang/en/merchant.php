@@ -10,7 +10,7 @@ return array(
         'workflow' => array(
             '' => 'Select',
             1 => 'Active',
-            2 => 'Inactive',
+            /* 2 => 'Inactive', */
             3 => 'Suspended',
         ),
         'date_format' => array(

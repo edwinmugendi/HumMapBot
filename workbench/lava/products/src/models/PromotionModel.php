@@ -13,11 +13,12 @@ class PromotionModel extends \BaseModel {
 
     //Table
     protected $table = 'pdt_promotions';
+    
     //View fields
     public $viewFields = array(
         'id' => array(1, 'text', '=', 0),
         'code' => array(1, 'text', '=', 1),
-        'merchant_id' => array(0, 'select', '=', 0),
+        'merchant_id' => array(1, 'select', '=', 0),
         'location_id' => array(1, 'select', '=', 0),
         'description' => array(0, 'text', 'like', 0),
         'type' => array(1, 'select', '=', 0),

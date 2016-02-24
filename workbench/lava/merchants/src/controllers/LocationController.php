@@ -17,6 +17,28 @@ class LocationController extends MerchantsBaseController {
     public $mappable = true;
 
     /**
+     * S# roleBasedWhereClause() function
+     * @author Edwin Mugendi
+     * Build where clause based on role
+     * 
+     * @param array $fields Fields
+     * @param array $whereClause Where clause
+     * @param array $parameters Parameters
+     */
+    public function roleBasedWhereClause($fields, &$whereClause, &$parameters) {
+        if ($this->user['role_id'] == 2) {//Merchant
+            $whereClause[] = array(
+                'where' => 'where',
+                'column' => 'merchant_id',
+                'operator' => '=',
+                'operand' => $this->merchant['id']
+            );
+        }
+    }
+
+    //E# roleBasedWhereClause() function
+
+    /**
      * S# injectDataSources() function
      * @author Edwin Mugendi
      * Inject data source. This are mainly select
@@ -24,6 +46,9 @@ class LocationController extends MerchantsBaseController {
      * @param array $dataSource Data source
      */
     public function injectDataSources() {
+
+        //Get this organization merchant id
+        $this->view_data['dataSource']['merchant_id'] = $this->appGetCustomMerchantHtmlSelect();
 
         //Get and set country options for this country
         $this->view_data['dataSource']['country_id'] = $this->callController(\Util::buildNamespace('locations', 'country', 1), 'getSelectOptions');

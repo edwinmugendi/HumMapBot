@@ -17,9 +17,9 @@ class ProductModel extends \BaseModel {
     //View fields
     public $viewFields = array(
         'id' => array(1, 'text', '=', 0),
+        'merchant_id' => array(1, 'select', '=', 0),
         'name' => array(1, 'text', 'like', 1),
         'description' => array(0, 'text', 'like', 0),
-        'merchant_id' => array(1, 'select', '=', 0),
         'location_id' => array(1, 'select', '=', 0),
         'price_1' => array(1, 'text', '=', 0),
         'price_2' => array(1, 'text', '=', 0),
@@ -43,12 +43,9 @@ class ProductModel extends \BaseModel {
     );
     //Appends fields
     protected $appends = array(
-        /*
-          'merchant_id_text',
-          'location_id_text',
-          'loyable_text',
-         * 
-         */
+        'merchant_id_text',
+        'location_id_text',
+        'loyable_text',
         'currency_id',
         'price',
         'price_1',

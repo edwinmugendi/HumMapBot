@@ -14,11 +14,11 @@ class TransactionModel extends \BaseModel {
     //View fields
     public $viewFields = array(
         'id' => array(1, 'text', '=', 0),
+        'merchant_id' => array(1, 'select', '=', 0),
         'workflow' => array(1, 'select', '=', 0),
         'user_id' => array(1, 'select', '=', 0),
         'product_id' => array(1, 'select', '=', 1),
         'location_id' => array(1, 'select', '=', 1),
-        'merchant_id' => array(1, 'select', '=', 0),
         'promotion_id' => array(0, 'select', '=', 0),
         'amount' => array(1, 'text', 'like', 0),
         'refund' => array(0, 'text', 'like', 0),

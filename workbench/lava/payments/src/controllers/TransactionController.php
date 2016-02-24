@@ -15,6 +15,28 @@ class TransactionController extends PaymentsBaseController {
     public $lazyLoad = array();
 
     /**
+     * S# roleBasedWhereClause() function
+     * @author Edwin Mugendi
+     * Build where clause based on role
+     * 
+     * @param array $fields Fields
+     * @param array $whereClause Where clause
+     * @param array $parameters Parameters
+     */
+    public function roleBasedWhereClause($fields, &$whereClause, &$parameters) {
+        if ($this->user['role_id'] == 2) {//Merchant
+            $whereClause[] = array(
+                'where' => 'where',
+                'column' => 'merchant_id',
+                'operator' => '=',
+                'operand' => $this->merchant['id']
+            );
+        }
+    }
+
+    //E# roleBasedWhereClause() function
+
+    /**
      * S# injectDataSources() function
      * @author Edwin Mugendi
      * Inject data source. This are mainly select

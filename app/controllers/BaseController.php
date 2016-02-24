@@ -69,6 +69,37 @@ class BaseController extends Controller {
 //E# __construct() function
 
     /**
+     * S# appGetCustomMerchantHtmlSelect() function
+     * 
+     * Get merchant html select based on their role
+     * 
+     */
+    public function appGetCustomMerchantHtmlSelect() {
+        if ($this->user['role_id'] == 1) {//Admin
+            //Fields to select
+            $fields = array('*');
+            //Where clause
+            $whereClause = array();
+
+            $parameters['scope'] = array('statusOne');
+
+            //Order by
+            $parameters['orderBy'][] = array('name' => 'asc');
+
+            //Select models
+            $model = $this->select($fields, $whereClause, 2, $parameters);
+
+            return $this->buildHtmlSelectArray($model, 'id', 'name', \Lang::get('common.select'), '-', array());
+        } else if ($this->user['role_id'] == 2) {//Merchant
+            return array('' => \Lang::get('common.select'), $this->merchant['id'] => $this->merchant['name']);
+        } else {
+            return array();
+        }//E# if else statement
+    }
+
+//E# appGetCustomMerchantHtmlSelect() function
+
+    /**
      * Setup the layout used by the controller.
      *
      * @return void
@@ -1276,10 +1307,10 @@ class BaseController extends Controller {
      * Build where clause based on role
      * 
      * @param array $fields Fields
-     * @param array $parameters Parameters
      * @param array $whereClause Where clause
+     * @param array $parameters Parameters
      */
-    public function roleBasedWhereClause($fields, &$parameters, &$whereClause) {
+    public function roleBasedWhereClause($fields, &$whereClause, &$parameters) {
         
     }
 

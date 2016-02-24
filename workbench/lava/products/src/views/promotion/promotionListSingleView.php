@@ -10,7 +10,8 @@
                                         <td><?php echo $view_data['singleModel']['id']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['code']; ?></td>
-                                                                                    <td><?php echo $view_data['singleModel']['location_id_text']; ?></td>
+                                                                        <td><?php echo $view_data['singleModel']['merchant_id_text']; ?></td>
+                                                                        <td><?php echo $view_data['singleModel']['location_id_text']; ?></td>
                                                                                     <td><?php echo $view_data['singleModel']['type_text']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['value']; ?></td>

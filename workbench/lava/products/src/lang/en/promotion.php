@@ -133,19 +133,6 @@ return array(
                                 array(
                                     'fields' => array(
                                         array(
-                                            'name' => 'Code',
-                                            'type' => 'text',
-                                            'prepend' => 'user',
-                                            'htmlName' => 'code',
-                                            'displayed' => 1,
-                                            'disabled' => 0,
-                                            'placeholder' => 'Type the code eg \'PROMO\'',
-                                            'help' => '<strong>Description: </strong>The code of this promotion.<br/><strong>Do: </strong>Type the code of this promotion.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'PROMO\'.',
-                                            'validator' => array(
-                                                'required' => 1
-                                            )
-                                        ),
-                                        array(
                                             'name' => 'Merchant',
                                             'type' => 'select',
                                             'prepend' => 'user',
@@ -156,6 +143,19 @@ return array(
                                             'help' => '<strong>Description: </strong>The merchant of this promotion<br/><strong>Do: </strong>Select the merchant of this promotion.<br/></strong>Star:</strong> %s',
                                             'validator' => array(
                                                 'required' => 1,
+                                            )
+                                        ),
+                                        array(
+                                            'name' => 'Code',
+                                            'type' => 'text',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'code',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Type the code eg \'PROMO\'',
+                                            'help' => '<strong>Description: </strong>The code of this promotion.<br/><strong>Do: </strong>Type the code of this promotion.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'PROMO\'.',
+                                            'validator' => array(
+                                                'required' => 1
                                             )
                                         ),
                                         array(

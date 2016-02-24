@@ -47,7 +47,7 @@ return array(
             'lat' => 'Lat',
             'lng' => 'Lng',
             'gateway' => 'Gateway',
-            'workflow' => 'Workflow',
+            'workflow' => 'Status',
             'gateway_tran_id' => 'Gateway tran_id',
             'gateway_code' => 'Gateway code',
             'user_smsed' => 'User smsed',

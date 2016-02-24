@@ -16,6 +16,8 @@ class LocationModel extends \BaseModel {
     //View fields
     public $viewFields = array(
         'id' => array(1, 'text', '='),
+        'workflow' => array(1, 'select', '=', 0),
+        'merchant_id' => array(1, 'select', '=', 0),
         'name' => array(1, 'text', 'like', 1),
         'about' => array(1, 'text', 'like', 0),
         'phone' => array(1, 'text', 'like', 0),
@@ -69,6 +71,7 @@ class LocationModel extends \BaseModel {
     );
     //Fillable fields
     protected $fillable = array(
+        'merchant_id',
         'name',
         'about',
         'phone',
@@ -127,6 +130,8 @@ class LocationModel extends \BaseModel {
     );
     //Appends fields
     protected $appends = array(
+        'workflow_text',
+        'merchant_id_text',
         'is_monday_open_text',
         'is_tuesday_open_text',
         'is_wednesday_open_text',
@@ -185,7 +190,8 @@ class LocationModel extends \BaseModel {
     public $updateRules = array(
         'name' => 'required',
     );
-
+    
+    
     /**
      * S# getPayLocationTextAttribute() function
      * Get PayLocation Text
@@ -373,6 +379,22 @@ class LocationModel extends \BaseModel {
     }
 
 //E# merchant() function
+
+    /**
+     * S# getMerchantIdTextAttribute() function
+     * 
+     * Get Merchant Text
+     */
+    public function getMerchantIdTextAttribute() {
+
+        //Get merchant model
+        $merchant_model = $this->merchant()->first();
+
+        //Return name
+        return $merchant_model ? $merchant_model->name : '';
+    }
+
+//E# getMerchantIdTextAttribute() function
 
     /**
      * S# getDateFormatTextAttribute() function

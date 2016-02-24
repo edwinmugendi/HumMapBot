@@ -18,6 +18,12 @@ return array(
         )
     ),
     'data' => array(
+        'workflow' => array(
+            '' => 'Select',
+            1 => 'Active',
+            2 => 'Inactive',
+            3 => 'Suspended',
+        ),
         'type' => array(
             '' => 'Select',
             1 => 'Favourites',
@@ -154,6 +160,8 @@ return array(
         'menu' => 'Locations',
         'field' => array(
             'id' => '#',
+            'merchant_id' => 'Merchant',
+            'workflow' => 'Status',
             'name' => 'Name',
             'about' => 'About',
             'phone' => 'Phone',
@@ -310,6 +318,19 @@ return array(
                                 array(
                                     'fields' => array(
                                         array(
+                                            'name' => 'Merchant',
+                                            'type' => 'select',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'merchant_id',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Select merchant',
+                                            'help' => '<strong>Description: </strong>The merchant of this location<br/><strong>Do: </strong>Select the merchant of this location.<br/></strong>Star:</strong> %s',
+                                            'validator' => array(
+                                                'required' => 1,
+                                            )
+                                        ),
+                                        array(
                                             'name' => 'Name',
                                             'type' => 'text',
                                             'prepend' => 'user',
@@ -454,13 +475,12 @@ return array(
                                             'type' => 'checkbox',
                                             'prepend' => 'user',
                                             'htmlName' => 'pay_location',
-                                            'checked'=>0,
+                                            'checked' => 0,
                                             'displayed' => 1,
                                             'disabled' => 0,
                                             'placeholder' => 'Select pay location or not',
                                             'help' => '<strong>Description: </strong>The payment option of this location<br/><strong>Do: </strong>Check to pay to location\'s bank.<br/></strong>Star:</strong> %s',
                                             'validator' => array(
-                                                'required' => 1,
                                             )
                                         ),
                                         array(

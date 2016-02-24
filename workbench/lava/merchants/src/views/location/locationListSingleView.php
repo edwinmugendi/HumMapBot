@@ -15,6 +15,8 @@
         <?php endif; ?>
                          
                                         <td><?php echo $view_data['singleModel']['id']; ?></td>
+                                                                        <td><?php echo $view_data['singleModel']['workflow_text']; ?></td>
+                                                                        <td><?php echo $view_data['singleModel']['merchant_id_text']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['name']; ?></td>
                                  
@@ -52,6 +54,8 @@
     <td colspan="100%">
                      
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.id') .': '.$view_data['singleModel']['id']; ?> </div>
+                                                            <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.workflow') .': '.$view_data['singleModel']['workflow_text']; ?> </div>
+                                                            <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.merchant_id') .': '.$view_data['singleModel']['merchant_id_text']; ?> </div>
                      
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.name') .': '.$view_data['singleModel']['name']; ?> </div>
                      

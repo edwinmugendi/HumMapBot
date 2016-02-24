@@ -137,19 +137,6 @@ return array(
                                 array(
                                     'fields' => array(
                                         array(
-                                            'name' => 'Name',
-                                            'type' => 'text',
-                                            'prepend' => 'user',
-                                            'htmlName' => 'name',
-                                            'displayed' => 1,
-                                            'disabled' => 0,
-                                            'placeholder' => 'Type the name eg \'Full Wash\'',
-                                            'help' => '<strong>Description: </strong>The name of this product.<br/><strong>Do: </strong>Type the name of this product.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'Full Wash\'.',
-                                            'validator' => array(
-                                                'required' => 1
-                                            )
-                                        ),
-                                        array(
                                             'name' => 'Merchant',
                                             'type' => 'select',
                                             'prepend' => 'user',
@@ -160,6 +147,19 @@ return array(
                                             'help' => '<strong>Description: </strong>The merchant of this product<br/><strong>Do: </strong>Select the merchant of this product.<br/></strong>Star:</strong> %s',
                                             'validator' => array(
                                                 'required' => 1,
+                                            )
+                                        ),
+                                        array(
+                                            'name' => 'Name',
+                                            'type' => 'text',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'name',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Type the name eg \'Full Wash\'',
+                                            'help' => '<strong>Description: </strong>The name of this product.<br/><strong>Do: </strong>Type the name of this product.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'Full Wash\'.',
+                                            'validator' => array(
+                                                'required' => 1
                                             )
                                         ),
                                         array(
