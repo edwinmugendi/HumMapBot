@@ -185,6 +185,7 @@ class UserModel extends \BaseModel {
     }
 
 //E# merchants() function
+    
 }
 
 //E# UserModel() Class

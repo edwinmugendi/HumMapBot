@@ -97,7 +97,7 @@ class MerchantController extends MerchantsBaseController {
      * 
      */
     public function postChangeMerchant() {
-
+        
         //Set parameters
         $parameters['lazyLoad'] = array('merchants');
 
@@ -114,6 +114,7 @@ class MerchantController extends MerchantsBaseController {
             }//E# if else statement
             $single_merchant->save();
         }//E# foreach statement
+        
         //Session merchant
         $this->sessionMerchant($user_model);
 
@@ -124,7 +125,7 @@ class MerchantController extends MerchantsBaseController {
         );
 
         //Redirect to dashboard
-        return \Redirect::route('userDashboard')->with('notification', $this->notification);
+        return \Redirect::to('/')->with('notification', $this->notification);
     }
 
 //E# postChangeMerchant() function

@@ -21,7 +21,7 @@
      * Merchant routes
      */
     //Change a merchant
-    \Route::post('merchants/change/merchant', array('as' => 'merchantsChangeMerchant', 'uses' => 'Erp\Merchants\MerchantController@postChangeOrg'));
+    \Route::post('merchants/change/merchant', array('as' => 'merchantsChangeMerchant', 'uses' => 'Lava\Merchants\MerchantController@postChangeMerchant'));
 
     //Detailed merchant
     \Route::get('merchants/detailed/merchant/{id}', array('as' => 'merchantsDetailedMerchant', 'uses' => 'Lava\Merchants\MerchantController@getDetailed'));
