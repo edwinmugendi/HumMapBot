@@ -69,18 +69,9 @@
                 <a class="navbar-brand" href="<?php echo \URL::to('/'); ?>"><span class="commonColorRed"><?php echo $product_name = \Config::get('product.name'); ?></span></a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li class="scroll active"><a href="<?php echo \URL::to('/'); ?>#slider">Home</a></li>
-                    <li class="scroll"><a href="<?php echo \URL::to('/'); ?>#features">Modules / Features</a></li>
-                    <li class="scroll"><a href="<?php echo \URL::to('/'); ?>#benefits">Benefits</a></li>
-                    <li class="scroll"><a href="<?php echo \URL::to('/'); ?>#pricing">Pricing</a></li>
-                    <li class="scroll"><a href="<?php echo \URL::to('/'); ?>#about">About us</a></li>
-                    <li class="scroll"><a href="<?php echo \URL::to('/'); ?>#contact">Contact us</a></li>
-                </ul>
+                
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a class="fancyButton" href="http://demo.sapamahrm.com" target="_blank">Demo</a></li>
-                    <li><a href="<?php echo \URL::route('userRegistration', array('login')); ?>">Login</a></li>
-                    <li><a class="fancyButton" href="<?php echo \URL::route('userRegistration', array('register')); ?>">Get started for free</a></li>
+                    <li><a class="fancyButton" href="<?php echo \URL::route('userRegistration', array('login')); ?>">Login</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>
