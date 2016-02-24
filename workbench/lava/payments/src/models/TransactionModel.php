@@ -14,6 +14,7 @@ class TransactionModel extends \BaseModel {
     //View fields
     public $viewFields = array(
         'id' => array(1, 'text', '=', 0),
+        'workflow' => array(1, 'select', '=', 0),
         'user_id' => array(1, 'select', '=', 0),
         'product_id' => array(1, 'select', '=', 1),
         'location_id' => array(1, 'select', '=', 1),
@@ -29,7 +30,6 @@ class TransactionModel extends \BaseModel {
         'lat' => array(0, 'text', 'like', 0),
         'lng' => array(0, 'text', 'like', 0),
         'gateway' => array(1, 'select', '=', 0),
-        'workflow' => array(1, 'select', '=', 0),
         'gateway_tran_id' => array(0, 'text', 'like', 0),
         'gateway_code' => array(0, 'text', 'like', 0),
         'user_smsed' => array(0, 'select', '=', 0),
@@ -73,6 +73,11 @@ class TransactionModel extends \BaseModel {
     );
     //Appends fields
     protected $appends = array(
+        'user_smsed_text',
+        'user_emailed_text',
+        'user_pushed_text',
+        'merchant_smsed_text',
+        'merchant_emailed_text',
         'user_id_text',
         'location_id_text',
         'merchant_id_text',
@@ -108,6 +113,71 @@ class TransactionModel extends \BaseModel {
     );
 
     /**
+     * S# getUserSmsedTextAttribute() function
+     * Get New Customer Text
+     */
+    public function getUserSmsedTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['user_smsed'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getUserSmsedTextAttribute() function
+
+    /**
+     * S# getUserEmailedTextAttribute() function
+     * Get New Customer Text
+     */
+    public function getUserEmailedTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['user_emailed'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getUserEmailedTextAttribute() function
+
+    /**
+     * S# getUserPushedTextAttribute() function
+     * Get New Customer Text
+     */
+    public function getUserPushedTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['user_pushed'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getUserPushedTextAttribute() function
+
+    /**
+     * S# getMerchantSmsedTextAttribute() function
+     * Get New Customer Text
+     */
+    public function getMerchantSmsedTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['merchant_smsed'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getMerchantSmsedTextAttribute() function
+
+    /**
+     * S# getMerchantEmailedTextAttribute() function
+     * Get New Customer Text
+     */
+    public function getMerchantEmailedTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['merchant_emailed'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getMerchantEmailedTextAttribute() function
+
+    /**
      * S# getWorkflowTextAttribute() function
      * Get Workflow Text
      */
@@ -126,6 +196,58 @@ class TransactionModel extends \BaseModel {
     }
 
 //E# getGatewayTextAttribute() function
+
+    /**
+     * S# promotion() function
+     * Set one to one relationship to Promotion Model
+     */
+    public function promotion() {
+        return $this->belongsTo(\Util::buildNamespace('products', 'promotion', 2), 'promotion_id');
+    }
+
+//E# promotion() function
+
+    /**
+     * S# getPromotionIdTextAttribute() function
+     * 
+     * Get Promotion Text
+     */
+    public function getPromotionIdTextAttribute() {
+
+        //Get promotion model
+        $promotion_model = $this->promotion()->first();
+
+        //Return name
+        return $promotion_model ? $promotion_model->code : '';
+    }
+
+//E# getPromotionIdTextAttribute() function
+
+    /**
+     * S# product() function
+     * Set one to one relationship to Product Model
+     */
+    public function product() {
+        return $this->belongsTo(\Util::buildNamespace('products', 'product', 2), 'product_id');
+    }
+
+//E# product() function
+
+    /**
+     * S# getProductIdTextAttribute() function
+     * 
+     * Get Product Text
+     */
+    public function getProductIdTextAttribute() {
+
+        //Get product model
+        $product_model = $this->product()->first();
+
+        //Return name
+        return $product_model ? $product_model->name : '';
+    }
+
+//E# getProductIdTextAttribute() function
 
     /**
      * S# location() function
