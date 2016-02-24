@@ -94,6 +94,10 @@ return array(
         'Illuminate\Validation\ValidationServiceProvider',
         'Illuminate\View\ViewServiceProvider',
         'Illuminate\Workbench\WorkbenchServiceProvider',
+        //Thujohn Pdf Service Provider',
+        'Thujohn\Pdf\PdfServiceProvider',
+        //Maatwebsite Excel Service Provider
+        'Maatwebsite\Excel\ExcelServiceProvider',
         //Bootstrapper Service Provider
         'Bootstrapper\BootstrapperServiceProvider',
         //Register Util Library Service Provider
