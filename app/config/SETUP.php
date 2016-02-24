@@ -7,3 +7,5 @@ php artisan migrate --bench="lava/accounts" && php artisan migrate --bench="lava
 php artisan db:seed --class="\Lava\Locations\LocationsSeeder"
         
 php artisan clear-compiled && php artisan dump-autoload
+
+cd public/media && sudo mkdir lava && cd lava && sudo mkdir upload && cd upload && sudo mkdir thumbnails && cd ../../../../

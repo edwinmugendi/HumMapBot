@@ -4,6 +4,7 @@ namespace Lava\Media;
 
 use \Imagine\Imagick\Imagine;
 use \Imagine\Image\Box;
+use Carbon\Carbon;
 
 /**
  * S# MediaController() Class
@@ -14,6 +15,197 @@ class MediaController extends MediaBaseController {
 
     //Controller
     public $controller = 'media';
+
+    /**
+     * S# backup() function
+     * @author Edwin Mugendi
+     * 
+     * Backup media
+     *
+     */
+    public function backup() {
+        //Build the model
+        //Fields to select
+        $fields = array('*');
+
+        $whereClause = array(
+            array(
+                'where' => 'where',
+                'column' => 'backed_up',
+                'operator' => '=',
+                'operand' => 0
+            ),
+            array(
+                'where' => 'where',
+                'column' => 'mediable_id',
+                'operator' => '!=',
+                'operand' => 0
+            ),
+            array(
+                'where' => 'where',
+                'column' => 'mediable_type',
+                'operator' => '!=',
+                'operand' => ''
+            ),
+        );
+        $parameters['paginate'] = 100;
+
+        //Select preuploaded media models
+        $media_model = $this->select($fields, $whereClause, 2, $parameters);
+
+        $client = new \Google_Client();
+
+        // Replace this with your application name.
+        $client->setApplicationName(\Config::get($this->package . '::thirdParty.google.application_name'));
+
+        // This file location should point to the private key file.
+        $key = file_get_contents(__DIR__ . '/key.p12');
+
+        if ($media_model) {
+            $media_count = count($media_model);
+            $cred = new \Google_Auth_AssertionCredentials(
+                    \Config::get($this->package . '::thirdParty.google.client_email'), //Client email
+                    array('https://www.googleapis.com/auth/devstorage.full_control'), $key
+            );
+
+            $client->setAssertionCredentials($cred);
+
+            $service = new \Google_Service_Storage($client);
+
+            //Build upload path
+            $upload_path = public_path() . \Config::get($this->package . '::media.uploadPath');
+
+            //Storage Object
+            $storage_object = new \Google_Service_Storage_StorageObject();
+
+            $index = 0;
+            $start_time = microtime(true);
+            foreach ($media_model as $single_media) {
+
+                //Main image
+                $main_image_name = $single_media->name;
+
+                //Thumbnail image
+                $thumbnail_image = 'thumbnails/' . $single_media->name;
+
+                if ($single_media->is_image && \File::exists($upload_path . '/' . $thumbnail_image)) {
+
+                    //Upload thumbnail image //Change 3 places 
+                    $storage_object->setName($thumbnail_image);
+
+                    $google_response = $service->objects->insert(
+                            \Config::get($this->package . '::thirdParty.google.bucket'), $storage_object, ['name' => $thumbnail_image,
+                        'data' => file_get_contents($upload_path . '/' . $thumbnail_image),
+                        'uploadType' => 'media'
+                            ]
+                    );
+                    $single_media->google_thumbnail_id = $google_response->generation;
+                }//E# if else statement
+
+                if (\File::exists($upload_path . '/' . $main_image_name)) {//Main image exists
+                    //Upload main image
+                    $storage_object->setName($main_image_name);
+
+                    $google_response = $service->objects->insert(
+                            \Config::get($this->package . '::thirdParty.google.bucket'), $storage_object, ['name' => $main_image_name,
+                        'data' => file_get_contents($upload_path . '/' . $main_image_name),
+                        'uploadType' => 'media'
+                            ]
+                    );
+                    $single_media->google_main_id = $google_response->generation;
+
+                    $single_media->backed_up = 1;
+                    $single_media->save();
+
+                    echo 'Media ' . $single_media->name . ', Id ' . $single_media->id . ', Index ' . $index . ' of ' . $media_count . ', ' . number_format((100 - (($index / $media_count) * 100)), 2) . '% remaining' . "\n";
+                }//E# if statement
+                //Upload thumbnail
+                $index++;
+            }//E# foreach statement
+            $time_elapsed_secs = microtime(true) - $start_time;
+
+            echo 'Time: ' . ($time_elapsed_secs / 60) . ' minutes';
+        }//E# if statement
+
+        return "done";
+    }
+
+//E# backup() function
+
+    /**
+     * S# deleteDanglingMedia() function
+     * 
+     * Delete Dangling Media
+     * 
+     * 
+     */
+    public function deleteDanglingMedia() {
+        //Now
+        $now = new Carbon();
+
+        $now->subDays(1);
+        var_dump($now);
+
+        //Fields to select
+        $fields = array('*');
+
+        $whereClause = array(
+            array(
+                'where' => 'where',
+                'column' => 'mediable_id',
+                'operator' => '=',
+                'operand' => 0
+            ),
+            array(
+                'where' => 'where',
+                'column' => 'mediable_type',
+                'operator' => '=',
+                'operand' => ''
+            ),
+            array(
+                'where' => 'where',
+                'column' => 'created_at',
+                'operator' => '<',
+                'operand' => $now
+            ),
+        );
+
+        //Select preuploaded media models
+        $media_model = $this->select($fields, $whereClause, 2);
+
+        echo 'Found ' . count($media_model) . ' dungling images';
+
+        if ($media_model) {
+
+            //Build media path
+            $mediaPath = public_path() . \Config::get($this->package . '::media.uploadPath');
+
+            foreach ($media_model as $single_media) {
+                echo "deleted " . $single_media->name . "\n";
+                //Build main path
+                $main_path = $mediaPath . '/' . $single_media->name;
+
+                //Build thumbnail path
+                $thumbnail_path = $mediaPath . '/thumbnails/' . $single_media->name;
+
+                if ($single_media['is_image'] && \File::exists($thumbnail_path)) {//Media file exists
+                    //Delete thumbnail file
+                    \File::delete($thumbnail_path);
+                }//E# if statement
+
+                if (\File::exists($main_path)) {//Media file exists
+                    //Hurrah!
+                    //Delete main media file
+                    \File::delete($main_path);
+
+                    //Delete media model
+                    $single_media->delete();
+                }//E# if statement
+            }//E# foreach statement
+        }//E# if statement
+    }
+
+//E# deleteDanglingMedia() function
 
     /**
      * S# getDetailedPageView() function
@@ -64,51 +256,11 @@ class MediaController extends MediaBaseController {
             $media_model = $this->getModelByField('name', $this->input['image']);
 
             //Build upload path
-            $uploadPath = public_path() . \Config::get($this->package . '::media.uploadPath');
+            $upload_path = public_path() . \Config::get($this->package . '::media.uploadPath');
 
-            return \Response::download($uploadPath . '/' . $this->input['image'], $media_model['original_name']);
+            return \Response::download($upload_path . '/' . $this->input['image'], $media_model['original_name']);
         }//E# if statment
     }
-
-    /**
-     * S# backup() function
-     * @author Edwin Mugendi
-     * Backup media
-     *
-     */
-    public function backup() {
-
-        //Build the model
-        //Fields to select
-        $fields = array('*');
-
-        $whereClause = array(
-            array(
-                'where' => 'where',
-                'column' => 'backed_up',
-                'operator' => '=',
-                'operand' => 0
-            ),
-            array(
-                'where' => 'whereNotNull',
-                'column' => 'media_type'
-            )
-        );
-
-        //Build extra parameters
-        $parameters['take'] = 5;
-
-        //Select preuploaded media models
-        $mediaModel = $this->select($fields, $whereClause, 2, $parameters);
-
-        if ($mediaModel) {
-            foreach ($mediaModel as $singleMedia) {
-                
-            }//E# foreach statement
-        }//E# if statement
-    }
-
-//E# backup() function
 
     /**
      * S# getMediaView() function
@@ -216,7 +368,7 @@ class MediaController extends MediaBaseController {
         $this->input['media_type'] = \Str::lower(trim($this->input['media_type']));
 
         //Build upload path
-        $uploadPath = public_path() . \Config::get($this->package . '::media.uploadPath');
+        $upload_path = public_path() . \Config::get($this->package . '::media.uploadPath');
 
         //Cache media extension
         $mediaExtension = $this->input['media']->getClientOriginalExtension();
@@ -228,7 +380,7 @@ class MediaController extends MediaBaseController {
             $mediaName = \Str::random(\Config::get($this->package . '::media.mediaNameLength')) . '.' . $mediaExtension;
 
             //Cache absolute media path
-            $abolutePath = $uploadPath . '/' . $mediaName;
+            $abolutePath = $upload_path . '/' . $mediaName;
 
             if (\File::exists($abolutePath)) {//Media file with this name already exists
                 //Define Issue row
@@ -252,7 +404,7 @@ class MediaController extends MediaBaseController {
         }//E# while statement
         //Hurrah! we have the media
         //NB: You can push to AWS, Google servers or to an external server here
-        $this->input['media']->move($uploadPath, $mediaName);
+        $this->input['media']->move($upload_path, $mediaName);
 
         //Is uploaded document a file
         $is_image = in_array(strtolower($mediaExtension), array('jpeg', 'jpg', 'gif', 'png')) ? 1 : 0;
@@ -266,7 +418,7 @@ class MediaController extends MediaBaseController {
                     ->thumbnail(new Box(\Config::get($this->package . '::media.mainWidth'), \Config::get($this->package . '::media.mainHeight')))
                     ->save($abolutePath)
                     ->thumbnail(new Box(\Config::get($this->package . '::media.thumbnailWidth'), \Config::get($this->package . '::media.thumbnailHeight')))
-                    ->save($uploadPath . '/thumbnails/' . $mediaName);
+                    ->save($upload_path . '/thumbnails/' . $mediaName);
         }//E# if else statement
         //Define media row 
         $mediaRow[] = array(
@@ -278,7 +430,7 @@ class MediaController extends MediaBaseController {
             'name' => $mediaName,
             'extension' => $mediaExtension,
             'main_size' => \File::size($abolutePath),
-            'thumbnail_size' => $is_image ? \File::size($uploadPath . '/thumbnails/' . $mediaName) : 0,
+            'thumbnail_size' => $is_image ? \File::size($upload_path . '/thumbnails/' . $mediaName) : 0,
             'is_thumbnailed' => $is_image ? 1 : 0,
             'is_resized' => $is_image ? 1 : 0,
             'order' => 0,
@@ -292,10 +444,10 @@ class MediaController extends MediaBaseController {
 
         //Create a Media
         //NB: if you save the media and try to get the media values eg size, mime, Lavarel throughs a FileNotFoundException
-        $mediaModel = $this->callController(\Util::buildNamespace('media', 'media', 1), 'createIfValid', $mediaRow);
+        $media_model = $this->callController(\Util::buildNamespace('media', 'media', 1), 'createIfValid', $mediaRow);
 
         //Creating an uploaded photo info array
-        $mediaInfo = $this->formatMediaResponse($mediaModel);
+        $mediaInfo = $this->formatMediaResponse($media_model);
 
         //Set media info to notification
         $this->notification['files'][0] = $mediaInfo;
@@ -320,37 +472,39 @@ class MediaController extends MediaBaseController {
         $this->isInputValid($this->input);
 
         //Find this media model by id
-        $mediaModel = $this->find($this->input['media_id']);
+        $media_model = $this->find($this->input['media_id']);
 
-        if ($mediaModel) {//Media model exists
+        if ($media_model) {//Media model exists
             //Build media path
             $mediaPath = public_path() . \Config::get($this->package . '::media.uploadPath');
             //Build main path
-            $mainPath = $mediaPath . '/' . $mediaModel->name;
+            $main_path = $mediaPath . '/' . $media_model->name;
 
-            if (\File::exists($mainPath)) {//Media file exists
+            if (\File::exists($main_path)) {//Media file exists
                 //Hurrah!
                 //Delete main media file
-                \File::delete($mainPath);
+                \File::delete($main_path);
 
-                if ($mediaModel->is_image) {
+                if ($media_model->is_image) {
                     //Build thumbnail path
-                    $thumbnailPath = $mediaPath . '/thumbnails/' . $mediaModel->name;
+                    $thumbnail_path = $mediaPath . '/thumbnails/' . $media_model->name;
                     //Delete thumbnail file
-                    \File::delete($thumbnailPath);
+                    \File::delete($thumbnail_path);
                 }//E# if statement
                 //Delete media model
-                $mediaModel->delete();
+                $media_model->status = 2;
+
+                $media_model->save();
 
                 $this->notification = array(
                     'type' => 'success',
-                    'message' => \Lang::get($this->package . '::' . $this->controller . '.action.deleting', array('type' => \Lang::choice($this->package . '::' . $this->controller . '.type.' . $mediaModel->type, 1)))
+                    'message' => \Lang::get($this->package . '::' . $this->controller . '.action.deleting', array('type' => \Lang::choice($this->package . '::' . $this->controller . '.type.' . $media_model->type, 1)))
                 );
             } else {//Media file not found
                 //Set replacement values
-                $this->replacements['type'] = \Lang::choice($this->package . '::' . $this->controller . '.type.' . $mediaModel->type, 1);
+                $this->replacements['type'] = \Lang::choice($this->package . '::' . $this->controller . '.type.' . $media_model->type, 1);
                 $this->replacements['id'] = 'name';
-                $this->replacements['value'] = $mediaModel->name;
+                $this->replacements['value'] = $media_model->name;
 
                 //Throw a Not Found Exception
                 throw new \Api404Exception($this->replacements);
@@ -382,18 +536,18 @@ class MediaController extends MediaBaseController {
         $this->isInputValid();
 
         //Find this media model by id
-        $mediaModel = $this->find($this->input['media_id']);
+        $media_model = $this->find($this->input['media_id']);
 
-        if ($mediaModel) {//Media model exists
+        if ($media_model) {//Media model exists
             //Set fields to update
-            $mediaModel->description = $this->input['media_description'];
-            $mediaModel->updated_by = 1;
+            $media_model->description = $this->input['media_description'];
+            $media_model->updated_by = 1;
             //Hip Hip Hurrah!
-            $mediaModel->save();
+            $media_model->save();
 
             $this->notification = array(
                 'type' => 'success',
-                'message' => \Lang::get($this->package . '::' . $this->controller . '.action.describing', array('type' => \Lang::choice($this->package . '::' . $this->controller . '.type.' . $mediaModel->type, 1)))
+                'message' => \Lang::get($this->package . '::' . $this->controller . '.action.describing', array('type' => \Lang::choice($this->package . '::' . $this->controller . '.type.' . $media_model->type, 1)))
             );
 
             //Return the notification as JSON
@@ -429,14 +583,14 @@ class MediaController extends MediaBaseController {
         $ordered = 0;
         foreach ($this->input['media_ids'] as $mediaId) {//Loop through the media ids
             //Find this media model by id
-            $mediaModel = $this->find($mediaId);
+            $media_model = $this->find($mediaId);
 
-            if ($mediaModel) {//Media model exists
+            if ($media_model) {//Media model exists
                 //Set fields to update
-                $mediaModel->order = $order;
-                $mediaModel->updated_by = 1;
+                $media_model->order = $order;
+                $media_model->updated_by = 1;
                 //Hip Hip Hurrah!
-                $mediaModel->save();
+                $media_model->save();
                 //Increment ordered
                 $ordered++;
             } else {//Media Model does not exist
@@ -456,7 +610,7 @@ class MediaController extends MediaBaseController {
             'message' => \Lang::get($this->package . '::' . $this->controller . '.action.ordering', array(
                 'ordered' => $ordered,
                 'total' => count($this->input['media_ids']),
-                'type' => \Str::lower(\Lang::choice($this->package . '::' . $this->controller . '.type.' . $mediaModel->type, $ordered))
+                'type' => \Str::lower(\Lang::choice($this->package . '::' . $this->controller . '.type.' . $media_model->type, $ordered))
             ))
         );
 
@@ -501,35 +655,63 @@ class MediaController extends MediaBaseController {
                     'column' => 'mediable_id',
                     'operator' => '=',
                     'operand' => $this->input['id']
+                ),
+                array(
+                    'where' => 'where',
+                    'column' => 'status',
+                    'operator' => '=',
+                    'operand' => 1
+                ),
+                array(
+                    'where' => 'orWhere',
+                    'column' => 'refresh_key',
+                    'operator' => '=',
+                    'operand' => $this->getRefreshKey($this->input['media_controller'])
+                )
+            );
+        } else {
+            $whereClause = array(
+                array(
+                    'where' => 'where',
+                    'column' => 'status',
+                    'operator' => '=',
+                    'operand' => 1
+                ),
+                array(
+                    'where' => 'where',
+                    'column' => 'refresh_key',
+                    'operator' => '=',
+                    'operand' => $this->getRefreshKey($this->input['media_controller'])
                 )
             );
         }//E# if statement
-        //Build where clause
-        $whereClause[] = array(
-            'where' => 'orWhere',
-            'column' => 'refresh_key',
-            'operator' => '=',
-            'operand' => $this->getRefreshKey($this->input['media_controller'])
-        );
+        /*
+          //Build where clause
+          $whereClause[] = array(
+          'where' => 'where',
+          'column' => 'status',
+          'operator' => '=',
+          'operand' => 1
+          );
 
-
+         */
         //Build extra parameters
         $parameters = array();
         $parameters['orderBy'][] = array('order' => 'asc');
         $parameters['convertTo'] = 'toArray';
 
         //Select preuploaded media models
-        $mediaModel = $this->select($fields, $whereClause, 2, $parameters);
+        $media_model = $this->select($fields, $whereClause, 2, $parameters);
 
         $allMedia = array();
-        if ($mediaModel) {//
-            foreach ($mediaModel as $singleModel) {//Loop through the $media_model
+        if ($media_model) {//
+            foreach ($media_model as $singleModel) {//Loop through the $media_model
                 array_push($allMedia, $this->formatMediaResponse($singleModel));
             }//E# foreach statement
         }//E# if statement
         $this->notification['files'] = $allMedia;
 
-        if (count($mediaModel) <= 0) {
+        if (count($media_model) <= 0) {
             $this->notification['files'] = array();
         }//E# if statement
         //Return the notification array as JSON
@@ -617,10 +799,10 @@ class MediaController extends MediaBaseController {
         $parameters['orderBy'][] = array('order' => 'asc');
         $parameters['orderBy'][] = array('id' => 'asc');
         //Select pre-uploaded media
-        $mediaModel = $this->select($fields, $whereClause, 2, $parameters);
+        $media_model = $this->select($fields, $whereClause, 2, $parameters);
 
-        if ($mediaModel) {//There exists a media model for this property
-            foreach ($mediaModel as $singleModel) {//Loop through each model
+        if ($media_model) {//There exists a media model for this property
+            foreach ($media_model as $singleModel) {//Loop through each model
                 //Clear the refresh key
                 $singleModel->refresh_key = '';
                 //Relate this media to this property

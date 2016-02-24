@@ -26,7 +26,6 @@ class CreateUsersTable extends Migration {
 
             //Identity
             $table->string('email', 255);
-            $table->string('username', 255);
             $table->text('password');
             $table->string('reset_code', 255);
             $table->datetime('reset_time');
