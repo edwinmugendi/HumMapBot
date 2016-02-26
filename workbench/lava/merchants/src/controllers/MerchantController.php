@@ -11,7 +11,7 @@ class MerchantController extends MerchantsBaseController {
 
     //Controller
     public $controller = 'merchant';
-    
+
     /**
      * S# injectDataSources() function
      * @author Edwin Mugendi
@@ -48,16 +48,17 @@ class MerchantController extends MerchantsBaseController {
      * @return array The logged in user's merchant
      */
     protected function sessionMerchant($user_model) {
-        
+
         $merchant_id = $user_model['merchant_id'];
+
+        var_dump($merchant_id);
         //Set the default merchant
-        
+
         foreach ($user_model['merchants'] as $single_merchant) {
             if ($single_merchant['default']) {
                 $merchant_id = $single_merchant['id'];
             }//E# if statement
         }//E# foreach statement
-
         //Fields to select
         $fields = array('*');
 
@@ -79,9 +80,10 @@ class MerchantController extends MerchantsBaseController {
 
         //Select this merchants models
         $merchant_model = $this->select($fields, $whereClause, 1, $parameters);
-        
-        $session_merchant = \Session::put('merchant', $merchant_model);
 
+        $session_merchant = \Session::put('merchant', $merchant_model->toArray());
+        
+//        dd(\Session::get('merchant'));
         //Build Merchant Selector View
         $this->buildMerchantSelectorView($user_model['merchants'], $merchant_id);
 
@@ -97,10 +99,10 @@ class MerchantController extends MerchantsBaseController {
      * 
      */
     public function postChangeMerchant() {
-        
+
         //Set parameters
         $parameters['lazyLoad'] = array('merchants');
-        
+
         //Get user model
         $user_model = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('id', $this->user['id'], $parameters));
 
@@ -114,7 +116,6 @@ class MerchantController extends MerchantsBaseController {
             }//E# if else statement
             $single_merchant->save();
         }//E# foreach statement
-        
         //Session merchant
         $this->sessionMerchant($user_model);
 
@@ -140,7 +141,7 @@ class MerchantController extends MerchantsBaseController {
      */
     private function buildMerchantSelectorView($merchants, $merchant_id) {
         $this->view_data = $this->prepareViewData('selector');
-        
+
         $this->view_data['merchants'] = $merchants;
         $this->view_data['merchant_id'] = $merchant_id;
 

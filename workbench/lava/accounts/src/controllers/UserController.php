@@ -278,7 +278,7 @@ class UserController extends AccountsBaseController {
 
         //Get user model
         $user_model = $this->getModelByField('token', $controller_model->token, $parameters);
-        
+
         //Session this user
         $controller->sessionUser($user_model);
 
@@ -407,7 +407,7 @@ class UserController extends AccountsBaseController {
         \Auth::logout();
 
         //Forget this sessioned user
-        \Session::forget('user');
+        \Session::flush();
 
         //Redirect to  home page
         return \Redirect::to('/');
@@ -495,8 +495,8 @@ class UserController extends AccountsBaseController {
         if ($user_model->role_id != 3) {
             //Session org
             $this->callController(\Util::buildNamespace('merchants', 'merchant', 1), 'sessionMerchant', array($user));
-        }
-
+        }//E# if statement
+        
         //Unset organization
         unset($user['merchant']);
 
