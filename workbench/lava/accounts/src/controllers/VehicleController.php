@@ -13,8 +13,24 @@ class VehicleController extends AccountsBaseController {
 
     //Controller
     public $controller = 'vehicle';
-    //Owned by
-    public $ownedBy = array('user');
+
+    /**
+     * S# injectDataSources() function
+     * @author Edwin Mugendi
+     * Inject data source. This are mainly select
+     * 
+     * @param array $dataSource Data source
+     */
+    public function injectDataSources() {
+        
+        //Get this organization user id
+        $this->view_data['dataSource']['user_id'] = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('first_name','last_name'), \Lang::get('common.select')));
+
+        //Get and set type options to data source
+        $this->view_data['dataSource']['type'] = \Lang::get($this->package . '::' . $this->controller . '.data.type');
+    }
+
+//E# injectDataSources() function
 
     /**
      * S# controllerSpecificWhereClause() function
@@ -120,7 +136,7 @@ class VehicleController extends AccountsBaseController {
                 $controller_model->date_of_first_registration = $dvlasearch_response['response']['dateOfFirstRegistration'];
                 $controller_model->year_of_manufacture = $dvlasearch_response['response']['yearOfManufacture'];
                 $controller_model->cylinder_capacity = $dvlasearch_response['response']['cylinderCapacity'];
-                $controller_model->co_2_emissions = $dvlasearch_response['response']['co2Emissions'];
+                $controller_model->co2_emissions = $dvlasearch_response['response']['co2Emissions'];
                 $controller_model->fuel_type = $dvlasearch_response['response']['fuelType'];
                 $controller_model->tax_status = $dvlasearch_response['response']['taxStatus'];
                 $controller_model->colour = $dvlasearch_response['response']['colour'];

@@ -12,7 +12,6 @@ class ProductController extends ProductsBaseController {
     //Controller
     public $controller = 'product';
     
-    
     /**
      * S# roleBasedWhereClause() function
      * @author Edwin Mugendi

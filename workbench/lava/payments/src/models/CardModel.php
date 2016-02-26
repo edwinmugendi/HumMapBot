@@ -13,7 +13,19 @@ class CardModel extends \BaseModel {
     protected $table = 'fnc_cards';
     //View fields
     public $viewFields = array(
-        'id' => array(1, 'text', '='),
+        'id' => array(1, 'text', '=', 0),
+        'last4' => array(1, 'text', '=', 1),
+        'brand' => array(1, 'text', '=', 1),
+        'user_id' => array(1, 'select', '=', 1),
+        'gateway' => array(1, 'text', 'like', 0),
+        'deleted_on_stripe' => array(0, 'select', '=', 0),
+        'exp_month' => array(1, 'text', '=', 0),
+        'exp_year' => array(1, 'text', '=', 0),
+        'address_city' => array(0, 'text', 'like', 0),
+        'token' => array(1, 'text', 'like', 0),
+        'address_zip' => array(0, 'text', 'like', 0),
+        'address_country' => array(0, 'text', 'like', 0),
+        'address_line1' => array(0, 'text', 'like', 0),
     );
     //Appends fields
     protected $appends = array(
@@ -48,9 +60,21 @@ class CardModel extends \BaseModel {
         'stripe_token' => 'required',
     );
     //Update validation rules
-    public $updateRules = array(
-    );
+    public $updateRules = array();
+    
+        /**
+     * S# getDeletedOnStripeTextAttribute() function
+     * Get DeletedOnStripe Text
+     */
+    public function getDeletedOnStripeTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['deleted_on_stripe'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
 
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getDeletedOnStripeTextAttribute() function
+    
     /**
      * S# user() function
      * Set one to one relationship to User Model
@@ -60,6 +84,22 @@ class CardModel extends \BaseModel {
     }
 
 //E# user() function
+
+    /**
+     * S# getUserIdTextAttribute() function
+     * 
+     * Get User Text
+     */
+    public function getUserIdTextAttribute() {
+
+        //Get user model
+        $user_model = $this->user()->first();
+
+        //Return name
+        return $user_model ? $user_model->first_name . ' ' . $user_model->last_name : '';
+    }
+
+//E# getUserIdTextAttribute() function
 
     /**
      * S# getIsDefaultAttribute() function

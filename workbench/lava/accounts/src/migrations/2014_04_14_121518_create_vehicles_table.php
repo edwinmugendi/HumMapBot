@@ -28,7 +28,7 @@ class CreateVehiclesTable extends Migration {
             $table->string('date_of_first_registration', 255); //The date the vehicle became registered with the DVLA
             $table->string('year_of_manufacture', 255); //
             $table->string('cylinder_capacity', 255); //In CC
-            $table->string('co_2_emissions', 255);
+            $table->string('co2_emissions', 255);
             $table->string('fuel_type', 255); //Fuel type. Diesel, petrol or electric
             $table->string('tax_status', 255); //A description about the tax status
             $table->string('colour', 255);

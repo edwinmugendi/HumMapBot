@@ -84,17 +84,12 @@ class BaseController extends Controller {
             $parameters['scope'] = array('statusOne');
 
             //Order by
-            if ($this->controller == 'promotion') {
-                $parameters['orderBy'][] = array('code' => 'asc');
-                $field_name = 'code';
-            } else {
-                $parameters['orderBy'][] = array('name' => 'asc');
-                $field_name = 'name';
-            }//E# if else statement
-            //Select models
-            $model = $this->select($fields, $whereClause, 2, $parameters);
+            $parameters['orderBy'][] = array('name' => 'asc');
 
-            return $this->buildHtmlSelectArray($model, 'id', $field_name, \Lang::get('common.select'), '-', array());
+            //Select models
+            $model = $this->callController(\Util::buildNamespace('merchants', 'merchant', 1), 'select', array($fields, $whereClause, 2, $parameters));
+
+            return $this->buildHtmlSelectArray($model, 'id', 'name', \Lang::get('common.select'), '-', array());
         } else if ($this->user['role_id'] == 2) {//Merchant
             return array('' => \Lang::get('common.select'), $this->merchant['id'] => $this->merchant['name']);
         } else {
@@ -217,34 +212,20 @@ class BaseController extends Controller {
         //Fields to select
         $fields = array('*');
 
-        //Build where clause
-        $whereClause = array(
-            array(
-                'where' => 'where',
-                'column' => 'merchant_id',
-                'operator' => '=',
-                'operand' => $merchantId
-            )
-        );
-        /*
-          if ($this->controller == 'user') {
-          $whereClause[] = array(
-          'where' => 'where',
-          'column' => 'role_id',
-          'operator' => '=',
-          'operand' => 3//Employee
-          );
+        $whereClause = array();
+        
+        if ($this->user['role_id'] == 2) {
+            //Build where clause
+            $whereClause = array(
+                array(
+                    'where' => 'where',
+                    'column' => 'merchant_id',
+                    'operator' => '=',
+                    'operand' => $merchantId
+                )
+            );
+        }//E# if statement
 
-          if ($this->user['role_id'] == 3) {//Employee
-          $whereClause[] = array(
-          'where' => 'where',
-          'column' => 'id',
-          'operator' => '=',
-          'operand' => $this->user['id']
-          );
-          }//E# if statement
-          }//E# if statement
-         */
         if ($specific_where_clause) {
             $whereClause = array_merge($whereClause, $specific_where_clause);
         }//E# if statement
@@ -2149,6 +2130,9 @@ class BaseController extends Controller {
 
         //Get and set the model's create validation rules
         $this->validationRules = $modelObject->createRules;
+
+        //Append custom validation rules
+        $this->appendCustomValidationRules();
 
         //Append custom validation rules
         $this->appendCustomValidationRules();

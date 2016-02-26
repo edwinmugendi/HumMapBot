@@ -60,4 +60,29 @@
 
     //Un-Delete transaction
     \Route::post('payments/undelete/transaction', array('as' => 'paymentsUndeleteTransaction', 'uses' => 'Lava\Payments\TransactionController@postUndelete'));
+
+        /**
+     * Card routes
+     */
+    //Detailed card
+    \Route::get('payments/detailed/card/{id}', array('as' => 'paymentsDetailedCard', 'uses' => 'Lava\Payments\CardController@getDetailed'));
+
+    //List card
+    \Route::get('payments/list/card', array('as' => 'paymentsListCard', 'uses' => 'Lava\Payments\CardController@getList'));
+
+    //Post card
+    \Route::get('payments/post/card/{id?}', array('as' => 'paymentsPostCard', 'uses' => 'Lava\Payments\CardController@getPost'));
+
+    //Create a card
+    \Route::post('payments/create/card', array('as' => 'paymentsCreateCard', 'before' => 'csrf', 'uses' => 'Lava\Payments\CardController@postCreate'));
+
+    //Update a card
+    \Route::post('payments/update/card', array('as' => 'paymentsUpdateCard', 'before' => 'csrf', 'uses' => 'Lava\Payments\CardController@postUpdate'));
+
+    //Delete card
+    \Route::post('payments/delete/card', array('as' => 'paymentsDeleteCard', 'uses' => 'Lava\Payments\CardController@postDelete'));
+
+    //Un-Delete card
+    \Route::post('payments/undelete/card', array('as' => 'paymentsUndeleteCard', 'uses' => 'Lava\Payments\CardController@postUndelete'));
+
 });

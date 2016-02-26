@@ -10,6 +10,86 @@ class UserController extends AccountsBaseController {
     public $controller = 'user';
 
     /**
+     * S# roleBasedWhereClause() function
+     * @author Edwin Mugendi
+     * Build where clause based on role
+     * 
+     * @param array $fields Fields
+     * @param array $whereClause Where clause
+     * @param array $parameters Parameters
+     */
+    public function roleBasedWhereClause($fields, &$whereClause, &$parameters) {
+        if ($this->user['role_id'] == 2) {//Merchant
+            $whereClause[] = array(
+                'where' => 'where',
+                'column' => 'merchant_id',
+                'operator' => '=',
+                'operand' => $this->merchant['id']
+            );
+        }
+    }
+
+    //E# roleBasedWhereClause() function
+
+    /**
+     * S# appendCustomValidationRules() function
+     * 
+     * Append custom validation rules.
+     * 
+     * This mainly happens when we need to access the id of object. Eg when updating an object with unique validation rule in it
+     * 
+     * Make sure you have if else for create and update
+     * if($this->crudId == 2){}
+     */
+    public function appendCustomValidationRules() {
+        if (!array_key_exists('format', $this->input)) {
+            $this->validationRules = array(
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'merchant_id' => 'required|integer|exists:mct_merchants,id',
+                'email' => 'required|unique:acc_users',
+                'role_id' => 'required'
+            );
+
+            if ($this->crudId == 2) {
+                $this->validationRules['email'] = 'required|unique:acc_users,email,' . $this->input['id'] . ',id';
+            }//E# if statement
+        }
+        return;
+    }
+
+//E# appendCustomValidationRules() function
+
+    /**
+     * S# injectDataSources() function
+     * @author Edwin Mugendi
+     * Inject data source. This are mainly select
+     * 
+     * @param array $dataSource Data source
+     */
+    public function injectDataSources() {
+
+        //Get this organization merchant id
+        $this->view_data['dataSource']['merchant_id'] = $this->appGetCustomMerchantHtmlSelect();
+
+
+        //Get and set yes no options to data source
+        $this->view_data['dataSource']['notify_sms'] = $this->view_data['dataSource']['notify_email'] = $this->view_data['dataSource']['notify_push'] = \Lang::get($this->package . '::' . $this->controller . '.data.yes_no');
+
+        //Get and set role options to data source
+        $this->view_data['dataSource']['role_id'] = \Lang::get($this->package . '::' . $this->controller . '.data.role_id');
+
+        if ($this->user['role_id'] == 1) {
+            unset($this->view_data['dataSource']['role_id'][3]);
+        } else {
+            unset($this->view_data['dataSource']['role_id'][1]);
+            unset($this->view_data['dataSource']['role_id'][3]);
+        }//E# if statement
+    }
+
+//E# injectDataSources() function
+
+    /**
      * S# getIsEmailAvailable() function
      * @author Edwin Mugendi
      * Check if Email is available
@@ -59,20 +139,30 @@ class UserController extends AccountsBaseController {
      * @return 
      */
     public function beforeCreating() {
-        //Notifications
-        $this->input['notify_sms'] = $this->input['notify_email'] = $this->input['notify_push'] = 1;
+        if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {
+            //Notifications
+            $this->input['notify_sms'] = $this->input['notify_email'] = $this->input['notify_push'] = 1;
 
-        //Prepare other fields
-        $this->input['password'] = \Hash::make($this->input['password']);
-        $this->input['verification_code'] = $this->generateUniqueField('verification_code', 42);
-        if (array_key_exists('location', $this->input)) {
-            $this->input['lat'] = $this->input['location']['lat'];
-            $this->input['lng'] = $this->input['location']['lng'];
-        }//E# if statement
-        //User the users role
-        $this->input['role_id'] = 3; //Customer
-        $this->input['status'] = 0;
-        $this->input['created_by'] = $this->input['updated_by'] = 1;
+            //Prepare other fields
+            $this->input['password'] = \Hash::make($this->input['password']);
+            $this->input['verification_code'] = $this->generateUniqueField('verification_code', 42);
+            if (array_key_exists('location', $this->input)) {
+                $this->input['lat'] = $this->input['location']['lat'];
+                $this->input['lng'] = $this->input['location']['lng'];
+            }//E# if statement
+            //User the users role
+            $this->input['role_id'] = 3; //Customer
+
+            $this->input['status'] = 0;
+            $this->input['created_by'] = $this->input['updated_by'] = 1;
+        } else {
+            if ($this->user['role_id'] == 2) {
+                $this->input['role_id'] = 1;
+            }//E# if statement
+
+            $this->input['status'] = 1;
+            $this->input['created_by'] = $this->input['updated_by'] = $this->user['id'];
+        }
     }
 
 //E# beforeCreating() function
@@ -225,12 +315,19 @@ class UserController extends AccountsBaseController {
      */
     public function beforeUpdating() {
 
-        if (isset($this->input['old_password']) && isset($this->inout['new_password'])) {
-            $this->input['password'] = \Hash::make($this->input['new_password']);
-        }//E# if statement
+        if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//API
+            if (isset($this->input['old_password']) && isset($this->inout['new_password'])) {
+                $this->input['password'] = \Hash::make($this->input['new_password']);
+            }//E# if statement
 
-        $this->input['created_by'] = $this->user['id'] ? $this->user['id'] : 1;
-        $this->input['updated_by'] = $this->user['id'] ? $this->user['id'] : 1;
+            $this->input['created_by'] = $this->user['id'] ? $this->user['id'] : 1;
+            $this->input['updated_by'] = $this->user['id'] ? $this->user['id'] : 1;
+        } else {
+
+            if ($this->user['role_id'] == 2) {
+                $this->input['role_id'] = 1;
+            }//E# if statement
+        }//E# if else statement
         return;
     }
 

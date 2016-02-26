@@ -11,84 +11,132 @@
 \Route::get('/', array('as' => 'userLogin', function() {
         return \Redirect::route('userRegistration', array('login'));
     }));
-    
-    //Login page
-\Route::get('login', array('as' => 'userLogin', function() {
-        return \Redirect::route('userRegistration', array('login'));
-    }));
 
-        //Registration page
-        \Route::get('register', array('as' => 'userRegistrationRegister', function() {
-                return \Redirect::route('userRegistration', array('register'));
+        //Login page
+        \Route::get('login', array('as' => 'userLogin', function() {
+                return \Redirect::route('userRegistration', array('login'));
             }));
-                /* S# API End points */
-                //USER API'S
-                //Register User
-                \Route::post('api/register_user', array('as' => 'apiRegisterUser', 'uses' => 'Lava\Accounts\UserController@postCreate'));
 
-                //Login User
-                \Route::post('api/login_user', array('as' => 'apiLoginUser', 'uses' => 'Lava\Accounts\UserController@postLogin'));
+                //Registration page
+                \Route::get('register', array('as' => 'userRegistrationRegister', function() {
+                        return \Redirect::route('userRegistration', array('register'));
+                    }));
+                        /* S# API End points */
+                        //USER API'S
+                        //Register User
+                        \Route::post('api/register_user', array('as' => 'apiRegisterUser', 'uses' => 'Lava\Accounts\UserController@postCreate'));
 
-                //Login with fabook
-                \Route::post('api/login_with_facebook', array('as' => 'userFacebookLogin', 'uses' => 'Lava\Accounts\UserController@postFacebookLogin'));
+                        //Login User
+                        \Route::post('api/login_user', array('as' => 'apiLoginUser', 'uses' => 'Lava\Accounts\UserController@postLogin'));
 
-                //Forgot Password
-                \Route::post('api/forgot_password', array('as' => 'apiForgotPassword', 'uses' => 'Lava\Accounts\UserController@postForgotPassword'));
+                        //Login with fabook
+                        \Route::post('api/login_with_facebook', array('as' => 'userFacebookLogin', 'uses' => 'Lava\Accounts\UserController@postFacebookLogin'));
 
-                //Reset Password
-                \Route::post('api/reset_password', array('as' => 'apiResetPassword', 'uses' => 'Lava\Accounts\UserController@postResetPassword'));
+                        //Forgot Password
+                        \Route::post('api/forgot_password', array('as' => 'apiForgotPassword', 'uses' => 'Lava\Accounts\UserController@postForgotPassword'));
 
-                //Is email available
-                \Route::get('api/is_email_available', array('as' => 'apiIsEmailAvailable', 'uses' => 'Lava\Accounts\UserController@getIsEmailAvailable'));
+                        //Reset Password
+                        \Route::post('api/reset_password', array('as' => 'apiResetPassword', 'uses' => 'Lava\Accounts\UserController@postResetPassword'));
 
-                /* E# API End points */
+                        //Is email available
+                        \Route::get('api/is_email_available', array('as' => 'apiIsEmailAvailable', 'uses' => 'Lava\Accounts\UserController@getIsEmailAvailable'));
 
-                //Login User
-                \Route::post('login', array('as' => 'userLogin', 'uses' => 'Lava\Accounts\UserController@postLogin'));
+                        /* E# API End points */
 
-                //Sign out User
-                \Route::get('signout', array('as' => 'userSignOut', 'uses' => 'Lava\Accounts\UserController@getSignOut'));
+                        //Login User
+                        \Route::post('login', array('as' => 'userLogin', 'uses' => 'Lava\Accounts\UserController@postLogin'));
 
-                //Is email available
-                \Route::get('is_email_available', array('as' => 'userIsEmailAvailable', 'uses' => 'Lava\Accounts\UserController@getIsEmailAvailable'));
+                        //Sign out User
+                        \Route::get('signout', array('as' => 'userSignOut', 'uses' => 'Lava\Accounts\UserController@getSignOut'));
 
-                //Activate user
-                \Route::get('verify', array('as' => 'userVerify', 'uses' => 'Lava\Accounts\UserController@getVerify'));
+                        //Is email available
+                        \Route::get('is_email_available', array('as' => 'userIsEmailAvailable', 'uses' => 'Lava\Accounts\UserController@getIsEmailAvailable'));
 
-                //Forgot Password
-                \Route::post('forgot_password', array('as' => 'userForgotPassword', 'uses' => 'Lava\Accounts\UserController@postForgotPassword'));
+                        //Activate user
+                        \Route::get('verify', array('as' => 'userVerify', 'uses' => 'Lava\Accounts\UserController@getVerify'));
 
-                //Reset Password
-                \Route::post('reset_password', array('as' => 'userResetPassword', 'uses' => 'Lava\Accounts\UserController@postResetPassword'));
+                        //Forgot Password
+                        \Route::post('forgot_password', array('as' => 'userForgotPassword', 'uses' => 'Lava\Accounts\UserController@postForgotPassword'));
 
-                \Route::group(array('before' => 'api'), function() {
-                    /* S# API End points */
-                    //User API's
-                    //Get Profile Page
-                    \Route::get('api/get_user_profile', array('as' => 'apiGetUserProfile', 'uses' => 'Lava\Accounts\UserController@getProfile'));
+                        //Reset Password
+                        \Route::post('reset_password', array('as' => 'userResetPassword', 'uses' => 'Lava\Accounts\UserController@postResetPassword'));
 
-                    //Update User
-                    \Route::post('api/update_user', array('as' => 'apiUpdateUser', 'uses' => 'Lava\Accounts\UserController@postUpdate'));
+                        \Route::group(array('before' => 'api'), function() {
+                            /* S# API End points */
+                            //User API's
+                            //Get Profile Page
+                            \Route::get('api/get_user_profile', array('as' => 'apiGetUserProfile', 'uses' => 'Lava\Accounts\UserController@getProfile'));
 
-                    //VEHICLE API'S
-                    //Add vehicle
-                    \Route::post('api/add/vehicle', array('as' => 'apiAddVehicle', 'uses' => 'Lava\Accounts\VehicleController@postCreate'));
+                            //Update User
+                            \Route::post('api/update_user', array('as' => 'apiUpdateUser', 'uses' => 'Lava\Accounts\UserController@postUpdate'));
 
-                    //Add vehicle
-                    \Route::post('api/update/vehicle', array('as' => 'apiUpdateVehicle', 'uses' => 'Lava\Accounts\VehicleController@postUpdate'));
+                            //VEHICLE API'S
+                            //Add vehicle
+                            \Route::post('api/add/vehicle', array('as' => 'apiAddVehicle', 'uses' => 'Lava\Accounts\VehicleController@postCreate'));
 
-                    //Delete vehicle
-                    \Route::post('api/delete/vehicle', array('as' => 'userVehicleDrop', 'uses' => 'Lava\Accounts\VehicleController@postDrop'));
+                            //Add vehicle
+                            \Route::post('api/update/vehicle', array('as' => 'apiUpdateVehicle', 'uses' => 'Lava\Accounts\VehicleController@postUpdate'));
 
-                    //Get users vehicles
-                    \Route::get('api/get/vehicle', array('as' => 'apiGetVehicle', 'uses' => 'Lava\Accounts\VehicleController@getList'));
-                });
+                            //Delete vehicle
+                            \Route::post('api/delete/vehicle', array('as' => 'userVehicleDrop', 'uses' => 'Lava\Accounts\VehicleController@postDrop'));
 
-                \Route::group(array('before' => 'auth'), function() {
-                    //Get Profile Page
-                    \Route::get('profile', array('as' => 'userProfile', 'uses' => 'Lava\Accounts\UserController@getProfile'));
+                            //Get users vehicles
+                            \Route::get('api/get/vehicle', array('as' => 'apiGetVehicle', 'uses' => 'Lava\Accounts\VehicleController@getList'));
+                        });
 
-                    //Update User
-                    \Route::post('user/update_user', array('as' => 'userUpdateUser', 'uses' => 'Lava\Accounts\UserController@postUpdate'));
-                });
-                
+                        \Route::group(array('before' => 'auth'), function() {
+                            //Get Profile Page
+                            \Route::get('profile', array('as' => 'userProfile', 'uses' => 'Lava\Accounts\UserController@getProfile'));
+
+                            //Update User
+                            \Route::post('user/update_user', array('as' => 'userUpdateUser', 'uses' => 'Lava\Accounts\UserController@postUpdate'));
+
+                            /**
+                             * User routes
+                             */
+                            //Detailed user
+                            \Route::get('accounts/detailed/user/{id}', array('as' => 'accountsDetailedUser', 'uses' => 'Lava\Accounts\UserController@getDetailed'));
+
+                            //List user
+                            \Route::get('accounts/list/user', array('as' => 'accountsListUser', 'uses' => 'Lava\Accounts\UserController@getList'));
+
+                            //Post user
+                            \Route::get('accounts/post/user/{id?}', array('as' => 'accountsPostUser', 'uses' => 'Lava\Accounts\UserController@getPost'));
+
+                            //Create a user
+                            \Route::post('accounts/create/user', array('as' => 'accountsCreateUser', 'before' => 'csrf', 'uses' => 'Lava\Accounts\UserController@postCreate'));
+
+                            //Update a user
+                            \Route::post('accounts/update/user', array('as' => 'accountsUpdateUser', 'before' => 'csrf', 'uses' => 'Lava\Accounts\UserController@postUpdate'));
+
+                            //Delete user
+                            \Route::post('accounts/delete/user', array('as' => 'accountsDeleteUser', 'uses' => 'Lava\Accounts\UserController@postDelete'));
+
+                            //Un-Delete user
+                            \Route::post('accounts/undelete/user', array('as' => 'accountsUndeleteUser', 'uses' => 'Lava\Accounts\UserController@postUndelete'));
+
+                            /**
+                             * Vehicle routes
+                             */
+                            //Detailed vehicle
+                            \Route::get('accounts/detailed/vehicle/{id}', array('as' => 'accountsDetailedVehicle', 'uses' => 'Lava\Accounts\VehicleController@getDetailed'));
+
+                            //List vehicle
+                            \Route::get('accounts/list/vehicle', array('as' => 'accountsListVehicle', 'uses' => 'Lava\Accounts\VehicleController@getList'));
+
+                            //Post vehicle
+                            \Route::get('accounts/post/vehicle/{id?}', array('as' => 'accountsPostVehicle', 'uses' => 'Lava\Accounts\VehicleController@getPost'));
+
+                            //Create a vehicle
+                            \Route::post('accounts/create/vehicle', array('as' => 'accountsCreateVehicle', 'before' => 'csrf', 'uses' => 'Lava\Accounts\VehicleController@postCreate'));
+
+                            //Update a vehicle
+                            \Route::post('accounts/update/vehicle', array('as' => 'accountsUpdateVehicle', 'before' => 'csrf', 'uses' => 'Lava\Accounts\VehicleController@postUpdate'));
+
+                            //Delete vehicle
+                            \Route::post('accounts/delete/vehicle', array('as' => 'accountsDeleteVehicle', 'uses' => 'Lava\Accounts\VehicleController@postDelete'));
+
+                            //Un-Delete vehicle
+                            \Route::post('accounts/undelete/vehicle', array('as' => 'accountsUndeleteVehicle', 'uses' => 'Lava\Accounts\VehicleController@postUndelete'));
+                        });
+                        

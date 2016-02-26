@@ -5,6 +5,9 @@ class GeneratorController extends BaseController {
     public $controller = 'generator';
     private $workbenchFolder = 'lava';
     private $controllers = array(
+        //Accounts
+        'Lava\Accounts\UserController',
+        'Lava\Accounts\VehicleController',
         //Merchants
         'Lava\Merchants\MerchantController',
         'Lava\Merchants\LocationController',
@@ -13,6 +16,7 @@ class GeneratorController extends BaseController {
         'Lava\Products\PromotionController',
         //Payments
         'Lava\Payments\TransactionController',
+        'Lava\Payments\CardController',
     );
 
     public function generateViews() {

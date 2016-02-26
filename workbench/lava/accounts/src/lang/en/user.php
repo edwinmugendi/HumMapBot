@@ -6,6 +6,14 @@ return array(
       | User Language Lines
       |--------------------------------------------------------------------------
      */
+    'data' => array(
+        'role_id' => array(
+            '' => 'Select',
+            1 => 'Admin',
+            2 => 'Merchant',
+            3 => 'App user'
+        )
+    ),
     'notification' => array(
         'created' => 'User created',
         'updated' => 'User updated',
@@ -15,8 +23,6 @@ return array(
         'reset_password' => 'Your password has been reset',
         'sending_email_failed' => 'Sending email failed. Kindly try again later',
         'sending_sms_failed' => 'Sending sms failed. Kindly try again later',
-    ),
-    'api' => array(
     ),
     'validation' => array(
         'api' => 'Invalid login token',
@@ -30,16 +36,53 @@ return array(
         )
     ),
     'view' => array(
-        'name' => 'Name',
-        'email' => 'Email',
-        'phone' => 'Phone',
-        'lastLogin' => 'Last login',
-        'verified' => 'Verified',
-        'no' => 'No',
-        'yes' => 'Yes',
-        'country' => 'Country',
-        'organization' => 'Organization',
-        'memberSince' => 'Member since',
+        'field' => array(
+            'merchant_id' => 'Merchant',
+            'id' => '#',
+            'first_name' => 'First name',
+            'last_name' => 'Last name',
+            'phone' => 'Phone',
+            'role_id' => 'Role',
+            'dob' => 'Date of birth',
+            'gender' => 'Gender',
+            'email' => 'Email',
+            'address' => 'Address',
+            'postal code' => 'Postal code',
+            'notify_sms' => 'Notify sms',
+            'notify_email' => 'Notify email',
+            'notify_push' => 'Notify push',
+            'os' => 'Os',
+            'device_token' => 'Device token',
+            'app_version' => 'App version',
+            'vehicle_id' => 'Default vehicle',
+            'card_id' => 'Default card',
+            'fb_uid' => 'Facebook id',
+            'stripe_id' => 'Stripe id',
+            'lat' => 'Latitude',
+            'lng' => 'Longitude',
+        ),
+        'actions' => array(
+            'delete' => array(
+                'confirm' => 'Delete user?',
+                'deleteMany' => 'Deleted :count users',
+                'confirmMany' => 'Delete :count users?',
+                'delete' => 'Delete',
+                'cancel' => 'Cancel',
+            ),
+            'undelete' => array(
+                'undoDelete' => 'Undo delete',
+                'undeleting' => 'Un deleting...',
+                'undeleted' => 'Un deleted :count users',
+            ),
+        ),
+        'link' => array(
+            'list' => 'Locations list',
+            'add' => 'Add user',
+            'found' => '{0} :count users | {1} :count user | [2,Inf] :count users',
+        )
+    ),
+    'userDetailedPage' => array(
+        'title' => 'User: :title #:id'
     ),
     'action' => array(
         'validating' => 'Validating post inputs',
@@ -142,9 +185,156 @@ return array(
     ),
     'userListPage' => array(
         'title' => 'Users',
-        'menu' => 'Users',
-        'userListView' => array(
-            'heading' => 'All users',
+    ),
+    'userPostPage' => array(
+        'actionTitle' => array(
+            1 => 'Create user',
+            2 => 'Update user'
+        ),
+        'userPostView' => array(
+            'form' => array(
+                'userPost' => array(
+                    'attributes' => array(
+                        'method' => 'POST',
+                        'route' => array(
+                            1 => 'accountsCreateUser',
+                            2 => 'accountsUpdateUser'
+                        ),
+                        'id' => 'userPost',
+                        'class' => 'commonContainer'
+                    ),
+                    'stars' => array(
+                        'required' => array(
+                            'text' => 'Required',
+                            'fieldText' => 'This field is required',
+                            'description' => 'Required fields are marked with a red star'
+                        ),
+                        'optional' => array(
+                            'text' => 'Optional',
+                            'fieldText' => 'This field is optional but important',
+                            'description' => 'Optional fields marked with blue star'
+                        )
+                    ),
+                    'components' => array(
+                        'characterReminder' => array(
+                            'text' => 'Characters remaining'
+                        )
+                    ),
+                    'submitText' => array(
+                        'processing' => 'Processing',
+                        1 => 'Save',
+                        2 => 'Update',
+                        3 => 'Edit'
+                    ),
+                    'validator' => array(
+                        'required' => 'This field is required.',
+                        'maxlength' => 'Maximium :length characters allowed',
+                        'minlength' => 'Minimum :length characters allowed'
+                    ),
+                    'hide' => array(
+                        1 => array(
+                            'htmlNames' => array('')
+                        ),
+                        2 => array(
+                            'htmlNames' => array()
+                        )
+                    ),
+                    'portlets' => array(
+                        array(
+                            'id' => 'details',
+                            'title' => 'User\'s details',
+                            'heading' => 'Please fill in the details of this work user.',
+                            'help' => 'Please fill in all the mandatory details of this work user.',
+                            'stared' => 1,
+                            'rows' => array(
+                                array(
+                                    'fields' => array(
+                                        array(
+                                            'name' => 'Merchant',
+                                            'type' => 'select',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'merchant_id',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Select merchant',
+                                            'help' => '<strong>Description: </strong>The merchant of this user<br/><strong>Do: </strong>Select the merchant of this user.<br/></strong>Star:</strong> %s',
+                                            'validator' => array(
+                                                'required' => 1,
+                                            )
+                                        ),
+                                        array(
+                                            'name' => 'Role',
+                                            'type' => 'select',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'role_id',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Select role',
+                                            'help' => '<strong>Description: </strong>The role of this user<br/><strong>Do: </strong>Select the role of this user.<br/></strong>Star:</strong> %s',
+                                            'validator' => array(
+                                                'required' => 1,
+                                            )
+                                        ),
+                                        array(
+                                            'name' => 'First name',
+                                            'type' => 'text',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'first_name',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Type the first name eg \'John\'',
+                                            'help' => '<strong>Description: </strong>The first name of this user.<br/><strong>Do: </strong>Type the first name of this user.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'John\'.',
+                                            'validator' => array(
+                                                'required' => 1
+                                            )
+                                        ),
+                                        array(
+                                            'name' => 'Last name',
+                                            'type' => 'text',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'last_name',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Type the last name eg \'Doe\'',
+                                            'help' => '<strong>Description: </strong>The last name of this user.<br/><strong>Do: </strong>Type the last name of this user.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'Doe\'.',
+                                            'validator' => array(
+                                                'required' => 1
+                                            )
+                                        ),
+                                    )
+                                ),
+                                array(
+                                    'fields' => array(
+                                        array(
+                                            'name' => 'Email',
+                                            'type' => 'text',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'email',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Type the email eg \'john.doe@gmail.com\'',
+                                            'help' => '<strong>Description: </strong>The email of this user.<br/><strong>Do: </strong>Type the email of this user.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'john.doe@gmail.com\'.',
+                                            'validator' => array(
+                                                'required' => 1,
+                                                'email' => 1
+                                            )
+                                        ),
+                                    )
+                                ),
+                                array(
+                                    'fields' => array(
+                                        array(
+                                            'name' => 'Id',
+                                            'type' => 'hidden',
+                                            'htmlName' => 'id',
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
         )
     ),
     'userRegistrationPage' => array(

@@ -22,6 +22,9 @@
                         <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'product') ? 'active' : '' ?>"><a href="<?php echo \URL::route('productsListProduct'); ?>">Products</a></li>
                         <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'promotion') ? 'active' : '' ?>"><a href="<?php echo \URL::route('productsListPromotion'); ?>">Promotions</a></li>
                         <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'transaction') ? 'active' : '' ?>"><a href="<?php echo \URL::route('paymentsListTransaction'); ?>">Transactions</a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'user') ? 'active' : '' ?>"><a href="<?php echo \URL::route('accountsListUser'); ?>">Users</a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'vehicle') ? 'active' : '' ?>"><a href="<?php echo \URL::route('accountsListVehicle'); ?>">Vehicles</a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'card') ? 'active' : '' ?>"><a href="<?php echo \URL::route('paymentsListCard'); ?>">Cards</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
@@ -69,7 +72,7 @@
                 <a class="navbar-brand" href="<?php echo \URL::to('/'); ?>"><span class="commonColorRed"><?php echo $product_name = \Config::get('product.name'); ?></span></a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
-                
+
                 <ul class="nav navbar-nav navbar-right">
                     <li><a class="fancyButton" href="<?php echo \URL::route('userRegistration', array('login')); ?>">Login</a></li>
                 </ul>

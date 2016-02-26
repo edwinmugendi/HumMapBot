@@ -13,8 +13,35 @@ class UserModel extends \BaseModel {
 
     //Table
     protected $table = 'acc_users';
+    //View fields
+    public $viewFields = array(
+        'id' => array(1, 'text', '='),
+        'merchant_id' => array(1, 'select', '='),
+        'first_name' => array(1, 'text', 'like', 1),
+        'last_name' => array(1, 'text', 'like', 1),
+        'role_id' => array(1, 'select', '=', 0),
+        'email' => array(1, 'text', 'like', 0),
+        'phone' => array(1, 'text', 'like', 0),
+        'vehicle_id' => array(1, 'text', '=', 0),
+        'card_id' => array(1, 'text', '=', 0),
+        'dob' => array(0, 'text', 'like', 0),
+        'gender' => array(0, 'text', 'like', 0),
+        'lat' => array(0, 'text', 'like', 0),
+        'lng' => array(0, 'text', 'like', 0),
+        'address' => array(1, 'text', 'like', 0),
+        'postal code' => array(1, 'text', 'like', 0),
+        'notify_sms' => array(0, 'select', '=', 0),
+        'notify_email' => array(0, 'select', '=', 0),
+        'notify_push' => array(0, 'select', '=', 0),
+        'device_token' => array(0, 'text', 'like', 0),
+        'fb_uid' => array(0, 'text', 'like', 0),
+        'stripe_id' => array(0, 'text', 'like', 0),
+        'os' => array(0, 'text', 'like', 0),
+        'app_version' => array(0, 'text', 'like', 0),
+    );
     //Fillable fields
     protected $fillable = array(
+        'merchant_id',
         'vehicle_id',
         'card_id',
         'first_name',
@@ -91,6 +118,82 @@ class UserModel extends \BaseModel {
         'old_password' => 'required_with:new_password',
         'new_password' => 'password',
     );
+
+    /**
+     * S# merchant() function
+     * Set one to one relationship to Merchant Model
+     */
+    public function merchant() {
+        return $this->belongsTo(\Util::buildNamespace('merchants', 'merchant', 2), 'merchant_id');
+    }
+
+//E# merchant() function
+
+    /**
+     * S# getMerchantIdTextAttribute() function
+     * 
+     * Get Merchant Text
+     */
+    public function getMerchantIdTextAttribute() {
+
+        //Get merchant model
+        $merchant_model = $this->merchant()->first();
+
+        //Return name
+        return $merchant_model ? $merchant_model->name : '';
+    }
+
+//E# getMerchantIdTextAttribute() function
+
+    /**
+     * S# getRoleIdTextAttribute() function
+     * 
+     * Get RoleId Text
+     */
+    public function getRoleIdTextAttribute() {
+        return \Lang::has('accounts::user.data.role_id.' . $this->attributes['role_id']) ? \Lang::get('accounts::user.data.role_id.' . $this->attributes['role_id']) : '';
+    }
+
+//E# getRoleIdTextAttribute() function
+
+    /**
+     * S# getNotifySmsTextAttribute() function
+     * Get NotifySms Text
+     */
+    public function getNotifySmsTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['notify_sms'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getNotifySmsTextAttribute() function
+
+    /**
+     * S# getNotifyPushTextAttribute() function
+     * Get NotifyPush Text
+     */
+    public function getNotifyPushTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['notify_push'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getNotifyPushTextAttribute() function
+
+    /**
+     * S# getNotifyEmailTextAttribute() function
+     * Get NotifyEmail Text
+     */
+    public function getNotifyEmailTextAttribute() {
+        //Set icon
+        $icon = $this->attributes['notify_email'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+
+        return '<i class="glyphicon ' . $icon . '"></i>';
+    }
+
+//E# getNotifyEmailTextAttribute() function
 
     /**
      * S# logins() function
@@ -185,7 +288,6 @@ class UserModel extends \BaseModel {
     }
 
 //E# merchants() function
-    
 }
 
 //E# UserModel() Class

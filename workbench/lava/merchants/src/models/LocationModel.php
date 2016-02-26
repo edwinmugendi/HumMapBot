@@ -210,6 +210,7 @@ class LocationModel extends \BaseModel {
     }
 
 //E# getIsWednesdayOpenTextAttribute() function
+
     /**
      * S# getIsThursdayOpenTextAttribute() function
      * Get IsThursdayOpen Text

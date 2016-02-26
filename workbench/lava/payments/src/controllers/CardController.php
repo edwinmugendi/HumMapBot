@@ -13,9 +13,24 @@ class CardController extends PaymentsBaseController {
     public $controller = 'card';
     //Lazy load
     public $lazyLoad = array();
-    
-    //Owned by
-    public $ownedBy = array('user');
+
+    /**
+     * S# injectDataSources() function
+     * @author Edwin Mugendi
+     * Inject data source. This are mainly select
+     * 
+     * @param array $dataSource Data source
+     */
+    public function injectDataSources() {
+
+        //Get this organization user id
+        $this->view_data['dataSource']['user_id'] = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('first_name', 'last_name'), \Lang::get('common.select')));
+
+        //Get and set type options to data source
+        $this->view_data['dataSource']['type'] = \Lang::get($this->package . '::' . $this->controller . '.data.type');
+    }
+
+//E# injectDataSources() function
 
     /**
      * S# getTestForm() function
@@ -101,8 +116,8 @@ class CardController extends PaymentsBaseController {
                     'address_zip' => (is_null($stripe_response['response']->address_zip) == false) ? $stripe_response['response']->address_zip : '',
                     'address_country' => (is_null($stripe_response['response']->address_country) == false) ? $stripe_response['response']->address_country : '',
                     'address_line1' => (is_null($stripe_response['response']->address_line1) == false) ? $stripe_response['response']->address_line1 : '',
-                    'ip'=>  $this->input['ip'],
-                    'agent'=>  $this->input['agent'],
+                    'ip' => $this->input['ip'],
+                    'agent' => $this->input['agent'],
                     'status' => 1,
                     'created_by' => 1,
                     'updated_by' => 1
