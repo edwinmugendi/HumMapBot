@@ -33,9 +33,6 @@ return array(
             'workflow' => 'Status',
             'reg_no' => 'Reg #',
             'tax_id' => 'Tax id',
-            'vision' => 'Vision',
-            'mission' => 'Mission',
-            'about' => 'About',
             'phone' => 'Phone',
             'email' => 'Email',
             'country_id' => 'Country',
@@ -207,50 +204,6 @@ return array(
                                             'disabled' => 0,
                                             'placeholder' => 'Type the tax id eg \'TAX123\'',
                                             'help' => '<strong>Description: </strong>The tax id of this merchant.<br/><strong>Do: </strong>Type the tax id of this merchant.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'TAX123\'.',
-                                            'validator' => array(
-                                            )
-                                        ),
-                                    )
-                                ),
-                                array(
-                                    'fields' => array(
-                                        array(
-                                            'name' => 'Vision',
-                                            'type' => 'text',
-                                            'prepend' => 'user',
-                                            'htmlName' => 'vision',
-                                            'displayed' => 1,
-                                            'disabled' => 0,
-                                            'placeholder' => 'Type the vision eg \'Be the best\'',
-                                            'help' => '<strong>Description: </strong>The vision of this merchant.<br/><strong>Do: </strong>Type the vision of this merchant.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'Be the best\'.',
-                                            'validator' => array(
-                                            )
-                                        ),
-                                        array(
-                                            'name' => 'Mission',
-                                            'type' => 'text',
-                                            'prepend' => 'user',
-                                            'htmlName' => 'mission',
-                                            'displayed' => 1,
-                                            'disabled' => 0,
-                                            'placeholder' => 'Type the mission eg \'Be the best\'',
-                                            'help' => '<strong>Description: </strong>The mission of this merchant.<br/><strong>Do: </strong>Type the mission of this merchant.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'Be the best\'.',
-                                            'validator' => array(
-                                            )
-                                        ),
-                                    )
-                                ),
-                                array(
-                                    'fields' => array(
-                                        array(
-                                            'name' => 'About',
-                                            'type' => 'textarea',
-                                            'prepend' => 'user',
-                                            'htmlName' => 'about',
-                                            'displayed' => 1,
-                                            'disabled' => 0,
-                                            'placeholder' => 'Type the about eg \'Car Wash XYZ is\'',
-                                            'help' => '<strong>Description: </strong>The about of this merchant.<br/><strong>Do: </strong>Type the about of this merchant.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'Car Wash XYZ is\'.',
                                             'validator' => array(
                                             )
                                         ),
@@ -544,22 +497,25 @@ return array(
                                 ),
                             )
                         ),
-                        array(
-                            'id' => 'logo',
-                            'title' => 'Images',
-                            'heading' => 'Please upload the images of the merchant.',
-                            'help' => 'Please upload the images of the merchant.',
-                            'stared' => 0,
-                            'rows' => array(
-                                array(
-                                    'fields' => array(
-                                        array(
-                                            'dataSource' => 'mediaView'
-                                        )
-                                    )
-                                )
-                            )
-                        ),
+                    /*
+                      array(
+                      'id' => 'logo',
+                      'title' => 'Images',
+                      'heading' => 'Please upload the images of the merchant.',
+                      'help' => 'Please upload the images of the merchant.',
+                      'stared' => 0,
+                      'rows' => array(
+                      array(
+                      'fields' => array(
+                      array(
+                      'dataSource' => 'mediaView'
+                      )
+                      )
+                      )
+                      )
+                      ),
+                     * 
+                     */
                     )
                 )
             )

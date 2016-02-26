@@ -22,12 +22,6 @@ class CreateMerchantsTable extends Migration {
             $table->string('reg_no', 255);
             $table->string('tax_id', 255);
 
-            //Philosophy
-            $table->string('vision', 255);
-            $table->string('mission', 255);
-            $table->string('slogan', 255);
-            $table->text('about');
-
             //Contacts
             $table->string('phone', 255);
             $table->string('email', 255);

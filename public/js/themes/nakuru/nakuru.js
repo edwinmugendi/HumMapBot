@@ -88,7 +88,7 @@ function zoomTo($address, $zoom) {
 
     if ($address === undefined) {
         if (inlineJs.crudId == 1) {
-            $address = 'London, UK'
+            $address = 'Manchester City, UK'
         } else {
             $address = {
                 lat: inlineJs.controller_model.lat,
@@ -96,10 +96,9 @@ function zoomTo($address, $zoom) {
             }
         }
     }//E# if statement
-    console.log($address);
 
     //$zoom is not set, Hence default to 7
-    $zoom = ($zoom === undefined) ? 15 : $zoom;
+    $zoom = ($zoom === undefined) ? 7 : $zoom;
 
     //Create a $map object
     $map = new google.maps.Map(document.getElementById('mapCanvas'), {
@@ -1521,6 +1520,26 @@ jQuery(document).ready(function ($) {
 
     });
 
-    if (inlineJs.page === 'payrollOvertimeListPage') {//Payroll Overtime List Page
+    if (inlineJs.page === 'merchantsMerchantPostPage') {//Merchants Merchant Post Page
+        if (inlineJs.crudId == 1) {
+            $('#idCurrencyId option[value="76"]').prop('selected', true);
+            $('#idCountryId option[value="GB"]').prop('selected', true);
+            $('#idTimezoneId option[value="2"]').prop('selected', true);
+            $('#idDateFormat option[value="dd/mm/yyyy"]').prop('selected', true);
+        }//E# if else statement
+
+    } else if (inlineJs.page === 'merchantsLocationPostPage') {//Merchants Location Post Page
+        if (inlineJs.crudId == 1) {
+            $('#idCurrencyId option[value="76"]').prop('selected', true);
+            $('#idCountryId option[value="GB"]').prop('selected', true);
+            $('#idTimezoneId option[value="2"]').prop('selected', true);
+            $('#idDateFormat option[value="dd/mm/yyyy"]').prop('selected', true);
+        }//E# if else statement
+
+        $('#idPostalCode').blur(function () {
+            console.log('asf');
+
+            zoomTo($(this).val(), 15);
+        });
     }//E# if else statement
 });

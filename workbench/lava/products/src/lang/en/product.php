@@ -247,22 +247,24 @@ return array(
                                 ),
                             )
                         ),
-                        array(
-                            'id' => 'logo',
-                            'title' => 'Images',
-                            'heading' => 'Please upload the images of the product.',
-                            'help' => 'Please upload the images of the product.',
-                            'stared' => 0,
-                            'rows' => array(
-                                array(
-                                    'fields' => array(
-                                        array(
-                                            'dataSource' => 'mediaView'
-                                        )
-                                    )
-                                )
-                            )
-                        ),
+                    /*
+                      array(
+                      'id' => 'logo',
+                      'title' => 'Images',
+                      'heading' => 'Please upload the images of the product.',
+                      'help' => 'Please upload the images of the product.',
+                      'stared' => 0,
+                      'rows' => array(
+                      array(
+                      'fields' => array(
+                      array(
+                      'dataSource' => 'mediaView'
+                      )
+                      )
+                      )
+                      )
+                      ),
+                     */
                     )
                 )
             )

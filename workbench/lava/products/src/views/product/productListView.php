@@ -33,7 +33,6 @@
                     <th></th>
                     <?php endif; ?>                    
                      <?php if ((!array_key_exists('export', $view_data)) || ((array_key_exists('export', $view_data) && in_array($view_data['export'],array('pdf','print')))) ): ?>                  
-                                            <th><?php echo \Lang::get('media::media.view.image'); ?></th>
                                         <?php endif; ?>                                                                        <?php if (!array_key_exists('export', $view_data)): ?>                            <?php
                         $order = 'asc';
                         $is_ordered = false;
@@ -236,7 +235,6 @@
                 <?php if (!array_key_exists('export', $view_data)): ?>                <tr>
                     <?php echo \Form::open(array('route' => camel_case($view_data['package'] . '_list_' . $view_data['controller']), 'method' => 'get', 'id' => 'idSearchByForm')); ?>                    <td></td>
                     <td></td>
-                                            <td></td>
                                                                                             <td>
                                                                     <?php echo \Form::text('id', isset($view_data['input']['id']) ? $view_data['input']['id'] : '', array('class' => 'form-control')); ?>                                                            </td>
                             

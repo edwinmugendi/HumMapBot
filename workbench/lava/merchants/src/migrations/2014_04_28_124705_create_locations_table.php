@@ -89,14 +89,6 @@ class CreateLocationsTable extends Migration {
 
             $table->integer('views')->unsigned();
 
-            //Bank
-            $table->boolean('pay_location');
-            $table->string('bank_name', 255);
-            $table->string('bank_sort_code', 255);
-            $table->string('bank_account_name', 255);
-            $table->string('bank_account_number', 255);
-            $table->string('bank_postal_code', 255);
-
             $table->integer('workflow')->unsigned();
 
             $table->string('agent', 255);

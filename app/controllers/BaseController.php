@@ -84,12 +84,17 @@ class BaseController extends Controller {
             $parameters['scope'] = array('statusOne');
 
             //Order by
-            $parameters['orderBy'][] = array('name' => 'asc');
-
+            if ($this->controller == 'promotion') {
+                $parameters['orderBy'][] = array('code' => 'asc');
+                $field_name = 'code';
+            } else {
+                $parameters['orderBy'][] = array('name' => 'asc');
+                $field_name = 'name';
+            }//E# if else statement
             //Select models
             $model = $this->select($fields, $whereClause, 2, $parameters);
 
-            return $this->buildHtmlSelectArray($model, 'id', 'name', \Lang::get('common.select'), '-', array());
+            return $this->buildHtmlSelectArray($model, 'id', $field_name, \Lang::get('common.select'), '-', array());
         } else if ($this->user['role_id'] == 2) {//Merchant
             return array('' => \Lang::get('common.select'), $this->merchant['id'] => $this->merchant['name']);
         } else {
@@ -1079,6 +1084,7 @@ class BaseController extends Controller {
         //Set crudId
         $this->crudId = 3;
 
+
         //Prepare view data
         $this->view_data = $this->prepareViewData('list');
 
@@ -1094,6 +1100,7 @@ class BaseController extends Controller {
         //Define parameters
         $this->view_data['paginationAppends'] = $whereClause = $parameters = array();
 
+
         //Inject Data Sources
         $this->injectDataSources();
 
@@ -1108,6 +1115,7 @@ class BaseController extends Controller {
 
         //Fields to select
         $fields = array('*');
+
 
         //Set per page
         if (array_key_exists('per_page', $this->input)) {

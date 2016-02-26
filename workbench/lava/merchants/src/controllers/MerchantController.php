@@ -12,8 +12,6 @@ class MerchantController extends MerchantsBaseController {
     //Controller
     public $controller = 'merchant';
     
-    public $imageable = true;
-
     /**
      * S# injectDataSources() function
      * @author Edwin Mugendi

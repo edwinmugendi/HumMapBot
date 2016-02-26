@@ -41,7 +41,7 @@
                                                                                     <td><?php echo $view_data['singleModel']['currency_id_text']; ?></td>
                                              
                                         <td><?php echo $view_data['singleModel']['loyalty_stamps']; ?></td>
-                                                                                                                                                                                                                                                                                                                                                                                                                                        <?php if (!array_key_exists('export', $view_data)): ?>    <td>
+                                                                                                                                                                                                                                                                                                                                                                <?php if (!array_key_exists('export', $view_data)): ?>    <td>
         <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get('common.view.actions.detailed.detailed'); ?>"><span class="icon-data-dashboard icon-data-2x text-primary"></span></a>
         <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_post_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get('common.view.actions.edit.edit'); ?>"><span class="icon-data-edit icon-data-2x text-primary"></span></a>
         <a href="#" data-id="<?php echo $view_data['singleModel']['id']; ?>"  data-ids="<?php echo $view_data['singleModel']['id']; ?>" class="deleteRow" title="<?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.actions.delete.delete'); ?>"><span class="icon-data-delete icon-data-2x text-danger"></span></a>
@@ -84,17 +84,6 @@
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.loyalty_stamps') .': '.$view_data['singleModel']['loyalty_stamps']; ?> </div>
                      
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.surcharge') .': '.$view_data['singleModel']['surcharge']; ?> </div>
-                     
-                                        <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.bank_name') .': '.$view_data['singleModel']['bank_name']; ?> </div>
-                                                            <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.pay_location') .': '.$view_data['singleModel']['pay_location_text']; ?> </div>
-                     
-                                        <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.bank_sort_code') .': '.$view_data['singleModel']['bank_sort_code']; ?> </div>
-                     
-                                        <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.bank_account_name') .': '.$view_data['singleModel']['bank_account_name']; ?> </div>
-                     
-                                        <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.bank_account_number') .': '.$view_data['singleModel']['bank_account_number']; ?> </div>
-                     
-                                        <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.bank_postal_code') .': '.$view_data['singleModel']['bank_postal_code']; ?> </div>
                                                             <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.is_monday_open') .': '.$view_data['singleModel']['is_monday_open_text']; ?> </div>
                      
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.monday_opens_at') .': '.$view_data['singleModel']['monday_opens_at']; ?> </div>

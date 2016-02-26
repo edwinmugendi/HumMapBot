@@ -182,11 +182,7 @@ return array(
             'facebook' => 'Facebook',
             'twitter' => 'Twitter',
             'pay_location' => 'Pay location',
-            'bank_name' => 'Bank name',
-            'bank_sort_code' => 'Bank sort code',
-            'bank_account_name' => 'Account name',
-            'bank_account_number' => 'Account number',
-            'bank_postal_code' => 'Bank postal code',
+            
             'is_monday_open' => 'Is Monday open?',
             'monday_opens_at' => 'Monday opens at',
             'monday_closes_at' => 'Monday closes at',
@@ -455,96 +451,6 @@ return array(
                                             'help' => '<strong>Description: </strong>The twitter of this location.<br/><strong>Do: </strong>Type the twitter of this location.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'www.carwash.com\'.',
                                             'validator' => array(
                                                 'url' => 1,
-                                            )
-                                        ),
-                                    )
-                                ),
-                            )
-                        ),
-                        array(
-                            'id' => 'bank',
-                            'title' => 'Bank information',
-                            'heading' => 'Please fill in the bank information of the location.',
-                            'help' => 'Please fill in all the mandatory bank information of this location.',
-                            'stared' => 1,
-                            'rows' => array(
-                                array(
-                                    'fields' => array(
-                                        array(
-                                            'name' => 'Pay to location bank instead of merchants?',
-                                            'type' => 'checkbox',
-                                            'prepend' => 'user',
-                                            'htmlName' => 'pay_location',
-                                            'checked' => 0,
-                                            'displayed' => 1,
-                                            'disabled' => 0,
-                                            'placeholder' => 'Select pay location or not',
-                                            'help' => '<strong>Description: </strong>The payment option of this location<br/><strong>Do: </strong>Check to pay to location\'s bank.<br/></strong>Star:</strong> %s',
-                                            'validator' => array(
-                                            )
-                                        ),
-                                        array(
-                                            'name' => 'Bank name',
-                                            'type' => 'text',
-                                            'prepend' => 'user',
-                                            'htmlName' => 'bank_name',
-                                            'displayed' => 1,
-                                            'disabled' => 0,
-                                            'placeholder' => 'Type the bank name eg \'Barclays\'',
-                                            'help' => '<strong>Description: </strong>The bank name of this location.<br/><strong>Do: </strong>Type the bank name of this location.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'Barclays\'.',
-                                            'validator' => array(
-                                            )
-                                        ),
-                                        array(
-                                            'name' => 'Bank sort code',
-                                            'type' => 'text',
-                                            'prepend' => 'user',
-                                            'htmlName' => 'bank_sort_code',
-                                            'displayed' => 1,
-                                            'disabled' => 0,
-                                            'placeholder' => 'Type the bank sort code eg \'BLYS\'',
-                                            'help' => '<strong>Description: </strong>The bank sort code of this location.<br/><strong>Do: </strong>Type the bank sort code of this location.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'BLYS\'.',
-                                            'validator' => array(
-                                            )
-                                        ),
-                                    )
-                                ),
-                                array(
-                                    'fields' => array(
-                                        array(
-                                            'name' => 'Bank postal code',
-                                            'type' => 'text',
-                                            'prepend' => 'user',
-                                            'htmlName' => 'bank_postal_code',
-                                            'displayed' => 1,
-                                            'disabled' => 0,
-                                            'placeholder' => 'Type the bank postal code eg \'LON01\'',
-                                            'help' => '<strong>Description: </strong>The bank postal code of this location.<br/><strong>Do: </strong>Type the bank postal code of this location.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'LON01\'.',
-                                            'validator' => array(
-                                            )
-                                        ),
-                                        array(
-                                            'name' => 'Account name',
-                                            'type' => 'text',
-                                            'prepend' => 'user',
-                                            'htmlName' => 'bank_account_name',
-                                            'displayed' => 1,
-                                            'disabled' => 0,
-                                            'placeholder' => 'Type the account name eg \'Car Wash XYY\'',
-                                            'help' => '<strong>Description: </strong>The account name of this location.<br/><strong>Do: </strong>Type the account name of this location.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'Car Wash XYY\'.',
-                                            'validator' => array(
-                                            )
-                                        ),
-                                        array(
-                                            'name' => 'Account number',
-                                            'type' => 'text',
-                                            'prepend' => 'user',
-                                            'htmlName' => 'bank_account_number',
-                                            'displayed' => 1,
-                                            'disabled' => 0,
-                                            'placeholder' => 'Type the account number eg \'01010143231\'',
-                                            'help' => '<strong>Description: </strong>The account number of this location.<br/><strong>Do: </strong>Type the account number of this location.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'01010143231\'.',
-                                            'validator' => array(
                                             )
                                         ),
                                     )

@@ -11,8 +11,8 @@ class ProductController extends ProductsBaseController {
 
     //Controller
     public $controller = 'product';
-    public $imageable = true;
-
+    
+    
     /**
      * S# roleBasedWhereClause() function
      * @author Edwin Mugendi

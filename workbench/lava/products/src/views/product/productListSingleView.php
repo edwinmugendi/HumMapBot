@@ -5,13 +5,6 @@
     </td>
     <?php endif; ?>
     <?php if ((!array_key_exists('export', $view_data)) || ((array_key_exists('export', $view_data) && in_array($view_data['export'],array('pdf','print')))) ): ?>                  
-            <td>
-            <?php if ($view_data['singleModel']['image_count']): ?>            <a  title="<?php echo \Lang::get('media::media.view.view_image'); ?>" data-toggle="modal" href="#" data-url="<?php echo $view_data['singleModel']['main_url']; ?>" class="viewImage">
-                <img src="<?php echo $view_data['singleModel']['thumbnail_url']; ?>">
-            </a>
-            <br>
-            <span class="label label-success"><?php echo \Lang::choice('media::media.view.documents', $view_data['singleModel']['image_count'], array('count' => $view_data['singleModel']['image_count'])); ?></span>
-            <?php endif; ?>        </td>
         <?php endif; ?>
                          
                                         <td><?php echo $view_data['singleModel']['id']; ?></td>
@@ -48,15 +41,7 @@
                      
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.price_2') .': '.$view_data['singleModel']['price_2']; ?> </div>
                                                             <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.loyable') .': '.$view_data['singleModel']['loyable_text']; ?> </div>
-                            <?php if ($view_data['singleModel']['image_count']): ?>            <div class="commonClearBoth">
-                <?php echo \Lang::get('media::media.view.image'); ?> 
-                <a  title="<?php echo \Lang::get('media::media.view.view_image'); ?>" data-toggle="modal" href="#" data-url="<?php echo $view_data['singleModel']['main_url']; ?>" class="viewImage">
-                    <img src="<?php echo $view_data['singleModel']['thumbnail_url']; ?>">
-                </a>   
-                <a title="<?php echo \Lang::get('media::media.view.view_image'); ?>" data-toggle="modal" href="#" data-image="<?php echo $view_data['singleModel']['media'][0]['name']; ?>" class="viewImage"><i class="icon-data-enlarge icon-data-2x text-danger"></i></a> &nbsp;
-                <a title="<?php echo \Lang::get('media::media.view.download_image'); ?>" href="<?php echo URL::route('mediaDownload', array('image' => $view_data['singleModel']['media'][0]['name'])); ?>" target="_blank"><i class="icon-data-download icon-data-2x text-danger"></i></a> &nbsp;
-            </div>
-            <?php endif; ?>        
+                
     </td>
 </tr>
 <?php endif; ?>

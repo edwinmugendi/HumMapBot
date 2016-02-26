@@ -8,11 +8,11 @@
         <?php endif; ?>
                          
                                         <td><?php echo $view_data['singleModel']['id']; ?></td>
+                                                                        <td><?php echo $view_data['singleModel']['merchant_id_text']; ?></td>
                                                                         <td><?php echo $view_data['singleModel']['workflow_text']; ?></td>
                                                                         <td><?php echo $view_data['singleModel']['user_id_text']; ?></td>
                                                                         <td><?php echo $view_data['singleModel']['product_id_text']; ?></td>
                                                                         <td><?php echo $view_data['singleModel']['location_id_text']; ?></td>
-                                                                        <td><?php echo $view_data['singleModel']['merchant_id_text']; ?></td>
                                              
                                         <td><?php echo $view_data['singleModel']['amount']; ?></td>
                                              
@@ -33,11 +33,11 @@
     <td colspan="100%">
                      
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.id') .': '.$view_data['singleModel']['id']; ?> </div>
+                                                            <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.merchant_id') .': '.$view_data['singleModel']['merchant_id_text']; ?> </div>
                                                             <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.workflow') .': '.$view_data['singleModel']['workflow_text']; ?> </div>
                                                             <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.user_id') .': '.$view_data['singleModel']['user_id_text']; ?> </div>
                                                             <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.product_id') .': '.$view_data['singleModel']['product_id_text']; ?> </div>
                                                             <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.location_id') .': '.$view_data['singleModel']['location_id_text']; ?> </div>
-                                                            <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.merchant_id') .': '.$view_data['singleModel']['merchant_id_text']; ?> </div>
                                                             <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.promotion_id') .': '.$view_data['singleModel']['promotion_id_text']; ?> </div>
                      
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.amount') .': '.$view_data['singleModel']['amount']; ?> </div>

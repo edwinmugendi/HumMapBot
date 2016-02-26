@@ -34,13 +34,6 @@ class LocationModel extends \BaseModel {
         'date_format' => array(0, 'select', '='),
         'loyalty_stamps' => array(1, 'text', 'like', 0),
         'surcharge' => array(0, 'text', 'like', 0),
-        'bank_name' => array(0, 'text', 'like'),
-        'pay_location' => array(0, 'select', '='),
-        'bank_name' => array(0, 'text', 'like'),
-        'bank_sort_code' => array(0, 'text', 'like'),
-        'bank_account_name' => array(0, 'text', 'like'),
-        'bank_account_number' => array(0, 'text', 'like'),
-        'bank_postal_code' => array(0, 'text', 'like'),
         'is_monday_open' => array(0, 'select', '=', 0),
         'monday_opens_at' => array(0, 'text', 'like', 0),
         'monday_closes_at' => array(0, 'text', 'like', 0),
@@ -89,12 +82,6 @@ class LocationModel extends \BaseModel {
         'date_format',
         'loyalty_stamps',
         'surcharge',
-        'pay_location',
-        'bank_name',
-        'bank_sort_code',
-        'bank_account_name',
-        'bank_account_number',
-        'bank_postal_code',
         'is_monday_open',
         'monday_opens_at',
         'monday_closes_at',
@@ -140,7 +127,6 @@ class LocationModel extends \BaseModel {
         'is_saturday_open_text',
         'is_sunday_open_text',
         'is_holiday_open_text',
-        'pay_location_text',
         'country_id_text',
         'workflow_text',
         'currency_id_text',
@@ -153,12 +139,8 @@ class LocationModel extends \BaseModel {
     );
     //Hidden fields
     protected $hidden = array(
-        'phone_1',
-        'phone_2',
-        'phone_3',
-        'email_1',
-        'email_2',
-        'email_3',
+        'phone',
+        'email',
         'type_id',
         'plan_id',
         'registration_number',
@@ -190,20 +172,6 @@ class LocationModel extends \BaseModel {
     public $updateRules = array(
         'name' => 'required',
     );
-    
-    
-    /**
-     * S# getPayLocationTextAttribute() function
-     * Get PayLocation Text
-     */
-    public function getPayLocationTextAttribute() {
-        //Set icon
-        $icon = $this->attributes['pay_location'] ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
-
-        return '<i class="glyphicon ' . $icon . '"></i>';
-    }
-
-//E# getPayLocationTextAttribute() function
 
     /**
      * S# getIsMondayOpenTextAttribute() function

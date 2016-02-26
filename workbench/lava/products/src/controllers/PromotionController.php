@@ -44,10 +44,9 @@ class PromotionController extends ProductsBaseController {
      * @param array $dataSource Data source
      */
     public function injectDataSources() {
-
         //Get this organization merchant id
         $this->view_data['dataSource']['merchant_id'] = $this->appGetCustomMerchantHtmlSelect();
-
+                
         //Get this organization location id
         $this->view_data['dataSource']['location_id'] = $this->callController(\Util::buildNamespace('merchants', 'location', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('name'), \Lang::get('common.select')));
 
