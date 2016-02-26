@@ -37,6 +37,7 @@ class CreateUsersTable extends Migration {
 
             //Activation
             $table->string('verification_code', 255);
+            $table->text('remember_token');
 
             //Token
             $table->string('token');

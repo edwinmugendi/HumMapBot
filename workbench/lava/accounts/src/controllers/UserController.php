@@ -278,7 +278,7 @@ class UserController extends AccountsBaseController {
 
         //Get user model
         $user_model = $this->getModelByField('token', $controller_model->token, $parameters);
-
+        
         //Session this user
         $controller->sessionUser($user_model);
 
