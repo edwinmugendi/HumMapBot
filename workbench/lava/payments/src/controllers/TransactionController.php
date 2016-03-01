@@ -108,8 +108,7 @@ class TransactionController extends PaymentsBaseController {
                     //Throw Transaction not found error
                     throw new \Api404Exception($this->notification);
                 }//E# if else statement
-            }//E# if statement
-        } else {
+            } else {
             $where_clause[] = array(
                 'where' => 'where',
                 'column' => 'user_id',
@@ -117,6 +116,7 @@ class TransactionController extends PaymentsBaseController {
                 'operand' => $this->user['id']
             );
         }//E# if else statement
+        }//E# if statement
     }
 
 //E# controllerSpecificWhereClause() function

@@ -36,34 +36,34 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
         $parameters['scope'] = array('statusOne');
 
         //Get card by id
-        $cardModel = $cardController->getModelByField('id', $id, $parameters);
+        $card_model = $cardController->getModelByField('id', $id, $parameters);
 
-        if ($cardModel) {//Card does not exist
+        if ($card_model) {//Card does not exist
             //Instantiate a new user controller
             $user_controller = new UserController();
 
             //Get user model by token
             $user_model = $user_controller->getModelByField('token', $this->data['token']);
 
-            if ($cardModel->created_by == $user_model->id) {
+            if ($card_model->created_by == $user_model->id) {
 
                 //Delete card on stripe
                 $stripe_controller = new \Lava\Payments\StripeController();
-                $stripe_response = $stripe_controller->deleteCard($user_model->stripe_id, $cardModel->token);
-                $cardModel->deleted_on_stripe = $stripe_response['status'] ? 1 : 0;
+                $stripe_response = $stripe_controller->deleteCard($user_model->stripe_id, $card_model->card_token);
+                $card_model->deleted_on_stripe = $stripe_response['status'] ? 1 : 0;
 
-                $cardModel->status = 2;
-                $cardModel->save();
+                $card_model->status = 2;
+                $card_model->save();
 
-                if ($cardModel->token == $user_model->card_token) {
-                    $user_model->card_token = '';
+                if ($card_model->card_token == $user_model->card_id) {
+                    $user_model->card_id = '';
 
                     $user_model->save();
                 }//E# if statement
                 //Get success message
                 $message = \Lang::get($cardController->package . '::' . $cardController->controller . '.notification.deleted');
 
-                throw new \Api200Exception(array('id' => $cardModel->id, 'id' => $id), $message);
+                throw new \Api200Exception(array('id' => $card_model->id, 'id' => $id), $message);
             }
         }//E# if statement
         //Set notification
@@ -630,11 +630,11 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     $default_card = false;
 
                     //Card fields to return
-                    $card_fields = array('id', 'token', 'gateway', 'exp_month', 'exp_year', 'last4', 'brand');
+                    $card_fields = array('id', 'card_token', 'gateway', 'exp_month', 'exp_year', 'last4', 'brand');
 
                     foreach ($user_model->cards as $single_card) {
                         if ($single_card->id == $user_model->card_id) {//User has specified a default card
-                            $default_card = $single_card->token;
+                            $default_card = $single_card->card_token;
                             $user_controller->notification['card'] = array_only($single_card->toArray(), $card_fields);
                             break;
                         }//E# if statement

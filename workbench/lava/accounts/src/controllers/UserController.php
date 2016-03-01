@@ -10,26 +10,51 @@ class UserController extends AccountsBaseController {
     public $controller = 'user';
 
     /**
-     * S# roleBasedWhereClause() function
+     * S# controllerSpecificWhereClause() function
      * @author Edwin Mugendi
-     * Build where clause based on role
      * 
+     * Set controller specific where clause
      * @param array $fields Fields
      * @param array $where_clause Where clause
      * @param array $parameters Parameters
      */
-    public function roleBasedWhereClause($fields, &$where_clause, &$parameters) {
-        if ($this->user['role_id'] == 2) {//Merchant
-            $where_clause[] = array(
-                'where' => 'where',
-                'column' => 'merchant_id',
-                'operator' => '=',
-                'operand' => $this->merchant['id']
-            );
-        }
+    public function controllerSpecificWhereClause(&$fields, &$where_clause, &$parameters) {
+
+        if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//From API
+        } else {
+            if ($this->user['role_id'] == 2) {//Merchant
+                //Transaction fields
+                $transaction_fields = array('user_id');
+
+                //Transaction where clause
+                $transaction_where_clause = array(
+                    array(
+                        'where' => 'where',
+                        'column' => 'merchant_id',
+                        'operator' => '=',
+                        'operand' => $this->user['merchant_id']
+                    )
+                );
+
+                //Get transactions
+                $transaction_model = $this->callController(\Util::buildNamespace('payments', 'transaction', 1), 'select', array($transaction_fields, $transaction_where_clause, 2));
+
+                if ($transaction_model) {
+                    $user_ids = array_unique($transaction_model->lists('user_id'));
+                } else {
+                    $user_ids = array(0);
+                }//E# if else statement
+                
+                $where_clause[] = array(
+                    'where' => 'whereIn',
+                    'column' => 'id',
+                    'operand' => $user_ids
+                );
+            }//E# if statement
+        }//E# if else statement
     }
 
-    //E# roleBasedWhereClause() function
+//E# controllerSpecificWhereClause() function
 
     /**
      * S# appendCustomValidationRules() function
@@ -496,7 +521,6 @@ class UserController extends AccountsBaseController {
             //Session org
             $this->callController(\Util::buildNamespace('merchants', 'merchant', 1), 'sessionMerchant', array($user));
         }//E# if statement
-        
         //Unset organization
         unset($user['merchant']);
 

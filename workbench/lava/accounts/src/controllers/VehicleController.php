@@ -97,7 +97,37 @@ class VehicleController extends AccountsBaseController {
                     'operand' => $this->user['id']
                 );
             }//E# if else statement
-        }//E# if statement
+        } else {
+            if ($this->user['role_id'] == 2) {//Merchant
+                //Transaction fields
+                $transaction_fields = array('vehicle_id');
+                
+                //Transaction where clause
+                $transaction_where_clause = array(
+                    array(
+                        'where' => 'where',
+                        'column' => 'merchant_id',
+                        'operator' => '=',
+                        'operand' => $this->user['merchant_id']
+                    )
+                );
+
+                //Get transactions
+                $transaction_model = $this->callController(\Util::buildNamespace('payments', 'transaction', 1), 'select', array($transaction_fields, $transaction_where_clause, 2));
+
+                if ($transaction_model) {
+                    $vehicle_ids = array_unique($transaction_model->lists('vehicle_id'));
+                } else {
+                    $vehicle_ids = array(0);
+                }//E# if else statement
+                
+                $where_clause[] = array(
+                    'where' => 'whereIn',
+                    'column' => 'id',
+                    'operand' => $vehicle_ids
+                );
+            }//E# if statement
+        }//E# if else statement
     }
 
 //E# controllerSpecificWhereClause() function
