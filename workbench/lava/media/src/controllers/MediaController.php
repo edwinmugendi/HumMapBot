@@ -28,7 +28,7 @@ class MediaController extends MediaBaseController {
         //Fields to select
         $fields = array('*');
 
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => 'backed_up',
@@ -51,7 +51,7 @@ class MediaController extends MediaBaseController {
         $parameters['paginate'] = 100;
 
         //Select preuploaded media models
-        $media_model = $this->select($fields, $whereClause, 2, $parameters);
+        $media_model = $this->select($fields, $where_clause, 2, $parameters);
 
         $client = new \Google_Client();
 
@@ -149,7 +149,7 @@ class MediaController extends MediaBaseController {
         //Fields to select
         $fields = array('*');
 
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => 'mediable_id',
@@ -171,7 +171,7 @@ class MediaController extends MediaBaseController {
         );
 
         //Select preuploaded media models
-        $media_model = $this->select($fields, $whereClause, 2);
+        $media_model = $this->select($fields, $where_clause, 2);
 
         echo 'Found ' . count($media_model) . ' dungling images';
 
@@ -643,7 +643,7 @@ class MediaController extends MediaBaseController {
         $fields = array('*');
 
         if ($this->input['id'] != -1) {
-            $whereClause = array(
+            $where_clause = array(
                 array(
                     'where' => 'where',
                     'column' => 'controller_type',
@@ -670,7 +670,7 @@ class MediaController extends MediaBaseController {
                 )
             );
         } else {
-            $whereClause = array(
+            $where_clause = array(
                 array(
                     'where' => 'where',
                     'column' => 'status',
@@ -687,7 +687,7 @@ class MediaController extends MediaBaseController {
         }//E# if statement
         /*
           //Build where clause
-          $whereClause[] = array(
+          $where_clause[] = array(
           'where' => 'where',
           'column' => 'status',
           'operator' => '=',
@@ -701,7 +701,7 @@ class MediaController extends MediaBaseController {
         $parameters['convertTo'] = 'toArray';
 
         //Select preuploaded media models
-        $media_model = $this->select($fields, $whereClause, 2, $parameters);
+        $media_model = $this->select($fields, $where_clause, 2, $parameters);
 
         $allMedia = array();
         if ($media_model) {//
@@ -786,7 +786,7 @@ class MediaController extends MediaBaseController {
         $fields = array('id', 'refresh_key', 'name');
 
         //Build where clause
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => 'refresh_key',
@@ -799,7 +799,7 @@ class MediaController extends MediaBaseController {
         $parameters['orderBy'][] = array('order' => 'asc');
         $parameters['orderBy'][] = array('id' => 'asc');
         //Select pre-uploaded media
-        $media_model = $this->select($fields, $whereClause, 2, $parameters);
+        $media_model = $this->select($fields, $where_clause, 2, $parameters);
 
         if ($media_model) {//There exists a media model for this property
             foreach ($media_model as $singleModel) {//Loop through each model

@@ -11,8 +11,6 @@ class TransactionController extends PaymentsBaseController {
 
     //Controller
     public $controller = 'transaction';
-    //Lazy load
-    public $lazyLoad = array();
 
     /**
      * S# roleBasedWhereClause() function
@@ -20,12 +18,12 @@ class TransactionController extends PaymentsBaseController {
      * Build where clause based on role
      * 
      * @param array $fields Fields
-     * @param array $whereClause Where clause
+     * @param array $where_clause Where clause
      * @param array $parameters Parameters
      */
-    public function roleBasedWhereClause($fields, &$whereClause, &$parameters) {
+    public function roleBasedWhereClause($fields, &$where_clause, &$parameters) {
         if ($this->user['role_id'] == 2) {//Merchant
-            $whereClause[] = array(
+            $where_clause[] = array(
                 'where' => 'where',
                 'column' => 'merchant_id',
                 'operator' => '=',
@@ -78,10 +76,10 @@ class TransactionController extends PaymentsBaseController {
      * 
      * Set controller specific where clause
      * @param array $fields Fields
-     * @param array $whereClause Where clause
+     * @param array $where_clause Where clause
      * @param array $parameters Parameters
      */
-    public function controllerSpecificWhereClause(&$fields, &$whereClause, &$parameters) {
+    public function controllerSpecificWhereClause(&$fields, &$where_clause, &$parameters) {
 
         if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//From API
             if (array_key_exists('id', $this->input)) {
@@ -111,7 +109,14 @@ class TransactionController extends PaymentsBaseController {
                     throw new \Api404Exception($this->notification);
                 }//E# if else statement
             }//E# if statement
-        }//E# if statement
+        } else {
+            $where_clause[] = array(
+                'where' => 'where',
+                'column' => 'user_id',
+                'operator' => '=',
+                'operand' => $this->user['id']
+            );
+        }//E# if else statement
     }
 
 //E# controllerSpecificWhereClause() function

@@ -321,7 +321,7 @@ class BaseController1 extends Controller {
         $fields = array('*');
 
         //Set where clause
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => 'user_id',
@@ -337,7 +337,7 @@ class BaseController1 extends Controller {
         $parameters['orderBy'][] = array('id' => 'desc');
 
         //Select this users models
-        $controller_model = $this->select($fields, $whereClause, 2, $parameters);
+        $controller_model = $this->select($fields, $where_clause, 2, $parameters);
 
         if ($this->subdomain == 'api') {//From API
             //Get success message
@@ -744,7 +744,7 @@ class BaseController1 extends Controller {
         $inputs = \Input::get();
 
         //Parameters
-        $whereClause = $parameters = array();
+        $where_clause = $parameters = array();
 
         foreach ($inputs as $key => $value) {
             switch ($key) {
@@ -773,7 +773,7 @@ class BaseController1 extends Controller {
                     $valueParts = explode('_', $value);
 
                     if (\Str::lower($valueParts[0]) == 'where') {
-                        $whereClause[] = array(
+                        $where_clause[] = array(
                             'where' => 'where',
                             'column' => $key,
                             'operator' => $valueParts[0],
@@ -790,7 +790,7 @@ class BaseController1 extends Controller {
         }//E# if statement
 
 
-        return $this->select($fields, $whereClause, 2);
+        return $this->select($fields, $where_clause, 2);
 
         return $fields;
     }
@@ -805,7 +805,7 @@ class BaseController1 extends Controller {
         $fields = array('*');
 
         //Build where clause
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => $field,
@@ -814,10 +814,10 @@ class BaseController1 extends Controller {
             )
         );
         //Select model by field
-        return $this->select($fields, $whereClause, 1, $parameters);
+        return $this->select($fields, $where_clause, 1, $parameters);
     }
 
-    public function delete($whereClause) {
+    public function delete($where_clause) {
         //Cache model namespace
         $model = \Util::buildNamespace($this->package, $this->controller, 2);
 
@@ -825,14 +825,14 @@ class BaseController1 extends Controller {
         $deleteModel = new $model();
 
         //Build where clause
-        $this->buildWhereClause($deleteModel, $whereClause);
+        $this->buildWhereClause($deleteModel, $where_clause);
 
         return $deleteModel->delete();
     }
 
 //E# delete() function
 
-    public function select($fields, $whereClause, $oneOrAll, $parameters = array()) {
+    public function select($fields, $where_clause, $oneOrAll, $parameters = array()) {
 
         //Cache model namespace
         $model = \Util::buildNamespace($this->package, $this->controller, 2);
@@ -841,7 +841,7 @@ class BaseController1 extends Controller {
         $selectModel = new $model();
 
         //Build where clause
-        $this->buildWhereClause($selectModel, $whereClause);
+        $this->buildWhereClause($selectModel, $where_clause);
 
         if (array_key_exists('withTrashed', $parameters)) {//Load Trashed models
             $selectModel = $selectModel->withTrashed();
@@ -922,8 +922,8 @@ class BaseController1 extends Controller {
      * @param array $where_array the where clause
      * @param model the model with where clause added to it 
      */
-    private function buildWhereClause(&$model, &$whereClause) {
-        foreach ($whereClause as $singleWhereClause) {//Loop through the where clause
+    private function buildWhereClause(&$model, &$where_clause) {
+        foreach ($where_clause as $singleWhereClause) {//Loop through the where clause
             if ($singleWhereClause['where'] == 'where') {//Where clause
                 $model = $model->where($singleWhereClause['column'], $singleWhereClause['operator'], $singleWhereClause['operand']);
             } else if ($singleWhereClause['where'] == 'orWhere') {//Where clause

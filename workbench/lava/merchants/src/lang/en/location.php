@@ -22,7 +22,6 @@ return array(
             '' => 'Select',
             1 => 'Active',
             2 => 'Inactive',
-            3 => 'Suspended',
         ),
         'type' => array(
             '' => 'Select',
@@ -181,8 +180,6 @@ return array(
             'website' => 'Website',
             'facebook' => 'Facebook',
             'twitter' => 'Twitter',
-            'pay_location' => 'Pay location',
-            
             'is_monday_open' => 'Is Monday open?',
             'monday_opens_at' => 'Monday opens at',
             'monday_closes_at' => 'Monday closes at',
@@ -327,6 +324,19 @@ return array(
                                             )
                                         ),
                                         array(
+                                            'name' => 'Status',
+                                            'type' => 'select',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'workflow',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Select status',
+                                            'help' => '<strong>Description: </strong>The status of this merchant.<br/><strong>Do: </strong>Select the status of this merchant.<br/><strong>Star: </strong> %s ',
+                                            'validator' => array(
+                                                'required' => 1
+                                            )
+                                        ),
+                                        array(
                                             'name' => 'Name',
                                             'type' => 'text',
                                             'prepend' => 'user',
@@ -353,6 +363,10 @@ return array(
                                                 'integer' => 1,
                                             )
                                         ),
+                                    )
+                                ),
+                                array(
+                                    'fields' => array(
                                         array(
                                             'name' => 'Surcharge for each transaction, leave blank if none',
                                             'type' => 'text',
@@ -366,10 +380,6 @@ return array(
                                                 'numeric' => 1,
                                             )
                                         ),
-                                    )
-                                ),
-                                array(
-                                    'fields' => array(
                                         array(
                                             'name' => 'Notification Phone (comma separated for multiple), include country code without +',
                                             'type' => 'text',
@@ -380,6 +390,7 @@ return array(
                                             'placeholder' => 'Type the phone, comma separated for multiple eg \'4477447744,4477447743\'',
                                             'help' => '<strong>Description: </strong>The phone of this location.<br/><strong>Do: </strong>Type the phone of this location.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'4477447744,4477447743\'.',
                                             'validator' => array(
+                                                'required'=>1,
                                             )
                                         ),
                                         array(
@@ -392,6 +403,7 @@ return array(
                                             'placeholder' => 'Type the email, comma separated for multiple eg \'john.doe@email.com,john.doe1@email.com\'',
                                             'help' => '<strong>Description: </strong>The email of this location.<br/><strong>Do: </strong>Type the email of this location.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'john.doe@email.com,john.doe1@email.com\'.',
                                             'validator' => array(
+                                                'required'=>1,
                                             )
                                         ),
                                     )

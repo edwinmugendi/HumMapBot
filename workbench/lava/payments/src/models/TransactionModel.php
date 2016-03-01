@@ -88,6 +88,11 @@ class TransactionModel extends \BaseModel {
         'gateway_text',
     );
     protected $hidden = array(
+        'user_smsed_text',
+        'user_emailed_text',
+        'user_pushed_text',
+        'merchant_smsed_text',
+        'merchant_emailed_text',
         'status',
         'created_by',
         'updated_by',

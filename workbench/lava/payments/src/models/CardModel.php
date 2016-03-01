@@ -22,7 +22,7 @@ class CardModel extends \BaseModel {
         'exp_month' => array(1, 'text', '=', 0),
         'exp_year' => array(1, 'text', '=', 0),
         'address_city' => array(0, 'text', 'like', 0),
-        'token' => array(1, 'text', 'like', 0),
+        'card_token' => array(1, 'text', 'like', 0),
         'address_zip' => array(0, 'text', 'like', 0),
         'address_country' => array(0, 'text', 'like', 0),
         'address_line1' => array(0, 'text', 'like', 0),
@@ -44,7 +44,7 @@ class CardModel extends \BaseModel {
         'address_zip',
         'address_country',
         'address_line1',
-        'token',
+        'card_token',
         'ip',
         'agent',
         'status',
@@ -61,8 +61,8 @@ class CardModel extends \BaseModel {
     );
     //Update validation rules
     public $updateRules = array();
-    
-        /**
+
+    /**
      * S# getDeletedOnStripeTextAttribute() function
      * Get DeletedOnStripe Text
      */
@@ -74,7 +74,7 @@ class CardModel extends \BaseModel {
     }
 
 //E# getDeletedOnStripeTextAttribute() function
-    
+
     /**
      * S# user() function
      * Set one to one relationship to User Model
@@ -109,9 +109,9 @@ class CardModel extends \BaseModel {
 
         if (count($this->user)) {
             //Get the logged in user card
-            $token = $this->user()->first()->card;
+            $card_id = $this->user()->first()->card_id;
 
-            return ($this->attributes['token'] == $token) ? 1 : 0;
+            return ($this->attributes['id'] == $card_id) ? 1 : 0;
         } else {
             return 0;
         }

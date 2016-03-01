@@ -184,7 +184,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                                 'vrm' => $vehicle_model->vrm,
                                 'gateway' => 'stamps',
                                 'amount' => $vehicle_model->type == 2 ? $product_model->price_2 : $product_model->price_1,
-                                'currency_id' => $product_model->location->currency_id,
+                                'currency_id' => $product_model->location->currency_id_text,
                                 'description' => \Lang::get($payment_controller->package . '::' . $payment_controller->controller . '.api.freeStampWash'),
                                 'user_id' => $user_model->id,
                                 'product_id' => $product_model->id,
@@ -194,10 +194,15 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                                 'agent' => $user_controller->input['agent'],
                                 'merchant_id' => $product_model->merchant->id,
                                 'stamps_issued' => 0,
+                                'user_smsed' => 0,
+                                'user_emailed' => 0,
+                                'user_pushed' => 0,
+                                'merchant_smsed' => 0,
+                                'merchant_emailed' => 0,
                                 'status' => 1,
                                 'created_by' => $user_model->id,
                                 'updated_by' => $user_model->id,
-                                'workflow' => 5,//Stamps
+                                'workflow' => 5, //Stamps
                             );
 
                             if ($this->data['location']) {//Set transaction location
@@ -394,13 +399,18 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         'description' => $product_model->name . ' ' . $product_model->location->name,
                         'product_id' => $product_model->id,
                         'location_id' => $product_model->location->id,
-                        'ip' => $user_controller->input['ip'],
-                        'agent' => $user_controller->input['agent'],
                         'amount' => $amount,
-                        'currency_id' => $product_model->location->currency_id,
+                        'currency_id' => $product_model->location->currency_id_text,
                         'stamps_issued' => ((int) $product_model->location->loyalty_stamps) ? 1 : 0,
                         'merchant_id' => $product_model->merchant->id,
-                        'workflow' => 1,//Started
+                        'user_smsed' => 0,
+                        'user_emailed' => 0,
+                        'user_pushed' => 0,
+                        'merchant_smsed' => 0,
+                        'merchant_emailed' => 0,
+                        'workflow' => 1, //Started
+                        'ip' => $user_controller->input['ip'],
+                        'agent' => $user_controller->input['agent'],
                         'status' => 1,
                         'created_by' => $user_controller->user['id'],
                         'updated_by' => $user_controller->user['id'],
@@ -419,8 +429,8 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                             'stripe_id' => $user_model->stripe_id,
                             'card_token' => $this->data['card_token'],
                             'amount' => $amount,
-                            'currency_id' => $product_model->location->currency_id,
-                            'description' => $product_model->location->currency_id . ' ' . $amount . ' payment for ' . $product_model->name . '(#' . $product_model->id . ') ' . ' by ' . $user_model->first_name . ' ' . $user_model->last_name . '(#' . $user_model->id . ') whose vrm is ' . $vehicle_model->vrm . ' (#' . $vehicle_model->id . '). TX_ID #' . $transaction_model->id,
+                            'currency_id' => $product_model->location->currency_id_text,
+                            'description' => $product_model->location->currency_id_text . ' ' . $amount . ' payment for ' . $product_model->name . '(#' . $product_model->id . ') ' . ' by ' . $user_model->first_name . ' ' . $user_model->last_name . '(#' . $user_model->id . ') whose vrm is ' . $vehicle_model->vrm . ' (#' . $vehicle_model->id . '). TX_ID #' . $transaction_model->id,
                             'metadata' => array(
                                 'transaction_id' => $transaction_model->id,
                                 'user_id' => $user_model->id,
@@ -661,7 +671,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     //Build transaction
                     $transaction = array(
                         'amount' => $amount,
-                        'currency_id' => $product_model->location->currency_id,
+                        'currency_id' => $product_model->location->currency_id_text,
                         'surcharge' => $surcharge,
                         'promotions' => $promotions,
                     );

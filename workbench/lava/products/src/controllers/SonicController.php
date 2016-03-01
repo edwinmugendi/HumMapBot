@@ -73,7 +73,7 @@ class SonicController extends ProductsBaseController {
         $fields = array('*');
 
         //Set where clause
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => 'event_id',
@@ -89,7 +89,7 @@ class SonicController extends ProductsBaseController {
         );
 
         //Get sonic model
-        $sonicModel = $this->select($fields, $whereClause, 1);
+        $sonicModel = $this->select($fields, $where_clause, 1);
 
         if ($sonicModel) {//Negative
             if (((int) $sonicModel->negated == 0) && (\Request::segment(3) == 'negative')) {
@@ -128,7 +128,7 @@ class SonicController extends ProductsBaseController {
         $fields = array('*');
 
         //Set where clause
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => 'status',
@@ -144,7 +144,7 @@ class SonicController extends ProductsBaseController {
         );
 
         //Sonic Model
-        $oneSonicModel = $this->select($fields, $whereClause, 1);
+        $oneSonicModel = $this->select($fields, $where_clause, 1);
 
         if ($oneSonicModel) {//Found
             //Get user by id
@@ -155,7 +155,7 @@ class SonicController extends ProductsBaseController {
                 $fields = array('*');
 
                 //Set where clause
-                $whereClause = array(
+                $where_clause = array(
                     array(
                         'where' => 'where',
                         'column' => 'status',
@@ -179,7 +179,7 @@ class SonicController extends ProductsBaseController {
                 $parameters['take'] = 10;
 
                 //Sonic Model
-                $sonicModel = $this->select($fields, $whereClause, 2);
+                $sonicModel = $this->select($fields, $where_clause, 2);
 
                 if ($sonicModel) {//Sonic Models found
                     //Promotion points

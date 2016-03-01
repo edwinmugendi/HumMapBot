@@ -11,8 +11,6 @@ class CardController extends PaymentsBaseController {
 
     //Controller
     public $controller = 'card';
-    //Lazy load
-    public $lazyLoad = array();
 
     /**
      * S# injectDataSources() function
@@ -107,7 +105,7 @@ class CardController extends PaymentsBaseController {
                 $card_array = array(
                     'user_id' => \Auth::user()->id,
                     'gateway' => 'stripe',
-                    'token' => $stripe_response['response']->id,
+                    'card_token' => $stripe_response['response']->id,
                     'brand' => \Str::lower($stripe_response['response']->brand),
                     'last4' => $stripe_response['response']->last4,
                     'exp_month' => $stripe_response['response']->exp_month,
@@ -144,15 +142,16 @@ class CardController extends PaymentsBaseController {
      * @author Edwin Mugendi
      * Get the card used
      * 
-     * @param string $token Card token
+     * @param string $card_token Card token
      * 
      * @return string verbative card
      */
-    public function getVerbativeCardUsed($token) {
-        $cardModel = $this->getModelByField('token', $token);
+    public function getVerbativeCardUsed($card_token) {
+        //Get card by token
+        $card_model = $this->getModelByField('card_token', $card_token);
 
-        if ($cardModel) {
-            return $cardModel->brand . ' XXX ' . $cardModel->last4;
+        if ($card_model) {
+            return $card_model->brand . ' XXX ' . $card_model->last4;
         } else {
             return '';
         }//E# if else statement
@@ -182,10 +181,10 @@ class CardController extends PaymentsBaseController {
      * 
      * Set controller specific where clause
      * @param array $fields Fields
-     * @param array $whereClause Where clause
+     * @param array $where_clause Where clause
      * @param array $parameters Parameters
      */
-    public function controllerSpecificWhereClause(&$fields, &$whereClause, &$parameters) {
+    public function controllerSpecificWhereClause(&$fields, &$where_clause, &$parameters) {
 
         if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//From API
             if (array_key_exists('id', $this->input)) {
@@ -214,6 +213,13 @@ class CardController extends PaymentsBaseController {
                     //Throw Card not found error
                     throw new \Api404Exception($this->notification);
                 }//E# if else statement
+            } else {
+                $where_clause[] = array(
+                    'where' => 'where',
+                    'column' => 'user_id',
+                    'operator' => '=',
+                    'operand' => $this->user['id']
+                );
             }//E# if statement
         }//E# if statement
     }

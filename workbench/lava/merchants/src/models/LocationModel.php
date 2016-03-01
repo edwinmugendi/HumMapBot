@@ -109,6 +109,7 @@ class LocationModel extends \BaseModel {
         'website',
         'facebook',
         'twitter',
+        'workflow',
         'agent',
         'ip',
         'status',
@@ -141,28 +142,25 @@ class LocationModel extends \BaseModel {
     protected $hidden = array(
         'phone',
         'email',
-        'type_id',
-        'plan_id',
-        'registration_number',
-        'tax_id',
-        'vat',
-        'vision',
-        'mission',
-        'slogan',
-        'about',
-        'email',
-        'country_id',
-        'town_id',
-        'landline',
-        'mobile',
         'website',
         'facebook',
         'twitter',
-        'views',
-        'status',
-        'created_by',
-        'updated_by',
-        'deleted_at'
+        'is_monday_open_text',
+        'is_tuesday_open_text',
+        'is_wednesday_open_text',
+        'is_thursday_open_text',
+        'is_friday_open_text',
+        'is_saturday_open_text',
+        'is_sunday_open_text',
+        'is_holiday_open_text',
+        'merchant_id_text',
+        'merchant_id',
+        'agent',
+        'workflow_text',
+        'country_id_text',
+        'timezone_id_text',
+        '',
+        '',
     );
     //Create validation rules
     public $createRules = array(
@@ -283,12 +281,12 @@ class LocationModel extends \BaseModel {
         if ($this->attributes['workflow'] == 1) {
             $label = 'label label-success';
         } else if ($this->attributes['workflow'] == 2) {
-            $label = 'label label-warning';
+            $label = 'label label-danger';
         } else if ($this->attributes['workflow'] == 3) {
             $label = 'label label-danger';
         }//E# if else statement
 
-        return \Lang::has('merchants::merchant.data.workflow.' . $this->attributes['workflow']) ? '<span class="' . $label . '">' . \Lang::get('merchants::merchant.data.workflow.' . $this->attributes['workflow']) . '</span>' : '';
+        return \Lang::has('merchants::location.data.workflow.' . $this->attributes['workflow']) ? '<span class="' . $label . '">' . \Lang::get('merchants::location.data.workflow.' . $this->attributes['workflow']) . '</span>' : '';
     }
 
 //E# getWorkflowTextAttribute() function
@@ -311,7 +309,7 @@ class LocationModel extends \BaseModel {
         //Get currency model
         $currency_model = $this->currency()->first();
         //Return name
-        return $currency_model ? $currency_model->name : '';
+        return $currency_model ? $currency_model->code : '';
     }
 
 //E# getCurrencyIdTextAttribute() function
@@ -425,7 +423,7 @@ class LocationModel extends \BaseModel {
      * Calculate average of the ratings and return the star rating
      */
     public function getStarRatingAttribute() {
-        return $this->ratings()
+        return (float)$this->ratings()
                         ->avg('feeling');
     }
 

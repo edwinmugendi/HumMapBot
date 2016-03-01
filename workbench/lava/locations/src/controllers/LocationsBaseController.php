@@ -31,7 +31,7 @@ class LocationsBaseController extends \BaseController {
             $fields = array('id', 'name');
 
             //Build where clause
-            $whereClause = array(
+            $where_clause = array(
                 array(
                     'where' => 'where',
                     'column' => 'status',
@@ -51,7 +51,7 @@ class LocationsBaseController extends \BaseController {
             $parameters['convertTo'] = 'toArray';
 
             //Select all active country models
-            $countryModel = $this->select($fields, $whereClause, 2, $parameters);
+            $countryModel = $this->select($fields, $where_clause, 2, $parameters);
 
             //Array cache 
             $selectOptionsCache = array();

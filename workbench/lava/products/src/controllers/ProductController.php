@@ -18,12 +18,12 @@ class ProductController extends ProductsBaseController {
      * Build where clause based on role
      * 
      * @param array $fields Fields
-     * @param array $whereClause Where clause
+     * @param array $where_clause Where clause
      * @param array $parameters Parameters
      */
-    public function roleBasedWhereClause($fields, &$whereClause, &$parameters) {
+    public function roleBasedWhereClause($fields, &$where_clause, &$parameters) {
         if ($this->user['role_id'] == 2) {//Merchant
-            $whereClause[] = array(
+            $where_clause[] = array(
                 'where' => 'where',
                 'column' => 'merchant_id',
                 'operator' => '=',

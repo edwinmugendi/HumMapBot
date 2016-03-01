@@ -57,7 +57,7 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
                         $fields = array('*');
 
                         //Build where clause
-                        $whereClause = array(
+                        $where_clause = array(
                             array(
                                 'where' => 'where',
                                 'column' => 'user_id',
@@ -67,7 +67,7 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
                         );
 
                         if ($promotion_model->location_id) {
-                            $whereClause[] = array(
+                            $where_clause[] = array(
                                 'where' => 'where',
                                 'column' => 'location_id',
                                 'operator' => '=',
@@ -75,7 +75,7 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
                             );
                         }//E# if statement
                         //Get transaction model
-                        $transaction_model = $promotion_controller->callController(\Util::buildNamespace('payments', 'transaction', 1), 'select', array($fields, $whereClause, 1));
+                        $transaction_model = $promotion_controller->callController(\Util::buildNamespace('payments', 'transaction', 1), 'select', array($fields, $where_clause, 1));
 
                         if ($transaction_model) {//Has a transaction for this location
                             //Set error message

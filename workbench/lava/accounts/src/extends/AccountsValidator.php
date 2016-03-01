@@ -69,7 +69,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         $fields = array('*');
 
         //Build where clause
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => 'user_id',
@@ -91,7 +91,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         );
 
         //Get vehicle
-        $vehicle_model = $vehicle_controller->select($fields, $whereClause, 1);
+        $vehicle_model = $vehicle_controller->select($fields, $where_clause, 1);
 
         if (!$vehicle_model) {
             //Set notification
@@ -125,7 +125,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         $fields = array('*');
 
         //Build where clause
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => 'user_id',
@@ -147,7 +147,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         );
 
         //Get card
-        $card_model = $card_controller->select($fields, $whereClause, 1);
+        $card_model = $card_controller->select($fields, $where_clause, 1);
 
         if (!$card_model) {
             //Set notification
@@ -292,7 +292,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         $fields = array('*');
 
         //Build where clause
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => $field,
@@ -308,7 +308,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         );
 
         //Get user by email and reset code
-        $user_model = $user_controller->select($fields, $whereClause, 1);
+        $user_model = $user_controller->select($fields, $where_clause, 1);
 
         if ($user_model) {//user exists
             //Create reset time and now

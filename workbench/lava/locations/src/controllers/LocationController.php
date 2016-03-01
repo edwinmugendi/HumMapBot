@@ -95,7 +95,7 @@ class LocationController extends LocationsBaseController {
             //Fields to select
             $fields = array('id', 'name');
             //Build where clause
-            $whereClause = array(
+            $where_clause = array(
                 array(
                     'where' => 'where',
                     'column' => 'id',
@@ -146,7 +146,7 @@ class LocationController extends LocationsBaseController {
             $parameters['lazyLoad'] = array('estates');
 
             //Select all active towns models
-            $townModel = $this->select($fields, $whereClause, 2, $parameters);
+            $townModel = $this->select($fields, $where_clause, 2, $parameters);
 
             //Array cache 
             $locationCache = $location = array();
@@ -209,7 +209,7 @@ class LocationController extends LocationsBaseController {
         $fields = array('name');
 
         //Build where clause
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => $locationKey,
@@ -240,7 +240,7 @@ class LocationController extends LocationsBaseController {
         $parameters['convertTo'] = 'toArray';
 
         //Select all active location models
-        $locationModel = $this->select($fields, $whereClause, 1, $parameters);
+        $locationModel = $this->select($fields, $where_clause, 1, $parameters);
 
         //Count model
         $locationCount = count($locationModel);
@@ -323,7 +323,7 @@ class LocationController extends LocationsBaseController {
             //Fields to select
             $fields = array('id', 'name');
             //Build where clause
-            $whereClause = array(
+            $where_clause = array(
                 array(
                     'where' => 'where',
                     'column' => $locationKey,
@@ -343,7 +343,7 @@ class LocationController extends LocationsBaseController {
             $parameters['convertTo'] = 'toArray';
 
             //Select all active location models
-            $locationModel = $this->select($fields, $whereClause, 2, $parameters);
+            $locationModel = $this->select($fields, $where_clause, 2, $parameters);
 
             //Array cache 
             $selectOptionsCache = array();

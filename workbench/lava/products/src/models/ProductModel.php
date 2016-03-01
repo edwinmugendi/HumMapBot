@@ -153,7 +153,7 @@ class ProductModel extends \BaseModel {
             $vehicle_model = $vehicle_controller->getModelByField('id', $vehicle_id);
 
             if ($vehicle_model) {//Model exists
-                return $vehicleModel->type == 2 ? $this->getPrice2Attribute() : $this->getPrice1Attribute();
+                return $vehicle_model->type == 2 ? $this->getPrice2Attribute() : $this->getPrice1Attribute();
             }//E# if else statement
         }//E# if statement
         //User not logged in or has not set the default card

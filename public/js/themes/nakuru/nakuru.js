@@ -42,7 +42,7 @@ var onDragEnd = function (event) {
             $address = results[0].formatted_address;
         } else {//Geocoding failed
             $center = new google.maps.LatLng(-0.023559, 37.90619300000003);
-            $address = 'Kenya';
+            $address = 'UK';
         }//E# if else statement
         //Set $map and $marker center and position respectively
         $map.setCenter($center);
@@ -68,8 +68,8 @@ $centerMap = function ($center) {
     $map.setCenter($center);
     $marker.setPosition($center);
     //Set latitude and longitude values respectively
-    $('input#idLatitude').val($center.lat());
-    $('input#idLongitude').val($center.lng());
+    $('input#idLat').val($center.lat());
+    $('input#idLng').val($center.lng());
 
 };//E# $centerMap() closure
 
@@ -115,6 +115,7 @@ function zoomTo($address, $zoom) {
 
     if ($address.hasOwnProperty('lat') && $address.hasOwnProperty('long')) {//$address is has lat and long co-ordinate (mostly updating property)
         $center = new google.maps.LatLng($address.lat, $address.long);
+
         $centerMap($center);
 
     } else {//$address is string
@@ -128,6 +129,7 @@ function zoomTo($address, $zoom) {
                 $center = new google.maps.LatLng(-0.023559, 37.90619300000003);
             }//E# if else statement
             $centerMap($center);
+
         });//E# geocode() function
 
     }//E# if else statement
@@ -143,6 +145,8 @@ function zoomTo($address, $zoom) {
 
     //Listen to DragStart event
     google.maps.event.addListener($marker, 'dragstart', onDragStart);
+
+
 }
 ;//E# zoomTo() function
 /**
@@ -1425,7 +1429,6 @@ function crmRegisterRelatedToLoader($controller, $relatedTo) {
 jQuery(document).ready(function ($) {
     /*Load Maps*/
     if (inlineJs.mappable) {
-
         //Call injectGMaps on window load
         window.onload = injectGMaps;
     }
@@ -1537,8 +1540,6 @@ jQuery(document).ready(function ($) {
         }//E# if else statement
 
         $('#idPostalCode').blur(function () {
-            console.log('asf');
-
             zoomTo($(this).val(), 15);
         });
     }//E# if else statement

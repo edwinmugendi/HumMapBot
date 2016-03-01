@@ -79,7 +79,7 @@ class BaseController extends Controller {
             //Fields to select
             $fields = array('*');
             //Where clause
-            $whereClause = array();
+            $where_clause = array();
 
             $parameters['scope'] = array('statusOne');
 
@@ -87,7 +87,7 @@ class BaseController extends Controller {
             $parameters['orderBy'][] = array('name' => 'asc');
 
             //Select models
-            $model = $this->callController(\Util::buildNamespace('merchants', 'merchant', 1), 'select', array($fields, $whereClause, 2, $parameters));
+            $model = $this->callController(\Util::buildNamespace('merchants', 'merchant', 1), 'select', array($fields, $where_clause, 2, $parameters));
 
             return $this->buildHtmlSelectArray($model, 'id', 'name', \Lang::get('common.select'), '-', array());
         } else if ($this->user['role_id'] == 2) {//Merchant
@@ -117,7 +117,7 @@ class BaseController extends Controller {
      * @author Edwin Mugendi
      * Mass update
      */
-    public function massUpdate($whereClause, $dataToUpdate) {
+    public function massUpdate($where_clause, $dataToUpdate) {
 
         //Build model namespace
         $modelName = \Util::buildNamespace($this->package, $this->controller, 2);
@@ -125,7 +125,7 @@ class BaseController extends Controller {
         //Create a model object
         $model = new $modelName();
 
-        $this->buildWhereClause($model, $whereClause);
+        $this->buildWhereClause($model, $where_clause);
 
         $model->update($dataToUpdate);
     }
@@ -167,17 +167,17 @@ class BaseController extends Controller {
      * Get merchantanization's models
      * 
      * @param int $merchantId Merchant id
-     * @param array $whereClause Where clause
+     * @param array $where_clause Where clause
      * @param array $parameters Parameters
      * 
      * @return array Merchant's model
      */
-    public function getMerchantsModels($merchantId, $whereClause = array(), $parameters = array()) {
+    public function getMerchantsModels($merchantId, $where_clause = array(), $parameters = array()) {
         //Fields to select
         $fields = array('*');
 
         //Build where clause
-        $whereClause[] = array(
+        $where_clause[] = array(
             'where' => 'where',
             'column' => 'merchant_id',
             'operator' => '=',
@@ -188,7 +188,7 @@ class BaseController extends Controller {
         $parameters['scope'] = array('statusOne');
 
         //Select models
-        return $this->select($fields, $whereClause, 2, $parameters);
+        return $this->select($fields, $where_clause, 2, $parameters);
     }
 
 //E# getMerchantsModels() function
@@ -212,11 +212,11 @@ class BaseController extends Controller {
         //Fields to select
         $fields = array('*');
 
-        $whereClause = array();
-        
+        $where_clause = array();
+
         if ($this->user['role_id'] == 2) {
             //Build where clause
-            $whereClause = array(
+            $where_clause = array(
                 array(
                     'where' => 'where',
                     'column' => 'merchant_id',
@@ -227,7 +227,7 @@ class BaseController extends Controller {
         }//E# if statement
 
         if ($specific_where_clause) {
-            $whereClause = array_merge($whereClause, $specific_where_clause);
+            $where_clause = array_merge($where_clause, $specific_where_clause);
         }//E# if statement
         //Set scope
         $parameters['scope'] = array('statusOne');
@@ -241,7 +241,7 @@ class BaseController extends Controller {
         $parameters['orderBy'][] = array($order_field => 'asc');
 
         //Select models
-        $model = $this->select($fields, $whereClause, 2, $parameters);
+        $model = $this->select($fields, $where_clause, 2, $parameters);
 
         return $this->buildHtmlSelectArray($model, $fieldId, $fieldName, $firstLabel, $separator, $optionAttributes);
     }
@@ -546,7 +546,7 @@ class BaseController extends Controller {
         $fields = array('*');
 
         //Set where clause
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => 'user_id',
@@ -562,7 +562,7 @@ class BaseController extends Controller {
         $parameters['orderBy'][] = array('id' => 'desc');
 
         //Select this users models
-        $controller_model = $this->select($fields, $whereClause, 2, $parameters);
+        $controller_model = $this->select($fields, $where_clause, 2, $parameters);
 
         if ($this->subdomain == 'api') {//From API
             //Get success message
@@ -677,18 +677,36 @@ class BaseController extends Controller {
             $this->beforeViewing($singleController);
 
             if ($this->imageable) {//Imageable
-                $singleController['main_url'] = $singleController['thumbnail_url'] = '';
-                $singleController['image_count'] = count($singleController['media']);
-                if ($singleController['image_count']) {
-                    //Get and set media view to data source
-                    $media_response = $this->callController(\Util::buildNamespace('media', 'media', 1), 'formatMediaResponse', array($singleController['media'][0]));
+                if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//API
+                    $media = array();
+                    $single_media_array = array();
+                    foreach ($singleController['media'] as $single_media) {
+                        $upload_path = \Config::get('media::media.uploadPath');
+                        $single_media_array['is_image'] = $single_media['is_image'];
+                        $single_media_array['main_url'] = asset($upload_path . '/' . $single_media['name']);
+                        if ($single_media['is_image']) {
+                            $single_media_array['thumbnail_url'] = asset($upload_path . '/thumbnails' . $single_media['name']);
+                        }//E# if statement
+                        $media[] = $single_media_array;
+                    }//E# foreach statement
 
-                    $singleController['main_url'] = $singleController['thumbnail_url'] = $media_response['thumbnail_url'];
+                    unset($singleController['media']);
 
-                    if ($singleController['media'][0]['is_image']) {
-                        //Main Url
-                        $singleController['main_url'] = $this->view_data['uploadPath'] . '/' . $singleController['media'][0]['name'];
-                    }//E# if  statement
+                    $singleController['images'] = $media;
+                } else {//E# if else statement
+                    $singleController['main_url'] = $singleController['thumbnail_url'] = '';
+                    $singleController['image_count'] = count($singleController['media']);
+                    if ($singleController['image_count']) {
+                        //Get and set media view to data source
+                        $media_response = $this->callController(\Util::buildNamespace('media', 'media', 1), 'formatMediaResponse', array($singleController['media'][0]));
+
+                        $singleController['main_url'] = $singleController['thumbnail_url'] = $media_response['thumbnail_url'];
+
+                        if ($singleController['media'][0]['is_image']) {
+                            //Main Url
+                            $singleController['main_url'] = $this->view_data['uploadPath'] . '/' . $singleController['media'][0]['name'];
+                        }//E# if  statement
+                    }//E# if statement
                 }//E# if statement
             }//E# if statement
             //Set the single controller to view data
@@ -729,7 +747,7 @@ class BaseController extends Controller {
         $parameters['lazyLoad'] = $this->lazyLoad;
 
         //Set where clause
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => 'id',
@@ -739,7 +757,7 @@ class BaseController extends Controller {
         );
 
         //Select this controller model
-        $this->view_data['controller_model'] = $this->select($fields, $whereClause, 1, $parameters);
+        $this->view_data['controller_model'] = $this->select($fields, $where_clause, 1, $parameters);
 
         //Inject data sources
         $this->injectDataSources();
@@ -854,7 +872,7 @@ class BaseController extends Controller {
             $fields = array('*');
 
             //Build where clause
-            $whereClause = array(
+            $where_clause = array(
                 array(
                     'where' => 'where',
                     'column' => 'id',
@@ -871,7 +889,7 @@ class BaseController extends Controller {
             $parameters['lazyLoad'] = $this->lazyLoad;
 
             //Select this controller
-            $controller_model = $this->select($fields, $whereClause, 1, $parameters);
+            $controller_model = $this->select($fields, $where_clause, 1, $parameters);
 
             if ($this->controller == 'user') {
 
@@ -1079,7 +1097,7 @@ class BaseController extends Controller {
         $this->view_data['dataSource']['order'] = \BaseArrayDataModel::getOrderSelectOptions($this->package, $this->controller);
 
         //Define parameters
-        $this->view_data['paginationAppends'] = $whereClause = $parameters = array();
+        $this->view_data['paginationAppends'] = $where_clause = $parameters = array();
 
 
         //Inject Data Sources
@@ -1140,22 +1158,22 @@ class BaseController extends Controller {
         $parameters['lazyLoad'] = $this->lazyLoad;
 
         //Search
-        $this->buildSearchWhereClause($fields, $whereClause, $parameters, $view_data['model']);
+        $this->buildSearchWhereClause($fields, $where_clause, $parameters, $view_data['model']);
 
         //Build where clause based on role
-        $this->roleBasedWhereClause($fields, $whereClause, $parameters);
+        $this->roleBasedWhereClause($fields, $where_clause, $parameters);
 
         //Set owned by where clause
-        $this->setOwnedBy($whereClause);
+        $this->setOwnedBy($where_clause);
 
         //Set scope
         $parameters['scope'] = array('statusOne');
 
         //Call controller specific where clause
-        $this->controllerSpecificWhereClause($fields, $whereClause, $parameters);
+        $this->controllerSpecificWhereClause($fields, $where_clause, $parameters);
 
         //Select this users
-        $this->view_data['controller_model'] = $this->select($fields, $whereClause, 2, $parameters);
+        $this->view_data['controller_model'] = $this->select($fields, $where_clause, 2, $parameters);
 
         //Prepare controller model
         $this->prepareControllerModel();
@@ -1257,12 +1275,12 @@ class BaseController extends Controller {
      * 
      * @param array $fields Fields
      * @param array $parameters Parameters
-     * @param array $whereClause Where clause
+     * @param array $where_clause Where clause
      * @param model $model Model
      * 
      * @param Model $model Model
      */
-    public function buildSearchWhereClause(&$fields, &$whereClause, &$parameters, &$model) {
+    public function buildSearchWhereClause(&$fields, &$where_clause, &$parameters, &$model) {
 
         if (property_exists($model, 'viewFields')) {//Search fields exist
             foreach ($this->input as $key => $value) {//Loop via the inputs
@@ -1276,7 +1294,7 @@ class BaseController extends Controller {
                             $value = '%' . $value . '%';
                         }//E# if statement
                         //Append where clause
-                        $whereClause[] = array(
+                        $where_clause[] = array(
                             'where' => 'where',
                             'column' => $key,
                             'operator' => $model->viewFields[$key][2],
@@ -1296,10 +1314,10 @@ class BaseController extends Controller {
      * Build where clause based on role
      * 
      * @param array $fields Fields
-     * @param array $whereClause Where clause
+     * @param array $where_clause Where clause
      * @param array $parameters Parameters
      */
-    public function roleBasedWhereClause($fields, &$whereClause, &$parameters) {
+    public function roleBasedWhereClause($fields, &$where_clause, &$parameters) {
         
     }
 
@@ -1310,15 +1328,15 @@ class BaseController extends Controller {
      * 
      * Set owned by where clause to get only models owned by the respective model
      * 
-     * @param type $whereClause
+     * @param type $where_clause
      */
-    public function setOwnedBy(&$whereClause) {
+    public function setOwnedBy(&$where_clause) {
 
         if ($this->ownedBy) {//Owned by is set
             foreach ($this->ownedBy as $singleOwnedBy) {
                 //Owned by current user
                 if ($singleOwnedBy == 'user') {
-                    $whereClause[] = array(
+                    $where_clause[] = array(
                         'where' => 'where',
                         'column' => 'user_id',
                         'operator' => '=',
@@ -1327,7 +1345,7 @@ class BaseController extends Controller {
                 }//E# if statement
                 //Owned by current merchant
                 if ($singleOwnedBy == 'merchant') {
-                    $whereClause[] = array(
+                    $where_clause[] = array(
                         'where' => 'where',
                         'column' => 'merchant_id',
                         'operator' => '=',
@@ -1346,10 +1364,10 @@ class BaseController extends Controller {
      * 
      * Set controller specific where clause
      * @param array $fields Fields
-     * @param array $whereClause Where clause
+     * @param array $where_clause Where clause
      * @param array $parameters Parameters
      */
-    public function controllerSpecificWhereClause(&$fields, &$whereClause, &$parameters) {
+    public function controllerSpecificWhereClause(&$fields, &$where_clause, &$parameters) {
         
     }
 
@@ -1810,7 +1828,7 @@ class BaseController extends Controller {
         $fields = array('*');
 
         //Build where clause
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => $field,
@@ -1819,10 +1837,10 @@ class BaseController extends Controller {
             )
         );
         //Select model by field
-        return $this->select($fields, $whereClause, 1, $parameters);
+        return $this->select($fields, $where_clause, 1, $parameters);
     }
 
-    public function delete($whereClause) {
+    public function delete($where_clause) {
         //Cache model namespace
         $model = \Util::buildNamespace($this->package, $this->controller, 2);
 
@@ -1830,13 +1848,13 @@ class BaseController extends Controller {
         $deleteModel = new $model();
 
         //Build where clause
-        $this->buildWhereClause($deleteModel, $whereClause);
+        $this->buildWhereClause($deleteModel, $where_clause);
 
         return $deleteModel->delete();
     }
 
 //E# delete() function
-    public function select($fields, $whereClause, $oneOrAll, $parameters = array()) {
+    public function select($fields, $where_clause, $oneOrAll, $parameters = array()) {
 
         //Cache model namespace
         $model = \Util::buildNamespace($this->package, $this->controller, 2);
@@ -1845,7 +1863,7 @@ class BaseController extends Controller {
         $selectModel = new $model();
 
         //Build where clause
-        $this->buildWhereClause($selectModel, $whereClause);
+        $this->buildWhereClause($selectModel, $where_clause);
 
         if (array_key_exists('withTrashed', $parameters)) {//Load Trashed models
             $selectModel = $selectModel->withTrashed();
@@ -1942,8 +1960,8 @@ class BaseController extends Controller {
      * @param array $where_array the where clause
      * @param model the model with where clause added to it 
      */
-    private function buildWhereClause(&$model, &$whereClause) {
-        foreach ($whereClause as $singleWhereClause) {//Loop through the where clause
+    private function buildWhereClause(&$model, &$where_clause) {
+        foreach ($where_clause as $singleWhereClause) {//Loop through the where clause
             //($singleWhereClause);
             if ($singleWhereClause['where'] == 'where') {//Where clause
                 $model = $model->where($singleWhereClause['column'], $singleWhereClause['operator'], $singleWhereClause['operand']);

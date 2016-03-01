@@ -63,7 +63,7 @@ class MerchantController extends MerchantsBaseController {
         $fields = array('*');
 
         //Set where clause
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => 'id',
@@ -79,7 +79,7 @@ class MerchantController extends MerchantsBaseController {
         $parameters['scope'] = array('statusOne');
 
         //Select this merchants models
-        $merchant_model = $this->select($fields, $whereClause, 1, $parameters);
+        $merchant_model = $this->select($fields, $where_clause, 1, $parameters);
 
         $session_merchant = \Session::put('merchant', $merchant_model->toArray());
         

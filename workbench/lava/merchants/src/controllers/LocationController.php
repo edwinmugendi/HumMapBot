@@ -22,12 +22,12 @@ class LocationController extends MerchantsBaseController {
      * Build where clause based on role
      * 
      * @param array $fields Fields
-     * @param array $whereClause Where clause
+     * @param array $where_clause Where clause
      * @param array $parameters Parameters
      */
-    public function roleBasedWhereClause($fields, &$whereClause, &$parameters) {
+    public function roleBasedWhereClause($fields, &$where_clause, &$parameters) {
         if ($this->user['role_id'] == 2) {//Merchant
-            $whereClause[] = array(
+            $where_clause[] = array(
                 'where' => 'where',
                 'column' => 'merchant_id',
                 'operator' => '=',
@@ -92,10 +92,10 @@ class LocationController extends MerchantsBaseController {
      * 
      * Set controller specific where clause
      * @param array $fields Fields
-     * @param array $whereClause Where clause
+     * @param array $where_clause Where clause
      * @param array $parameters Parameters
      */
-    public function controllerSpecificWhereClause(&$fields, &$whereClause, &$parameters) {
+    public function controllerSpecificWhereClause(&$fields, &$where_clause, &$parameters) {
 
         if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//API
             $this->validationRules = array(
@@ -149,11 +149,18 @@ class LocationController extends MerchantsBaseController {
                     $location_ids = array_fetch($fluent_locations, 'id');
 
                     //Build where clause
-                    $whereClause[] = array(
+                    $where_clause[] = array(
                         'where' => 'whereIn',
                         'column' => 'id',
                         'operator' => '=',
                         'operand' => $location_ids
+                    );
+
+                    $where_clause[] = array(
+                        'where' => 'where',
+                        'column' => 'workflow',
+                        'operator' => '=',
+                        'operand' => 1
                     );
 
                     //Implode the location id's
@@ -165,7 +172,7 @@ class LocationController extends MerchantsBaseController {
                     );
                 } else {
                     //Build where clause
-                    $whereClause[] = array(
+                    $where_clause[] = array(
                         'where' => 'whereIn',
                         'column' => 'id',
                         'operator' => '=',
@@ -213,15 +220,22 @@ class LocationController extends MerchantsBaseController {
                     $location_ids = $feel_model->lists('location_id');
 
                     //Build where clause
-                    $whereClause[] = array(
+                    $where_clause[] = array(
                         'where' => 'whereIn',
                         'column' => 'id',
                         'operator' => '=',
                         'operand' => $location_ids
                     );
+
+                    $where_clause[] = array(
+                        'where' => 'where',
+                        'column' => 'workflow',
+                        'operator' => '=',
+                        'operand' => 1
+                    );
                 } else {
                     //Build where clause
-                    $whereClause[] = array(
+                    $where_clause[] = array(
                         'where' => 'whereIn',
                         'column' => 'id',
                         'operator' => '=',
@@ -235,10 +249,33 @@ class LocationController extends MerchantsBaseController {
                 //Validate location
                 $this->isInputValid();
 
-                //Get model by id
-                $location_model = $this->getModelByField('id', $this->input['id']);
+                //Fields to select
+                $fields = array('*');
 
-                if (!$location_model) {
+                //Set where clause
+                $where_clause = array(
+                    array(
+                        'where' => 'where',
+                        'column' => 'id',
+                        'operator' => '=',
+                        'operand' => $this->input['id']
+                    ),
+                    array(
+                        'where' => 'where',
+                        'column' => 'workflow',
+                        'operator' => '=',
+                        'operand' => 1
+                    )
+                );
+
+                //Set parameters
+                $parameters['scope'] = array('statusOne');
+
+                //Get model by id
+                $location_model = $this->select($fields, $where_clause, 2, $parameters);
+
+                if (!count($location_model)) {
+
                     //Set notification
                     $this->notification = array(
                         'field' => 'location_id',
@@ -289,49 +326,7 @@ class LocationController extends MerchantsBaseController {
 
 //E# getLocations() function
 
-    /**
-     * S# beforeViewing() function
-     * 
-     * Prepare fields for list view
-     * 
-     */
-    public function beforeViewing(&$singleModel) {
-        //Define days
-        $days = array(
-            'monday',
-            'tuesday',
-            'wednesday',
-            'thursday',
-            'friday',
-            'saturday',
-            'sunday',
-            'holiday',
-        );
-        //Days array
-        $daysArray = array();
-        foreach ($days as $key => $day) {//Loop via the days
-            //Set day to days array
-            $daysArray[$day]['open'] = $singleModel[$day . '_open'];
-            $daysArray[$day]['close'] = $singleModel[$day . '_close'];
-
-            //Remove them from the 
-            unset($singleModel[$day . '_open']);
-            unset($singleModel[$day . '_close']);
-        }//E# foreach statement
-        //Url
-        $url = array_key_exists('no_thumbnails', $singleModel) ? 'media/lava/upload/' : 'media/lava/upload/thumbnails/';
-
-        //Image
-        $singleModel['image_url'] = $singleModel['image'] ? asset($url . $singleModel['image']) : "";
-
-        //Set the days array as times key to the location array
-        $singleModel['times'] = $daysArray;
-
-        unset($singleModel['ratings']);
-        unset($singleModel['pivot']);
-    }
-
-//E#beforeViewing() function
+    
 }
 
 //E# LocationController() function

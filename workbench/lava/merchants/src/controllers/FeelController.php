@@ -38,7 +38,7 @@ class FeelController extends MerchantsBaseController {
         $fields = array('id');
 
         //Build where clause
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => 'user_id',
@@ -60,7 +60,7 @@ class FeelController extends MerchantsBaseController {
         );
 
         if ($this->input['type'] == 3) {//Review
-            $whereClause[] = array(
+            $where_clause[] = array(
                 'where' => 'where',
                 'column' => 'id',
                 'operator' => '=',
@@ -68,7 +68,7 @@ class FeelController extends MerchantsBaseController {
             );
         }//E# if statement
         //Get feel model
-        $feelModel = $this->select($fields, $whereClause, 1);
+        $feelModel = $this->select($fields, $where_clause, 1);
 
         if ($feelModel) {//Exists
             $feelModel->delete();
@@ -119,7 +119,7 @@ class FeelController extends MerchantsBaseController {
             $fields = array('*');
 
             //Build where clause
-            $whereClause = array(
+            $where_clause = array(
                 array(
                     'where' => 'where',
                     'column' => 'user_id',
@@ -140,7 +140,7 @@ class FeelController extends MerchantsBaseController {
                 )
             );
             //Get feel model
-            $feelModel = $this->select($fields, $whereClause, 1);
+            $feelModel = $this->select($fields, $where_clause, 1);
 
             //Cache feeling
             $feeling = $this->input ['type'] == 2 ? $this->input['rate'] : '';

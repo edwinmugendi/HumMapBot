@@ -21,14 +21,14 @@ class CreateCardsTable extends Migration {
             $table->boolean('deleted_on_stripe');
             $table->integer('exp_month')->unsigned();
             $table->integer('exp_year')->unsigned();
-            $table->integer('last4')->unsigned();
+            $table->string('last4');
             $table->string('brand');
             $table->string('address_city');
             $table->string('address_zip');
             $table->string('address_country');
             $table->string('address_line1');
-            $table->string('token');
-            
+            $table->string('card_token');
+
             $table->string('agent', 255);
             $table->string('ip', 255);
             $table->integer('status')->unsigned();

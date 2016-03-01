@@ -15,12 +15,12 @@ class UserController extends AccountsBaseController {
      * Build where clause based on role
      * 
      * @param array $fields Fields
-     * @param array $whereClause Where clause
+     * @param array $where_clause Where clause
      * @param array $parameters Parameters
      */
-    public function roleBasedWhereClause($fields, &$whereClause, &$parameters) {
+    public function roleBasedWhereClause($fields, &$where_clause, &$parameters) {
         if ($this->user['role_id'] == 2) {//Merchant
-            $whereClause[] = array(
+            $where_clause[] = array(
                 'where' => 'where',
                 'column' => 'merchant_id',
                 'operator' => '=',
@@ -580,7 +580,7 @@ class UserController extends AccountsBaseController {
                 $fields = array('*');
 
                 //Build where clause
-                $whereClause = array(
+                $where_clause = array(
                     array(
                         'where' => 'orWhere',
                         'column' => 'email',
@@ -596,7 +596,7 @@ class UserController extends AccountsBaseController {
                 );
 
                 //Get user by facebook id
-                $user_model = $this->select($fields, $whereClause, 1);
+                $user_model = $this->select($fields, $where_clause, 1);
 
                 if ($user_model) {//User has already signed in facebook
                     //TODO: Should I use Stripe 
@@ -747,7 +747,7 @@ class UserController extends AccountsBaseController {
             $fields = array('*');
 
             //Build where clause
-            $whereClause = array(
+            $where_clause = array(
                 array(
                     'where' => 'where',
                     'column' => $field,
@@ -766,7 +766,7 @@ class UserController extends AccountsBaseController {
             $parameters['lazyLoad'] = array('logins');
 
             //Get user by email and verification code
-            $user_model = $this->select($fields, $whereClause, 1);
+            $user_model = $this->select($fields, $where_clause, 1);
 
             if ($user_model) {
                 foreach ($user_model->logins as $singleLogin) {//Loop and delete the login attempts

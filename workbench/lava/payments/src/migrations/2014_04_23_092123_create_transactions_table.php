@@ -45,6 +45,7 @@ class CreateTransactionsTable extends Migration {
             $table->string('gateway', 255);
             $table->string('gateway_tran_id', 255);
             $table->string('gateway_code', 255); //New
+            
             //Notification
             $table->boolean('user_smsed');
             $table->boolean('user_emailed');

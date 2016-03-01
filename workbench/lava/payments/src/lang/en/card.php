@@ -29,7 +29,7 @@ return array(
             'address_zip' => 'Zip',
             'address_country' => 'Country',
             'address_line1' => 'Address',
-            'token' => 'Token',
+            'card_token' => 'Token',
         ),
         'actions' => array(
             'delete' => array(

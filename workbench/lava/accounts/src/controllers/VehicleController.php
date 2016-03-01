@@ -15,6 +15,26 @@ class VehicleController extends AccountsBaseController {
     public $controller = 'vehicle';
 
     /**
+     * S# beforeCreating() function
+     * @author Edwin Mugendi
+     * Call this just before creating the model
+     * Can be used to prepare the inputs
+     * @return 
+     */
+    public function beforeCreating() {
+        if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//From API
+            $this->input['user_id'] = $this->user['id'];
+        }//E# if statement
+
+        $this->input['status'] = 1;
+        $this->input['created_by'] = $this->user['id'] ? $this->user['id'] : 1;
+        $this->input['updated_by'] = $this->user['id'] ? $this->user['id'] : 1;
+        return;
+    }
+
+//E# beforeCreating() function
+
+    /**
      * S# injectDataSources() function
      * @author Edwin Mugendi
      * Inject data source. This are mainly select
@@ -22,9 +42,9 @@ class VehicleController extends AccountsBaseController {
      * @param array $dataSource Data source
      */
     public function injectDataSources() {
-        
+
         //Get this organization user id
-        $this->view_data['dataSource']['user_id'] = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('first_name','last_name'), \Lang::get('common.select')));
+        $this->view_data['dataSource']['user_id'] = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('first_name', 'last_name'), \Lang::get('common.select')));
 
         //Get and set type options to data source
         $this->view_data['dataSource']['type'] = \Lang::get($this->package . '::' . $this->controller . '.data.type');
@@ -38,10 +58,10 @@ class VehicleController extends AccountsBaseController {
      * 
      * Set controller specific where clause
      * @param array $fields Fields
-     * @param array $whereClause Where clause
+     * @param array $where_clause Where clause
      * @param array $parameters Parameters
      */
-    public function controllerSpecificWhereClause(&$fields, &$whereClause, &$parameters) {
+    public function controllerSpecificWhereClause(&$fields, &$where_clause, &$parameters) {
 
         if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//From API
             if (array_key_exists('id', $this->input)) {
@@ -49,7 +69,6 @@ class VehicleController extends AccountsBaseController {
                 //Get model by id
                 $vehicle_model = $this->getModelByField('id', $this->input['id']);
 
-                //dd($vehicle_model->count());
                 if ($vehicle_model && ($vehicle_model->status == 1) && ($vehicle_model->user_id == $this->user['id'])) {
                     $message = \Lang::get($this->package . '::' . $this->controller . '.notification.list');
 
@@ -70,7 +89,14 @@ class VehicleController extends AccountsBaseController {
                     //Throw Vehicle not found error
                     throw new \Api404Exception($this->notification);
                 }//E# if else statement
-            }//E# if statement
+            } else {
+                $where_clause[] = array(
+                    'where' => 'where',
+                    'column' => 'user_id',
+                    'operator' => '=',
+                    'operand' => $this->user['id']
+                );
+            }//E# if else statement
         }//E# if statement
     }
 
@@ -170,7 +196,7 @@ class VehicleController extends AccountsBaseController {
     public function makeVehicleDefault($vehicle_id, $save) {
         if ($save) {
             //Set where clause
-            $whereClause = array(
+            $where_clause = array(
                 array(
                     'where' => 'where',
                     'column' => 'id',
@@ -183,10 +209,10 @@ class VehicleController extends AccountsBaseController {
                 'is_default' => 1
             );
 
-            $this->massUpdate($whereClause, $data_to_update);
+            $this->massUpdate($where_clause, $data_to_update);
         }//E# if statement
         //Set where clause
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => 'id',
@@ -200,13 +226,13 @@ class VehicleController extends AccountsBaseController {
         );
 
         //Update user
-        $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'massUpdate', array($whereClause, $data_to_update));
+        $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'massUpdate', array($where_clause, $data_to_update));
 
         //Fields
         $fields = array('id');
 
         //Set where clause
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => 'user_id',
@@ -222,7 +248,7 @@ class VehicleController extends AccountsBaseController {
         );
         $parameters['scope'] = array('statusOne');
 
-        $vehicle_model = $this->select($fields, $whereClause, 2, $parameters);
+        $vehicle_model = $this->select($fields, $where_clause, 2, $parameters);
 
         $vehicle_ids = $vehicle_model->lists('id');
 
@@ -230,7 +256,7 @@ class VehicleController extends AccountsBaseController {
 
         if ($clean_vehicle_ids) {
             //Set where clause
-            $whereClause = array(
+            $where_clause = array(
                 array(
                     'where' => 'whereIn',
                     'column' => 'id',
@@ -243,7 +269,7 @@ class VehicleController extends AccountsBaseController {
                 'is_default' => 0
             );
 
-            $this->massUpdate($whereClause, $data_to_update);
+            $this->massUpdate($where_clause, $data_to_update);
         }//E# if statement
     }
 

@@ -59,7 +59,7 @@ $form['attributes']['route'] = $form['attributes']['route'][$crudId];
                                         // echo $model[$singleField['htmlName']];
                                         //Set the field value  
 
-                                        if ((empty($model[$singleField['htmlName']]))) {
+                                        if ((empty($model[$singleField['htmlName']])) || ($model[$singleField['htmlName']] === 0)) {
                                             $value_from = 'old';
                                             $value = \Input::old($singleField['htmlName']);
                                         } else {

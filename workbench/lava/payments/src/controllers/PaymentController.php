@@ -46,7 +46,7 @@ class PaymentController extends PaymentsBaseController {
         $fields = array('*');
 
         //Build where clause
-        $whereClause = array(
+        $where_clause = array(
             array(
                 'where' => 'where',
                 'column' => 'user_id',
@@ -67,7 +67,7 @@ class PaymentController extends PaymentsBaseController {
             )
         );
         //Get feel model
-        return $this->callController(\Util::buildNamespace('merchants', 'feel', 1), 'select', array($fields, $whereClause, 1));
+        return $this->callController(\Util::buildNamespace('merchants', 'feel', 1), 'select', array($fields, $where_clause, 1));
     }
 
 //E# getLocationStamps() function
