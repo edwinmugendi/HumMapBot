@@ -23,8 +23,8 @@ class DocController extends DocsBaseController {
      * 4. Forgot password page
      */
     public function getDocs() {
-        $this->crudId = 1;
 
+        $this->crudId = 40; //So that not to call validationEngine
         //Prepare view data
         $this->view_data = $this->prepareViewData('docs');
 

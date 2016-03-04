@@ -17,6 +17,7 @@ return array(
         'created' => 'Promotion created',
         'updated' => 'Promotion updated',
         'deleted' => 'Promotion deleted',
+        'list' => 'Promotion list',
     ),
     'data' => array(
         'type' => array(

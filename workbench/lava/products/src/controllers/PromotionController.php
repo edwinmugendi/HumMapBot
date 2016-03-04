@@ -15,6 +15,67 @@ class PromotionController extends ProductsBaseController {
     public $controller = 'promotion';
 
     /**
+     * S# controllerSpecificWhereClause() function
+     * @author Edwin Mugendi
+     * 
+     * Set controller specific where clause
+     * @param array $fields Fields
+     * @param array $where_clause Where clause
+     * @param array $parameters Parameters
+     */
+    public function controllerSpecificWhereClause(&$fields, &$where_clause, &$parameters) {
+
+        if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//From API
+            if (array_key_exists('id', $this->input)) {
+
+
+                //Get model by id
+                $promotion_model = $this->getModelByField('id', $this->input['id']);
+
+                if ($promotion_model && ($promotion_model->status == 1)) {
+                    $message = \Lang::get($this->package . '::' . $this->controller . '.notification.list');
+
+                    $promotion_array = $promotion_model->toArray();
+
+                    //Throw Transaction not found error
+                    throw new \Api200Exception($promotion_array, $message);
+                } else {
+                    //Set notification
+                    $this->notification = array(
+                        'field' => 'promotion_id',
+                        'type' => 'Promotion',
+                        'value' => $this->input['id'],
+                    );
+
+                    //Throw Transaction not found error
+                    throw new \Api404Exception($this->notification);
+                }//E# if else statement
+            } else {
+                $promotion_parameters = array();
+
+                $promotion_parameters['lazyLoad'] = array('unredeemedPromotions');
+                //Get user model
+                $user_model = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('id', $this->user['id'], $promotion_parameters));
+                
+                //dd(count($user_model['unredeemed_promotions']));
+                if ($user_model['unredeemed_promotions']) {
+                    $promotion_ids = $user_model['unredeemed_promotions']->lists('id');
+                } else {
+                    $promotion_ids = array(0);
+                }//E# if statement
+                
+                $where_clause[] = array(
+                    'where' => 'whereIn',
+                    'column' => 'id',
+                    'operand' => $promotion_ids
+                );
+            }//E# if else statement
+        }//E# if statement
+    }
+
+//E# controllerSpecificWhereClause() function
+
+    /**
      * S# roleBasedWhereClause() function
      * @author Edwin Mugendi
      * Build where clause based on role
@@ -46,7 +107,7 @@ class PromotionController extends ProductsBaseController {
     public function injectDataSources() {
         //Get this organization merchant id
         $this->view_data['dataSource']['merchant_id'] = $this->appGetCustomMerchantHtmlSelect();
-                
+
         //Get this organization location id
         $this->view_data['dataSource']['location_id'] = $this->callController(\Util::buildNamespace('merchants', 'location', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('name'), \Lang::get('common.select')));
 

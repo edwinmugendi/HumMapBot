@@ -1056,7 +1056,7 @@ class BaseController extends Controller {
 
 //E# exportToPdf() function
 
-    /**
+        /**
      * S# pdf() function
      * @param str $content Content
      * @param str $orientation Pdf orientation
@@ -1067,8 +1067,9 @@ class BaseController extends Controller {
      * @return OBJECT PDF
      */
     public function pdf($content, $orientation, $size, $download_or_show_or_output, $name = null) {
+        $pdf = new \Thujohn\Pdf\Pdf();
         //Return PDF
-        return ($name) ? \PDF::load($content, $size, $orientation)->$download_or_show_or_output($name) : \PDF::load($content, $size, $orientation)->$download_or_show_or_output();
+        return ($name) ? $pdf->load($content, $size, $orientation)->$download_or_show_or_output($name) : \PDF::load($content, $size, $orientation)->$download_or_show_or_output();
     }
 
     //E# pdf() function
@@ -2148,9 +2149,6 @@ class BaseController extends Controller {
 
         //Get and set the model's create validation rules
         $this->validationRules = $modelObject->createRules;
-
-        //Append custom validation rules
-        $this->appendCustomValidationRules();
 
         //Append custom validation rules
         $this->appendCustomValidationRules();

@@ -48,7 +48,7 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
                 //Now
                 $now = Carbon::now();
 
-                $promo_expiry_date = Carbon::createFromFormat('Y-m-d G:i:s', $promotion_model->expiry_date);
+                $promo_expiry_date = Carbon::createFromFormat('Y-m-d', $promotion_model->expiry_date);
 
                 if ($promo_expiry_date->gt($now)) {
                     if ($promotion_model->new_customer) {//Only for new customers

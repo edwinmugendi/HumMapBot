@@ -1523,7 +1523,29 @@ jQuery(document).ready(function ($) {
 
     });
 
-    if (inlineJs.page === 'merchantsMerchantPostPage') {//Merchants Merchant Post Page
+    if (inlineJs.page === 'docsDocDocsPage') {//Docs Doc Docs Page
+        var data = '{"name":"name","age":"12"}';
+        data = $.parseJSON(data);
+        console.log(data);
+        document.getElementById("json").innerHTML = JSON.stringify(data, undefined, 2);
+
+        $('h3').each(function () {
+            if ($(this).html() == 'Returns') {
+                var $table = $(this).next();
+
+                $table.find('tr').each(function ($index) {
+                    if ($index != 0) {
+                        var $row = $(this);
+                        var $json = JSON.stringify($.parseJSON($row.find('td').eq(3).html()), undefined, 2);
+
+                        $row.find('td').eq(3).html('<pre>' + $json + '</pre>');
+
+                    }
+                })
+            }
+        });
+
+    } else if (inlineJs.page === 'merchantsMerchantPostPage') {//Merchants Merchant Post Page
         if (inlineJs.crudId == 1) {
             $('#idCurrencyId option[value="76"]').prop('selected', true);
             $('#idCountryId option[value="GB"]').prop('selected', true);

@@ -53,22 +53,16 @@ return array(
             )
         ),
         array(
-            'name' => 'Get Single Promotion by id',
-            'note' => 'Get a single promotion\'s details by promotion id',
+            'name' => 'Get Single Promotion by Id',
+            'note' => 'Get a single promotion\'s details by id',
             'filtered' => 1,
-            'endpoint' => '/product/promotion/get/{field}/{value}',
+            'endpoint' => '/api/get/promotion',
             'httpVerb' => 'GET',
             'parameters' => array(
                 array(
-                    'field' => 'field',
+                    'field' => 'id',
                     'dataType' => 'string',
-                    'note' => 'Must be set to \'id\'. Set this in the url not query string',
-                    'required' => 1,
-                ),
-                array(
-                    'field' => 'value',
-                    'dataType' => 'integer',
-                    'note' => 'Actual id. Set this in the url not query string',
+                    'note' => 'Id of the promotion',
                     'required' => 1,
                 ),
                 array(
@@ -83,23 +77,41 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Promotion found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Promotion id 1 found.","data":{"id":"1","location_id":"1","code":"PROMO","description":"","type":"2","value":"0","new_customer":"1","expiry_date":"0000-00-00 00:00:00","created_at":"0000-00-00 00:00:00","updated_at":"0000-00-00 00:00:00","field1":"","user_owns":1}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Promotion list","data":{"id":"4","location_id":"0","code":"PROMO","description":"PROMO","type":"1","value":"10.00","new_customer":"0","expiry_date":"2016-03-05","status":"1","created_by":"36","updated_by":"36","created_at":"2016-03-04 11:42:11","updated_at":"2016-03-04 11:42:11","merchant_id":"1","ip":"127.0.0.1","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36","user_owns":1}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"promotion_id","error":"The promotion id must be an integer."}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
+                ),
+                array(
+                    'action' => 'Not found',
+                    'httpCode' => 404,
+                    'note' => 'Promotion not found',
+                    'example' => '{"http_status_code":404,"system_code":904,"message":"Promotion not found.","data":{"field":"promotion_id","type":"Promotion","value":"6"}}'
                 )
             )
         ),
         array(
-            'name' => 'Get All Promotion',
+            'name' => 'Get All Users Promotion',
             'note' => 'Get all users promotions',
             'filtered' => 1,
-            'endpoint' => '/product/promotion/get',
+            'endpoint' => 'api/get/promotion',
             'httpVerb' => 'GET',
             'parameters' => array(
+                array(
+                    'field' => 'page',
+                    'dataType' => 'integer',
+                    'note' => 'Pagination page',
+                    'required' => 0,
+                ),
+                array(
+                    'field' => 'per_page',
+                    'dataType' => 'integer',
+                    'note' => 'No of promotions to return. Defaults to 30',
+                    'required' => 0,
+                ),
                 array(
                     'field' => 'token',
                     'dataType' => 'string',
@@ -112,13 +124,13 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Promotions found',
-                    'example' => '{"httpStatusCode":200,"systemCode":700,"message":"Your promotion\'s list","data":[{"id":"1","location_id":"1","code":"PROMO","description":"","type":"2","value":"0","new_customer":"1","expiry_date":"0000-00-00 00:00:00","created_at":"0000-00-00 00:00:00","updated_at":"0000-00-00 00:00:00","user_owns":1},{"id":"4","location_id":"0","code":"PRO","description":"","type":"0","value":"0","new_customer":"0","expiry_date":"0000-00-00 00:00:00","created_at":"0000-00-00 00:00:00","updated_at":"0000-00-00 00:00:00","user_owns":1}]}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Promotion list","data":{"total":1,"per_page":30,"current_page":1,"last_page":1,"from":1,"to":1,"data":[{"id":"4","location_id":"0","code":"PROMO","description":"PROMO","type":"1","value":"10.00","new_customer":"0","expiry_date":"2016-03-05","status":"1","created_by":"36","updated_by":"36","created_at":"2016-03-04 11:42:11","updated_at":"2016-03-04 11:42:11","merchant_id":"1","ip":"127.0.0.1","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36","user_owns":1}]}}'
                 ),
                 array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
                 ),
             )
         ),

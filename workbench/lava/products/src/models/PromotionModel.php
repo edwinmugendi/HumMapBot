@@ -49,6 +49,7 @@ class PromotionModel extends \BaseModel {
         'user_owns'
     );
     protected $hidden = array(
+        'claimed'
     );
     //Create validation rules
     public $createRules = array(

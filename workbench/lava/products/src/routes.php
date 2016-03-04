@@ -11,6 +11,9 @@
 \Route::group(array('before' => 'api'), function() {
     //Claim promtion code
     \Route::post('api/claim/promotion', array('as' => 'apiClaimPromotion', 'uses' => 'Lava\Products\PromotionController@postClaimPromotion'));
+
+    //Get users promotions
+    \Route::get('api/get/promotion', array('as' => 'apiGetPromotion', 'uses' => 'Lava\Products\PromotionController@getList'));
 });
 
 \Route::group(array('before' => 'auth'), function() {
@@ -39,7 +42,7 @@
     //Un-Delete product
     \Route::post('products/undelete/product', array('as' => 'productsUndeleteProduct', 'uses' => 'Lava\Products\ProductController@postUndelete'));
 
-        /**
+    /**
      * Promotion routes
      */
     //Detailed promotion
@@ -62,5 +65,4 @@
 
     //Un-Delete promotion
     \Route::post('products/undelete/promotion', array('as' => 'productsUndeletePromotion', 'uses' => 'Lava\Products\PromotionController@postUndelete'));
-
 });
