@@ -1524,11 +1524,6 @@ jQuery(document).ready(function ($) {
     });
 
     if (inlineJs.page === 'docsDocDocsPage') {//Docs Doc Docs Page
-        var data = '{"name":"name","age":"12"}';
-        data = $.parseJSON(data);
-        console.log(data);
-        document.getElementById("json").innerHTML = JSON.stringify(data, undefined, 2);
-
         $('h3').each(function () {
             if ($(this).html() == 'Returns') {
                 var $table = $(this).next();
