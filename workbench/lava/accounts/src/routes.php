@@ -5,7 +5,7 @@
 
 //Load Login or Sign up page
 \Route::get('user/{type}/{resetCode?}', array('as' => 'userRegistration', 'uses' => 'Lava\Accounts\UserController@getRegistration'))
-        ->where('type', 'register|login|forgot|reset|activate');
+        ->where('type', 'register|login|forgot|reset|activate|verify');
 
 //Login page
 \Route::get('/', array('as' => 'userLogin', function() {

@@ -416,6 +416,12 @@ return array(
                         2 => 'The email you specified is not registered. Kindly confirm the email is correct or :register'
                     )
                 ),
+                'verify' => array(
+                    'statusCode' => array(
+                        1 => 'Your account has been activated',
+                        2 => 'The email or activation code is invalid'
+                    )
+                ),
                 'activate' => array(
                     'heading' => 'Account Activation',
                     'suggest' => 'Back to :login or :register',

@@ -1,8 +1,6 @@
 <?php if (!array_key_exists('export', $view_data['input'])): ?><div class="row">
     <div class="col-md-12">
         <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])); ?>" class="btn btn-default"><i class="glyphicon glyphicon-chevron-left"></i>&nbsp;<?php echo \Lang::get('common.back_to_list'); ?></a>
-        &nbsp;&nbsp;<a href="<?php echo \URL::route(camel_case($view_data['package'] . '_post_' . $view_data['controller']), array($view_data['controller_model']['id'])); ?>" class="btn btn-primary"><i class="glyphicon glyphicon-plus-sign"></i>&nbsp;<?php echo \Lang::get('common.edit'); ?></a>
-        &nbsp;&nbsp;<button class="deleteRow btn btn-danger" type="button" data-ids="<?php echo $view_data['controller_model']['id']; ?>"><i class="glyphicon glyphicon-trash"></i>&nbsp;<?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.actions.delete.delete'); ?></button>
         &nbsp;&nbsp;<div class="btn-group">
             <button type="button" class="btn btn-success"><i class="glyphicon glyphicon-share"></i>&nbsp;<?php echo \Lang::get('common.view.actions.export.export'); ?></button>
             <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">

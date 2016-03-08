@@ -1,7 +1,18 @@
 <div id="userRegistration" class="commonContainer commonMaxWidth commonOverflowHidden homePageSection">
     <div class="row">
         <div class="col-md-5 col-md-offset-3 userRegistrationForm" >
-            <?php if ($view_data['registrationType'] == 'login'): ?>
+            <?php if ($view_data['registrationType'] == 'verify'): ?>
+                <?php if (\Session::has('verifyCode')): ?>
+                    <h4>
+                        <?php if (\Session::get('verifyCode') == 1): ?>
+                            <p class="commonColorRed"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.verify.statusCode.1'); ?></p>
+                        <?php elseif (\Session::get('verifyCode') == 2): ?>
+                            <p class="commonColorRed"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.verify.statusCode.2'); ?></p>
+                        <?php endif; ?>
+                    </h4>
+                <?php endif; ?>
+
+            <?php elseif ($view_data['registrationType'] == 'login'): ?>
                 <?php if ($view_data['env'] == 'demo'): ?>        
                     <div>
                         <h4>Login to Demo company with:</h4>

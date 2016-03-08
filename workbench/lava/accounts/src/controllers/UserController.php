@@ -44,7 +44,7 @@ class UserController extends AccountsBaseController {
                 } else {
                     $user_ids = array(0);
                 }//E# if else statement
-                
+
                 $where_clause[] = array(
                     'where' => 'whereIn',
                     'column' => 'id',
@@ -452,7 +452,7 @@ class UserController extends AccountsBaseController {
     public function getRegistration($registrationType) {
 
         if ($this->user) {//User is logged, hence redirect to profile page
-            return \Redirect::route('userProfile');
+            $this->getSignOut();
         }//E# if else statement
 
         if (array_key_exists('back_url', $this->input)) {//Set back to url in session
@@ -463,7 +463,6 @@ class UserController extends AccountsBaseController {
 
         //Add registration type to view data
         $this->view_data['registrationType'] = $registrationType;
-
 
         if (array_key_exists('reset_code', $this->input)) {//Reset password
             //Get user by email
@@ -487,11 +486,16 @@ class UserController extends AccountsBaseController {
 
         //Load content view
         $this->view_data['sideBar'] = '';
-
+        
+        
         //Load content view
         $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])
                 ->with('view_data', $this->view_data);
-
+        
+        if($this->view_data['registrationType'] == 'verify'){
+            return $this->view_data['contentView'];
+        }//E# if statement
+        
         //Set container view
         $this->layout->containerView = $this->getContainerViewPartialView();
 
@@ -859,10 +863,10 @@ class UserController extends AccountsBaseController {
 
         if ($validation->fails()) {//Validation fails
             //Build parameters to redirect to
-            $parameters = array('activate');
+            $parameters = array('verify');
 
             //Flash login error code to session
-            \Session::flash('activateCode', 2);
+            \Session::flash('verifyCode', 2);
 
             //Redirect to this route with old inputs and errors
             return \Redirect::route('userRegistration', $parameters)
@@ -882,10 +886,10 @@ class UserController extends AccountsBaseController {
             $user_model->save();
 
             //Flash login error code to session
-            \Session::flash('activateCode', 1);
+            \Session::flash('verifyCode', 1);
 
             //Redirect to login page
-            return \Redirect::route('userRegistration', array('activate'));
+            return \Redirect::route('userRegistration', array('verify'));
         }//E# if else statement
     }
 
