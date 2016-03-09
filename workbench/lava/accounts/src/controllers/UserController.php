@@ -486,16 +486,15 @@ class UserController extends AccountsBaseController {
 
         //Load content view
         $this->view_data['sideBar'] = '';
-        
-        
+
+
         //Load content view
         $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])
                 ->with('view_data', $this->view_data);
-        
-        if($this->view_data['registrationType'] == 'verify'){
+
+        if ($this->view_data['registrationType'] == 'verify') {
             return $this->view_data['contentView'];
         }//E# if statement
-        
         //Set container view
         $this->layout->containerView = $this->getContainerViewPartialView();
 
@@ -664,7 +663,7 @@ class UserController extends AccountsBaseController {
                         'dob' => Carbon::createFromFormat('m/d/Y', $fb_user_profile['birthday']),
                         'created_by' => 1,
                         'updated_by' => 1,
-                        'role_id' => 1,
+                        'role_id' => 3,
                         'notify_sms' => 1,
                         'notify_push' => 1,
                         'notify_email' => 1,
