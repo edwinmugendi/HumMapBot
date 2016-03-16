@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration {
             $table->string('phone', 255);
             $table->date('dob');
             $table->string('gender', 255);
+            $table->string('referral_code', 255);
 
             //Identity
             $table->string('email', 255);

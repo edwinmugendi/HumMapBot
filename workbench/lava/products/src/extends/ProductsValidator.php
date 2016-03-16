@@ -17,6 +17,133 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
     private $message;
 
     /**
+     * S# validateIsReferralCodeValid() function
+     * Validate referral code
+     *
+     * @author Edwin Mugendi <edwinmugendi@gmail.com>
+     * @param  string  $attribute
+     * @param  string   $referral_code
+     * @param  mixed   $parameters
+     * @return bool
+     */
+    protected function validateIsReferralCodeValid($attribute, $referral_code, $parameters) {
+        $referee_id = \Auth::user()->id;
+
+        $referral_controller = new ReferralController();
+
+        $user_controller = new \Lava\Accounts\UserController();
+
+        //Fields
+        $fields = array('*');
+
+        //Where clause
+        $where_clause = array(
+            array(
+                'where' => 'where',
+                'column' => 'referral_code',
+                'operator' => '=',
+                'operand' => $referral_code
+            ),
+            array(
+                'where' => 'where',
+                'column' => 'id',
+                'operator' => '!=',
+                'operand' => $referee_id
+            )
+        );
+
+        $user_model = $user_controller->select($fields, $where_clause, 1);
+
+        if ($user_model) {
+            //Fields
+            $fields = array('*');
+
+            //Where clause
+            $where_clause = array(
+                array(
+                    'where' => 'where',
+                    'column' => 'referrer_id',
+                    'operator' => '=',
+                    'operand' => $user_model->id
+                ),
+                array(
+                    'where' => 'where',
+                    'column' => 'referee_id',
+                    'operator' => '=',
+                    'operand' => $referee_id
+                )
+            );
+
+            $referral_model = $referral_controller->select($fields, $where_clause, 1);
+
+            if ($referral_model) {
+                //Get success message
+                $message = \Lang::get($referral_controller->package . '::' . $referral_controller->controller . '.notification.is_referral_code_valid.exists');
+
+                //Throw new API Success Exception
+                throw new \Api200Exception(array_only($referral_model->toArray(), array('id')), $message);
+            } else {
+                $referral_array = array(
+                    'referee_id' => $referee_id,
+                    'referrer_id' => $user_model->id,
+                    'referral_code' => $user_model->referral_code,
+                    'workflow' => 1,
+                    'status' => 1,
+                    'ip' => \Request::getClientIp(),
+                    'agent' => \Request::server('HTTP_USER_AGENT'),
+                    'created_by' => $referee_id,
+                    'updated_by' => $referee_id,
+                );
+
+                $referral_model = $referral_controller->createIfValid($referral_array, true);
+
+                if ($referral_model) {
+                    //Get success message
+                    $message = \Lang::get($referral_controller->package . '::' . $referral_controller->controller . '.notification.is_referral_code_valid.created', array('referral_code' => $referral_model->referral_code));
+
+                    //Throw new API Success Exception
+                    throw new \Api200Exception(array_only($referral_model->toArray(), array('id')), $message);
+                } else {
+                    //Get success message
+                    $message = \Lang::get($referral_controller->package . '::' . $referral_controller->controller . '.notification.is_referral_code_valid.error');
+
+                    throw new \Api500Exception($message);
+                }//E# if else statement
+            }
+        } else {
+            //Set notification
+            $referral_controller->notification = array(
+                'field' => 'referral_code',
+                'type' => 'Referral code',
+                'value' => $referral_code,
+            );
+
+            //Throw VRM not found error
+            throw new \Api404Exception($referral_controller->notification);
+        }//E# if else statement
+        return false;
+    }
+
+//E# validateIsCodeValid() function
+
+    /**
+     * S# replaceIsReferralCodeValid() function
+     * Replace all place-holders for the is_referral_code_valid rule.
+     *
+     * @author Edwin Mugendi <edwinmugendi@gmail.com>
+     * @param  string  $message
+     * @param  string  $attribute
+     * @param  string  $rule
+     * @param  array   $parameters
+     * @return string
+     */
+    protected function replaceIsReferralCodeValid($message, $attribute, $rule, $parameters) {
+        return $this->message;
+    }
+
+//E# replaceIsReferralCodeValid() function
+
+    /**
      * S# validateIsPromotionCodeValid() function
      * Validate promotion code
      *
@@ -33,7 +160,6 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
         $parameters['scope'] = array('statusOne');
         //Get promotion model by code
         $promotion_model = $promotion_controller->getModelByField('code', $promotion_code, $parameters);
-        
 
         if ($promotion_model) {//Exists
             if ($promotion_model->claimed) {//Claimed
@@ -96,7 +222,7 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
         } else {//Don't exist
             //Set notification
             $promotion_controller->notification = array(
-                'field' => 'code',
+                'field' => 'promotion_code',
                 'type' => 'Promotion',
                 'value' => $promotion_code,
             );

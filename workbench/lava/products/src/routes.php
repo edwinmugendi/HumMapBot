@@ -9,6 +9,9 @@
 \Route::get('sonic/sonic', array('as' => 'sonicSonic', 'uses' => 'Lava\Products\SonicController@sonic'));
 
 \Route::group(array('before' => 'api'), function() {
+    //Refered
+    \Route::post('api/referred_by', array('as' => 'apiReferredBy', 'uses' => 'Lava\Products\ReferralController@postReferredBy'));
+
     //Claim promtion code
     \Route::post('api/claim/promotion', array('as' => 'apiClaimPromotion', 'uses' => 'Lava\Products\PromotionController@postClaimPromotion'));
 
@@ -65,4 +68,28 @@
 
     //Un-Delete promotion
     \Route::post('products/undelete/promotion', array('as' => 'productsUndeletePromotion', 'uses' => 'Lava\Products\PromotionController@postUndelete'));
+
+    /**
+     * Referral routes
+     */
+    //Detailed referral
+    \Route::get('products/detailed/referral/{id}', array('as' => 'productsDetailedReferral', 'uses' => 'Lava\Products\ReferralController@getDetailed'));
+
+    //List referral
+    \Route::get('products/list/referral', array('as' => 'productsListReferral', 'uses' => 'Lava\Products\ReferralController@getList'));
+
+    //Post referral
+    \Route::get('products/post/referral/{id?}', array('as' => 'productsPostReferral', 'uses' => 'Lava\Products\ReferralController@getPost'));
+
+    //Create a referral
+    \Route::post('products/create/referral', array('as' => 'productsCreateReferral', 'before' => 'csrf', 'uses' => 'Lava\Products\ReferralController@postCreate'));
+
+    //Update a referral
+    \Route::post('products/update/referral', array('as' => 'productsUpdateReferral', 'before' => 'csrf', 'uses' => 'Lava\Products\ReferralController@postUpdate'));
+
+    //Delete referral
+    \Route::post('products/delete/referral', array('as' => 'productsDeleteReferral', 'uses' => 'Lava\Products\ReferralController@postDelete'));
+
+    //Un-Delete referral
+    \Route::post('products/undelete/referral', array('as' => 'productsUndeleteReferral', 'uses' => 'Lava\Products\ReferralController@postUndelete'));
 });

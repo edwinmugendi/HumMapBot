@@ -165,6 +165,9 @@ class UserController extends AccountsBaseController {
      */
     public function beforeCreating() {
         if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {
+            //Generate referral code
+            $this->input['referral_code'] = $this->generateReferralCode($this->input['first_name'], $this->input['last_name']);
+
             //Notifications
             $this->input['notify_sms'] = $this->input['notify_email'] = $this->input['notify_push'] = 1;
 
@@ -191,6 +194,42 @@ class UserController extends AccountsBaseController {
     }
 
 //E# beforeCreating() function
+    /**
+     * S# generateReferralCode() function
+     * 
+     * Generate Referral code
+     * 
+     * @param str $first_name First name
+     * @param str $last_name Last name
+     * 
+     * @return str Referral code
+     *
+     */
+    public function generateReferralCode($first_name, $last_name) {
+
+        $number_of_letters = 0;
+        $found = true;
+        while ($found) {
+            //Generate append
+            $append = substr($last_name, 0, $number_of_letters);
+
+            //Generate random number
+            $random_number = mt_rand(10, 9999);
+
+            $referal_code = \Str::lower($first_name . $append . $random_number);
+
+            //Check if user exists
+            $user_model = $this->getModelByField('referral_code', $referal_code);
+
+            if ($user_model) {
+                $number_of_letters++;
+            } else {
+                $found = false;
+            }//E# if else statement
+        }//E# while statement
+
+        return $referal_code;
+    }
 
     /**
      * S# afterCreating() function
@@ -654,6 +693,9 @@ class UserController extends AccountsBaseController {
                     //Update user login specific fields
                     $this->updateLoginSpecificFields($this, $user_model);
                 } else {//Register
+                    //Generate referral code
+                    $referral_code = $this->generateReferralCode($fb_user_profile['first_name'], $fb_user_profile['last_name']);
+
                     $newUser = array(
                         'fb_uid' => $fb_user_id,
                         'first_name' => $fb_user_profile['first_name'],
@@ -667,6 +709,7 @@ class UserController extends AccountsBaseController {
                         'notify_sms' => 1,
                         'notify_push' => 1,
                         'notify_email' => 1,
+                        'referral_code' => $referral_code,
                         'email' => $fb_user_profile['email'],
                         'agent' => $this->input['agent'],
                         'ip' => $this->input['ip']//TODO remove this

@@ -14,6 +14,7 @@ class GeneratorController extends BaseController {
         //Products
         'Lava\Products\ProductController',
         'Lava\Products\PromotionController',
+        'Lava\Products\ReferralController',
         //Payments
         'Lava\Payments\TransactionController',
         'Lava\Payments\CardController',

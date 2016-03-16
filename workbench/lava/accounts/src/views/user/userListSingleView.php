@@ -22,6 +22,8 @@
                                         <td><?php echo $view_data['singleModel']['vehicle_id']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['card_id']; ?></td>
+                                 
+                                        <td><?php echo $view_data['singleModel']['referral_code']; ?></td>
                                                                                  
                                         <td><?php echo $view_data['singleModel']['address']; ?></td>
                                  
@@ -53,6 +55,8 @@
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.vehicle_id') .': '.$view_data['singleModel']['vehicle_id']; ?> </div>
                      
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.card_id') .': '.$view_data['singleModel']['card_id']; ?> </div>
+                     
+                                        <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.referral_code') .': '.$view_data['singleModel']['referral_code']; ?> </div>
                      
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.dob') .': '.$view_data['singleModel']['dob']; ?> </div>
                      

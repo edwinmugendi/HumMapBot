@@ -89,7 +89,7 @@ return array(
                     'action' => 'Not found',
                     'httpCode' => 404,
                     'note' => 'Promotion not found',
-                    'example' => '{"http_status_code":404,"system_code":904,"message":"Promotion not found.","data":{"field":"promotion_id","type":"Promotion","value":"6"}}'
+                    'example' => '{"http_status_code":404,"system_code":904,"message":"Promotion not found.","data":{"field":"promotion_code","type":"Promotion","value":"PROMOasda"}}'
                 )
             )
         ),
@@ -131,6 +131,47 @@ return array(
                     'httpCode' => 400,
                     'note' => 'Validation error',
                     'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"token","error":"Invalid login token"}]}'
+                ),
+            )
+        ),
+        array(
+            'name' => 'Referred by',
+            'note' => 'When sign up, specify who referred you',
+            'filtered' => 1,
+            'endpoint' => 'api/referred_by',
+            'httpVerb' => 'POST',
+            'parameters' => array(
+                array(
+                    'field' => 'referral_code',
+                    'dataType' => 'string',
+                    'note' => 'Referral Code.',
+                    'required' => 1,
+                ),
+                array(
+                    'field' => 'token',
+                    'dataType' => 'string',
+                    'note' => 'User API token',
+                    'required' => 1,
+                )
+            ),
+            'returns' => array(
+                array(
+                    'action' => 'Success',
+                    'httpCode' => 200,
+                    'note' => 'Referral created',
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Referral created","data":{"id":7}}'
+                ),
+                array(
+                    'action' => 'Error',
+                    'httpCode' => 400,
+                    'note' => 'Validation error',
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"promotion_code","error":"You have already redeemed this promotion code PROMO"}]}'
+                ),
+                array(
+                    'action' => 'Not found',
+                    'httpCode' => 404,
+                    'note' => 'Object not found',
+                    'example' => '{"http_status_code":404,"system_code":904,"message":"Referral code not found.","data":{"field":"referral_code","type":"Referral code","value":"edwin456212"}}'
                 ),
             )
         ),

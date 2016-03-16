@@ -60,6 +60,7 @@ return array(
             'stripe_id' => 'Stripe id',
             'lat' => 'Latitude',
             'lng' => 'Longitude',
+            'referral_code' => 'Referral code',
         ),
         'actions' => array(
             'delete' => array(
