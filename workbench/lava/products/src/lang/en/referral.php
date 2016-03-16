@@ -34,6 +34,7 @@ return array(
             'description' => 'Description',
             'workflow' => 'Status',
             'promotion_id' => 'Promotion',
+            'transaction_id' => 'Transaction',
         ),
         'actions' => array(
             'delete' => array(

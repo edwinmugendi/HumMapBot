@@ -1,5 +1,8 @@
 <?php
 
+//Refered
+\Route::get('referral', array('as' => 'referral', 'uses' => 'Lava\Products\ReferralController@awardReferral'));
+
 //Sonic Callback
 \Route::get('sonic/callback/positive', array('as' => 'sonicCallbackPositive', 'uses' => 'Lava\Products\SonicController@getCallback'));
 //Sonic Callback

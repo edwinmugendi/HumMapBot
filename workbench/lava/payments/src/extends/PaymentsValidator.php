@@ -525,7 +525,11 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
 
                     //Save transaction
                     $transaction_model->save();
-
+                    
+                    //Check for referral
+                    $referral_controller = new \Lava\Products\ReferralController();
+                    
+                    
                     //Build notification
                     $this->notification = array(
                         'gateway' => $gateway_response,

@@ -7,6 +7,16 @@ return array(
       |--------------------------------------------------------------------------
      */
     'communication' => array(
+        'notifyReferrer' => array(
+            'email' => 'Congratulations! :productName has awarded you a free car wash',
+            'sms' => 'Congratulations! :productName has awarded you a free car wash (up to :currency :amount) for referring :referee',
+            'push' => 'Congratulations! :productName has awarded you a free car wash (up to :currency :amount) for referring :referee',
+        ),
+        'notifyReferee' => array(
+            'email' => ':productName has awarded :referrer a free car wash',
+            'sms' => 'Dear :referee, :productName has awarded :referrer a free wash (up to :currency :amount). Use \':code\' to refer your friends and earn a free car wash.',
+            'push' => 'Dear :referee, :productName has awarded :referrer a free wash (up to :currency :amount). Use \':code\' to refer your friends and earn a free car wash.',
+        ),
         'transactionUserPromotion' => array(
             'email' => ':product bought :productName at :location. :productName',
             'sms' => 'Thanks. You bought :product for :vrm at :location on :day at :time. Ref no is :tranId. :productName',

@@ -18,6 +18,14 @@ class CreateReferralsTable extends Migration {
             $table->integer('workflow')->unsigned();
             $table->string('referral_code', 255);
             $table->integer('promotion_id')->unsigned();
+            $table->integer('transaction_id')->unsigned();
+            
+            $table->boolean('referee_smsed');
+            $table->boolean('referee_pushed');
+            $table->boolean('referee_emailed');
+                        $table->boolean('referrer_smsed');
+            $table->boolean('referrer_pushed');
+            $table->boolean('referrer_emailed');
 
             $table->string('agent', 255);
             $table->string('ip', 255);

@@ -40,21 +40,21 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
         $where_clause = array(
             array(
                 'where' => 'where',
-                'column' => 'referral_code',
+                'column' => 'referee_id',
                 'operator' => '=',
-                'operand' => $referral_code
-            ),
-            array(
-                'where' => 'where',
-                'column' => 'id',
-                'operator' => '!=',
                 'operand' => $referee_id
             )
         );
 
-        $user_model = $user_controller->select($fields, $where_clause, 1);
+        $referral_model = $referral_controller->select($fields, $where_clause, 1);
 
-        if ($user_model) {
+        if ($referral_model) {
+            //Get success message
+            $message = \Lang::get($referral_controller->package . '::' . $referral_controller->controller . '.notification.is_referral_code_valid.exists');
+
+            //Throw new API Success Exception
+            throw new \Api200Exception(array_only($referral_model->toArray(), array('id')), $message);
+        } else {
             //Fields
             $fields = array('*');
 
@@ -62,64 +62,87 @@ class ProductsValidator extends \Lava\Payments\PaymentsValidator {
             $where_clause = array(
                 array(
                     'where' => 'where',
-                    'column' => 'referrer_id',
+                    'column' => 'referral_code',
                     'operator' => '=',
-                    'operand' => $user_model->id
+                    'operand' => $referral_code
                 ),
                 array(
                     'where' => 'where',
-                    'column' => 'referee_id',
-                    'operator' => '=',
+                    'column' => 'id',
+                    'operator' => '!=',
                     'operand' => $referee_id
                 )
             );
 
-            $referral_model = $referral_controller->select($fields, $where_clause, 1);
+            $user_model = $user_controller->select($fields, $where_clause, 1);
 
-            if ($referral_model) {
-                //Get success message
-                $message = \Lang::get($referral_controller->package . '::' . $referral_controller->controller . '.notification.is_referral_code_valid.exists');
+            if ($user_model) {
+                //Fields
+                $fields = array('*');
 
-                //Throw new API Success Exception
-                throw new \Api200Exception(array_only($referral_model->toArray(), array('id')), $message);
-            } else {
-                $referral_array = array(
-                    'referee_id' => $referee_id,
-                    'referrer_id' => $user_model->id,
-                    'referral_code' => $user_model->referral_code,
-                    'workflow' => 1,
-                    'status' => 1,
-                    'ip' => \Request::getClientIp(),
-                    'agent' => \Request::server('HTTP_USER_AGENT'),
-                    'created_by' => $referee_id,
-                    'updated_by' => $referee_id,
+                //Where clause
+                $where_clause = array(
+                    array(
+                        'where' => 'where',
+                        'column' => 'referrer_id',
+                        'operator' => '=',
+                        'operand' => $user_model->id
+                    ),
+                    array(
+                        'where' => 'where',
+                        'column' => 'referee_id',
+                        'operator' => '=',
+                        'operand' => $referee_id
+                    )
                 );
 
-                $referral_model = $referral_controller->createIfValid($referral_array, true);
+                $referral_model = $referral_controller->select($fields, $where_clause, 1);
 
                 if ($referral_model) {
                     //Get success message
-                    $message = \Lang::get($referral_controller->package . '::' . $referral_controller->controller . '.notification.is_referral_code_valid.created', array('referral_code' => $referral_model->referral_code));
+                    $message = \Lang::get($referral_controller->package . '::' . $referral_controller->controller . '.notification.is_referral_code_valid.exists');
 
                     //Throw new API Success Exception
                     throw new \Api200Exception(array_only($referral_model->toArray(), array('id')), $message);
                 } else {
-                    //Get success message
-                    $message = \Lang::get($referral_controller->package . '::' . $referral_controller->controller . '.notification.is_referral_code_valid.error');
+                    $referral_array = array(
+                        'referee_id' => $referee_id,
+                        'referrer_id' => $user_model->id,
+                        'referral_code' => $user_model->referral_code,
+                        'workflow' => 1,
+                        'status' => 1,
+                        'ip' => \Request::getClientIp(),
+                        'agent' => \Request::server('HTTP_USER_AGENT'),
+                        'created_by' => $referee_id,
+                        'updated_by' => $referee_id,
+                    );
 
-                    throw new \Api500Exception($message);
-                }//E# if else statement
-            }
-        } else {
-            //Set notification
-            $referral_controller->notification = array(
-                'field' => 'referral_code',
-                'type' => 'Referral code',
-                'value' => $referral_code,
-            );
+                    $referral_model = $referral_controller->createIfValid($referral_array, true);
 
-            //Throw VRM not found error
-            throw new \Api404Exception($referral_controller->notification);
+                    if ($referral_model) {
+                        //Get success message
+                        $message = \Lang::get($referral_controller->package . '::' . $referral_controller->controller . '.notification.is_referral_code_valid.created', array('referral_code' => $referral_model->referral_code));
+
+                        //Throw new API Success Exception
+                        throw new \Api200Exception(array_only($referral_model->toArray(), array('id')), $message);
+                    } else {
+                        //Get success message
+                        $message = \Lang::get($referral_controller->package . '::' . $referral_controller->controller . '.notification.is_referral_code_valid.error');
+
+                        throw new \Api500Exception($message);
+                    }//E# if else statement
+                }
+            } else {
+                //Set notification
+                $referral_controller->notification = array(
+                    'field' => 'referral_code',
+                    'type' => 'Referral code',
+                    'value' => $referral_code,
+                );
+
+                //Throw VRM not found error
+                throw new \Api404Exception($referral_controller->notification);
+            }//E# if else statement
         }//E# if else statement
         return false;
     }
