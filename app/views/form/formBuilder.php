@@ -58,15 +58,15 @@ $form['attributes']['route'] = $form['attributes']['route'][$crudId];
 
                                         // echo $model[$singleField['htmlName']];
                                         //Set the field value  
-
-                                        if ((empty($model[$singleField['htmlName']])) || ($model[$singleField['htmlName']] === 0)) {
+                                        // echo $model[$singleField['htmlName']];
+                                        //Set the field value  
+                                        if (\Input::old($singleField['htmlName'])) {
                                             $value_from = 'old';
                                             $value = \Input::old($singleField['htmlName']);
                                         } else {
                                             $value_from = 'model';
-                                            $value = $model[$singleField['htmlName']];
-                                        }
-
+                                            $value = array_key_exists($singleField['htmlName'], $model) ? $model[$singleField['htmlName']] : '';
+                                        }//E# if else statement
                                         //Build the field's attributes
                                         $attributes = array();
                                         if ($disableFields) {
@@ -147,41 +147,41 @@ $form['attributes']['route'] = $form['attributes']['route'][$crudId];
                                         ?>
                                         <div class="formCell col-md-<?php echo $span . ' ' . (($singleField['displayed'] == 0) ? 'commonDisplayNoneImportant' : ''); ?>">                
                                             <div class="commonClearBoth">
-                                                <?php if ($singleField['type'] !== 'link'): ?>
+                                        <?php if ($singleField['type'] !== 'link'): ?>
                                                     <div class="commonDisplayInlineImportant commonClearBoth">    
                                                         <span class="commonFloatLeft">
-                                                            <?php
-                                                            if (array_key_exists('required', $singleField['validator'])) {
-                                                                $star = "<i class='icon-data-star commonColorRed'></i>";
+                                                    <?php
+                                                    if (array_key_exists('required', $singleField['validator'])) {
+                                                        $star = "<i class='icon-data-star commonColorRed'></i>";
 
-                                                                $append = '<i class=\'icon-data-warning commonColorRed\' title=\'' . \HTML::entities($form['stars']['required']['fieldText']) . '\'></i>';
-                                                            } else {
-                                                                $star = "<i class='icon-data-star commonColor'></i>";
-                                                                $append = '<i class=\'icon-data-warning commonColor\' title=\'' . \HTML::entities($form['stars']['optional']['fieldText']) . '\'></i>';
-                                                            }//E# if else statement
-                                                            ?>
+                                                        $append = '<i class=\'icon-data-warning commonColorRed\' title=\'' . \HTML::entities($form['stars']['required']['fieldText']) . '\'></i>';
+                                                    } else {
+                                                        $star = "<i class='icon-data-star commonColor'></i>";
+                                                        $append = '<i class=\'icon-data-warning commonColor\' title=\'' . \HTML::entities($form['stars']['optional']['fieldText']) . '\'></i>';
+                                                    }//E# if else statement
+                                                    ?>
                                                             <?php echo $star; ?>
                                                             <?php echo \Form::label($singleField['name'], $singleField['name'], array('id' => $attributes['label_id'], 'class' => 'commonFontWeightBold')); ?>
                                                             <span class="icon-data-help formHelp commonDisplayInlineImportant" data-html="true" data-trigger="hover" data-title="<?php echo $star . ' ' . $singleField['name']; ?>" data-content="<?php echo sprintf($singleField['help'], $star); ?>"></span>
                                                         </span>
 
-                                                        <?php if (array_key_exists('maxlength', $singleField['validator'])): ?>
+                <?php if (array_key_exists('maxlength', $singleField['validator'])): ?>
                                                             <span class="formCharacterRemainingContainer commonFloatRight">
                                                                 <span class="formCharactersRemainingNumber commonDisplayInlineImportant"><?php echo $singleField['validator']['maxlength']['length']; ?></span>
-                                                                <?php echo \Str::lower($form['components']['characterReminder']['text']); ?>
+                                                            <?php echo \Str::lower($form['components']['characterReminder']['text']); ?>
                                                             </span>
-                                                        <?php endif; ?>
+                                                            <?php endif; ?>
                                                     </div>
-                                                <?php endif; ?>
+                                                    <?php endif; ?>
                                                 <div class="commonFloatLeft commonClearBoth">    
-                                                    <?php if ($singleField['type'] == 'text' || $singleField['type'] == 'textarea'): ?>   
-                                                        <?php
-                                                        if (array_key_exists('class', $singleField) && $singleField['class'] == 'datePicker') {
-                                                            if ($value && $value_from == 'model') {
-                                                                $value = ($value == '0000-00-00') ? '' : $Carbon::createFromFormat('Y-m-d', $value)->format($date_format);
-                                                            }//E# if statement
+                                                <?php if ($singleField['type'] == 'text' || $singleField['type'] == 'textarea'): ?>   
+                                                    <?php
+                                                    if (array_key_exists('class', $singleField) && $singleField['class'] == 'datePicker') {
+                                                        if ($value && $value_from == 'model') {
+                                                            $value = ($value == '0000-00-00') ? '' : $Carbon::createFromFormat('Y-m-d', $value)->format($date_format);
                                                         }//E# if statement
-                                                        ?>
+                                                    }//E# if statement
+                                                    ?>
 
                                                         <?php echo \InputGroup::withContents(\Form::$singleField['type']($attributeHtmlName, $value, $attributes))->append($append); ?>
                                                     <?php endif; ?>
@@ -224,24 +224,24 @@ $form['attributes']['route'] = $form['attributes']['route'][$crudId];
                                                 </p>
                                             </div>
                                         </div>
-                                    <?php endforeach; ?>
+        <?php endforeach; ?>
                                 </div>
                                 <!--E# form row div-->    
-                            <?php endforeach; ?>
+                                <?php endforeach; ?>
                             <!--E# shadow portlet container div-->
                         </div>
                     </div>
                 </div>
             </div>
             <!--E# portlet div-->
-        <?php endforeach; ?>
+<?php endforeach; ?>
         <div class="formRow row">
             <div class="formCell col-md-12">
-                <?php
-                if ($disableFields) {
-                    $attributes['disabled'] = 'disabled';
-                }//E# if statement
-                ?>
+        <?php
+        if ($disableFields) {
+            $attributes['disabled'] = 'disabled';
+        }//E# if statement
+        ?>
                 <?php echo \Form::button($form['submitText'][$crudId], array('id' => 'idPostButton', 'class' => 'btn-processing btn-primary btn-lg', 'data-processing' => $form['submitText']['processing'], 'data-save' => $form['submitText'][1], 'data-update' => $form['submitText'][2], 'data-edit' => $form['submitText'][3], 'data-crudId' => $crudId)); ?>
             </div>
         </div>
