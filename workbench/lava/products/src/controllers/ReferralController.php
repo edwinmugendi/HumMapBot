@@ -19,12 +19,13 @@ class ReferralController extends ProductsBaseController {
      * 
      * Check if user should 
      */
-    public function awardReferral(/* $transaction_id, $user_model */) {
-        $transaction_id = 1;
-        $user_id = 38;
+    public function awardReferral($transaction_id, $user_model) {
+        /*
+          $transaction_id = 1;
+          $user_id = 38;
 
-        $user_model = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('id', 38));
-        
+          $user_model = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getModelByField', array('id', 38));
+         */
         //Fields
         $fields = array('*');
 
@@ -47,8 +48,8 @@ class ReferralController extends ProductsBaseController {
         $parameters['scope'] = array('statusOne');
 
         $referral_model = $this->select($fields, $where_clause, 1, $parameters);
-        
-        
+
+
         if ($referral_model) {
             //Fields
             $fields = array('*');
