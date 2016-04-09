@@ -135,6 +135,7 @@
                     </div>
                 <?php endif; ?>
             <?php elseif ($view_data['registrationType'] == 'forgot'): ?>
+                    
                 <?php $forgotStatusCode = \Session::has('forgotStatusCode') ? \Session::get('forgotStatusCode') : 0; ?>
 
                 <?php if ($forgotStatusCode == 1): ?>
@@ -156,9 +157,9 @@
                             <div>
                                 <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.forgot.field.email'); ?>:<br/>
 
-                                <?php echo \InputGroup::withContents(\Form::text('email', '', array('id' => 'email', 'class' => 'validate[required, custom[email]]')))->prepend('<i class = "icon-data-email"></i>')->append('<i class = "glyphicon glyphicon-star commonColorRed" title = "' . \Lang::get('common.required') . '"></i>'); ?>
-                                <?php if ($errors->has('email')): ?>
-                                    <p class="commonColorRed"><?php echo $errors->first('email'); ?></p>
+                                <?php echo \InputGroup::withContents(\Form::text('send_to', '', array('id' => 'email', 'class' => 'validate[required, custom[email]]')))->prepend('<i class = "icon-data-email"></i>')->append('<i class = "glyphicon glyphicon-star commonColorRed" title = "' . \Lang::get('common.required') . '"></i>'); ?>
+                                <?php if ($errors->has('send_to')): ?>
+                                    <p class="commonColorRed"><?php echo $errors->first('send_to'); ?></p>
                                 <?php endif; ?>
                             </div>
                             <div class="commonMarginTop10">
@@ -175,9 +176,10 @@
                         <span class="userRegistrationActionHeading commonDisplayInlineBlock commonFontWeightBold"><?php echo $resetPassword = \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.reset.heading'); ?></span>
                     </div>
                     <div class="shadowPortletContainer commonBorderRadius commonBorderColor">
-                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.reset.help', array('passwordMinCharacters' => \Config::get($view_data['package'] . '::' . $view_data['package'] . '.passwordMinCharacters'))); ?>
+                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.reset.help', array('passwordMinCharacters' => \Config::get($view_data['package'] . '::account.passwordMinCharacters'))); ?>
                         <?php echo \Form::open(array('route' => 'userResetPassword', 'id' => 'userPost')); ?>
-                        <?php echo \Form::hidden('reset_code', $view_data['reset_code']); ?>
+                        <?php echo \Form::hidden('reset_code', $view_data['input']['reset_code']); ?>
+                        <?php echo \Form::hidden('send_to', $view_data['input']['email']); ?>
                         <?php echo \Form::hidden('form', 'reset'); ?>
                         <div>
                             <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.reset.field.enterPassword'); ?>:<br/>

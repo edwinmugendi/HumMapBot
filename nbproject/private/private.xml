@@ -11,17 +11,6 @@
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/home/sapama/projects/web/lava/workbench/lava/accounts/src/controllers/UserController.php</file>
-            <file>file:/home/sapama/projects/web/lava/workbench/lava/products/src/controllers/PromotionController.php</file>
-            <file>file:/home/sapama/projects/web/lava/workbench/lava/products/src/controllers/ReferralController.php</file>
-            <file>file:/home/sapama/projects/web/lava/workbench/lava/products/src/lang/en/referral.php</file>
-            <file>file:/home/sapama/projects/web/lava/workbench/lava/products/src/extends/ProductsValidator.php</file>
-            <file>file:/home/sapama/projects/web/lava/workbench/lava/products/src/models/ReferralModel.php</file>
-            <file>file:/home/sapama/projects/web/lava/workbench/lava/products/src/migrations/2014_04_28_124533_create_referrals_table.php</file>
-            <file>file:/home/sapama/projects/web/lava/app/controllers/BaseController.php</file>
-            <file>file:/home/sapama/projects/web/lava/workbench/lava/docs/src/lang/en/products.php</file>
-            <file>file:/home/sapama/projects/web/lava/workbench/lava/payments/src/extends/PaymentsValidator.php</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

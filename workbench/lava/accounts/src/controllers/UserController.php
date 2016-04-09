@@ -526,7 +526,6 @@ class UserController extends AccountsBaseController {
         //Load content view
         $this->view_data['sideBar'] = '';
 
-
         //Load content view
         $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])
                 ->with('view_data', $this->view_data);
@@ -944,6 +943,7 @@ class UserController extends AccountsBaseController {
      * @return page user registration page
      */
     public function postForgotPassword() {
+        
         //Get the validation rules
         $this->validationRules = array(
             'send_to' => 'required',
@@ -951,7 +951,8 @@ class UserController extends AccountsBaseController {
 
         //Validate inputs
         $validation = $this->isInputValid();
-
+        
+        
         if ($validation->passes()) {//Validation passed
             //Checks if send to is email, else reverts to phone
             if (filter_var($this->input['send_to'], FILTER_VALIDATE_EMAIL)) {
@@ -959,9 +960,10 @@ class UserController extends AccountsBaseController {
             } else {
                 $field = 'phone';
             }//E# if else statement
+            
             //Get user by email
             $user_model = $this->getModelByField($field, $this->input['send_to']);
-
+                
             if ($user_model) {//User with that email exists
                 if (($user_model->role_id == 3)) {//Customer
                     $resetCode = mt_rand(1000, 10000);
@@ -999,7 +1001,7 @@ class UserController extends AccountsBaseController {
                         'name' => $user_model->first_name . ' ' . $user_model->last_name,
                         'resetCode' => $resetCode,
                         'send_to' => $this->input['send_to'],
-                        'passwordMinCharacters' => \Config::get($this->package . '::product.passwordMinCharacters'),
+                        'passwordMinCharacters' => \Config::get($this->package . '::account.passwordMinCharacters'),
                         'productName' => \Config::get($this->package . '::product.name'),
                         'url' => $url,
                         'field' => $field,
