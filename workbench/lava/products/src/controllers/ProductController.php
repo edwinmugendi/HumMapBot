@@ -48,9 +48,12 @@ class ProductController extends ProductsBaseController {
 
         //Get this organization location id
         $this->view_data['dataSource']['location_id'] = $this->callController(\Util::buildNamespace('merchants', 'location', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('name'), \Lang::get('common.select')));
-
+        
+       
         //Get and set loyable options to data source
         $this->view_data['dataSource']['loyable'] = \Lang::get($this->package . '::' . $this->controller . '.data.loyable');
+        
+        
     }
 
 //E# injectDataSources() function

@@ -14,6 +14,7 @@ class ProductModel extends \BaseModel {
 
     //Table
     protected $table = 'pdt_products';
+    
     //View fields
     public $viewFields = array(
         'id' => array(1, 'text', '=', 0),

@@ -111,6 +111,7 @@ class TransactionModel extends \BaseModel {
         'take' => 'integer',
         'page' => 'integer'
     );
+    
     //Select all validation rules
     public $selectAllRules = array(
         'take' => 'integer',

@@ -19,27 +19,9 @@
                                                                         <td><?php echo $view_data['singleModel']['merchant_id_text']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['name']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['about']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['phone']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['email']; ?></td>
-                                                                        <td><?php echo $view_data['singleModel']['country_id_text']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['province']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['city']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['street']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['postal_code']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['lat']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['lng']; ?></td>
-                                                                                    <td><?php echo $view_data['singleModel']['currency_id_text']; ?></td>
                                              
+                                        <td><?php echo $view_data['singleModel']['phone']; ?></td>
+                                                                                                                                                                     
                                         <td><?php echo $view_data['singleModel']['loyalty_stamps']; ?></td>
                                                                                                                                                                                                                                                                                                                                                                 <?php if (!array_key_exists('export', $view_data)): ?>    <td>
         <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get('common.view.actions.detailed.detailed'); ?>"><span class="icon-data-dashboard icon-data-2x text-primary"></span></a>

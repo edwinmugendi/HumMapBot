@@ -1,1 +1,1 @@
-<a class="navbar-brand" href="<?php echo \URL::to('/'); ?>"><span class="commonColorRed"><?php echo \Session::get('merchant')['name']; ?></span></a>
+<span><?php echo \Session::get('merchant')['name']; ?></span>

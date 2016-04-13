@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="{{ \Config::get('app.locale') }}">
     <head>
-        <!-- Force latest IE rendering engine or ChromeFrame if installed -->
-        <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
-        <title><?php echo $title . ' - ' . \Config::get('product.name'); ?></title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta name="google-site-verification" content="C7nwk7Yj3r08X2fbjJa6HCFIBd652_Ja5YhwkrrpoLU" /><meta charset="utf-8">
+        <!-- Meta, title, CSS, favicons, etc. -->
+        <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title><?php echo $title . ' - ' . \Config::get('product.name'); ?></title>
         <meta name="description" content="<?php echo \Config::get('product.meta.description'); ?>"/>
         <meta name="keywords" content="<?php echo \Config::get('product.meta.keywords'); ?>"/>
         <link rel="shortcut icon" type="image/x-icon" href="<?php echo \URL::to('/') . '/img/favicon.ico'; ?>" />
@@ -15,31 +14,33 @@
         <?php foreach ($assets['css'] as $singleCss): ?>
             <?php echo $singleCss; ?>
         <?php endforeach ?>
-        <!--[if IE 7]>
-        <![endif]-->
         <?php if (App::environment('prod') && !$logged): ?>
-            <script>
-                (function (i, s, o, g, r, a, m) {
-                    i['GoogleAnalyticsObject'] = r;
-                    i[r] = i[r] || function () {
-                        (i[r].q = i[r].q || []).push(arguments)
-                    }, i[r].l = 1 * new Date();
-                    a = s.createElement(o),
-                            m = s.getElementsByTagName(o)[0];
-                    a.async = 1;
-                    a.src = g;
-                    m.parentNode.insertBefore(a, m)
-                })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-
-                ga('create', 'UA-70326656-1', 'auto');
-                ga('send', 'pageview');
-            </script>
         <?php endif; ?>
+        <!--[if lt IE 9]>
+        <script src="../assets/js/ie8-responsive-file-warning.js"></script>
+        <![endif]-->
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
     </head>
-    <body>
-        <?php echo $topBarPartial; ?>
-        <?php echo $containerView; ?>
-        <?php echo $footerBarPartial; ?>
+    <body class="nav-md">
+        <div class="container body">
+            <div class="main_container">
+                <?php if (trim($sideBarPartial)): ?>
+                    <?php echo $sideBarPartial; ?>
+                <?php endif; ?>
+                <?php echo $topBarPartial; ?>
+                <?php echo $containerView; ?>
+            </div>
+        </div>
+        <div id="custom_notifications" class="custom-notifications dsp_none">
+            <ul class="list-unstyled notifications clearfix" data-tabbed_notifications="notif-group">
+            </ul>
+            <div class="clearfix"></div>
+            <div id="notif-group" class="tabbed_notifications"></div>
+        </div>
         <!--Load jQuery form CDN-->
         <!--1: Grab Google CDN's jQuery, if the CMS/Framework hasn't loaded it-->
     <!--UNCOMMENT    <script>window.jQuery || document.write('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"><\/script>')</script>  

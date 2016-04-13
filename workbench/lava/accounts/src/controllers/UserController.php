@@ -97,7 +97,6 @@ class UserController extends AccountsBaseController {
         //Get this organization merchant id
         $this->view_data['dataSource']['merchant_id'] = $this->appGetCustomMerchantHtmlSelect();
 
-
         //Get and set yes no options to data source
         $this->view_data['dataSource']['notify_sms'] = $this->view_data['dataSource']['notify_email'] = $this->view_data['dataSource']['notify_push'] = \Lang::get($this->package . '::' . $this->controller . '.data.yes_no');
 
@@ -511,8 +510,13 @@ class UserController extends AccountsBaseController {
                 return \Redirect::to('/');
             }//E# if statement       
         }//E# if statement
+
+        if ($registrationType == 'register') {
+            //Get and set country options for this country
+            $this->view_data['data_source']['country_id'] = $this->callController(\Util::buildNamespace('locations', 'country', 1), 'getSelectOptions', array('en', 'alphaList'));
+        }//E# if statement
         //Set layout's title
-        $this->layout->title = \Lang::get($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['page'] . '.title');
+        $this->layout->title = \Lang::get($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['page'] . '.titleAction.' . $this->view_data['registrationType']);
 
         //Get and set layout's inline javascript
         $this->layout->inlineJs = $this->injectInlineJs($this->view_data);
@@ -523,8 +527,8 @@ class UserController extends AccountsBaseController {
         //Set layout's top bar partial
         $this->layout->topBarPartial = $this->getTopBarPartialView();
 
-        //Load content view
-        $this->view_data['sideBar'] = '';
+        //Set layout's side bar partial
+        $this->layout->sideBarPartial = $this->getSideBarPartialView();
 
         //Load content view
         $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])
@@ -781,6 +785,75 @@ class UserController extends AccountsBaseController {
 //E# authenticateApi() function
 
     /**
+     * S# postRegister() function
+     * @author Edwin Mugendi
+     * Register a user
+     */
+    public function postRegister() {
+        //Lead model
+        $lead_model = new LeadModel();
+
+        //Get and set the model's create validation rules
+        $this->validationRules = $lead_model->createRules;
+
+        //Validate row to be inserted
+        $this->validator = $this->isInputValid($this->input, true);
+
+        if ($this->validator->fails()) {//Validation fails
+            //dd($validation->messages());
+            //Build parameters to redirect to
+            $parameters = array('register');
+            //Redirect to this route with old inputs and errors
+            return \Redirect::route('userRegistration', $parameters)
+                            ->withInput()
+                            ->withErrors($this->validator);
+        } else {//Validation passes
+            //Set other fields
+            $this->input['workflow'] = $this->input['source'] = $this->input['status'] = $this->input['created_by'] = $this->input['updated_by'] = 1;
+
+            $lead_model = $lead_model->create($this->input);
+
+            //Message parameters
+            $parameters = array(
+                'name' => $lead_model->full_name,
+            );
+
+            //Set recipient
+            $recipient = array('to' => $lead_model->email);
+
+            //Converse
+            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $lead_model->created_by, $recipient, 'registration', \Config::get('app.locale'), $parameters));
+
+            $message = 'Merchant has registered from the website </b>' .
+                    '<p>Full name: <b>' . $this->input['full_name'] . '</b>' .
+                    '<p>Email: <b>' . $this->input['email'] . '</b>' .
+                    '<p>Car wash: <b>' . $this->input['organization'] . '</b>' .
+                    '<p>Phone: <b>' . $this->input['phone'] . '</b>' .
+                    '<p>Country: <b>' . $this->input['country_id'] . '</b>' .
+                    '<p>Town: <b>' . $this->input['town'] . '</b>' .
+                    '<p>Lead id: <b>' . $lead_model->id . '</b>';
+            //Message parameters
+            $parameters = array(
+                'message' => $message,
+            );
+
+            //Set recipient
+            $recipient = array('to' => 'edwinmugendi@gmail.com');
+
+            //Converse
+            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $lead_model->created_by, $recipient, 'contact', \Config::get('app.locale'), $parameters));
+
+            //Flash status code to session
+            \Session::flash('registerCode', 1);
+
+            //Redirect to login page
+            return \Redirect::route('userRegistration', array('register'));
+        }//E# if else statement
+    }
+
+//E# postRegister() function
+
+    /**
      * S# postResetPassword() function
      * @author Edwin Mugendi
      * Reset users password
@@ -943,7 +1016,7 @@ class UserController extends AccountsBaseController {
      * @return page user registration page
      */
     public function postForgotPassword() {
-        
+
         //Get the validation rules
         $this->validationRules = array(
             'send_to' => 'required',
@@ -951,8 +1024,8 @@ class UserController extends AccountsBaseController {
 
         //Validate inputs
         $validation = $this->isInputValid();
-        
-        
+
+
         if ($validation->passes()) {//Validation passed
             //Checks if send to is email, else reverts to phone
             if (filter_var($this->input['send_to'], FILTER_VALIDATE_EMAIL)) {
@@ -960,10 +1033,9 @@ class UserController extends AccountsBaseController {
             } else {
                 $field = 'phone';
             }//E# if else statement
-            
             //Get user by email
             $user_model = $this->getModelByField($field, $this->input['send_to']);
-                
+
             if ($user_model) {//User with that email exists
                 if (($user_model->role_id == 3)) {//Customer
                     $resetCode = mt_rand(1000, 10000);
@@ -1103,8 +1175,8 @@ class UserController extends AccountsBaseController {
         //Set layout's top bar partial
         $this->layout->topBarPartial = $this->getTopBarPartialView();
 
-        //Load content view
-        $this->view_data['sideBar'] = '';
+        //Set layout's side bar partial
+        $this->layout->sideBarPartial = $this->getSideBarPartialView();
 
         //Load content view
         $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])

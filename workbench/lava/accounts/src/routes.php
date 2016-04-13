@@ -21,6 +21,7 @@
                 \Route::get('register', array('as' => 'userRegistrationRegister', function() {
                         return \Redirect::route('userRegistration', array('register'));
                     }));
+
                         /* S# API End points */
                         //USER API'S
                         //Register User
@@ -45,7 +46,9 @@
 
                         //Login User
                         \Route::post('login', array('as' => 'userLogin', 'uses' => 'Lava\Accounts\UserController@postLogin'));
-
+                        
+                        \Route::post('register', array('as' => 'userRegister', 'before' => 'csrf', 'uses' => 'Lava\Accounts\UserController@postRegister'));
+                        
                         //Sign out User
                         \Route::get('signout', array('as' => 'userSignOut', 'uses' => 'Lava\Accounts\UserController@getSignOut'));
 
@@ -90,7 +93,7 @@
 
                             //Update User
                             \Route::post('user/update_user', array('as' => 'userUpdateUser', 'uses' => 'Lava\Accounts\UserController@postUpdate'));
-
+                            
                             /**
                              * User routes
                              */
@@ -138,5 +141,30 @@
 
                             //Un-Delete vehicle
                             \Route::post('accounts/undelete/vehicle', array('as' => 'accountsUndeleteVehicle', 'uses' => 'Lava\Accounts\VehicleController@postUndelete'));
+                        
+                            /**
+                             * Lead routes
+                             */
+                            //Detailed lead
+                            \Route::get('accounts/detailed/lead/{id}', array('as' => 'accountsDetailedLead', 'uses' => 'Lava\Accounts\LeadController@getDetailed'));
+
+                            //List lead
+                            \Route::get('accounts/list/lead', array('as' => 'accountsListLead', 'uses' => 'Lava\Accounts\LeadController@getList'));
+
+                            //Post lead
+                            \Route::get('accounts/post/lead/{id?}', array('as' => 'accountsPostLead', 'uses' => 'Lava\Accounts\LeadController@getPost'));
+
+                            //Create a lead
+                            \Route::post('accounts/create/lead', array('as' => 'accountsCreateLead', 'before' => 'csrf', 'uses' => 'Lava\Accounts\LeadController@postCreate'));
+
+                            //Update a lead
+                            \Route::post('accounts/update/lead', array('as' => 'accountsUpdateLead', 'before' => 'csrf', 'uses' => 'Lava\Accounts\LeadController@postUpdate'));
+
+                            //Delete lead
+                            \Route::post('accounts/delete/lead', array('as' => 'accountsDeleteLead', 'uses' => 'Lava\Accounts\LeadController@postDelete'));
+
+                            //Un-Delete lead
+                            \Route::post('accounts/undelete/lead', array('as' => 'accountsUndeleteLead', 'uses' => 'Lava\Accounts\LeadController@postUndelete'));
+                      
                         });
                         

@@ -14,6 +14,8 @@
                                         <td><?php echo $view_data['singleModel']['referral_code']; ?></td>
                                                                         <td><?php echo $view_data['singleModel']['workflow_text']; ?></td>
                                                                         <td><?php echo $view_data['singleModel']['promotion_id_text']; ?></td>
+                                 
+                                        <td><?php echo $view_data['singleModel']['transaction_id']; ?></td>
                 <?php if (!array_key_exists('export', $view_data)): ?>    <td>
         <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get('common.view.actions.detailed.detailed'); ?>"><span class="icon-data-dashboard icon-data-2x text-primary"></span></a>
     </td>
@@ -31,6 +33,8 @@
                                         <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.referral_code') .': '.$view_data['singleModel']['referral_code']; ?> </div>
                                                             <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.workflow') .': '.$view_data['singleModel']['workflow_text']; ?> </div>
                                                             <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.promotion_id') .': '.$view_data['singleModel']['promotion_id_text']; ?> </div>
+                     
+                                        <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.transaction_id') .': '.$view_data['singleModel']['transaction_id']; ?> </div>
                 
     </td>
 </tr>

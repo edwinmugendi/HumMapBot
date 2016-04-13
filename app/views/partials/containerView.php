@@ -1,20 +1,7 @@
-<?php if (trim($view_data['sideBar'])): ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-2">
-                <?php echo $view_data['sideBar']; ?>
-            </div>
-            <div class="col-md-10">
-                <?php echo $view_data['contentView']; ?>
-            </div>
-        </div>
-    </div>
-<?php else: ?>
-    <div class="container">
-        <?php echo $view_data['contentView']; ?>
-    </div>
-<?php endif; ?>
-<?php if ($view_data['imageable']): ?>
+<div class="right_col" role="main">
+    <?php echo $view_data['contentView']; ?>
+    <br />
+    <?php if ($view_data['imageable']): ?>
     <div id="viewImageModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-path="<?php echo $view_data['uploadPath']; ?>">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -29,3 +16,13 @@
         </div>
     </div>
 <?php endif; ?>
+    
+    <!--footer content-->
+    <footer>
+        <div class="copyright-info">
+            <p class="pull-right"><?php echo \Config::get('product.name');?></p>
+        </div>
+        <div class="clearfix"></div>
+    </footer>
+    <!-- /footer content -->
+</div>

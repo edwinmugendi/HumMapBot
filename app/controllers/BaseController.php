@@ -808,7 +808,9 @@ class BaseController extends Controller {
         $this->layout->topBarPartial = $this->getTopBarPartialView();
 
         //Set list side bar
-        $this->view_data['sideBar'] = $this->getListSideBarPartialView();
+        //$this->view_data['sideBar'] = $this->getListSideBarPartialView();
+        //Set layout's side bar partial
+        $this->layout->sideBarPartial = $this->getSideBarPartialView();
 
         //Set layout's content view
         $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])
@@ -947,7 +949,10 @@ class BaseController extends Controller {
         $this->layout->topBarPartial = $this->getTopBarPartialView();
 
         //Set side bar
-        $this->view_data['sideBar'] = $this->getPostSideBarPartialView();
+        //$this->view_data['sideBar'] = $this->getPostSideBarPartialView();
+        
+        //Set layout's side bar partial
+        $this->layout->sideBarPartial = $this->getSideBarPartialView();
 
         //Add form to view data
         $this->view_data['form'] = \View::make('form.formBuilder')
@@ -1056,7 +1061,7 @@ class BaseController extends Controller {
 
 //E# exportToPdf() function
 
-        /**
+    /**
      * S# pdf() function
      * @param str $content Content
      * @param str $orientation Pdf orientation
@@ -1193,8 +1198,11 @@ class BaseController extends Controller {
         $this->layout->topBarPartial = $this->getTopBarPartialView();
 
         //Set list side bar
-        $this->view_data['sideBar'] = $this->getListSideBarPartialView();
+        //$this->view_data['sideBar'] = $this->getListSideBarPartialView();
+        //Set layout's side bar partial
+        $this->layout->sideBarPartial = $this->getSideBarPartialView();
 
+        
         if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {
 
             //Prepare controller model
@@ -1555,21 +1563,45 @@ class BaseController extends Controller {
     public function registerAssets($parameters = array()) {
         //Register global css assets
         $this->assets['css'][] = \HTML::style('bootstrap/css/bootstrap.min.css');
-        $this->assets['css'][] = \HTML::style('bootstrap/css/bootstrap-theme.min.css');
+        $this->assets['css'][] = \HTML::style('bootstrap/css/font-awesome.min.css');
         $this->assets['css'][] = \HTML::style('bootstrap/css/icons.css');
+
+        //Custom Design
+        $this->assets['css'][] = \HTML::style('css/gentallela/animate.min.css');
+        $this->assets['css'][] = \HTML::style('css/gentallela/custom.css');
+        $this->assets['css'][] = \HTML::style('css/gentallela/jquery-jvectormap-2.0.3.css');
+        $this->assets['css'][] = \HTML::style('css/gentallela/icheck/flat/green.css');
+        $this->assets['css'][] = \HTML::style('css/gentallela/floatexamples.css');
+
+        $this->assets['js'][] = \HTML::script('js/gentallela/nprogress.js');
 
         //Register global js assets
         $this->assets['js'][] = \HTML::script('bootstrap/js/bootstrap.min.js');
+
+        //Date Picker js
+        // $this->assets['js'][] = \HTML::script('js/datePicker/moment.min.js');
+        $this->assets['js'][] = \HTML::script('js/datePicker/bootstrap-datetimepicker-and-moment.min.js');
+
+        //Gentallela
+        //Gauge
+        //$this->assets['js'][] = \HTML::script('js/gentallela/gauge/gauge.min.js');
+        //$this->assets['js'][] = \HTML::script('js/gentallela/gauge/gauge_demo.js');
+        //Chart js
+        $this->assets['js'][] = \HTML::script('js/gentallela/chartjs/chart.min.js');
+
+        //Bootstrap progress
+        $this->assets['js'][] = \HTML::script('js/gentallela/progressbar/bootstrap-progressbar.min.js');
+        $this->assets['js'][] = \HTML::script('js/gentallela/nicescroll/jquery.nicescroll.min.js');
+        $this->assets['js'][] = \HTML::script('js/gentallela/custom.js');
+
+        //Custom 
+        /* E# Gentallela */
 
         //Notification Js
         $this->assets['js'][] = \HTML::script('js/pnotify/jquery.pnotify.min.js');
 
         //Dialog Box Js
         $this->assets['js'][] = \HTML::script('js/bootbox/bootbox.min.js');
-
-        //Date Picker js
-        // $this->assets['js'][] = \HTML::script('js/datePicker/moment.min.js');
-        $this->assets['js'][] = \HTML::script('js/datePicker/bootstrap-datetimepicker-and-moment.min.js');
 
         if ($parameters['page'] == ($this->controller . 'PostPage') || $this->add_validation_assets) {//Load Location picker component
             //Validation Engine js
@@ -1637,6 +1669,20 @@ class BaseController extends Controller {
     }
 
 //E# registerAssets() method
+
+    /**
+     * S# getSideBarPartialView() method
+     * @author Edwin Mugendi
+     * Return side bar partial view for each page
+     * @return view the side bar partial view
+     */
+    public function getSideBarPartialView() {
+        //Get and return the global side bar partial
+        return \View::make('partials.sideBar')
+                        ->with('view_data', $this->view_data);
+    }
+
+//E# getSideBarPartialView() method
 
     /**
      * S# getTopBarPartialView() method

@@ -19,24 +19,26 @@
     </div>
 </div>
 <?php endif; ?><div class="row commonMarginTop20">
-    <div class="col-md-6">
-        <div class="commonBorderRadius commonBorderColor commonPadding5">
-            <p class="commonFontWeightBold"><?php echo $view_data['title']; ?></p>
-            <table class="table table-condensed table-striped table-hover table-responsive">
-                <tbody>
-                    <?php foreach ($view_data['viewFields'] as $key => $single_field): ?>                    <tr>
-                        <td>
-                            <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.' . $key); ?>                        </td>
-                        <td>
-                            <?php if (array_key_exists(1, $single_field) && ($single_field[1] == 'select')): ?>
+    <div class="x_panel">
+        <div class="col-md-6">
+            <div class="commonBorderRadius commonBorderColor commonPadding5">
+                <p class="commonFontWeightBold"><?php echo $view_data['title']; ?></p>
+                <table class="table table-condensed table-striped table-hover table-responsive">
+                    <tbody>
+                        <?php foreach ($view_data['viewFields'] as $key => $single_field): ?>                        <tr>
+                            <td>
+                                <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.' . $key); ?>                            </td>
+                            <td>
+                                <?php if (array_key_exists(1, $single_field) && ($single_field[1] == 'select')): ?>
                                     <?php $field = $key . '_text'; ?>
                                     <?php echo $view_data['controller_model'][$field]; ?>
                                 <?php else: ?>
                                     <?php echo $view_data['controller_model'][$key]; ?>
-                                <?php endif; ?>                        </td>
-                    </tr>
-                    <?php endforeach; ?>                </tbody>
-            </table>    
+                                <?php endif; ?>                            </td>
+                        </tr>
+                        <?php endforeach; ?>                    </tbody>
+                </table>    
+            </div>
         </div>
-    </div>
-    </div>
+            </div>
+</div>

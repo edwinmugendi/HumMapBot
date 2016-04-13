@@ -19,7 +19,7 @@ class ReferralModel extends \BaseModel {
         'referral_code' => array(1, 'text', '=', 1),
         'workflow' => array(1, 'select', '=', 0),
         'promotion_id' => array(1, 'select', '=', 0),
-        'transaction_id' => array(1, 'select', '=', 0),
+        'transaction_id' => array(1, 'text', '=', 0),
     );
     //Fillable fields
     protected $fillable = array(
@@ -38,6 +38,7 @@ class ReferralModel extends \BaseModel {
     );
     //Appends fields
     protected $appends = array(
+        'promotion_id_text',
     );
     protected $hidden = array(
     );

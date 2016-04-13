@@ -19,6 +19,7 @@
 </div>
 <?php echo '<?php endif; ?>'; ?>
 <div class="row commonMarginTop20">
+    <div class="x_panel">
     <div class="col-md-6">
         <div class="commonBorderRadius commonBorderColor commonPadding5">
             <p class="commonFontWeightBold"><?php echo '<?php echo $view_data[\'title\']; ?>'; ?></p>
@@ -54,3 +55,4 @@
         </div>
     <?php endif; ?>
 </div>
+    </div>

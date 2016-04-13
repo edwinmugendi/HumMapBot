@@ -8,6 +8,7 @@ class GeneratorController extends BaseController {
         //Accounts
         'Lava\Accounts\UserController',
         'Lava\Accounts\VehicleController',
+        'Lava\Accounts\LeadController',
         //Merchants
         'Lava\Merchants\MerchantController',
         'Lava\Merchants\LocationController',

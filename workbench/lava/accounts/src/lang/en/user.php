@@ -36,6 +36,8 @@ return array(
         )
     ),
     'view' => array(
+        'welcome' => 'Welcome',
+        'signout' => 'Sign out',
         'field' => array(
             'merchant_id' => 'Merchant',
             'id' => '#',
@@ -77,7 +79,7 @@ return array(
             ),
         ),
         'link' => array(
-            'list' => 'Locations list',
+            'list' => 'Users list',
             'add' => 'Add user',
             'found' => '{0} :count users | {1} :count user | [2,Inf] :count users',
         )
@@ -375,16 +377,19 @@ return array(
             ),
             'form' => array(
                 'register' => array(
-                    'heading' => 'Register for FREE',
+                    'trial' => 'Register your car wash',
+                    'received' => 'Thank you for your interest in :productName. We\'ll respond soonest possible to activate your account.',
+                    'heading' => 'Register',
                     'suggest' => 'Have an account?',
                     'submit' => 'Register',
                     'processing' => 'Processing',
                     'field' => array(
-                        'firstName' => 'First name',
-                        'lastName' => 'Last name',
+                        'fullName' => 'Full name',
+                        'phone' => 'Phone',
                         'email' => 'Email',
-                        'password' => 'Password',
-                        'confirm_password' => 'Confirm password'
+                        'organization' => 'Car wash name',
+                        'country' => 'Country',
+                        'town' => 'Town',
                     )
                 ),
                 'login' => array(

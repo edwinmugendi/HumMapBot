@@ -27,6 +27,7 @@
 </div>
 <?php endif; ?><div class="row commonMarginTop5">
     <div class="col-md-12 table-responsive">
+        <div class="x_panel">
         <table id="idListTable" class="table table-bordered table-condensed table-striped table-hover"> 
             <thead> 
                 <tr>
@@ -371,6 +372,7 @@
                     </form>                </tr>
                 <?php endif; ?>                <?php echo $view_data['controllerList']; ?>            </tbody> 
         </table>
+    </div>
     </div>
 </div>
 <?php if (!array_key_exists('export', $view_data)): ?><div class="row">

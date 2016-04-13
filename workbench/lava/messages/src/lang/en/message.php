@@ -66,6 +66,16 @@ return array(
             'email' => 'Welcome to :productName',
             'sms' => 'Welcome to :productName',
             'push' => ''
+        ),
+        'registration' => array(
+            'email' => 'Welcome to :productName',
+            'sms' => 'Welcome to :productName',
+            'push' => ''
+        ),
+        'contact' => array(
+            'email' => ':productName action required',
+            'sms' => 'Welcome to :productName',
+            'push' => ''
         )
     )
 );
