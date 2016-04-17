@@ -163,6 +163,14 @@ div.formCell .inline{
     padding-top:0px;
     margin-bottom: 5px;
 }
+
+#idPrint{
+    margin-left: 8px;
+}
+
+#idExportGroup{
+    top:-3px;
+}
 /*E# Form*/
 /*S# Dashboard Page*/
 .pieChart{

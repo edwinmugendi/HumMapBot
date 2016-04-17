@@ -48,6 +48,20 @@
         <script>window.jQuery || document.write('<script type="text/javascript" src="<?php echo \URL::to('/'); ?>/js/jquery-1.9.0.min.js"><\/script>')</script>
         @foreach($assets['js'] as $singleJs)
         {{ $singleJs }}
-        @endforeach        
+        @endforeach
+
+        <script type="text/javascript">
+<?php if (\Session::has('notification')): ?>
+    <?php
+    $notification = \Session::get('notification');
+    ?>
+                $notification = {
+                    message: '<?php echo $notification['message']; ?>',
+                    type: '<?php echo $notification['type']; ?>'
+                }
+                showNotificationBar($notification);
+<?php endif; ?>
+
+        </script>
     </body>
 </html>

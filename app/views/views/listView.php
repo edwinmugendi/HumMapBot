@@ -14,7 +14,7 @@
 <div class="row commonMarginTop5">
     <div class="col-md-12">
         <?php echo '<?php echo Form::button(\Lang::get($view_data[\'package\'] . \'::\' . $view_data[\'controller\'] . \'.view.actions.delete.delete\'), array(\'class\' => \'btn btn-danger\', \'id\' => \'idDeleteRow\', \'disabled\')); ?>'; ?>
-        <div class="btn-group">
+        <div id="idExportGroup" class="btn-group">
             <button type="button" class="btn btn-success"><?php echo '<?php echo \Lang::get(\'common.view.actions.export.export\'); ?>'; ?></button>
             <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                 <span class="caret"></span>

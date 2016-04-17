@@ -8,11 +8,6 @@
 
 //Define map variables
 var $infoWindow, $map, $marker, $geocoder, $latLng = null;
-//Cache notification
-var $notification = $('#notification');
-
-//Notification animation
-var $notificationAnimation;
 
 var $deletedRows = [];
 
@@ -226,7 +221,6 @@ function injectGMaps() {
 function changeOrg() {
     $('.changeOrg').click(function ($event) {
         $event.preventDefault();
-        console.log($(this).data('orgId'));
         $('#idChangeOrgId').val($(this).data('orgId'));
 
         $('#idChangeOrgForm').submit();
@@ -284,53 +278,39 @@ function Scroll() {
 
 }
 
-function hideNotificationBar() {
-    $notification.parents('div.row').fadeOut(2000, function () {
-        $(this).addClass('hidden');
-        $notification.removeClass('alert-*').find('span#notificationMessage').html('')
-    });
-}
-function registerNotificationAnimation() {
-    //Clear notification animation
-    clearTimeout($notificationAnimation);
 
-    $notificationAnimation = setTimeout(function () {
-        hideNotificationBar()
-    }, 15000);
-}
+
+/**
+ * S# showNotifyBar() function
+ * 
+ * Show notify bar
+ *@param {str} $message Message
+ *@param {str} $type Type
+ *
+ **/
+function showNotifyBar($message, $type) {
+    $.notify({
+        message: $message,
+    }, {
+        mouse_over: 'pause',
+        type: $type,
+        placement: {
+            align: 'center'
+        },
+    });
+}//E# showNotifyBar() function
+
 function showNotificationBar($notificationData) {
+
     if ($notificationData.type == 'success') {
-        //Show success notification
-        $notification
-                .removeClass('alert-danger alert-info')
-                .addClass('alert-success')
-                .parents('div.row')
-                .removeClass('hidden')
-                .show();
-        //Set message
-        $notification.find('span').html($notificationData.message);
+        showNotifyBar($notificationData.message, 'success');
     } else if ($notificationData.type == 'info') {
-        //Show success notification
-        $notification
-                .removeClass('alert-success alert-danger')
-                .addClass('alert-info')
-                .parents('div.row')
-                .removeClass('hidden')
-                .show();
-        //Set message
-        $notification.find('span').html($notificationData.message);
+        showNotifyBar($notificationData.message, 'info');
     } else {
-        //Show danger notification
-        $notification
-                .removeClass('alert-success alert-info')
-                .addClass('alert-danger')
-                .parents('div.row')
-                .removeClass('hidden')
-                .show();
-        //Set message
-        $notification.find('span').html($notificationData.message);
-    }
+        showNotifyBar($notificationData.message, 'danger');
+    }//E# if else statement
 }
+
 function leaveApplicationDuration($suffix) {
     $('#idDuration' + $suffix).change(function () {
         var $durationValue = parseInt($(this).val());
@@ -863,8 +843,6 @@ if (typeof String.prototype.endsWith != 'function') {
  *  */
 function registerDeleteRow() {
     $('.deleteRow,#idDeleteRow').click(function ($event) {
-
-
         //Define source and confirm message
         var $source, $confirmMessage;
         //Define id to delete
@@ -887,14 +865,6 @@ function registerDeleteRow() {
             //Set confirm message
             $confirmMessage = inlineJs.lang.actions.delete.confirmMany.toString().sprintf($idToDelete.length);
 
-            //Hide view row
-            $('.viewRow').each(function () {
-                var $that = $(this);
-                if ($that.is(':visible')) {
-                    var $id = $that.data('id');
-                    $('.singleRow[data-id=' + $id + ']').find('.previewLink').click();
-                }//E# if statement
-            });
 
         } else {
 
@@ -913,14 +883,6 @@ function registerDeleteRow() {
 
             //Set confirm messsage
             $confirmMessage = inlineJs.lang.actions.delete.confirm;
-
-            //View row
-            var $viewRow = $('.singleRow[data-id=' + $that.data('id') + ']');
-
-            //Hide view data
-            if ($viewRow.is(':visible')) {
-                $viewRow.find('.previewLink').click();
-            }//E# if statement
 
         }//E# if else statement
 
@@ -971,6 +933,7 @@ function registerDeleteRow() {
                                             $thisRow.slideUp('slow');
                                             //Reset arrow
                                             $thisRow.find('.previewLink').find('i').removeClass().addClass('icon-data-arrow-right');
+
                                             //Hide hidden row
                                             $('#hiddenRow-' + $rowId).removeClass('previewShown').slideUp('slow');
                                         }//E# if statement
@@ -988,7 +951,15 @@ function registerDeleteRow() {
                                 $count = 1;
 
                                 //Remove this row
-                                $that.parents('tr').slideUp('slow');
+                                var $thisRow = $that.parents('tr')
+                                
+                                $thisRow.slideUp('slow');
+
+                                //Reset arrow
+                                $thisRow.find('.previewLink').find('i').removeClass().addClass('icon-data-arrow-right');
+
+                                //Hide hidden row
+                                $('#hiddenRow-' + $jsonData[0].id).removeClass('previewShown').slideUp('slow');
 
                                 //Push id to deleted row
                                 $deletedRows.push($jsonData[0].id);
@@ -1019,11 +990,6 @@ function registerDeleteRow() {
 
                     }//E# done() function
 
-                    //Register always callback
-                    $ajaxOptions.always = function ($jqXHR, $textStatus) {
-                        registerNotificationAnimation();
-                    }//E# always() function
-
                     //Delete
                     ajaxify($ajaxOptions);
                 }//E# if statement
@@ -1046,9 +1012,7 @@ function registerDeleteRow() {
 function registerUndoDelete() {
 
     //Add  row
-    $notification.on('click', 'a#idUndoDelete', function ($event) {
-        //Clear notification animation
-        clearTimeout($notificationAnimation);
+    $('body').on('click', 'a#idUndoDelete', function ($event) {
 
         //Prevent default
         $event.preventDefault();
@@ -1063,13 +1027,11 @@ function registerUndoDelete() {
         };
         //Register done callback
         $ajaxOptions.done = function ($jsonData) {
-            console.log($jsonData);
 
             var $message;
             var $count = 0;
             $.each($jsonData, function (index, $response) {
                 if (parseInt($response.code) === 200) {
-                    console.log("in 200");
                     $count++;
 
                     //Show row
@@ -1093,11 +1055,6 @@ function registerUndoDelete() {
 
         }//E# done() function
 
-        //Register always callback
-        $ajaxOptions.always = function ($jqXHR, $textStatus) {
-            registerNotificationAnimation();
-        }//E# alwats() function
-
         //Delete
         ajaxify($ajaxOptions);
     });
@@ -1112,8 +1069,6 @@ function registerUndoDelete() {
 function registerWorkflow($htmlElement, $action) {
     $($htmlElement).click(function ($event) {
 
-        //Clear notification animation
-        clearTimeout($notificationAnimation);
 
         //Define source and confirm message
         var $source, $confirmMessage;
@@ -1190,7 +1145,6 @@ function registerWorkflow($htmlElement, $action) {
                             if (parseInt($response.code) === 200) {
                                 //Increment acted on
                                 $count++;
-                                console.log($that.data('fieldClass'));
                                 //Hide this row
                                 $('table#idListTable').find('.' + $that.data('fieldClass')).each(function () {
                                     var $thisRow = $(this);
@@ -1216,11 +1170,6 @@ function registerWorkflow($htmlElement, $action) {
                         }
                         showNotificationBar($notificationData);
                     }//E# done() function
-
-                    //Register always callback
-                    $ajaxOptions.always = function ($jqXHR, $textStatus) {
-                        registerNotificationAnimation();
-                    }//E# alwats() function
 
                     //Delete
                     ajaxify($ajaxOptions);
@@ -1250,7 +1199,6 @@ function registerViewPayroll() {
         };
         $ajaxOptions.beforeSend = ajaxBeforeSending();
         $ajaxOptions.done = function ($data) {
-            hideNotificationBar();
             bootbox.alert($data);
         }//E# done function
 
@@ -1432,15 +1380,16 @@ jQuery(document).ready(function ($) {
         //Call injectGMaps on window load
         window.onload = injectGMaps;
     }
-    //Stick footer to the bottom
-    var docHeight = $(window).height();
-    var footerHeight = $('#footer').outerHeight();
-    var footerTop = $('#footer').position().top + footerHeight;
-
-    if (footerTop < docHeight) {
-        $('#footer').css('margin-top', (docHeight - footerTop) + 'px');
-    }
-
+    /*
+     //Stick footer to the bottom
+     var docHeight = $(window).height();
+     var footerHeight = $('#footer').outerHeight();
+     var footerTop = $('#footer').position().top + footerHeight;
+     
+     if (footerTop < docHeight) {
+     $('#footer').css('margin-top', (docHeight - footerTop) + 'px');
+     }
+     */
     //Add Hover effect to menus
     $('ul.nav li.dropdown').hover(function () {
         $(this).addClass('open').find('.dropdown-menu').stop(true, true).delay(0).fadeIn();
@@ -1473,14 +1422,6 @@ jQuery(document).ready(function ($) {
 
     //Register view image
     registerViewImage();
-
-    //Close notification
-    $('#closeNotification').click(function () {
-        hideNotificationBar();
-    });
-    if ($notification.length) {
-        registerNotificationAnimation();
-    }//E# if statement
 
     bootbox.setDefaults({
         /**

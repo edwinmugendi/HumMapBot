@@ -1592,7 +1592,7 @@ class BaseController extends Controller {
         //Bootstrap progress
         $this->assets['js'][] = \HTML::script('js/gentallela/progressbar/bootstrap-progressbar.min.js');
         $this->assets['js'][] = \HTML::script('js/gentallela/nicescroll/jquery.nicescroll.min.js');
-        $this->assets['js'][] = \HTML::script('js/gentallela/custom.js');
+        
 
         //Custom 
         /* E# Gentallela */
@@ -1659,6 +1659,9 @@ class BaseController extends Controller {
             default:
                 break;
         }//E# switch statement
+        
+        $this->assets['js'][] = \HTML::script('js/gentallela/custom.js');
+        
         //Register css assets
         $this->assets['css'][] = \HTML::style('css/themes/' . $this->theme . '/' . $this->theme . '.css?time=' . time());
 

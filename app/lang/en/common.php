@@ -27,8 +27,9 @@ return array(
         ),
     ),
     'back_to_list' => 'Back to list',
-    'detailed_view'=>'Detailed view',
+    'detailed_view' => 'Detailed view',
     'edit' => 'Edit',
+    'view' => 'View',
     'save' => 'Save',
     'cancel' => 'Cancel',
     'select' => 'Select',
@@ -50,7 +51,8 @@ return array(
                 'edit' => 'Edit'
             ),
             'detailed' => array(
-                'detailed' => 'Detailed view'
+                'detailed' => 'Detailed view',
+                'view' => 'View',
             ),
             'export' => array(
                 'export' => 'Export to'

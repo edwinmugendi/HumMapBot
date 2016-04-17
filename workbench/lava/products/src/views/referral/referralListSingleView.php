@@ -17,7 +17,7 @@
                                  
                                         <td><?php echo $view_data['singleModel']['transaction_id']; ?></td>
                 <?php if (!array_key_exists('export', $view_data)): ?>    <td>
-        <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get('common.view.actions.detailed.detailed'); ?>"><span class="icon-data-dashboard icon-data-2x text-primary"></span></a>
+        <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get('common.view.actions.detailed.detailed'); ?>" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> <?php echo \Lang::get('common.view.actions.detailed.view'); ?></a>
     </td>
     <?php endif; ?></tr>
 <?php if (!array_key_exists('export', $view_data)): ?>
@@ -26,15 +26,15 @@
     <td></td>
     <td colspan="100%">
                      
-                                        <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.id') .': '.$view_data['singleModel']['id']; ?> </div>
-                                                            <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.referrer_id') .': '.$view_data['singleModel']['referrer_id_text']; ?> </div>
-                                                            <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.referee_id') .': '.$view_data['singleModel']['referee_id_text']; ?> </div>
+                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.id') .': '.$view_data['singleModel']['id']; ?> </div>
+                                                            <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.referrer_id') .': '.$view_data['singleModel']['referrer_id_text']; ?> </div>
+                                                            <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.referee_id') .': '.$view_data['singleModel']['referee_id_text']; ?> </div>
                      
-                                        <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.referral_code') .': '.$view_data['singleModel']['referral_code']; ?> </div>
-                                                            <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.workflow') .': '.$view_data['singleModel']['workflow_text']; ?> </div>
-                                                            <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.promotion_id') .': '.$view_data['singleModel']['promotion_id_text']; ?> </div>
+                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.referral_code') .': '.$view_data['singleModel']['referral_code']; ?> </div>
+                                                            <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.workflow') .': '.$view_data['singleModel']['workflow_text']; ?> </div>
+                                                            <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.promotion_id') .': '.$view_data['singleModel']['promotion_id_text']; ?> </div>
                      
-                                        <div class="commonClearBoth"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.transaction_id') .': '.$view_data['singleModel']['transaction_id']; ?> </div>
+                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.transaction_id') .': '.$view_data['singleModel']['transaction_id']; ?> </div>
                 
     </td>
 </tr>

@@ -14,7 +14,7 @@
                 <img src="<?php echo '<?php echo $view_data[\'singleModel\'][\'thumbnail_url\']; ?>'; ?>">
             </a>
             <br>
-            <span class="label label-success"><?php echo '<?php echo \Lang::choice(\'media::media.view.documents\', $view_data[\'singleModel\'][\'image_count\'], array(\'count\' => $view_data[\'singleModel\'][\'image_count\'])); ?>'; ?></span>
+            <span class="label label-success commonFloatLeft commonMarginTop5"><?php echo '<?php echo \Lang::choice(\'media::media.view.documents\', $view_data[\'singleModel\'][\'image_count\'], array(\'count\' => $view_data[\'singleModel\'][\'image_count\'])); ?>'; ?></span>
             <?php echo '<?php endif; ?>'; ?>
         </td>
     <?php endif; ?>
@@ -32,9 +32,9 @@
     <?php endforeach; ?>
     <?php echo '<?php if (!array_key_exists(\'export\', $view_data)): ?>'; ?>
     <td>
-        <a href="<?php echo '<?php echo \URL::route(camel_case($view_data[\'package\'] . \'_detailed_\' . $view_data[\'controller\']), array($view_data[\'singleModel\'][\'id\'])); ?>' ?>" title="<?php echo '<?php echo \Lang::get(\'common.view.actions.detailed.detailed\'); ?>' ?>"><span class="icon-data-dashboard icon-data-2x text-primary"></span></a>
-        <a href="<?php echo '<?php echo \URL::route(camel_case($view_data[\'package\'] . \'_post_\' . $view_data[\'controller\']), array($view_data[\'singleModel\'][\'id\'])); ?>' ?>" title="<?php echo '<?php echo \Lang::get(\'common.view.actions.edit.edit\'); ?>' ?>"><span class="icon-data-edit icon-data-2x text-primary"></span></a>
-        <a href="#" data-id="<?php echo '<?php echo $view_data[\'singleModel\'][\'id\']; ?>' ?>"  data-ids="<?php echo '<?php echo $view_data[\'singleModel\'][\'id\']; ?>'; ?>" class="deleteRow" title="<?php echo '<?php echo \Lang::get($view_data[\'package\'] . \'::\' . $view_data[\'controller\'] . \'.view.actions.delete.delete\'); ?>'; ?>"><span class="icon-data-delete icon-data-2x text-danger"></span></a>
+        <a href="<?php echo '<?php echo \URL::route(camel_case($view_data[\'package\'] . \'_detailed_\' . $view_data[\'controller\']), array($view_data[\'singleModel\'][\'id\'])); ?>' ?>" title="<?php echo '<?php echo \Lang::get(\'common.view.actions.detailed.detailed\'); ?>' ?>" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> <?php echo '<?php echo \Lang::get(\'common.view.actions.detailed.view\'); ?>' ?></a>
+        <a href="<?php echo '<?php echo \URL::route(camel_case($view_data[\'package\'] . \'_post_\' . $view_data[\'controller\']), array($view_data[\'singleModel\'][\'id\'])); ?>' ?>" title="<?php echo '<?php echo \Lang::get(\'common.view.actions.edit.edit\'); ?>' ?>"  class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> <?php echo '<?php echo \Lang::get(\'common.view.actions.edit.edit\'); ?>' ?></a>
+        <a href="#" data-id="<?php echo '<?php echo $view_data[\'singleModel\'][\'id\']; ?>' ?>"  data-ids="<?php echo '<?php echo $view_data[\'singleModel\'][\'id\']; ?>'; ?>" class="deleteRow btn btn-danger btn-xs" title="<?php echo '<?php echo \Lang::get($view_data[\'package\'] . \'::\' . $view_data[\'controller\'] . \'.view.actions.delete.delete\'); ?>'; ?>"><i class="fa fa-trash-o"></i> <?php echo '<?php echo \Lang::get($view_data[\'package\'] . \'::\' . $view_data[\'controller\'] . \'.view.actions.delete.delete\'); ?>'; ?></a>
     </td>
     <?php echo '<?php endif; ?>'; ?>
 </tr>
@@ -50,11 +50,11 @@
             <?php else: ?> 
                 <?php $value = $field; ?>
             <?php endif; ?>
-            <div class="commonClearBoth"><?php echo '<?php echo \Lang::get($view_data[\'package\'] . \'::\' . $view_data[\'controller\'] . \'.view.field.' . $field . '\') .\': \'.$view_data[\'singleModel\'][\'' . $value . '\']; ?>'; ?> </div>
+            <div class="commonClearBoth commonFloatLeft"><?php echo '<?php echo \Lang::get($view_data[\'package\'] . \'::\' . $view_data[\'controller\'] . \'.view.field.' . $field . '\') .\': \'.$view_data[\'singleModel\'][\'' . $value . '\']; ?>'; ?> </div>
         <?php endforeach; ?>
         <?php if ($imageable): ?>
             <?php echo '<?php if ($view_data[\'singleModel\'][\'image_count\']): ?>'; ?>
-            <div class="commonClearBoth">
+            <div class="commonClearBoth commonFloatLeft">
                 <?php echo '<?php echo \Lang::get(\'media::media.view.image\'); ?>'; ?> 
                 <a  title="<?php echo '<?php echo \Lang::get(\'media::media.view.view_image\'); ?>'; ?>" data-toggle="modal" href="#" data-url="<?php echo '<?php echo $view_data[\'singleModel\'][\'main_url\']; ?>'; ?>" class="viewImage">
                     <img src="<?php echo '<?php echo $view_data[\'singleModel\'][\'thumbnail_url\']; ?>'; ?>">

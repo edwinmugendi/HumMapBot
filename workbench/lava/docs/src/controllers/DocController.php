@@ -43,8 +43,8 @@ class DocController extends DocsBaseController {
         //Set layout's top bar partial
         $this->layout->topBarPartial = $this->getTopBarPartialView();
 
-        //Load content view
-        $this->view_data['sideBar'] = '';
+        //Set layout's side bar partial
+        $this->layout->sideBarPartial = '';
 
         //Load content view
         $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])
