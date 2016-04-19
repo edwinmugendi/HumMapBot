@@ -93,6 +93,26 @@ class GeneratorController extends BaseController {
             if (\File::exists($full_detailed_path)) {//Detailed file exists
                 \File::put($full_detailed_path, $detailed_view);
             }//E# if else statement
+
+            /* Post view */
+            //Create post file name
+            $post_file_name = $controller->controller . 'PostView.php';
+
+            //Full detailed path
+            $full_post_path = $view_path . '/' . $post_file_name;
+
+            //Template detailed path
+            $template_post_path = \File::exists($view_path . '/' . 'postView.php') ? $controller->package . '::' . $controller->controller . '.postView' : 'views.postView';
+
+            //Get detailed view
+            $post_view = \View::make($template_post_path)
+                    ->with('fields', $this_model->viewFields)
+                    ->with('imageable', $controller->imageable)
+                    ->render();
+
+            if (\File::exists($full_post_path)) {//Detailed file exists
+                \File::put($full_post_path, $post_view);
+            }//E# if else statement
         }//E# foreach statement
     }
 

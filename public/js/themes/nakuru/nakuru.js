@@ -734,36 +734,6 @@ function registerFormEvents() {
     resetForm('.resetButton');
 }//E# registerFormEvents() function
 
-/*
- *S# showNotification() function
- *@author Edwin Mugendi
- *Show notification
- *@link PNotify http://pinesframework.org/pnotify/
- *@param JSON notification details keys are:
- *@key string required $type the type, can be 'error', notice'', 'info' or 'success'
- *@key string required $message the message
- *@key string optional $title the title
- **/
-function showNotification($notification) {
-    $.pnotify({
-        styling: 'bootstrap3',
-        type: $notification.type,
-        title: ($notification.title ? $notification.title : false),
-        text: $notification.message,
-        icon: ($notification.icon ? $notification.icon : true),
-        animation: 'show',
-        closer_hover: false,
-        delay: 15000,
-        addclass: 'stack-bottomright',
-        stack: {
-            'dir1': 'up',
-            'dir2': 'left',
-            'firstpos1': 25,
-            'firstpos2': 25
-        }
-    });
-}//E# showNotification() function
-
 /**
  * S# hideNotification() function
  * @author Edwin Mugendi

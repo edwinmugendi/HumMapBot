@@ -199,10 +199,10 @@ $(function () {
                     }//E# if statement
 
                     //Show notification
-                    showNotification($resultJSON);
+                    showNotificationBar($resultJSON);
 
                 }).fail(function ($jqXHR) {
-                    showNotification(jQuery.parseJSON($jqXHR.responseText));
+                    showNotificationBar(jQuery.parseJSON($jqXHR.responseText));
                 }).always(function () {
 
                 });
@@ -233,9 +233,10 @@ $(function () {
                     media_ids: $mediaIdArray
                 }
             }).done(function ($resultJSON) {
-                showNotification($resultJSON);
+                
+                showNotificationBar($resultJSON);
             }).fail(function ($jqXHR) {
-                showNotification(jQuery.parseJSON($jqXHR.responseText));
+                showNotificationBar(jQuery.parseJSON($jqXHR.responseText));
             }).always(function () {
 
             });
@@ -269,9 +270,9 @@ $(function () {
                 }
             }).done(function ($jsonResult) {
                 //Show the notification
-                showNotification($jsonResult);
+                showNotificationBar($jsonResult);
             }).fail(function ($jqXHR) {
-                showNotification(jQuery.parseJSON($jqXHR.responseText));
+                showNotificationBar(jQuery.parseJSON($jqXHR.responseText));
             }).always(function () {
 
             });
@@ -304,7 +305,7 @@ $(function () {
                 }
             }
         }).fail(function ($jqXHR) {
-            showNotification(jQuery.parseJSON($jqXHR.responseText));
+            showNotificationBar(jQuery.parseJSON($jqXHR.responseText));
         }).always(function () {
 
         });

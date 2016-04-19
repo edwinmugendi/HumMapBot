@@ -31,14 +31,15 @@
                         <?php endforeach; ?>                    </tbody>
                 </table>    
             </div>
-                            <div class="col-md-6">
-                    <div class="commonBorderRadius commonBorderColor commonPadding5">
-                        <p class="commonFontWeightBold"><?php echo \Lang::get('media::media.view.attached_documents'); ?></p>
-                        <div class="commonBorderTop">
-                            <?php echo $view_data['dataSource']['mediaView']; ?>  
-                        </div>
+        </div>
+                    <div class="col-md-6">
+                <div class="commonBorderRadius commonBorderColor commonPadding5">
+                    <p class="commonFontWeightBold"><?php echo \Lang::get('media::media.view.attached_documents'); ?></p>
+                    <div class="commonBorderTop">
+                        <?php echo $view_data['dataSource']['mediaView']; ?>  
                     </div>
                 </div>
-                    </div>
-    </div>
+            </div>
+            </div>
+</div>
 </div>

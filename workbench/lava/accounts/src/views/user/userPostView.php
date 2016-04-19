@@ -1,8 +1,14 @@
-<?php if ($view_data['user']['role_id'] == 1): ?>
+<div class="x_panel">
     <div class="row">
         <div class="col-md-12">
-            <?php echo \HTML::link(\URL::route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])), \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.link.list'),array('class'=>'btn btn-default')); ?>
+            <div class="btn-group"> 
+                <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_list_' . $view_data['controller']));?>" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get('common.back_to_list');?>"><i class="fa fa-chevron-left fa-2x" aria-hidden="true"></i></a>
+                <?php if ($view_data['crudId'] == 2): ?>                <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_post_' . $view_data['controller']), array($view_data['controller_model']['id']));?>" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get('common.edit');?>"><i class="fa fa-pencil fa-2x" aria-hidden="true"></i></a>
+                <?php endif; ?>            </div>
         </div>
     </div>
-<?php endif; ?>
-<?php echo $view_data['form']; ?>
+    <div class="row">
+        <div class="col-md-12">
+            <?php echo $view_data['form']; ?>        </div>
+    </div>
+</div>

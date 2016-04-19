@@ -37,16 +37,17 @@
                     </tbody>
                 </table>    
             </div>
-            <?php if ($imageable): ?>
-                <div class="col-md-6">
-                    <div class="commonBorderRadius commonBorderColor commonPadding5">
-                        <p class="commonFontWeightBold"><?php echo '<?php echo \Lang::get(\'media::media.view.attached_documents\'); ?>'; ?></p>
-                        <div class="commonBorderTop">
-                            <?php echo '<?php echo $view_data[\'dataSource\'][\'mediaView\']; ?>'; ?>  
-                        </div>
+        </div>
+        <?php if ($imageable): ?>
+            <div class="col-md-6">
+                <div class="commonBorderRadius commonBorderColor commonPadding5">
+                    <p class="commonFontWeightBold"><?php echo '<?php echo \Lang::get(\'media::media.view.attached_documents\'); ?>'; ?></p>
+                    <div class="commonBorderTop">
+                        <?php echo '<?php echo $view_data[\'dataSource\'][\'mediaView\']; ?>'; ?>  
                     </div>
                 </div>
-            <?php endif; ?>
-        </div>
+            </div>
+        <?php endif; ?>
     </div>
+</div>
 </div>
