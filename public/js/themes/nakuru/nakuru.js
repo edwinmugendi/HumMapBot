@@ -952,7 +952,7 @@ function registerDeleteRow() {
 
                                 //Remove this row
                                 var $thisRow = $that.parents('tr')
-                                
+
                                 $thisRow.slideUp('slow');
 
                                 //Reset arrow
@@ -1375,6 +1375,9 @@ function crmRegisterRelatedToLoader($controller, $relatedTo) {
 }
 
 jQuery(document).ready(function ($) {
+    /*Initialize tooltip*/
+    $('[data-toggle=tooltip]').tooltip({container: 'body'});
+
     /*Load Maps*/
     if (inlineJs.mappable) {
         //Call injectGMaps on window load

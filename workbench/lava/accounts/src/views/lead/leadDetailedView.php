@@ -1,25 +1,17 @@
-<?php if (!array_key_exists('export', $view_data['input'])): ?><div class="row">
-    <div class="col-md-12">
-        <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])); ?>" class="btn btn-default"><i class="glyphicon glyphicon-chevron-left"></i>&nbsp;<?php echo \Lang::get('common.back_to_list'); ?></a>
-        &nbsp;&nbsp;<a href="<?php echo \URL::route(camel_case($view_data['package'] . '_post_' . $view_data['controller']), array($view_data['controller_model']['id'])); ?>" class="btn btn-primary"><i class="glyphicon glyphicon-plus-sign"></i>&nbsp;<?php echo \Lang::get('common.edit'); ?></a>
-        &nbsp;&nbsp;<button class="deleteRow btn btn-danger" type="button" data-ids="<?php echo $view_data['controller_model']['id']; ?>"><i class="glyphicon glyphicon-trash"></i>&nbsp;<?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.actions.delete.delete'); ?></button>
-        &nbsp;&nbsp;<div class="btn-group">
-            <button type="button" class="btn btn-success"><i class="glyphicon glyphicon-share"></i>&nbsp;<?php echo \Lang::get('common.view.actions.export.export'); ?></button>
-            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                <span class="caret"></span>
-                <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><?php echo HTML::link(\URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array('id' => $view_data['controller_model']['id'])) . '?export=pdf', \Lang::get('common.view.actions.pdf.pdf'), array('id' => 'idPdf', 'title' => \Lang::get('common.view.actions.pdf.desc'))); ?></li>
-                <li><?php echo HTML::link(\URL::route(camel_case($view_data['package'] . '_list_' . $view_data['controller']), array('id' => $view_data['controller_model']['id'])) . '&export=xls', \Lang::get('common.view.actions.xls.xls'), array('id' => 'idXls', 'title' => \Lang::get('common.view.actions.xls.desc'))); ?></li>
-                <li><?php echo HTML::link(\URL::route(camel_case($view_data['package'] . '_list_' . $view_data['controller']), array('id' => $view_data['controller_model']['id'])) . '&export=csv', \Lang::get('common.view.actions.csv.csv'), array('id' => 'idCsv', 'title' => \Lang::get('common.view.actions.csv.desc'))); ?></li>
-            </ul>
+<div class="x_panel">
+    <?php if (!array_key_exists('export', $view_data['input'])): ?>    <div class="row">
+        <div class="col-md-12">
+            <div class="btn-group"> 
+                <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_list_' . $view_data['controller']));?>" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get('common.back_to_list');?>"><i class="fa fa-chevron-left fa-2x" aria-hidden="true"></i></a>
+                <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_post_' . $view_data['controller']), array($view_data['controller_model']['id']));?>" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get('common.edit');?>"><i class="fa fa-pencil fa-2x" aria-hidden="true"></i></a>
+                <button type="button" class="deleteRow btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.actions.delete.delete');?>"><i class="fa fa-trash fa-2x" aria-hidden="true"></i></button>
+                <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array('id' => $view_data['controller_model']['id'])) . '?export=pdf';?>" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get('common.view.actions.pdf.pdf');?>"><i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i></a>
+                <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array('id' => $view_data['controller_model']['id'])) . '?export=print';?>" target="_blank" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get('common.view.actions.print.print');?>"><i class="fa fa-print fa-2x" aria-hidden="true"></i></a>
+                <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_list_' . $view_data['controller']), array('id' => $view_data['controller_model']['id'])) . '&export=xls';?>" target="_blank" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get('common.view.actions.xls.xls');?>"><i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i></a>
+            </div>
         </div>
-        &nbsp;&nbsp;<a href="<?php echo \URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array('id' => $view_data['controller_model']['id'])) . '?export=print'; ?>" class="btn btn-info" id="idPrint" target="_blank"><i class="glyphicon glyphicon-share"></i>&nbsp;<?php echo \Lang::get('common.view.actions.print.print'); ?></a>
     </div>
-</div>
-<?php endif; ?><div class="row commonMarginTop20">
-    <div class="x_panel">
+    <?php endif; ?>    <div class="row commonMarginTop20">
         <div class="col-md-6">
             <div class="commonBorderRadius commonBorderColor commonPadding5">
                 <p class="commonFontWeightBold"><?php echo $view_data['title']; ?></p>
@@ -39,6 +31,6 @@
                         <?php endforeach; ?>                    </tbody>
                 </table>    
             </div>
-        </div>
-            </div>
+                    </div>
+    </div>
 </div>

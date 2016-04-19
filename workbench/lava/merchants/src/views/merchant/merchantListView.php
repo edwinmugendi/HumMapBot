@@ -1,32 +1,27 @@
-<?php if (!array_key_exists('export', $view_data)): ?><div class="row">
-    <div class="col-md-6">
-        <?php echo \HTML::link(\URL::route(camel_case($view_data['package'] . '_post_' . $view_data['controller'])), \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.link.add'), array('class' => 'btn btn-primary')); ?>    </div>
-    <div class="col-md-6">
-        <p class="pull-right commonFontWeightBold commonColor">
-            <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])); ?>">
-                <?php echo \Lang::choice($view_data['package'] . '::' . $view_data['controller'] . '.view.link.found',$view_data['controller_model']->getTotal(),array('count'=>$view_data['controller_model']->getTotal())); ?>            </a>
-        </p>
-    </div>
-</div>
-<div class="row commonMarginTop5">
-    <div class="col-md-12">
-        <?php echo Form::button(\Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.actions.delete.delete'), array('class' => 'btn btn-danger', 'id' => 'idDeleteRow', 'disabled')); ?>        <div id="idExportGroup" class="btn-group">
-            <button type="button" class="btn btn-success"><?php echo \Lang::get('common.view.actions.export.export'); ?></button>
-            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                <span class="caret"></span>
-                <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><?php echo HTML::link(\URL::route(camel_case($view_data['package'] . '_list_' . $view_data['controller']), $view_data['paginationAppends']) . '&export=pdf', \Lang::get('common.view.actions.pdf.pdf'), array('id' => 'idPdf', 'title' => \Lang::get('common.view.actions.pdf.desc'))); ?></li>
-                <li><?php echo HTML::link(\URL::route(camel_case($view_data['package'] . '_list_' . $view_data['controller']), $view_data['paginationAppends']) . '&export=xls', \Lang::get('common.view.actions.xls.xls'), array('id' => 'idXls', 'title' => \Lang::get('common.view.actions.xls.desc'))); ?></li>
-                <li><?php echo HTML::link(\URL::route(camel_case($view_data['package'] . '_list_' . $view_data['controller']), $view_data['paginationAppends']) . '&export=csv', \Lang::get('common.view.actions.csv.csv'), array('id' => 'idCsv', 'title' => \Lang::get('common.view.actions.csv.desc'))); ?></li>
-            </ul>
+<div class="x_panel">
+    <?php if (!array_key_exists('export', $view_data)): ?>    <div class="row">
+        <div class="col-md-6">
+            <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_post_' . $view_data['controller']));?>" class="btn btn-primary"><i class="fa fa-plus"></i>&nbsp;<?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.link.add');?></a>
         </div>
-        <?php echo HTML::link(\URL::route(camel_case($view_data['package'] . '_list_' . $view_data['controller']), $view_data['paginationAppends']) . '&export=print', \Lang::get('common.view.actions.print.print'), array('id' => 'idPrint', 'target' => '_blank', 'class' => 'btn btn-info', 'title' => \Lang::get('common.view.actions.print.desc'))); ?>    </div>
-</div>
-<?php endif; ?><div class="row commonMarginTop5">
-    <div class="col-md-12 table-responsive">
-        <div class="x_panel">
+        <div class="col-md-6">
+            <p class="pull-right commonFontWeightBold commonColor">
+                <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])); ?>">
+                    <?php echo \Lang::choice($view_data['package'] . '::' . $view_data['controller'] . '.view.link.found',$view_data['controller_model']->getTotal(),array('count'=>$view_data['controller_model']->getTotal())); ?>                </a>
+            </p>
+        </div>
+    </div>
+    <div class="row commonMarginTop5">
+        <div class="col-md-12">
+            <div class="btn-group"> 
+                <button id="idDeleteRow" disabled type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.actions.delete.delete');?>"><i class="fa fa-trash fa-2x" aria-hidden="true"></i></button>
+                <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_list_' . $view_data['controller']), $view_data['paginationAppends']) . '&export=print';?>" target="_blank" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get('common.view.actions.print.print');?>"><i class="fa fa-print fa-2x" aria-hidden="true"></i></a>
+                <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_list_' . $view_data['controller']), $view_data['paginationAppends']) . '&export=pdf'?>" target="_blank" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get('common.view.actions.pdf.pdf');?>"><i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i></a>
+                <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_list_' . $view_data['controller']), $view_data['paginationAppends']) . '&export=xls'?>" target="_blank" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get('common.view.actions.xls.xls');?>"><i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i></a>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>    <div class="row commonMarginTop10">
+        <div class="col-md-12 table-responsive">
             <table id="idListTable" class="table table-bordered table-condensed table-striped table-hover"> 
                 <thead> 
                     <tr>
@@ -282,15 +277,14 @@
             </table>
         </div>
     </div>
-</div>
-<?php if (!array_key_exists('export', $view_data)): ?><div class="row">
-    <div class="col-md-12">
-        <?php
+    <?php if (!array_key_exists('export', $view_data)): ?>    <div class="row">
+        <div class="col-md-12">
+            <?php
         if ($view_data['paginationAppends']) {
             echo $view_data['controller_model']->appends($view_data['paginationAppends'])->links();
         } else {
             echo $view_data['controller_model']->links();
         }//E# if else statement                   
-        ?>    </div>
-</div>
-<?php endif; ?>
+        ?>        </div>
+    </div>
+    <?php endif; ?></div>
