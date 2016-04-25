@@ -5,7 +5,7 @@
             <div class="tile-stats">
                 <div class="icon"><i class="fa fa-cc"></i>
                 </div>
-                <div class="count" id="idTransactions">111</div>
+                <div class="count" id="idTransactions">200</div>
                 <h3><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.transactions') ?></h3>
             </div>
         </div>
@@ -13,7 +13,7 @@
             <div class="tile-stats">
                 <div class="icon"><i class="fa fa-users"></i>
                 </div>
-                <div class="count" id="idNewUsers">200</div>
+                <div class="count" id="idNewUsers">30</div>
                 <h3><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.new_users') ?></h3>
             </div>
         </div>
@@ -21,7 +21,7 @@
             <div class="tile-stats">
                 <div class="icon"><i class="fa fa-users"></i>
                 </div>
-                <div class="count" id="idUsers">300</div>
+                <div class="count" id="idUsers">250</div>
                 <h3><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.users') ?></h3>
             </div>
         </div>
@@ -29,7 +29,7 @@
             <div class="tile-stats">
                 <div class="icon"><i class="fa fa-tint"></i>
                 </div>
-                <div class="count" id="idProducts">322</div>
+                <div class="count" id="idProducts">20</div>
                 <h3><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.products') ?></h3>
             </div>
         </div>
@@ -56,7 +56,7 @@
                         <div class="tiles">
                             <div class="col-md-4 tile">
                                 <span><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.total_revenue') ?></span>
-                                <h2>£231,809</h2>
+                                <h2>£ 5,500</h2>
                                 <span class="sparkline22 graph" style="height: 160px;"><canvas width="200" height="40" style="display: inline-block; width: 200px; height: 40px; vertical-align: top;"></canvas></span>
                             </div>
                         </div>
@@ -74,8 +74,8 @@
                                         <i class="fa fa-user aero"></i>
                                     </a>
                                     <div class="media-body">
-                                        <a class="title" href="#">Ms. Mary Jane</a>
-                                        <p><strong>£ 2,300 </strong> | 12 transactions </p>
+                                        <a class="title" href="#">Martin Michael</a>
+                                        <p><strong>£ 100 </strong> | 10 transactions </p>
                                     </div>
                                 </li>
                                 <li class="media event">
@@ -83,8 +83,8 @@
                                         <i class="fa fa-user green"></i>
                                     </a>
                                     <div class="media-body">
-                                        <a class="title" href="#">Ms. Mary Jane</a>
-                                        <p><strong>£ 2,300 </strong> | 12 transactions </p>
+                                        <a class="title" href="#">George Hughes</a>
+                                        <p><strong>£ 80 </strong> | 8 transactions </p>
                                     </div>
                                 </li>
                                 <li class="media event">
@@ -92,8 +92,8 @@
                                         <i class="fa fa-user blue"></i>
                                     </a>
                                     <div class="media-body">
-                                        <a class="title" href="#">Ms. Mary Jane</a>
-                                        <p><strong>£ 2,300 </strong> | 12 transactions </p>
+                                        <a class="title" href="#">John Alex</a>
+                                        <p><strong>£ 50 </strong> | 5 transactions </p>
                                     </div>
                                 </li>
                                 <li class="media event">
@@ -101,8 +101,8 @@
                                         <i class="fa fa-user aero"></i>
                                     </a>
                                     <div class="media-body">
-                                        <a class="title" href="#">Ms. Mary Jane</a>
-                                        <p><strong>£ 2,300 </strong> | 12 transactions </p>
+                                        <a class="title" href="#">Mary Jane</a>
+                                        <p><strong>£ 30 </strong> | 3 transactions </p>
                                     </div>
                                 </li>
                                 <li class="media event">
@@ -110,7 +110,7 @@
                                         <i class="fa fa-user green"></i>
                                     </a>
                                     <div class="media-body">
-                                        <a class="title" href="#">Ms. Mary Jane</a>
+                                        <a class="title" href="#">Simon Peter</a>
                                         <p><strong>£ 2,300 </strong> | 12 transactions </p>
                                     </div>
                                 </li>

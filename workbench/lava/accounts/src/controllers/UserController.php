@@ -594,7 +594,7 @@ class UserController extends AccountsBaseController {
         $validation = $this->isInputValid();
 
         if ($validation->passes()) {//Validation passed
-            return \Redirect::intended('profile');
+            return \Redirect::intended('dashboard');
         }//E# if else statement
         //Build parameters to redirect to
         $parameters = array('login');
