@@ -56,7 +56,7 @@
                         <div class="tiles">
                             <div class="col-md-4 tile">
                                 <span><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.total_revenue') ?></span>
-                                <h2>$231,809</h2>
+                                <h2>£231,809</h2>
                                 <span class="sparkline22 graph" style="height: 160px;"><canvas width="200" height="40" style="display: inline-block; width: 200px; height: 40px; vertical-align: top;"></canvas></span>
                             </div>
                         </div>
@@ -65,21 +65,7 @@
                         <div>
                             <div class="x_title">
                                 <h2><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.top_customers') ?></h2>
-                                <ul class="nav navbar-right panel_toolbox">
-                                    <li><a href="#"><i class="fa fa-chevron-up"></i></a>
-                                    </li>
-                                    <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li><a href="#">Settings 1</a>
-                                            </li>
-                                            <li><a href="#">Settings 2</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="#"><i class="fa fa-close"></i></a>
-                                    </li>
-                                </ul>
+
                                 <div class="clearfix"></div>
                             </div>
                             <ul class="list-unstyled top_profiles scroll-view" tabindex="5001" style="overflow: hidden; outline: none; cursor: -webkit-grab;">
@@ -89,9 +75,7 @@
                                     </a>
                                     <div class="media-body">
                                         <a class="title" href="#">Ms. Mary Jane</a>
-                                        <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                                        <p> <small>12 Sales Today</small>
-                                        </p>
+                                        <p><strong>£ 2,300 </strong> | 12 transactions </p>
                                     </div>
                                 </li>
                                 <li class="media event">
@@ -100,9 +84,7 @@
                                     </a>
                                     <div class="media-body">
                                         <a class="title" href="#">Ms. Mary Jane</a>
-                                        <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                                        <p> <small>12 Sales Today</small>
-                                        </p>
+                                        <p><strong>£ 2,300 </strong> | 12 transactions </p>
                                     </div>
                                 </li>
                                 <li class="media event">
@@ -111,9 +93,7 @@
                                     </a>
                                     <div class="media-body">
                                         <a class="title" href="#">Ms. Mary Jane</a>
-                                        <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                                        <p> <small>12 Sales Today</small>
-                                        </p>
+                                        <p><strong>£ 2,300 </strong> | 12 transactions </p>
                                     </div>
                                 </li>
                                 <li class="media event">
@@ -122,9 +102,7 @@
                                     </a>
                                     <div class="media-body">
                                         <a class="title" href="#">Ms. Mary Jane</a>
-                                        <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                                        <p> <small>12 Sales Today</small>
-                                        </p>
+                                        <p><strong>£ 2,300 </strong> | 12 transactions </p>
                                     </div>
                                 </li>
                                 <li class="media event">
@@ -133,9 +111,7 @@
                                     </a>
                                     <div class="media-body">
                                         <a class="title" href="#">Ms. Mary Jane</a>
-                                        <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                                        <p> <small>12 Sales Today</small>
-                                        </p>
+                                        <p><strong>£ 2,300 </strong> | 12 transactions </p>
                                     </div>
                                 </li>
                             </ul>
