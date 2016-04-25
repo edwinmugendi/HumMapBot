@@ -950,7 +950,6 @@ class BaseController extends Controller {
 
         //Set side bar
         //$this->view_data['sideBar'] = $this->getPostSideBarPartialView();
-        
         //Set layout's side bar partial
         $this->layout->sideBarPartial = $this->getSideBarPartialView();
 
@@ -1202,7 +1201,7 @@ class BaseController extends Controller {
         //Set layout's side bar partial
         $this->layout->sideBarPartial = $this->getSideBarPartialView();
 
-        
+
         if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {
 
             //Prepare controller model
@@ -1592,7 +1591,6 @@ class BaseController extends Controller {
         //Bootstrap progress
         $this->assets['js'][] = \HTML::script('js/gentallela/progressbar/bootstrap-progressbar.min.js');
         $this->assets['js'][] = \HTML::script('js/gentallela/nicescroll/jquery.nicescroll.min.js');
-        
 
         //Custom 
         /* E# Gentallela */
@@ -1645,9 +1643,17 @@ class BaseController extends Controller {
             case 'dashboardDashboardPage': {//User Dashboard Page
                     //Charting Flot plugin
                     $this->assets['js'][] = \HTML::script('js/flot/jquery.flot.min.js');
-
-                    //Charting Flot Pie plugin
                     $this->assets['js'][] = \HTML::script('js/flot/jquery.flot.pie.min.js');
+                    $this->assets['js'][] = \HTML::script('js/flot/jquery.flot.time.min.js');
+                    $this->assets['js'][] = \HTML::script('js/flot/jquery.flot.spline.js');
+                    $this->assets['js'][] = \HTML::script('js/flot/jquery.flot.stack.js');
+                    $this->assets['js'][] = \HTML::script('js/flot/jquery.flot.resize.js');
+                    $this->assets['js'][] = \HTML::script('js/flot/jquery.flot.date.js');
+                    $this->assets['js'][] = \HTML::script('js/flot/jquery.flot.orderBars.js');
+
+                    //Date picker
+                    $this->assets['js'][] = \HTML::script('js/datePicker/daterangepicker.js');
+
                     break;
                 }//E# case
             case 'applicationPostPage': {//Organization Post page
@@ -1659,9 +1665,9 @@ class BaseController extends Controller {
             default:
                 break;
         }//E# switch statement
-        
+
         $this->assets['js'][] = \HTML::script('js/gentallela/custom.js');
-        
+
         //Register css assets
         $this->assets['css'][] = \HTML::style('css/themes/' . $this->theme . '/' . $this->theme . '.css?time=' . time());
 

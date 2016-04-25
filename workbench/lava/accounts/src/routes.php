@@ -46,9 +46,9 @@
 
                         //Login User
                         \Route::post('login', array('as' => 'userLogin', 'uses' => 'Lava\Accounts\UserController@postLogin'));
-                        
+
                         \Route::post('register', array('as' => 'userRegister', 'before' => 'csrf', 'uses' => 'Lava\Accounts\UserController@postRegister'));
-                        
+
                         //Sign out User
                         \Route::get('signout', array('as' => 'userSignOut', 'uses' => 'Lava\Accounts\UserController@getSignOut'));
 
@@ -88,12 +88,15 @@
                         });
 
                         \Route::group(array('before' => 'auth'), function() {
+                            //Dashboard
+                            \Route::get('dashboard', array('as' => 'dashboard', 'uses' => 'Lava\Accounts\DashboardController@getDashboard'));
+
                             //Get Profile Page
                             \Route::get('profile', array('as' => 'userProfile', 'uses' => 'Lava\Accounts\UserController@getProfile'));
 
                             //Update User
                             \Route::post('user/update_user', array('as' => 'userUpdateUser', 'uses' => 'Lava\Accounts\UserController@postUpdate'));
-                            
+
                             /**
                              * User routes
                              */
@@ -141,7 +144,7 @@
 
                             //Un-Delete vehicle
                             \Route::post('accounts/undelete/vehicle', array('as' => 'accountsUndeleteVehicle', 'uses' => 'Lava\Accounts\VehicleController@postUndelete'));
-                        
+
                             /**
                              * Lead routes
                              */
@@ -165,6 +168,5 @@
 
                             //Un-Delete lead
                             \Route::post('accounts/undelete/lead', array('as' => 'accountsUndeleteLead', 'uses' => 'Lava\Accounts\LeadController@postUndelete'));
-                      
                         });
                         

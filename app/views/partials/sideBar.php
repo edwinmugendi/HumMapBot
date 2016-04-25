@@ -25,6 +25,9 @@
                 <div class="menu_section">
                     <p>&nbsp;</p>
                     <ul class="nav side-menu">
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][0] == 'dashboard') ? 'active' : '' ?>">
+                            <a href="<?php echo \URL::route('dashboard'); ?>"><i class="fa fa-dashboard"></i> Dashboard</a>
+                        </li>
                         <?php if ($view_data['user']['role_id'] == 1): ?>
                             <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'merchant') ? 'active' : '' ?>">
                                 <a href="<?php echo \URL::route('merchantsListMerchant'); ?>"><i class="fa fa-building"></i> Merchants</a>
