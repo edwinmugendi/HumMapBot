@@ -3,6 +3,7 @@
 namespace Lava\Accounts;
 
 use Carbon\Carbon;
+
 /**
  * S# DashboardController() function
  * Dashboard Controller
@@ -46,14 +47,10 @@ class DashboardController extends AccountsBaseController {
         $this->view_data['sideBar'] = '';
 
         $this->view_data['dashboardView'] = '';
-        if ($this->user['role_id'] == 2) {
-            $this->getManagerData();
-            //Manager view
-            $this->view_data['dashboardView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.managerView')
-                    ->with('view_data', $this->view_data);
-        } else {
-            
-        }
+
+        //Manager view
+        $this->view_data['dashboardView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.managerView')
+                ->with('view_data', $this->view_data);
 
         //Set layout's title
         $this->layout->title = \Lang::get($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['page'] . '.title');
