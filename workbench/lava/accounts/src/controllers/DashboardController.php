@@ -243,7 +243,8 @@ class DashboardController extends AccountsBaseController {
 
                 /* Line Graph* */
                 $unix_timestamp = strtotime($single_model->date);
-               
+                var_dump($single_model->date);
+                echo '<"sad>';
                 var_dump($unix_timestamp);
                 /*
                 if (array_key_exists($unix_timestamp, $line_graph)) {
