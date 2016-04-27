@@ -102,7 +102,7 @@ class DashboardController extends AccountsBaseController {
         $whereClause = array(
             array(
                 'where' => 'whereBetween',
-                'column' => 'date',
+                'column' => 'transaction_date',
                 'operand' => array($start_date, $end_date)
             ),
             array(
@@ -122,7 +122,7 @@ class DashboardController extends AccountsBaseController {
             );
         }//E# if statement
         //Order by id in descending order
-        $parameters['orderBy'][] = array('date' => 'asc');
+        $parameters['orderBy'][] = array('transaction_date' => 'asc');
 
         //Status
         $parameters['scope'] = array('statusOne');
@@ -245,7 +245,7 @@ class DashboardController extends AccountsBaseController {
             $whereClause = array(
                 array(
                     'where' => 'where',
-                    'column' => 'date',
+                    'column' => 'transaction_date',
                     'operator' => '<',
                     'operand' => $start_date->format('Y-m-d')
                 ),
