@@ -243,14 +243,19 @@ class DashboardController extends AccountsBaseController {
 
                 /* Line Graph* */
                 $unix_timestamp = strtotime($single_model->date);
-
+               
+                var_dump($unix_timestamp);
+                /*
                 if (array_key_exists($unix_timestamp, $line_graph)) {
                     $line_graph[$unix_timestamp][1] += (float) $single_model->amount;
                 } else {
                     $line_graph[$unix_timestamp] = array($unix_timestamp, (float) $single_model->amount);
                 }//E# if else statement
+                 * 
+                 */
             }//E# foreach statement
         }//E# if else statement
+        dd("asd");
         //Get new customer count
         $new_customers = $this->getNewCustomerCount($unique_customer_ids, $start_date);
 
