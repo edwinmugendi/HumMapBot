@@ -5,7 +5,7 @@
             <div class="tile-stats">
                 <div class="icon"><i class="fa fa-cc spin"></i>
                 </div>
-                <div class="count" id="idTransactionCount">200</div>
+                <div class="count" id="idTransactionCount"></div>
                 <h3><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.transactions') ?></h3>
             </div>
         </div>
@@ -13,7 +13,7 @@
             <div class="tile-stats">
                 <div class="icon"><i class="fa fa-users spin"></i>
                 </div>
-                <div class="count" id="idNewCustomers">30</div>
+                <div class="count" id="idNewCustomers"></div>
                 <h3><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.new_users') ?></h3>
             </div>
         </div>
@@ -21,7 +21,7 @@
             <div class="tile-stats">
                 <div class="icon"><i class="fa fa-users"></i>
                 </div>
-                <div class="count" id="idUsers">250</div>
+                <div class="count" id="idUsers"><?php echo $view_data['users_count']; ?></div>
                 <h3><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.users') ?></h3>
             </div>
         </div>
@@ -29,7 +29,7 @@
             <div class="tile-stats">
                 <div class="icon"><i class="fa fa-tint"></i>
                 </div>
-                <div class="count" id="idProducts">20</div>
+                <div class="count" id="idProducts"><?php echo $view_data['products_count']; ?></div>
                 <h3><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.products') ?></h3>
             </div>
         </div>

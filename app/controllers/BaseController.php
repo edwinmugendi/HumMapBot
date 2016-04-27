@@ -1921,12 +1921,12 @@ class BaseController extends Controller {
         //Build where clause
         $this->buildWhereClause($selectModel, $where_clause);
 
-        if (array_key_exists('withTrashed', $parameters)) {//Load Trashed models
-            $selectModel = $selectModel->withTrashed();
+        if (array_key_exists('distinct', $parameters)) {//Distinct
+            $selectModel = $selectModel->distinct($parameters['distinct']);
         }//E# if statement
 
-        if (array_key_exists('count', $parameters)) {//Count models and return
-            return $selectModel->count();
+        if (array_key_exists('withTrashed', $parameters)) {//Load Trashed models
+            $selectModel = $selectModel->withTrashed();
         }//E# if statement
 
         if (array_key_exists('aggregate', $parameters)) {//Count models and return
@@ -1954,6 +1954,14 @@ class BaseController extends Controller {
 
         if (array_key_exists('scope', $parameters)) {//Load Scope
             $lazyLoad = $this->buildScope($selectModel, $parameters['scope']);
+        }//E# if statement
+
+        if (array_key_exists('count', $parameters)) {//Count models and return
+            return $selectModel->count();
+        }//E# if statement
+
+        if (array_key_exists('countField', $parameters)) {//Count models and return
+            return $selectModel->count($parameters['countField']);
         }//E# if statement
 
         if (array_key_exists('paginate', $parameters)) {//Paginate
