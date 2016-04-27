@@ -109,7 +109,7 @@ class DashboardController extends AccountsBaseController {
                 'where' => 'where',
                 'column' => 'workflow',
                 'operator' => '=',
-                'operand' => 1
+                'operand' => 3
             )
         );
 
@@ -253,7 +253,7 @@ class DashboardController extends AccountsBaseController {
                     'where' => 'where',
                     'column' => 'workflow',
                     'operator' => '=',
-                    'operand' => 1
+                    'operand' => 3
                 ),
                 array(
                     'where' => 'where',
