@@ -40,6 +40,7 @@ class TransactionModel extends \BaseModel {
     );
     //Fillable fields
     protected $fillable = array(
+        'date',
         'user_id',
         'product_id',
         'promotion_id',
@@ -111,7 +112,6 @@ class TransactionModel extends \BaseModel {
         'take' => 'integer',
         'page' => 'integer'
     );
-    
     //Select all validation rules
     public $selectAllRules = array(
         'take' => 'integer',

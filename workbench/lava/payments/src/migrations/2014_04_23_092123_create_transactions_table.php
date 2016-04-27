@@ -25,6 +25,7 @@ class CreateTransactionsTable extends Migration {
             $table->float('refund')->unsigned(); //New
             $table->string('currency_id', 3);
             $table->string('description', 255);
+            $table->date('date');
 
             //Card Used
             $table->string('card_used', 255);
@@ -45,7 +46,6 @@ class CreateTransactionsTable extends Migration {
             $table->string('gateway', 255);
             $table->string('gateway_tran_id', 255);
             $table->string('gateway_code', 255); //New
-            
             //Notification
             $table->boolean('user_smsed');
             $table->boolean('user_emailed');

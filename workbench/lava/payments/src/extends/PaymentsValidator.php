@@ -180,6 +180,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         if ($user_stamps >= $location_stamps) {//User has sufficient stamps
                             //Build transaction array
                             $transaction_array = array(
+                                'date' => Carbon::now(),
                                 'vehicle_id' => $vehicle_model->id,
                                 'vrm' => $vehicle_model->vrm,
                                 'gateway' => 'stamps',
@@ -392,6 +393,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     }//E# if statement
                     //Transaction array
                     $transaction_array = array(
+                        'date' => Carbon::now(),
                         //Set other fields
                         'vehicle_id' => $this->data['vehicle_id'],
                         'vrm' => $vehicle_model->vrm,

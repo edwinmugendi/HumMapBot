@@ -90,6 +90,9 @@
                         \Route::group(array('before' => 'auth'), function() {
                             //Dashboard
                             \Route::get('dashboard', array('as' => 'dashboard', 'uses' => 'Lava\Accounts\DashboardController@getDashboard'));
+                            
+                            //Get Graph data
+                            \Route::get('dashboard/get_graph', array('as' => 'dashboardGetGraph', 'uses' => 'Lava\Accounts\DashboardController@getGraph'));
 
                             //Get Profile Page
                             \Route::get('profile', array('as' => 'userProfile', 'uses' => 'Lava\Accounts\UserController@getProfile'));

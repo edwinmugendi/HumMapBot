@@ -807,41 +807,6 @@ if (typeof String.prototype.endsWith != 'function') {
     }
 }//E# endsWith() function
 
-/**
- *S# loadSummaryData
- *
- * @param $startDate str start date
- * @param $endDate str end date
- *  */
-function loadSummaryData($startDate, $endDate) {
-    $.ajax({
-        url: inlineJs.baseUrl + '/dashboard/get_summary',
-        type: "GET",
-        data: {
-            start_date: $startDate,
-            end_date: $endDate,
-        },
-        success: function ($data) {
-            //Set days ago
-            $('.days').html($data.days_ago);
-            //Set amounts
-            $('#idTransactionValue').html($data.transaction_value);
-            $('#idTransactionCount').html($data.transaction_count);
-            $('#idCustomerCount').html($data.customer_count);
-
-            //Set trends
-            showTrend('#idTransactionValuePercent', $data.percent_transaction_value);
-            showTrend('#idTransactionCountPercent', $data.percent_transaction_count);
-            showTrend('#idCustomerCountPercent', $data.percent_customer_count);
-
-            //Build links
-            buildGraphLinks('#idTransactionValueLink', 'transaction_value', $startDate, $endDate);
-            buildGraphLinks('#idTransactionCountLink', 'transaction_count', $startDate, $endDate);
-            buildGraphLinks('#idCustomerCountLink', 'customer_count', $startDate, $endDate);
-        },
-        dataType: 'json'
-    });
-}//E# loadSummaryData() function
 
 /**
  *S# registerDeleteRow() function
@@ -1380,6 +1345,142 @@ function crmRegisterRelatedToLoader($controller, $relatedTo) {
     ajaxify($ajaxOptions);
 }
 
+/**
+ *S# loadSummaryData
+ *
+ * @param $startDate str start date
+ * @param $endDate str end date
+ **/
+
+function loadGraphData($startDate, $endDate) {
+    $('.spin').addClass('fa-spin');
+    $.ajax({
+        url: inlineJs.baseUrl + '/dashboard/get_graph',
+        type: "GET",
+        data: {
+            start_date: $startDate,
+            end_date: $endDate,
+        },
+        success: function ($data) {
+            console.log($data);
+            $('#idTransactionCount').html($data.transaction_count);
+            $('#idTransactionTotal').html($data.transaction_total);
+            $('#idNewCustomers').html($data.new_customers);
+            $('#idTopCustomers').html($data.top_customers);
+
+            drawGraph($data);
+        }, complete: function ($data) {
+            $('.spin').removeClass('fa-spin');
+        },
+        dataType: 'json'
+    });
+}//E# loadGraphData() function
+
+
+function drawGraph($data) {
+    console.log($data.graph_data);
+    //define chart clolors ( you maybe add more colors if you want or flot will add it automatic )
+    var chartColours = ['#96CA59', '#3F97EB', '#72c380', '#6f7a8a', '#f7cb38', '#5a8022', '#2c7282'];
+    /*
+     //generate random number for charts
+     randNum = function () {
+     return (Math.floor(Math.random() * (1 + 40 - 20))) + 20;
+     }
+     
+     var d1 = [];
+     //var d2 = [];
+     
+     //here we generate data for chart
+     for (var i = 0; i < 30; i++) {
+     d1.push([new Date(Date.today().add(i).days()).getTime(), randNum() + i + i + 10]);
+     //    d2.push([new Date(Date.today().add(i).days()).getTime(), randNum()]);
+     }
+     console.log(d1);
+     var chartMinDate = d1[0][0]; //first day
+     var chartMaxDate = d1[20][0]; //last day
+     */
+    var tickSize = [1, "day"];
+    var tformat = "%d/%m/%y";
+
+    //graph options
+    var options = {
+        grid: {
+            show: true,
+            aboveData: true,
+            color: "#3f3f3f",
+            labelMargin: 10,
+            axisMargin: 0,
+            borderWidth: 0,
+            borderColor: null,
+            minBorderMargin: 5,
+            clickable: true,
+            hoverable: true,
+            autoHighlight: true,
+            mouseActiveRadius: 100
+        },
+        series: {
+            lines: {
+                show: true,
+                fill: true,
+                lineWidth: 2,
+                steps: false
+            },
+            points: {
+                show: true,
+                radius: 4.5,
+                symbol: "circle",
+                lineWidth: 3.0
+            }
+        },
+        legend: {
+            position: "ne",
+            margin: [0, 10],
+            noColumns: 0,
+            labelBoxBorderColor: null,
+            labelFormatter: function (label, series) {
+                // just add some space to labes
+                return label + '&nbsp;&nbsp;';
+            },
+            width: 40,
+            height: 1
+        },
+        colors: chartColours,
+        shadowSize: 0,
+        tooltip: true, //activate tooltip
+        tooltipOpts: {
+            content: "%s: %y.0",
+            xDateFormat: "%d/%m",
+            shifts: {
+                x: -30,
+                y: -50
+            },
+            defaultTheme: false
+        },
+        yaxis: {
+            min: 0
+        },
+        xaxis: {
+            mode: "time",
+            minTickSize: tickSize,
+            timeformat: tformat,
+            min: $data.graph_min_date,
+            max: $data.graph_max_date
+        }
+    };
+    console.log($data.graph_min_date);
+    console.log($data.graph_max_date);
+    var plot = $.plot($("#placeholder33x"), [{
+            label: "Revenue",
+            data: $data.graph_data,
+            lines: {
+                fillColor: "rgba(150, 202, 89, 0.12)"
+            }, //#96CA59 rgba(150, 202, 89, 0.42)
+            points: {
+                fillColor: "#fff"
+            }
+        }], options);
+
+}
 jQuery(document).ready(function ($) {
     /*Initialize tooltip*/
     $('[data-toggle=tooltip]').tooltip({container: 'body'});
@@ -1521,7 +1622,7 @@ jQuery(document).ready(function ($) {
                 'This Month': [moment().startOf('month'), moment().endOf('month')],
                 'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
             },
-            startDate: moment().subtract(30, 'days'),
+            startDate: moment().subtract(6, 'days'),
             endDate: moment()
         },
         function (start, end) {
@@ -1533,111 +1634,13 @@ jQuery(document).ready(function ($) {
             var $startDate = picker.startDate.format('YYYY-MM-DD');
             var $endDate = picker.endDate.format('YYYY-MM-DD');
 
-            //Load summary data
-            //loadSummaryData($startDate, $endDate);
+            //Load Graph Data
+            loadGraphData($startDate, $endDate);
         });
 
-        //Load Summary Data
-        //  loadSummaryData(inlineJs.start_date, inlineJs.end_date);
+        //Load Graph Data
+        loadGraphData(inlineJs.start_date, inlineJs.end_date);
 
-        //define chart clolors ( you maybe add more colors if you want or flot will add it automatic )
-        var chartColours = ['#96CA59', '#3F97EB', '#72c380', '#6f7a8a', '#f7cb38', '#5a8022', '#2c7282'];
-
-        //generate random number for charts
-        randNum = function () {
-            return (Math.floor(Math.random() * (1 + 40 - 20))) + 20;
-        }
-
-        var d1 = [];
-        //var d2 = [];
-
-        //here we generate data for chart
-        for (var i = 0; i < 30; i++) {
-            d1.push([new Date(Date.today().add(i).days()).getTime(), randNum() + i + i + 10]);
-            //    d2.push([new Date(Date.today().add(i).days()).getTime(), randNum()]);
-        }
-
-        var chartMinDate = d1[0][0]; //first day
-        var chartMaxDate = d1[20][0]; //last day
-
-        var tickSize = [1, "day"];
-        var tformat = "%d/%m/%y";
-
-        //graph options
-        var options = {
-            grid: {
-                show: true,
-                aboveData: true,
-                color: "#3f3f3f",
-                labelMargin: 10,
-                axisMargin: 0,
-                borderWidth: 0,
-                borderColor: null,
-                minBorderMargin: 5,
-                clickable: true,
-                hoverable: true,
-                autoHighlight: true,
-                mouseActiveRadius: 100
-            },
-            series: {
-                lines: {
-                    show: true,
-                    fill: true,
-                    lineWidth: 2,
-                    steps: false
-                },
-                points: {
-                    show: true,
-                    radius: 4.5,
-                    symbol: "circle",
-                    lineWidth: 3.0
-                }
-            },
-            legend: {
-                position: "ne",
-                margin: [0, 10],
-                noColumns: 0,
-                labelBoxBorderColor: null,
-                labelFormatter: function (label, series) {
-                    // just add some space to labes
-                    return label + '&nbsp;&nbsp;';
-                },
-                width: 40,
-                height: 1
-            },
-            colors: chartColours,
-            shadowSize: 0,
-            tooltip: true, //activate tooltip
-            tooltipOpts: {
-                content: "%s: %y.0",
-                xDateFormat: "%d/%m",
-                shifts: {
-                    x: -30,
-                    y: -50
-                },
-                defaultTheme: false
-            },
-            yaxis: {
-                min: 0
-            },
-            xaxis: {
-                mode: "time",
-                minTickSize: tickSize,
-                timeformat: tformat,
-                min: chartMinDate,
-                max: chartMaxDate
-            }
-        };
-        var plot = $.plot($("#placeholder33x"), [{
-                label: "Revenue",
-                data: d1,
-                lines: {
-                    fillColor: "rgba(150, 202, 89, 0.12)"
-                }, //#96CA59 rgba(150, 202, 89, 0.42)
-                points: {
-                    fillColor: "#fff"
-                }
-            }], options);
     }
     //E# if else statement
 });

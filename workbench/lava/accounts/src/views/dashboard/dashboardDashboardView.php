@@ -3,17 +3,17 @@
     <div class="row top_tiles">
         <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <div class="tile-stats">
-                <div class="icon"><i class="fa fa-cc"></i>
+                <div class="icon"><i class="fa fa-cc spin"></i>
                 </div>
-                <div class="count" id="idTransactions">200</div>
+                <div class="count" id="idTransactionCount">200</div>
                 <h3><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.transactions') ?></h3>
             </div>
         </div>
         <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <div class="tile-stats">
-                <div class="icon"><i class="fa fa-users"></i>
+                <div class="icon"><i class="fa fa-users spin"></i>
                 </div>
-                <div class="count" id="idNewUsers">30</div>
+                <div class="count" id="idNewCustomers">30</div>
                 <h3><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.new_users') ?></h3>
             </div>
         </div>
@@ -56,7 +56,7 @@
                         <div class="tiles">
                             <div class="col-md-4 tile">
                                 <span><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.total_revenue') ?></span>
-                                <h2>£ 5,500</h2>
+                                <h2>£ <span id="idTransactionTotal">5,500</span></h2>
                                 <span class="sparkline22 graph" style="height: 160px;"><canvas width="200" height="40" style="display: inline-block; width: 200px; height: 40px; vertical-align: top;"></canvas></span>
                             </div>
                         </div>
@@ -68,52 +68,7 @@
 
                                 <div class="clearfix"></div>
                             </div>
-                            <ul class="list-unstyled top_profiles scroll-view" tabindex="5001" style="overflow: hidden; outline: none; cursor: -webkit-grab;">
-                                <li class="media event">
-                                    <a class="pull-left border-aero profile_thumb">
-                                        <i class="fa fa-user aero"></i>
-                                    </a>
-                                    <div class="media-body">
-                                        <a class="title" href="#">Martin Michael</a>
-                                        <p><strong>£ 100 </strong> | 10 transactions </p>
-                                    </div>
-                                </li>
-                                <li class="media event">
-                                    <a class="pull-left border-green profile_thumb">
-                                        <i class="fa fa-user green"></i>
-                                    </a>
-                                    <div class="media-body">
-                                        <a class="title" href="#">George Hughes</a>
-                                        <p><strong>£ 80 </strong> | 8 transactions </p>
-                                    </div>
-                                </li>
-                                <li class="media event">
-                                    <a class="pull-left border-blue profile_thumb">
-                                        <i class="fa fa-user blue"></i>
-                                    </a>
-                                    <div class="media-body">
-                                        <a class="title" href="#">John Alex</a>
-                                        <p><strong>£ 50 </strong> | 5 transactions </p>
-                                    </div>
-                                </li>
-                                <li class="media event">
-                                    <a class="pull-left border-aero profile_thumb">
-                                        <i class="fa fa-user aero"></i>
-                                    </a>
-                                    <div class="media-body">
-                                        <a class="title" href="#">Mary Jane</a>
-                                        <p><strong>£ 30 </strong> | 3 transactions </p>
-                                    </div>
-                                </li>
-                                <li class="media event">
-                                    <a class="pull-left border-green profile_thumb">
-                                        <i class="fa fa-user green"></i>
-                                    </a>
-                                    <div class="media-body">
-                                        <a class="title" href="#">Simon Peter</a>
-                                        <p><strong>£ 2,300 </strong> | 12 transactions </p>
-                                    </div>
-                                </li>
+                            <ul id="idTopCustomers"class="list-unstyled top_profiles scroll-view" tabindex="5001" style="overflow: hidden; outline: none; cursor: -webkit-grab;">
                             </ul>
                         </div>
                     </div>

@@ -11,18 +11,6 @@
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/home/sapama/projects/web/lava/workbench/lava/accounts/src/controllers/UserController.php</file>
-            <file>file:/home/sapama/projects/web/lava/app/controllers/BaseController.php</file>
-            <file>file:/home/sapama/projects/web/lava/app/views/partials/topBar.php</file>
-            <file>file:/home/sapama/projects/web/lava/public/css/themes/nakuru/nakuru.css</file>
-            <file>file:/home/sapama/projects/web/lava/workbench/lava/accounts/src/lang/en/dashboard.php</file>
-            <file>file:/home/sapama/projects/web/lava/public/css/gentallela/custom.css</file>
-            <file>file:/home/sapama/projects/web/lava/workbench/lava/accounts/src/controllers/DashboardController.php</file>
-            <file>file:/home/sapama/projects/web/lava/app/views/partials/sideBar.php</file>
-            <file>file:/home/sapama/projects/web/lava/public/js/themes/nakuru/nakuru.js</file>
-            <file>file:/home/sapama/projects/web/lava/workbench/lava/accounts/src/routes.php</file>
-            <file>file:/home/sapama/projects/web/lava/workbench/lava/accounts/src/views/dashboard/dashboardDashboardView.php</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
