@@ -53,7 +53,7 @@ class LeadModel extends \BaseModel {
     public $createRules = array(
         'full_name' => 'required|min:2',
         'organization' => 'required|min:2',
-        'email' => 'required|email',
+        'reg_email' => 'required|email',
         'phone' => 'required',
         'country_id' => 'required',
         'town' => 'required',

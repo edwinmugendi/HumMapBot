@@ -10,7 +10,7 @@ use Carbon\Carbon;
 class BaseController extends Controller {
 
     //Bundle
-    protected $layout = 'layouts.master';
+    public $layout = 'layouts.master';
     //Subdomain
     public $subdomain;
     //Theme

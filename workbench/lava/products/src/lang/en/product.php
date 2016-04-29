@@ -24,8 +24,8 @@ return array(
         'field' => array(
             'id' => '#',
             'name' => 'Name',
-            'merchant_id' => 'Merchant id',
-            'location_id' => 'Location id',
+            'merchant_id' => 'Merchant',
+            'location_id' => 'Location',
             'description' => 'Description',
             'price_1' => 'Price 1',
             'price_2' => 'Price 2',

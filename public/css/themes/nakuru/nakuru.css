@@ -105,6 +105,12 @@
     padding: 5px;
 }
 /*Common CSS*/
+/*S# Registration Page*/
+.registrationSubmitButton{
+   float:none;
+   margin-left: 0;
+}
+/*E# Registration Page*/
 
 /*S# Form*/
 .shadowPortlet{

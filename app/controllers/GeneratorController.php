@@ -19,6 +19,10 @@ class GeneratorController extends BaseController {
         //Payments
         'Lava\Payments\TransactionController',
         'Lava\Payments\CardController',
+        //Loans
+        'Lava\Loans\PlanController',
+        'Lava\Loans\LoanController',
+        'Lava\Loans\ScheduleController',
     );
 
     public function generateViews() {

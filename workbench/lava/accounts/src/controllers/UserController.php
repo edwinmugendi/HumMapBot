@@ -489,6 +489,11 @@ class UserController extends AccountsBaseController {
      */
     public function getRegistration($registrationType) {
 
+        $this->layout = 'layouts.auth';
+
+        $this->setupLayout();
+
+        //dd($this->layout);
         if ($this->user) {//User is logged, hence redirect to profile page
             $this->getSignOut();
         }//E# if else statement
@@ -510,11 +515,9 @@ class UserController extends AccountsBaseController {
                 return \Redirect::to('/');
             }//E# if statement       
         }//E# if statement
+        //Get and set country options for this country
+        $this->view_data['data_source']['country_id'] = $this->callController(\Util::buildNamespace('locations', 'country', 1), 'getSelectOptions', array('en', 'alphaList'));
 
-        if ($registrationType == 'register') {
-            //Get and set country options for this country
-            $this->view_data['data_source']['country_id'] = $this->callController(\Util::buildNamespace('locations', 'country', 1), 'getSelectOptions', array('en', 'alphaList'));
-        }//E# if statement
         //Set layout's title
         $this->layout->title = \Lang::get($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['page'] . '.titleAction.' . $this->view_data['registrationType']);
 
@@ -538,7 +541,7 @@ class UserController extends AccountsBaseController {
             return $this->view_data['contentView'];
         }//E# if statement
         //Set container view
-        $this->layout->containerView = $this->getContainerViewPartialView();
+        $this->layout->containerView = $this->view_data['contentView'];
 
         //Render page
         return $this->layout;
@@ -800,16 +803,26 @@ class UserController extends AccountsBaseController {
         $this->validator = $this->isInputValid($this->input, true);
 
         if ($this->validator->fails()) {//Validation fails
+            $link = \URL::route('userRegistration', array('login'));
+            $link .='#toregister';
+
+            //Redirect to login page
+            return \Redirect::to($link)->withInput()
+                            ->withErrors($this->validator);
+            ;
+
             //dd($validation->messages());
             //Build parameters to redirect to
-            $parameters = array('register');
+            //$parameters = array('register');
             //Redirect to this route with old inputs and errors
-            return \Redirect::route('userRegistration', $parameters)
-                            ->withInput()
-                            ->withErrors($this->validator);
+            //return \Redirect::route('userRegistration', $parameters)
+            //                ->withInput()
+            //                ->withErrors($this->validator);
         } else {//Validation passes
             //Set other fields
             $this->input['workflow'] = $this->input['source'] = $this->input['status'] = $this->input['created_by'] = $this->input['updated_by'] = 1;
+
+            $this->input['email'] = $this->input['reg_email'];
 
             $lead_model = $lead_model->create($this->input);
 
@@ -826,7 +839,7 @@ class UserController extends AccountsBaseController {
 
             $message = 'Merchant has registered from the website </b>' .
                     '<p>Full name: <b>' . $this->input['full_name'] . '</b>' .
-                    '<p>Email: <b>' . $this->input['email'] . '</b>' .
+                    '<p>Email: <b>' . $this->input['reg_email'] . '</b>' .
                     '<p>Car wash: <b>' . $this->input['organization'] . '</b>' .
                     '<p>Phone: <b>' . $this->input['phone'] . '</b>' .
                     '<p>Country: <b>' . $this->input['country_id'] . '</b>' .
@@ -846,8 +859,10 @@ class UserController extends AccountsBaseController {
             //Flash status code to session
             \Session::flash('registerCode', 1);
 
+            $link = \URL::route('userRegistration', array('login'));
+            $link .='#toregister';
             //Redirect to login page
-            return \Redirect::route('userRegistration', array('register'));
+            return \Redirect::to($link);
         }//E# if else statement
     }
 
