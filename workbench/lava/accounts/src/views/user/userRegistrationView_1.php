@@ -184,7 +184,6 @@
                             <?php echo \Form::hidden('form', 'reset'); ?>
                             <div>
                                 <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.reset.field.enterPassword'); ?>:<br/>
-
                                 <?php echo \InputGroup::withContents(\Form::password('password', array('id' => 'password', 'class' => 'validate[required, minSize[' . \Config::get('product.passwordMinCharacters') . ']]')))->prepend('<i class = "glyphicon glyphicon-wrench"></i>')->append('<i class = "glyphicon glyphicon-star commonColorRed" title = "' . \Lang::get('common.required') . '"></i>'); ?>
                             </div>
                             <?php if ($errors->has('password')): ?>

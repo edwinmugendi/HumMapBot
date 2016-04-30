@@ -515,6 +515,7 @@ class UserController extends AccountsBaseController {
                 return \Redirect::to('/');
             }//E# if statement       
         }//E# if statement
+        
         //Get and set country options for this country
         $this->view_data['data_source']['country_id'] = $this->callController(\Util::buildNamespace('locations', 'country', 1), 'getSelectOptions', array('en', 'alphaList'));
 

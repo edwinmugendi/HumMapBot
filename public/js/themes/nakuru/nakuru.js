@@ -1640,7 +1640,7 @@ jQuery(document).ready(function ($) {
 
         //Load Graph Data
         loadGraphData(inlineJs.start_date, inlineJs.end_date);
-
-    }
-    //E# if else statement
+    } else if (inlineJs.page === 'accountsUserRegistrationPage') {//Accounts User Registration Page
+        
+    }//E# if else statement
 });
