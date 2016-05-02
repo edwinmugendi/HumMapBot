@@ -14,6 +14,8 @@
                                                                         <td><?php echo $view_data['singleModel']['product_id_text']; ?></td>
                                                                         <td><?php echo $view_data['singleModel']['location_id_text']; ?></td>
                                              
+                                        <td><?php echo $view_data['singleModel']['transaction_date']; ?></td>
+                                 
                                         <td><?php echo $view_data['singleModel']['amount']; ?></td>
                                              
                                         <td><?php echo $view_data['singleModel']['currency_id']; ?></td>
@@ -37,6 +39,8 @@
                                                             <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.product_id') .': '.$view_data['singleModel']['product_id_text']; ?> </div>
                                                             <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.location_id') .': '.$view_data['singleModel']['location_id_text']; ?> </div>
                                                             <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.promotion_id') .': '.$view_data['singleModel']['promotion_id_text']; ?> </div>
+                     
+                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.transaction_date') .': '.$view_data['singleModel']['transaction_date']; ?> </div>
                      
                                         <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.amount') .': '.$view_data['singleModel']['amount']; ?> </div>
                      

@@ -202,6 +202,34 @@
                         $order = 'asc';
                         $is_ordered = false;
                         ?>
+                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'transaction_date'): ?>
+                             <?php $is_ordered = true;?>
+                                <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
+                                <?php
+                                $order = 'asc';
+                                ?>
+                            <?php else: ?>
+                                <?php
+                                $order = 'desc';
+                                ?>
+                            <?php endif; ?>
+                        <?php endif ?>
+
+                        <?php if ($view_data['paginationAppends']): ?>
+                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=transaction_date'; ?>
+                        <?php else: ?>
+                            <?php $url = 'order=' . $order . '&sort=transaction_date';?>
+                        <?php endif;?>                                <th>   
+                                    <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
+                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.transaction_date'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
+                                        <?php endif; ?>                                    </a>
+                                </th>
+                                <?php else: ?>                                <th>
+                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.transaction_date'); ?>                                </th>
+                                <?php endif; ?>                                                                                                                <?php if (!array_key_exists('export', $view_data)): ?>                                <?php
+                        $order = 'asc';
+                        $is_ordered = false;
+                        ?>
                         <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'amount'): ?>
                              <?php $is_ordered = true;?>
                                 <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
@@ -335,6 +363,9 @@
                                                                             <?php echo \Form::compositeSelect('location_id', $view_data['dataSource']['location_id'], isset($view_data['input']['location_id']) ? $view_data['input']['location_id'] : '', array('class' => 'form-control')); ?>                                                                    </td>
                                 
                                                         
+                                                                                    <td>
+                                                                            <?php echo \Form::text('transaction_date', isset($view_data['input']['transaction_date']) ? $view_data['input']['transaction_date'] : '', array('class' => 'form-control')); ?>                                                                    </td>
+                                
                                                                                     <td>
                                                                             <?php echo \Form::text('amount', isset($view_data['input']['amount']) ? $view_data['input']['amount'] : '', array('class' => 'form-control')); ?>                                                                    </td>
                                 
