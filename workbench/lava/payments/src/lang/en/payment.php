@@ -31,7 +31,7 @@ return array(
         ),
         //validation.processTransaction.notNearEnough
         'processTransaction' => array(
-            'notNearEnough' => 'Your not close enough to the Car Wash to process a transaction. Please attempt again when at the location.',
+            'notNearEnough' => 'You need to be within a 500 metre range from the carwash to make a purchase.',
             'dbError' => 'Lost connection to the database',
             'transaction' => array(
                 1 => 'Transaction successful',

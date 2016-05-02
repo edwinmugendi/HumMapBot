@@ -120,8 +120,8 @@ return array(
         'Lava\Media\MediaServiceProvider',
         //Register Location Service Provider
         'Lava\Locations\LocationsServiceProvider',
-        //Register Loan Service Provider
-        'Lava\Loans\LoansServiceProvider',
+    //Register Loan Service Provider
+    //'Lava\Loans\LoansServiceProvider',
     ),
     /*
       |--------------------------------------------------------------------------

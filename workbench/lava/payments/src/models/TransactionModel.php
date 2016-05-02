@@ -40,7 +40,7 @@ class TransactionModel extends \BaseModel {
     );
     //Fillable fields
     protected $fillable = array(
-        'date',
+        'transaction_date',
         'user_id',
         'product_id',
         'promotion_id',
@@ -117,6 +117,9 @@ class TransactionModel extends \BaseModel {
         'take' => 'integer',
         'page' => 'integer'
     );
+    
+    //Date fields
+    public $dateFields = array('transaction_date');
 
     /**
      * S# getUserSmsedTextAttribute() function

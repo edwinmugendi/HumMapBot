@@ -10,23 +10,21 @@
                 <?php echo \Form::hidden('force', array_key_exists('force', $view_data['input']) && $view_data['input']['force'] == 'login' ? 1 : 0); ?>
                 <h1><?php echo $login = \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.heading'); ?></h1>
                 <?php if (\Session::has('loginErrorCode')): ?>
-                    <div>
-                        <?php if (\Session::get('loginErrorCode') == 1): ?>
-                            <p class="commonColorRed"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.statusCode.1'); ?></p>
-                        <?php elseif (\Session::get('loginErrorCode') == 2): ?>
-                            <p class="commonColorRed"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.statusCode.2', array('register' => \HTML::link(\URL::route('userRegistration', array('register')), \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.register.submit')))); ?></p>
-                        <?php elseif (\Session::get('loginErrorCode') == 3): ?>
-                            <p class="commonColorRed"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.statusCode.3', array('lockOut' => \Config::get('product.lockOut'))); ?></p>
-                        <?php elseif (\Session::get('loginErrorCode') == 4): ?>
-                            <p class="commonColor"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.statusCode.4'); ?></p>
-                        <?php elseif (\Session::get('loginErrorCode') == 5): ?>
-                            <p class="commonColor"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.statusCode.5'); ?></p>
-                        <?php elseif (\Session::get('loginErrorCode') == 6): ?>
-                            <p class="commonColorRed"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.statusCode.6'); ?></p>
-                        <?php elseif (\Session::get('loginErrorCode') == 7): ?>
-                            <p class="commonColor"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.statusCode.7'); ?></p>
-                        <?php endif; ?>
-                    </div>
+                    <?php if (\Session::get('loginErrorCode') == 1): ?>
+                        <p class="commonColorRed"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.statusCode.1'); ?></p>
+                    <?php elseif (\Session::get('loginErrorCode') == 2): ?>
+                        <p class="commonColorRed"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.statusCode.2', array('register' => \HTML::link(\URL::route('userRegistration', array('register')), \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.register.submit')))); ?></p>
+                    <?php elseif (\Session::get('loginErrorCode') == 3): ?>
+                        <p class="commonColorRed"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.statusCode.3', array('lockOut' => \Config::get('product.lockOut'))); ?></p>
+                    <?php elseif (\Session::get('loginErrorCode') == 4): ?>
+                        <p class="commonColor"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.statusCode.4'); ?></p>
+                    <?php elseif (\Session::get('loginErrorCode') == 5): ?>
+                        <p class="commonColor"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.statusCode.5'); ?></p>
+                    <?php elseif (\Session::get('loginErrorCode') == 6): ?>
+                        <p class="commonColorRed"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.statusCode.6'); ?></p>
+                    <?php elseif (\Session::get('loginErrorCode') == 7): ?>
+                        <p class="commonColor"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.statusCode.7'); ?></p>
+                    <?php endif; ?>
                 <?php endif; ?>
                 <div>
                     <?php echo \Form::text('email', '', array('placeholder' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.field.email'), 'class' => 'validate[required,custom[email]]')); ?>
@@ -130,40 +128,38 @@
                 <?php if ($forgotStatusCode == 1): ?>
                     <p><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.forgot.statusCode.1'); ?></p>
                 <?php else: ?>
-
-                <?php endif; ?>   
-
-                <?php echo \Form::open(array('route' => 'userForgotPassword', 'id' => 'userPost')); ?>
-                <h1><?php echo $forgot = \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.forgot.heading'); ?></h1>
-                <?php if ($forgotStatusCode == 2): ?>
-                    <p class="commonColorRed commonFontWeightBold"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.forgot.statusCode.2', array('register' => \HTML::link(\URL::route('userRegistration', array('register')), \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.register.submit')))); ?></p>
-                <?php endif; ?>
-                <div>
-                    <?php echo \Form::text('sent_to', '', array('placeholder' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.field.email'), 'class' => 'validate[required,custom[email]]')); ?>
-                    <?php if ($errors->has('send_to')): ?>
-                        <p class="commonColorRed"><?php echo $errors->first('send_to'); ?></p>
+                    <?php echo \Form::open(array('route' => 'userForgotPassword', 'id' => 'userPost')); ?>
+                    <h1><?php echo $forgot = \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.forgot.heading'); ?></h1>
+                    <?php if ($forgotStatusCode == 2): ?>
+                        <p class="commonColorRed commonFontWeightBold"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.forgot.statusCode.2', array('register' => \HTML::link(\URL::route('userRegistration', array('register')), \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.register.submit')))); ?></p>
                     <?php endif; ?>
-                </div>
-                <div>
-                    <?php echo \Form::submit($forgot, array('class' => 'registrationSubmitButton btn-processing btn btn-default', 'data-processing' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.processing'))); ?>
-                </div>
-                <div class="clearfix"></div>
-                <div class="separator">
-                    <p class="change_link">Already a member?
-                        <a href="#tologin" class="to_register"> <?php echo $login; ?> </a>
-                    </p>
-                    <div class="clearfix"></div>
-                    <br/>
                     <div>
-                        <p> © <?php echo date('Y'); ?> <?php echo \Config::get('product.name'); ?></p>
+                        <?php echo \Form::text('sent_to', '', array('placeholder' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.field.email'), 'class' => 'validate[required,custom[email]]')); ?>
+                        <?php if ($errors->has('send_to')): ?>
+                            <p class="commonColorRed"><?php echo $errors->first('send_to'); ?></p>
+                        <?php endif; ?>
                     </div>
-                </div>
-                <?php echo \Form::close(); ?>
+                    <div>
+                        <?php echo \Form::submit($forgot, array('class' => 'registrationSubmitButton btn-processing btn btn-default', 'data-processing' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.processing'))); ?>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="separator">
+                        <p class="change_link">Already a member?
+                            <a href="#tologin" class="to_register"> <?php echo $login; ?> </a>
+                        </p>
+                        <div class="clearfix"></div>
+                        <br/>
+                        <div>
+                            <p> © <?php echo date('Y'); ?> <?php echo \Config::get('product.name'); ?></p>
+                        </div>
+                    </div>
+                    <?php echo \Form::close(); ?>
+                <?php endif; ?>   
                 <!-- form -->
             </section>
             <!-- content -->
         </div>
-        <?php if ($view_data['registrationType'] == 'reset'): ?>
+        <?php if ($view_data['input']['sub_view'] == 'reset'): ?>
             <div id="reset" class="animate form">
                 <section class="login_content">
                     <?php echo \Form::open(array('route' => 'userResetPassword', 'id' => 'userPost')); ?>

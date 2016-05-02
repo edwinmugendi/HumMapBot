@@ -156,7 +156,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
             //Calculate Distance
             $distance = $this->calculateDistance($this->data['location']['lat'], $this->data['location']['lng'], $product_model->location->lat, $product_model->location->lng, 'K');
 
-            if ($distance <= 0.5) {//Within range
+            if ($distance <= 0.5) {//Within 500 meters
                 //Cache location stamps
                 $location_stamps = (int) $product_model->location->loyalty_stamps;
 
@@ -180,7 +180,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                         if ($user_stamps >= $location_stamps) {//User has sufficient stamps
                             //Build transaction array
                             $transaction_array = array(
-                                'date' => Carbon::now(),
+                                'transaction_date' => Carbon::now(),
                                 'vehicle_id' => $vehicle_model->id,
                                 'vrm' => $vehicle_model->vrm,
                                 'gateway' => 'stamps',
@@ -393,7 +393,7 @@ class PaymentsValidator extends \Lava\Messages\MessagesValidator {
                     }//E# if statement
                     //Transaction array
                     $transaction_array = array(
-                        'date' => Carbon::now(),
+                        'transaction_date' => Carbon::now(),
                         //Set other fields
                         'vehicle_id' => $this->data['vehicle_id'],
                         'vrm' => $vehicle_model->vrm,

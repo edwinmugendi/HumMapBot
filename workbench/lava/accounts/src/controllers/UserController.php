@@ -487,7 +487,75 @@ class UserController extends AccountsBaseController {
      * 3. Reset password page
      * 4. Forgot password page
      */
-    public function getRegistration($registrationType) {
+    public function getRegistration() {
+
+        $this->layout = 'layouts.auth';
+
+        $this->setupLayout();
+
+        //dd($this->layout);
+        if ($this->user) {//User is logged, hence redirect to profile page
+            $this->getSignOut();
+        }//E# if else statement
+        //Prepare view data
+        $this->view_data = $this->prepareViewData('registration');
+
+        if (!array_key_exists('sub_view', $this->input) || (array_key_exists('sub_view', $this->input) && in_array('subview', array('register', 'login', 'forgot', 'reset', 'activate', 'verify')))) {
+            $this->view_data['input']['sub_view'] = 'login';
+        }
+        if (array_key_exists('reset_code', $this->input)) {//Reset password
+            //Get user by email
+            $user_model = $this->getModelByField('reset_code', $this->input['reset_code']);
+
+            if (!$user_model) {//No user with this code
+                return \Redirect::to('/');
+            }//E# if statement       
+        }//E# if statement
+        //Get and set country options for this country
+        $this->view_data['data_source']['country_id'] = $this->callController(\Util::buildNamespace('locations', 'country', 1), 'getSelectOptions', array('en', 'alphaList'));
+
+        //Set layout's title
+        $this->layout->title = \Lang::get($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['page'] . '.titleAction.' . $this->view_data['input']['sub_view']);
+
+        //Get and set layout's inline javascript
+        $this->layout->inlineJs = $this->injectInlineJs($this->view_data);
+
+        //Register css and js assets for this page
+        $this->layout->assets = $this->registerAssets($this->view_data);
+
+        //Set layout's top bar partial
+        $this->layout->topBarPartial = $this->getTopBarPartialView();
+
+        //Set layout's side bar partial
+        $this->layout->sideBarPartial = $this->getSideBarPartialView();
+
+        //Load content view
+        $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])
+                ->with('view_data', $this->view_data);
+
+        if ($this->view_data['input']['sub_view'] == 'verify') {
+            return $this->view_data['contentView'];
+        }//E# if statement
+        
+        //Set container view
+        $this->layout->containerView = $this->view_data['contentView'];
+
+        //Render page
+        return $this->layout;
+    }
+
+//E# getRegistration() function
+
+    /**
+     * S# getRegistration() function
+     * @author Edwin Mugendi
+     * Load the following pages
+     * 1. Register page
+     * 2. Login page
+     * 3. Reset password page
+     * 4. Forgot password page
+     */
+    public function getRegistration1($registrationType) {
 
         $this->layout = 'layouts.auth';
 
@@ -515,7 +583,6 @@ class UserController extends AccountsBaseController {
                 return \Redirect::to('/');
             }//E# if statement       
         }//E# if statement
-        
         //Get and set country options for this country
         $this->view_data['data_source']['country_id'] = $this->callController(\Util::buildNamespace('locations', 'country', 1), 'getSelectOptions', array('en', 'alphaList'));
 
@@ -1032,7 +1099,7 @@ class UserController extends AccountsBaseController {
      * @return page user registration page
      */
     public function postForgotPassword() {
-
+        
         //Get the validation rules
         $this->validationRules = array(
             'send_to' => 'required',
@@ -1040,7 +1107,6 @@ class UserController extends AccountsBaseController {
 
         //Validate inputs
         $validation = $this->isInputValid();
-
 
         if ($validation->passes()) {//Validation passed
             //Checks if send to is email, else reverts to phone

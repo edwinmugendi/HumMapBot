@@ -25,7 +25,7 @@ class CreateTransactionsTable extends Migration {
             $table->float('refund')->unsigned(); //New
             $table->string('currency_id', 3);
             $table->string('description', 255);
-            $table->date('date');
+            $table->date('transaction_date');
 
             //Card Used
             $table->string('card_used', 255);
