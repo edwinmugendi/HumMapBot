@@ -57,9 +57,9 @@ class CardController extends PaymentsBaseController {
 
         //Set layout's top bar partial
         $this->layout->topBarPartial = $this->getTopBarPartialView();
-
-        //Load content view
-        $this->view_data['sideBar'] = '';
+        
+        //Set layout's top bar partial
+        $this->layout->sideBarPartial = $this->getSideBarPartialView();
 
         //Load content view
         $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])
@@ -244,7 +244,7 @@ class CardController extends PaymentsBaseController {
                 } else {
                     $card_tokens = array(0);
                 }//E# if else statement
-                
+
                 $where_clause[] = array(
                     'where' => 'whereIn',
                     'column' => 'card_token',
