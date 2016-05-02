@@ -38,6 +38,7 @@ return array(
             'merchant_id' => 'Merchant',
             'promotion_id' => 'Promotion',
             'amount' => 'Amount',
+            'transaction_date' => 'Date',
             'refund' => 'Refund',
             'currency_id' => 'Currency',
             'description' => 'Description',
