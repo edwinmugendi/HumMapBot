@@ -432,7 +432,7 @@ return array(
                     'required' => 1,
                 ),
                 array(
-                    'field' => 'send_to',
+                    'field' => 'forgot_email',
                     'dataType' => 'string',
                     'note' => 'Can be either the users email or phone number. Lava will automatically send the reset code to email or SMS respectively',
                     'required' => 1,
