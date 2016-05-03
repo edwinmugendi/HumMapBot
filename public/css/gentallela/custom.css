@@ -4450,13 +4450,13 @@ a.hiddenanchor {
     max-width: 350px;
     position: relative;
 }
-#register, #login,#forgot,#reset,#activate {
+#register, #login, #forgot, #reset, #verify {
     position: absolute;
     top: 0px;
     width: 100%;
 }
 
-#register,#forgot,#reset,#activate {
+#register, #forgot, #reset, #verify {
     z-index: 21;
     opacity: 0;
     width: 100%;
@@ -4469,7 +4469,7 @@ a.hiddenanchor {
 #tologin:target ~ #wrapper #login,
 #toforgot:target ~ #wrapper #forgot,
 #toreset:target ~ #wrapper #reset,
-#toactivate:target ~ #wrapper #activate{
+#toverify:target ~ #wrapper #verify{
     z-index: 22;
     -webkit-animation-name: fadeInLeft;
     -moz-animation-name: fadeInLeft;
@@ -4487,7 +4487,7 @@ a.hiddenanchor {
 #tologin:target ~ #wrapper #register,
 #toforgot:target ~ #wrapper #login,
 #toreset:target ~ #wrapper #login,
-#toactivate:target ~ #wrapper #login{
+#toverify:target ~ #wrapper #login{
     -webkit-animation-name: fadeOutLeft;
     -moz-animation-name: fadeOutLeft;
     -ms-animation-name: fadeOutLeft;

@@ -503,12 +503,17 @@ class UserController extends AccountsBaseController {
         if (!array_key_exists('sub_view', $this->input) || (array_key_exists('sub_view', $this->input) && in_array('subview', array('register', 'login', 'forgot', 'reset', 'activate', 'verify')))) {
             $this->view_data['input']['sub_view'] = 'login';
         }
+
         if (array_key_exists('reset_code', $this->input)) {//Reset password
             //Get user by email
             $user_model = $this->getModelByField('reset_code', $this->input['reset_code']);
 
             if (!$user_model) {//No user with this code
-                return \Redirect::to('/');
+                $link = \URL::route('userRegistration');
+                $link .='#toforgot';
+
+                //Redirect to login page
+                return \Redirect::to($link);
             }//E# if statement       
         }//E# if statement
         //Get and set country options for this country
@@ -533,10 +538,6 @@ class UserController extends AccountsBaseController {
         $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])
                 ->with('view_data', $this->view_data);
 
-        if ($this->view_data['input']['sub_view'] == 'verify') {
-            return $this->view_data['contentView'];
-        }//E# if statement
-        
         //Set container view
         $this->layout->containerView = $this->view_data['contentView'];
 
@@ -871,13 +872,13 @@ class UserController extends AccountsBaseController {
         $this->validator = $this->isInputValid($this->input, true);
 
         if ($this->validator->fails()) {//Validation fails
-            $link = \URL::route('userRegistration', array('login'));
+            $link = \URL::route('userRegistration');
             $link .='#toregister';
 
             //Redirect to login page
-            return \Redirect::to($link)->withInput()
+            return \Redirect::to($link)
+                            ->withInput()
                             ->withErrors($this->validator);
-            ;
 
             //dd($validation->messages());
             //Build parameters to redirect to
@@ -944,30 +945,42 @@ class UserController extends AccountsBaseController {
     public function postResetPassword() {
         //Get the validation rules
         $this->validationRules = array(
-            'send_to' => 'required',
-            'reset_code' => 'required|resetCode',
-            'password' => 'required|min:6'
+            'reset_email' => 'required|exists:acc_users,email',
+            'reset_password' => 'required|min:6|resetCode',
+            'confirm_password' => 'min:6|same:reset_password',
         );
 
         //Validate row to be inserted
-        $validation = $this->isInputValid();
+        $this->validator = $this->isInputValid();
 
-        if ($validation->fails()) {//Validation fails
-            //Build parameters to redirect to
-            $parameters = array('reset', $this->input['reset_code']);
-            //Redirect to this route with old inputs and errors
-            return \Redirect::route('userRegistration', $parameters)
+        if ($this->validator->fails()) {//Validation fails
+            //dd($this->validator->messages());
+            $query_string_array = array(
+                'reset_code' => $this->input['reset_code'],
+                'forgot_email' => $this->input['reset_email'],
+                'sub_view' => 'reset',
+                'user_role' => $this->input['user_role']
+            );
+
+            //Build url
+            $url = \Util::buildUrl('userRegistration', $query_string_array);
+
+            $url.='#toreset';
+
+            //Redirect to forgot page
+            return \Redirect::to($url)
                             ->withInput()
-                            ->withErrors($validation);
+                            ->withErrors($this->validator);
         } else {//Validation passes
-            //Checks if send to is email, else reverts to phone
-            if (filter_var($this->input['send_to'], FILTER_VALIDATE_EMAIL)) {
-                $field = 'email';
-            } else {
-                $field = 'phone';
-            }//E# if else statement
-            //
-
+            /*
+              //Checks if send to is email, else reverts to phone
+              if (filter_var($this->input['send_to'], FILTER_VALIDATE_EMAIL)) {
+              $field = 'email';
+              } else {
+              $field = 'phone';
+              }//E# if else statement
+              //
+             */
             //Fields to select
             $fields = array('*');
 
@@ -975,9 +988,9 @@ class UserController extends AccountsBaseController {
             $where_clause = array(
                 array(
                     'where' => 'where',
-                    'column' => $field,
+                    'column' => 'email',
                     'operator' => '=',
-                    'operand' => $this->input['send_to']
+                    'operand' => $this->input['reset_email']
                 ),
                 array(
                     'where' => 'where',
@@ -993,48 +1006,48 @@ class UserController extends AccountsBaseController {
             //Get user by email and verification code
             $user_model = $this->select($fields, $where_clause, 1);
 
-            if ($user_model) {
-                foreach ($user_model->logins as $singleLogin) {//Loop and delete the login attempts
-                    $singleLogin->delete();
-                }//E# foreach statement
-                //Reset password
-                $user_model->password = \Hash::make($this->input['password']);
+            foreach ($user_model->logins as $singleLogin) {//Loop and delete the login attempts
+                $singleLogin->delete();
+            }//E# foreach statement
+            //Reset password
+            $user_model->password = \Hash::make($this->input['reset_password']);
 
-                //Clear reset code and time
-                $user_model->reset_code = '';
-                $user_model->reset_time = '';
+            //Clear reset code and time
+            $user_model->reset_code = '';
+            $user_model->reset_time = '';
 
-                //Save this user model
-                $user_model->save();
+            //Save this user model
+            $user_model->save();
 
-                if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//API
-                    //Get success message
-                    $message = \Lang::get($this->package . '::' . $this->controller . '.notification.reset_password');
+            /*
+              if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//API
+              //Get success message
+              $message = \Lang::get($this->package . '::' . $this->controller . '.notification.reset_password');
 
-                    throw new \Api200Exception(array($user_model->id), $message);
-                }//E# if statement
+              throw new \Api200Exception(array($user_model->id), $message);
+              }//E# if statement
+             */
+            if ($this->input['user_role'] == 'user') {
+                //Flash login error code to session
+                \Session::flash('reset_status_code', 1);
+
+                $query_string_array = array(
+                    'sub_view' => 'reset',
+                );
+
+                //Build url
+                $url = \Util::buildUrl('userRegistration', $query_string_array);
+
+                $url .= '#toreset';
+
+                //Redirect to reset page
+                return \Redirect::to($url);
+            } else {
                 //Flash login error code to session
                 \Session::flash('loginErrorCode', 4);
                 //Redirect to login page
-                return \Redirect::route('userRegistration', array('login'));
-            } else {
-                if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {
-                    //Set notification
-                    $this->notification = array(
-                        'field' => $field,
-                        'type' => 'User',
-                        'value' => $this->input['send_to'],
-                    );
-
-                    //Throw VRM not found error
-                    throw new \Api404Exception($this->notification);
-                }//E# if statement
-                //Flash forgot status code to session
-                \Session::flash('resetStatusCode', 1);
-
-                //Redirect to login page
-                return \Redirect::route('userRegistration', array('reset'));
-            }
+                return \Redirect::route('userRegistration');
+            }//E# if else statement
         }//E# if else statement
     }
 
@@ -1056,19 +1069,11 @@ class UserController extends AccountsBaseController {
         );
 
         //Validate row to be inserted
-        $validation = $this->isInputValid();
+        $this->validator = $this->isInputValid();
 
-        if ($validation->fails()) {//Validation fails
-            //Build parameters to redirect to
-            $parameters = array('verify');
-
+        if ($this->validator->fails()) {//Validation fails
             //Flash login error code to session
-            \Session::flash('verifyCode', 2);
-
-            //Redirect to this route with old inputs and errors
-            return \Redirect::route('userRegistration', $parameters)
-                            ->withInput()
-                            ->withErrors($validation);
+            \Session::flash('verify_status_code', 2);
         } else {//Validation passes
             //Get user by email and verification code
             $user_model = $this->getModelByField('verification_code', $this->input['verification_code']);
@@ -1083,11 +1088,19 @@ class UserController extends AccountsBaseController {
             $user_model->save();
 
             //Flash login error code to session
-            \Session::flash('verifyCode', 1);
-
-            //Redirect to login page
-            return \Redirect::route('userRegistration', array('verify'));
+            \Session::flash('verify_status_code', 1);
         }//E# if else statement
+
+        $query_string_array = array(
+            'sub_view' => 'verify',
+        );
+
+        //Build url
+        $url = \Util::buildUrl('userRegistration', $query_string_array);
+
+        $url .= '#toverify';
+
+        return \Redirect::to($url);
     }
 
 //E# getVerify() function
@@ -1099,77 +1112,92 @@ class UserController extends AccountsBaseController {
      * @return page user registration page
      */
     public function postForgotPassword() {
-        
+
         //Get the validation rules
         $this->validationRules = array(
-            'send_to' => 'required',
+            'forgot_email' => 'required',
         );
 
         //Validate inputs
-        $validation = $this->isInputValid();
+        $this->validator = $this->isInputValid();
 
-        if ($validation->passes()) {//Validation passed
-            //Checks if send to is email, else reverts to phone
-            if (filter_var($this->input['send_to'], FILTER_VALIDATE_EMAIL)) {
-                $field = 'email';
-            } else {
-                $field = 'phone';
-            }//E# if else statement
+        if ($this->validator->passes()) {//Validation passed
+            /*
+              //Checks if send to is email, else reverts to phone
+              if (filter_var($this->input['reset_email'], FILTER_VALIDATE_EMAIL)) {
+              $field = 'email';
+              } else {
+              $field = 'phone';
+              }//E# if else statement
+             * 
+             */
             //Get user by email
-            $user_model = $this->getModelByField($field, $this->input['send_to']);
+            $user_model = $this->getModelByField('email', $this->input['forgot_email']);
 
             if ($user_model) {//User with that email exists
-                if (($user_model->role_id == 3)) {//Customer
-                    $resetCode = mt_rand(1000, 10000);
-                } else {
-                    $resetCode = \Str::lower(\Str::random(48));
-                }//E# if else statement
+                /*
+                  if (($user_model->role_id == 3)) {//Customer
+                  $resetCode = mt_rand(1000, 10000);
+                  } else {
+                  $resetCode = \Str::lower(\Str::random(48));
+                  }//E# if else statement
+                 */
 
-                $user_model->reset_code = $resetCode;
+                $reset_code = \Str::upper($this->generateUniqueField('reset_code', 48));
+
+                $user_model->reset_code = $reset_code;
 
                 $user_model->reset_time = Carbon::now();
 
                 $user_model->save();
 
-                if (($user_model->role_id == 3) && ($field == 'phone')) {//Customer from phone
-                    $parameters = array(
-                        'name' => $user_model->first_name . ' ' . $user_model->last_name,
-                        'resetCode' => $resetCode,
-                    );
-                    try {
-                        //Converse
-                        $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('sms', null, null, $user_model->id, array($user_model->phone), 'forgotPassword', \Config::get('app.locale'), $parameters));
-                    } catch (\Exception $e) {
-                        throw new \Api500Exception(\Lang::get($this->package . '::' . $this->controller . '.notification.sending_sms_failed'));
-                    }//E# try catch block
-                } else {
-                    $queryStrArray = array(
-                        'reset_code' => $resetCode,
-                        'email' => $user_model->email,
-                    );
-                    //Build url
-                    $url = \Util::buildUrl('userRegistration', $queryStrArray, array('reset'));
 
-                    //Message parameters
-                    $parameters = array(
-                        'name' => $user_model->first_name . ' ' . $user_model->last_name,
-                        'resetCode' => $resetCode,
-                        'send_to' => $this->input['send_to'],
-                        'passwordMinCharacters' => \Config::get($this->package . '::account.passwordMinCharacters'),
-                        'productName' => \Config::get($this->package . '::product.name'),
-                        'url' => $url,
-                        'field' => $field,
-                        'role_id' => $user_model->role_id,
-                    );
+                /* if (($user_model->role_id == 3) && ($field == 'phone')) {//Customer from phone
+                  $parameters = array(
+                  'name' => $user_model->first_name . ' ' . $user_model->last_name,
+                  'resetCode' => $resetCode,
+                  );
+                  try {
+                  //Converse
+                  $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('sms', null, null, $user_model->id, array($user_model->phone), 'forgotPassword', \Config::get('app.locale'), $parameters));
+                  } catch (\Exception $e) {
+                  throw new \Api500Exception(\Lang::get($this->package . '::' . $this->controller . '.notification.sending_sms_failed'));
+                  }//E# try catch block
+                  } else {
+                 * 
+                 */
+                $queryStrArray = array(
+                    'reset_code' => $reset_code,
+                    'forgot_email' => $user_model->email,
+                    'sub_view' => 'reset',
+                    'user_role' => $user_model->role_id == 3 ? 'user' : 'merchant'
+                );
 
-                    try {
-                        $recipient['to'] = $user_model->email;
-                        //Converse
-                        $isSent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $user_model->id, $recipient, 'forgotPassword', \Config::get('app.locale'), $parameters));
-                    } catch (\Exception $e) {
-                        throw new \Api500Exception(\Lang::get($this->package . '::' . $this->controller . '.notification.sending_email_failed'));
-                    }//E# try catch block
-                }
+                //Build url
+                $url = \Util::buildUrl('userRegistration', $queryStrArray);
+
+                $url .= '#toreset';
+
+                //Message parameters
+                $parameters = array(
+                    'name' => $user_model->first_name . ' ' . $user_model->last_name,
+                    'reset_code' => $reset_code,
+                    'forgot_email' => $this->input['forgot_email'],
+                    'passwordMinCharacters' => \Config::get($this->package . '::account.passwordMinCharacters'),
+                    'productName' => \Config::get($this->package . '::product.name'),
+                    'url' => $url,
+                    /* 'field' => $field, */
+                    'role_id' => $user_model->role_id,
+                );
+
+                try {
+                    $recipient['to'] = $user_model->email;
+                    //Converse
+                    $isSent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $user_model->id, $recipient, 'forgotPassword', \Config::get('app.locale'), $parameters));
+                } catch (\Exception $e) {
+                    throw new \Api500Exception(\Lang::get($this->package . '::' . $this->controller . '.notification.sending_email_failed'));
+                }//E# try catch block
+                /* } */
 
                 if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {
                     //Get success message
@@ -1194,15 +1222,15 @@ class UserController extends AccountsBaseController {
                 //Flash forgot status code to session
                 \Session::flash('forgotStatusCode', 2);
             }//E# if else statement
-        }
+        }//E# if statement
 
-        //Build parameters to redirect to
-        $parameters = array('forgot');
+        $link = \URL::route('userRegistration');
+        $link .='#toforgot';
 
-        //Redirect to this route with old inputs and errors
-        return \Redirect::route('userRegistration', $parameters)
+        //Redirect to forgot page
+        return \Redirect::to($link)
                         ->withInput()
-                        ->withErrors($validation);
+                        ->withErrors($this->validator);
     }
 
 //E# postForgotPassword() function

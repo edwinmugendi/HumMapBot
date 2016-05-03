@@ -70,7 +70,7 @@ return array(
     //Lava
     "between_if" => "The :attribute field should be between between :min and :max when :other is :value.",
     'lat_lng' => 'Latitude (range -90 to 90) or longitude (range 180 to -180) missing or not valid',
-    'reset_code' => 'Invalid email or reset code or expired reset code (Expires after ' . \Config::get('accounts::account.resetCodeTimeout') . ' minutes)',
+    'reset_code' => 'Invalid email or reset code or expired reset code (Expires after ' . \Config::get('accounts::account.resetCodeTimeout') . ' minutes). Please reset password again.',
     "check_date" => "The :attribute should match this format :format.",
     /*
       |--------------------------------------------------------------------------

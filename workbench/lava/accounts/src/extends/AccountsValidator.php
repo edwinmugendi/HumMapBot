@@ -278,13 +278,13 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
      */
     public function validateResetCode($attribute, $resetCode, $parameters) {
 
-        //Checks if send to is email, else reverts to phone
-        if (filter_var($this->data['send_to'], FILTER_VALIDATE_EMAIL)) {
-            $field = 'email';
-        } else {
-            $field = 'phone';
-        }//E# if else statement
-
+        /* Checks if send to is email, else reverts to phone
+          if (filter_var($this->data['send_to'], FILTER_VALIDATE_EMAIL)) {
+          $field = 'email';
+          } else {
+          $field = 'phone';
+          }//E# if else statement
+         */
 
         $user_controller = new UserController();
 
@@ -295,9 +295,9 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         $where_clause = array(
             array(
                 'where' => 'where',
-                'column' => $field,
+                'column' => 'email',
                 'operator' => '=',
-                'operand' => $this->data['send_to']
+                'operand' => $this->data['reset_email']
             ),
             array(
                 'where' => 'where',

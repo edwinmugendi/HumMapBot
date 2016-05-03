@@ -3,6 +3,7 @@
     <a class="hiddenanchor" id="tologin"></a>
     <a class="hiddenanchor" id="toforgot"></a>
     <a class="hiddenanchor" id="toreset"></a>
+    <a class="hiddenanchor" id="toverify"></a>
     <div id="wrapper">
         <div id="login" class="animate form">
             <section class="login_content">
@@ -126,7 +127,22 @@
                 <?php $forgotStatusCode = \Session::has('forgotStatusCode') ? \Session::get('forgotStatusCode') : 0; ?>
 
                 <?php if ($forgotStatusCode == 1): ?>
-                    <p><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.forgot.statusCode.1'); ?></p>
+                    <h4 class="commonColor"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.forgot.statusCode.1'); ?></h4>
+                    <div class="separator">
+                        <p class="change_link">Already reset?
+                            <a href="#tologin" class="to_register"> <?php echo $login; ?> </a>
+                        </p>
+                        <?php
+                        $forgot_again_link = \URL::route('userRegistration');
+                        $forgot_again_link .='#toforgot';
+                        ?>
+                        <p class="change_link"><a data-link="<?php echo $forgot_again_link ?>" href="#" id="idForgotPasswordAgain">Click here to request reset email again</a></p>
+                        <div class="clearfix"></div>
+                        <br/>
+                        <div>
+                            <p> © <?php echo date('Y'); ?> <?php echo \Config::get('product.name'); ?></p>
+                        </div>
+                    </div>
                 <?php else: ?>
                     <?php echo \Form::open(array('route' => 'userForgotPassword', 'id' => 'userPost')); ?>
                     <h1><?php echo $forgot = \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.forgot.heading'); ?></h1>
@@ -134,9 +150,9 @@
                         <p class="commonColorRed commonFontWeightBold"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.forgot.statusCode.2', array('register' => \HTML::link(\URL::route('userRegistration', array('register')), \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.register.submit')))); ?></p>
                     <?php endif; ?>
                     <div>
-                        <?php echo \Form::text('sent_to', '', array('placeholder' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.field.email'), 'class' => 'validate[required,custom[email]]')); ?>
-                        <?php if ($errors->has('send_to')): ?>
-                            <p class="commonColorRed"><?php echo $errors->first('send_to'); ?></p>
+                        <?php echo \Form::text('forgot_email', '', array('placeholder' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.field.email'), 'class' => 'validate[required,custom[email]]')); ?>
+                        <?php if ($errors->has('forgot_email')): ?>
+                            <p class="commonColorRed"><?php echo $errors->first('forgot_email'); ?></p>
                         <?php endif; ?>
                     </div>
                     <div>
@@ -162,44 +178,64 @@
         <?php if ($view_data['input']['sub_view'] == 'reset'): ?>
             <div id="reset" class="animate form">
                 <section class="login_content">
-                    <?php echo \Form::open(array('route' => 'userResetPassword', 'id' => 'userPost')); ?>
-                    <?php echo \Form::hidden('reset_code', $view_data['input']['reset_code']); ?>
-                    <?php echo \Form::hidden('send_to', $view_data['input']['email']); ?>
-                    <?php echo \Form::hidden('form', 'reset'); ?>
+                    <?php $reset_status_code = \Session::has('reset_status_code') ? \Session::get('reset_status_code') : 0; ?>
 
-                    <h1><?php echo $resetPassword = \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.reset.heading'); ?></h1>
-                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.reset.help', array('passwordMinCharacters' => \Config::get($view_data['package'] . '::account.passwordMinCharacters'))); ?>
-                    <div>
-                        <?php echo \Form::text('password', '', array('placeholder' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.reset.field.enterPassword'), 'class' => 'validate[required,minSize[' . \Config::get('product.passwordMinCharacters') . ']]')); ?>
-                        <?php if ($errors->has('password')): ?>
-                            <p class="commonColorRed"><?php echo $errors->first('password'); ?></p>
-                        <?php endif; ?>
-                    </div>
-                    <div>
-                        <?php echo \Form::text('confirm_password', '', array('placeholder' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.reset.field.confirmPassword'), 'class' => 'validate[required,minSize[' . \Config::get('product.passwordMinCharacters') . ']]')); ?>
-                        <?php if ($errors->has('confirm_password')): ?>
-                            <p class="commonColorRed"><?php echo $errors->first('confirm_password'); ?></p>
-                        <?php endif; ?>
-                    </div>
-                    <div>
-                        <?php echo \Form::submit($resetPassword, array('class' => 'registrationSubmitButton btn-processing btn btn-default', 'data-processing' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.processing'))); ?>
-                    </div>
-                    <div class="clearfix"></div>
-                    <div class="separator">
-                        <p class="change_link">Already a member?
-                            <a href="#tologin" class="to_register"> <?php echo $login; ?> </a>
-                        </p>
-                        <div class="clearfix"></div>
-                        <br/>
+                    <?php if ($reset_status_code == 1): ?>
+                        <h4 class="commonColor"> Your email has been reset. Kindly login to <?php echo \Config::get('product.name'); ?>  and get your car washed :)</h4>
+                    <?php else: ?>
+                        <?php echo \Form::open(array('route' => 'userResetPassword', 'id' => 'userPost')); ?>
+                        <?php echo \Form::hidden('reset_code', $view_data['input']['reset_code']); ?>
+                        <?php echo \Form::hidden('reset_email', $view_data['input']['forgot_email']); ?>
+                        <?php echo \Form::hidden('user_role', $view_data['input']['user_role']); ?>
+                        <h1><?php echo $resetPassword = \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.reset.heading'); ?></h1>
+                        <p><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.reset.help', array('passwordMinCharacters' => \Config::get($view_data['package'] . '::account.passwordMinCharacters'))); ?></p>
                         <div>
-                            <p> © <?php echo date('Y'); ?> <?php echo \Config::get('product.name'); ?></p>
+                            <?php echo \Form::password('reset_password', '', array('placeholder' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.reset.field.enterPassword'), 'class' => 'validate[required,minSize[' . \Config::get('product.passwordMinCharacters') . ']]')); ?>
+                            <?php if ($errors->has('reset_password')): ?>
+                                <p class="commonColorRed"><?php echo $errors->first('reset_password'); ?></p>
+                            <?php endif; ?>
                         </div>
-                    </div>
-                    <?php echo \Form::close(); ?>
+                        <div>
+                            <?php echo \Form::password('confirm_password', '', array('placeholder' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.reset.field.confirmPassword'), 'class' => 'validate[required,minSize[' . \Config::get('product.passwordMinCharacters') . ']]')); ?>
+                            <?php if ($errors->has('confirm_password')): ?>
+                                <p class="commonColorRed"><?php echo $errors->first('confirm_password'); ?></p>
+                            <?php endif; ?>
+                        </div>
+                        <div>
+                            <?php echo \Form::submit($resetPassword, array('class' => 'registrationSubmitButton btn-processing btn btn-default', 'data-processing' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.processing'))); ?>
+                        </div>
+                        <div class="clearfix"></div>
+                        <?php if ($view_data['input']['user_role'] == 'merchant'): ?>
+                            <div class="separator">
+                                <p class="change_link">Already a member?
+                                    <a href="#tologin" class="to_register"> <?php echo $login; ?> </a>
+                                </p>
+                                <div class="clearfix"></div>
+                            <?php endif; ?>
+                            <br/>
+                            <div>
+                                <p> © <?php echo date('Y'); ?> <?php echo \Config::get('product.name'); ?></p>
+                            </div>
+                        </div>
+                        <?php echo \Form::close(); ?>
+                    <?php endif; ?>
                     <!-- form -->
                 </section>
                 <!-- content -->
             </div>
         <?php endif; ?>
+        <div id="verify" class="animate form">
+            <section class="login_content">
+
+                <?php if (\Session::get('verify_status_code') == 1): ?>
+                    <h4 class="commonColor"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.verify.statusCode.1', array('name' => \Config::get('product.name'))); ?></h4>
+                <?php elseif (\Session::get('verify_status_code') == 2): ?>
+                    <h4 class="commonColorRed"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.verify.statusCode.2'); ?></h4>
+                <?php endif; ?>
+                <?php echo \Form::close(); ?>
+                <!-- form -->
+            </section>
+            <!-- content -->
+        </div>
     </div>
 </div>

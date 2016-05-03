@@ -1641,6 +1641,12 @@ jQuery(document).ready(function ($) {
         //Load Graph Data
         loadGraphData(inlineJs.start_date, inlineJs.end_date);
     } else if (inlineJs.page === 'accountsUserRegistrationPage') {//Accounts User Registration Page
-        
+        $('#idForgotPasswordAgain').click(function ($event) {
+            location.reload(true); 
+            return false
+            console.log($(this).data('link'));
+            window.location.href = $(this).data('link');
+        //    $event.preventDefault();
+        });
     }//E# if else statement
 });

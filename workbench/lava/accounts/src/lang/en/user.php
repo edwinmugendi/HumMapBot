@@ -347,6 +347,7 @@ return array(
             'forgot' => 'Forgot password',
             'reset' => 'Reset password',
             'activate' => 'Account activation',
+            'verify' => 'Accont verification',
         ),
         'userRegistrationView' => array(
             'why' => array(
@@ -418,13 +419,13 @@ return array(
                         'email' => 'Email'
                     ),
                     'statusCode' => array(
-                        1 => 'We have sent an email to the address specified. Please check your email.',
-                        2 => 'The email you specified is not registered. Kindly confirm the email is correct or :register'
+                        1 => 'We have sent an email with instructions on how to reset your password. If you don\'t see it in your inbox, check your junk or spam box',
+                        2 => 'The email you specified is not registered. Kindly confirm the email is correct'
                     )
                 ),
                 'verify' => array(
                     'statusCode' => array(
-                        1 => 'Your account has been activated',
+                        1 => 'Your account has been activated. login to :name and get your car washed :)',
                         2 => 'The email or activation code is invalid'
                     )
                 ),
