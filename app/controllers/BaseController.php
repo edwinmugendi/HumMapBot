@@ -1562,8 +1562,8 @@ class BaseController extends Controller {
     public function registerAssets($parameters = array()) {
         //Register global css assets
         $this->assets['css'][] = \HTML::style('bootstrap/css/bootstrap.min.css');
-        //$this->assets['css'][] = \HTML::style('bootstrap/css/font-awesome.min.css');
-        //$this->assets['css'][] = \HTML::style('bootstrap/css/icons.css');
+        $this->assets['css'][] = \HTML::style('bootstrap/css/font-awesome.min.css');
+        $this->assets['css'][] = \HTML::style('bootstrap/css/icons.css');
 
         //Custom Design
         $this->assets['css'][] = \HTML::style('css/gentallela/animate.min.css');
