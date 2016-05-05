@@ -135,7 +135,7 @@ class LoanModel extends \BaseModel {
      * Get Workflow Text
      */
     public function getWorkflowTextAttribute() {
-        return \Lang::has('loans::loan.data.workflow.' . $this->attributes['workflow']) ? \Lang::get('loans::loan.data.workflow.' . $this->attributes['workflow']) : '';
+        return $this->attributes['workflow'] ? \Lang::get('loans::loan.data.workflow.' . $this->attributes['workflow']) : '';
     }
 
 //E# getWorkflowTextAttribute() function

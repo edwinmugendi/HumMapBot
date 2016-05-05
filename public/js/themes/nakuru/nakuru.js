@@ -1486,10 +1486,11 @@ jQuery(document).ready(function ($) {
     $('[data-toggle=tooltip]').tooltip({container: 'body'});
 
     /*Load Maps*/
-    if (inlineJs.mappable) {
+    if (inlineJs.mappable && (inlineJs.crudId == 1 && inlineJs == 2)) {
         //Call injectGMaps on window load
         window.onload = injectGMaps;
-    }
+    }//E# if statement
+    
     /*
      //Stick footer to the bottom
      var docHeight = $(window).height();
@@ -1642,11 +1643,11 @@ jQuery(document).ready(function ($) {
         loadGraphData(inlineJs.start_date, inlineJs.end_date);
     } else if (inlineJs.page === 'accountsUserRegistrationPage') {//Accounts User Registration Page
         $('#idForgotPasswordAgain').click(function ($event) {
-            location.reload(true); 
+            location.reload(true);
             return false
             console.log($(this).data('link'));
             window.location.href = $(this).data('link');
-        //    $event.preventDefault();
+            //    $event.preventDefault();
         });
     }//E# if else statement
 });

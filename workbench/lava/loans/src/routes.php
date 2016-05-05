@@ -6,7 +6,31 @@
 
 \Route::group(array('before' => 'auth'), function() {
     
-        /**
+    /**
+     * Offer routes
+     */
+    //Detailed offer
+    \Route::get('loans/detailed/offer/{id}', array('as' => 'loansDetailedOffer', 'uses' => 'Lava\Loans\OfferController@getDetailed'));
+
+    //List offer
+    \Route::get('loans/list/offer', array('as' => 'loansListOffer', 'uses' => 'Lava\Loans\OfferController@getList'));
+
+    //Post offer
+    \Route::get('loans/post/offer/{id?}', array('as' => 'loansPostOffer', 'uses' => 'Lava\Loans\OfferController@getPost'));
+
+    //Create a offer
+    \Route::post('loans/create/offer', array('as' => 'loansCreateOffer', 'before' => 'csrf', 'uses' => 'Lava\Loans\OfferController@postCreate'));
+
+    //Update a offer
+    \Route::post('loans/update/offer', array('as' => 'loansUpdateOffer', 'before' => 'csrf', 'uses' => 'Lava\Loans\OfferController@postUpdate'));
+
+    //Delete offer
+    \Route::post('loans/delete/offer', array('as' => 'loansDeleteOffer', 'uses' => 'Lava\Loans\OfferController@postDelete'));
+
+    //Un-Delete offer
+    \Route::post('loans/undelete/offer', array('as' => 'loansUndeleteOffer', 'uses' => 'Lava\Loans\OfferController@postUndelete'));
+
+    /**
      * Schedule routes
      */
     //Detailed schedule
@@ -77,5 +101,4 @@
 
     //Un-Delete loan
     \Route::post('loans/undelete/loan', array('as' => 'loansUndeleteLoan', 'uses' => 'Lava\Loans\LoanController@postUndelete'));
-
 });

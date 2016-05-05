@@ -121,7 +121,7 @@ return array(
         //Register Location Service Provider
         'Lava\Locations\LocationsServiceProvider',
     //Register Loan Service Provider
-    //'Lava\Loans\LoansServiceProvider',
+    // 'Lava\Loans\LoansServiceProvider',
     ),
     /*
       |--------------------------------------------------------------------------

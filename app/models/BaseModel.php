@@ -12,7 +12,9 @@ class BaseModel extends \Eloquent {
      * Set one to many relationship to Media Model
      */
     public function media() {
-        return $this->morphMany(\Util::buildNamespace('media', 'media', 2), 'mediable');
+        return $this->morphMany(\Util::buildNamespace('media', 'media', 2), 'mediable')
+                        ->orderBy('order', 'asc')
+                        ->whereStatus(1);
     }
 
 //E# media() function

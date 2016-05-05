@@ -23,6 +23,7 @@ class GeneratorController extends BaseController {
         'Lava\Loans\PlanController',
         'Lava\Loans\LoanController',
         'Lava\Loans\ScheduleController',
+        'Lava\Loans\OfferController',
     );
 
     public function generateViews() {
