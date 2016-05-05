@@ -1486,11 +1486,11 @@ jQuery(document).ready(function ($) {
     $('[data-toggle=tooltip]').tooltip({container: 'body'});
 
     /*Load Maps*/
-    if (inlineJs.mappable && (inlineJs.crudId == 1 && inlineJs == 2)) {
+    if (inlineJs.mappable && (parseInt(inlineJs.crudId) === 1 || parseInt(inlineJs.crudId) === 2)) {
         //Call injectGMaps on window load
         window.onload = injectGMaps;
     }//E# if statement
-    
+
     /*
      //Stick footer to the bottom
      var docHeight = $(window).height();
