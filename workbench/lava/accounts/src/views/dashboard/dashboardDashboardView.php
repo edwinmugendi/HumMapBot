@@ -1,5 +1,4 @@
 <div class="">
-
     <div class="row top_tiles">
         <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <div class="tile-stats">
@@ -29,8 +28,8 @@
             <div class="tile-stats">
                 <div class="icon"><i class="fa fa-tint"></i>
                 </div>
-                <div class="count" id="idProducts"><?php echo $view_data['products_count']; ?></div>
-                <h3><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.products') ?></h3>
+                <div class="count" id="idProducts"><?php echo $view_data['locations_count']; ?></div>
+                <h3><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.locations') ?></h3>
             </div>
         </div>
     </div>

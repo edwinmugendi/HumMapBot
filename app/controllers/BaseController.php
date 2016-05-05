@@ -2547,7 +2547,7 @@ class BaseController extends Controller {
                 $response = array(
                     'id' => $id,
                     'code' => 404,
-                    'message' => \Lang::get('httpStatus.systemCode.904.developerMessage', $parameters)
+                    'message' => \Lang::get('httpStatus.system_code.904.developer_message', $parameters)
                 );
             }//E# if else statement
 

@@ -451,7 +451,7 @@ return array(
                     'action' => 'Internal server error',
                     'httpCode' => 500,
                     'note' => 'Internal Sever Error',
-                    'example' => '{"httpStatusCode":500,"systemCode":1000,"message":"Lost connection to the database","data":[]}'
+                    'example' => '{"http_status_code":500,"system_code":1000,"message":"Lost connection to the database","data":[]}'
                 ),
             ),
         ),

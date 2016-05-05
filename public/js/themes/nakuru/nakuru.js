@@ -1362,7 +1362,6 @@ function loadGraphData($startDate, $endDate) {
             end_date: $endDate,
         },
         success: function ($data) {
-            console.log($data);
             $('#idTransactionCount').html($data.transaction_count);
             $('#idTransactionTotal').html($data.transaction_total);
             $('#idNewCustomers').html($data.new_customers);
@@ -1641,6 +1640,7 @@ jQuery(document).ready(function ($) {
 
         //Load Graph Data
         loadGraphData(inlineJs.start_date, inlineJs.end_date);
+
     } else if (inlineJs.page === 'accountsUserRegistrationPage') {//Accounts User Registration Page
         $('#idForgotPasswordAgain').click(function ($event) {
             location.reload(true);

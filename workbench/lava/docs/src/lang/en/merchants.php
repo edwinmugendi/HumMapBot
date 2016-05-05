@@ -414,7 +414,7 @@ return array(
                     'action' => 'Error',
                     'httpCode' => 400,
                     'note' => 'Validation error',
-                    'example' => '{"httpStatusCode":400,"systemCode":900,"message":"Input validation failed.","data":[{"field":"id","error":"The id must be an integer."}]}'
+                    'example' => '{"http_status_code":400,"system_code":900,"message":"Input validation failed.","data":[{"field":"id","error":"The id must be an integer."}]}'
                 ),
                 array(
                     'action' => 'Not found',

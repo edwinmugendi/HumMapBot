@@ -30,12 +30,12 @@ class DashboardController extends AccountsBaseController {
 //E# injectControllerSpecificJs() method
 
     /**
-     * S# countCustomersAndProducts() function
+     * S# countCustomersAndLocations() function
      * 
-     * Count total customers and products
+     * Count total customers and locations
      * 
      */
-    private function countCustomersAndProducts() {
+    private function countCustomersAndLocations() {
         //Fields
         $fields = array('*');
 
@@ -58,7 +58,7 @@ class DashboardController extends AccountsBaseController {
         $parameters['count'] = 1;
 
         //Get model
-        $this->view_data['products_count'] = $this->callController(\Util::buildNamespace('products', 'product', 1), 'select', array($fields, $whereClause, 1, $parameters));
+        $this->view_data['locations_count'] = $this->callController(\Util::buildNamespace('merchants', 'location', 1), 'select', array($fields, $whereClause, 1, $parameters));
 
         if ($this->user['role_id'] == 1) {
             //Fields
@@ -111,7 +111,7 @@ class DashboardController extends AccountsBaseController {
         }//E# if else statement
     }
 
-//E# countCustomersAndProducts() function
+//E# countCustomersAndLocations() function
 
     /**
      * S# getDashboard() function
@@ -136,7 +136,7 @@ class DashboardController extends AccountsBaseController {
         //Set list side bar
         $this->view_data['sideBar'] = '';
 
-        $this->countCustomersAndProducts();
+        $this->countCustomersAndLocations();
 
         //Set layout's title
         $this->layout->title = \Lang::get($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['page'] . '.title');
@@ -243,14 +243,18 @@ class DashboardController extends AccountsBaseController {
 
                 /* Line Graph* */
                 $unix_timestamp = strtotime($single_model->transaction_date);
-               
+
                 if (array_key_exists($unix_timestamp, $line_graph)) {
                     $line_graph[$unix_timestamp][1] += (float) $single_model->amount;
                 } else {
                     $line_graph[$unix_timestamp] = array($unix_timestamp, (float) $single_model->amount);
                 }//E# if else statement
             }//E# foreach statement
+        } else {
+            $start_date_timestamp = strtotime($this->input['start_date']);
+            $line_graph[$start_date_timestamp] = array($start_date_timestamp, 0);
         }//E# if else statement
+        
         //Get new customer count
         $new_customers = $this->getNewCustomerCount($unique_customer_ids, $start_date);
 

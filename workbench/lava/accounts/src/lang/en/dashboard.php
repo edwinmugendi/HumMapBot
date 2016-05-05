@@ -7,7 +7,7 @@ return array(
         'new_users' => 'New users',
         'users' => 'Total users',
         'transactions' => '# of transactions',
-        'products' => '# of products',
+        'locations' => 'Locations',
         'revenue_summary' => 'Revenue summary',
         'top_customers' => 'Top customers',
         'top_customers_transactions' => '{0} :count transactions | {1} :count transaction | [2,Inf] :count transactions',
