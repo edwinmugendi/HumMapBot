@@ -114,14 +114,12 @@ return array(
         'Lava\Messages\MessagesServiceProvider',
         //Register Payments Service Provider
         'Lava\Payments\PaymentsServiceProvider',
-        //Register Products Service Provider
-        'Lava\Products\ProductsServiceProvider',
         //Register Media Service Provider
         'Lava\Media\MediaServiceProvider',
         //Register Location Service Provider
         'Lava\Locations\LocationsServiceProvider',
-    //Register Loan Service Provider
-    // 'Lava\Loans\LoansServiceProvider',
+        //Register Loan Service Provider
+        'Lava\Loans\LoansServiceProvider',
     ),
     /*
       |--------------------------------------------------------------------------

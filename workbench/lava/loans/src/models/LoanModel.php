@@ -189,32 +189,6 @@ class LoanModel extends \BaseModel {
 //E# getPlanIdTextAttribute() function
 
     /**
-     * S# user() function
-     * Set one to one relationship to User Model
-     */
-    public function user() {
-        return $this->belongsTo(\Util::buildNamespace('accounts', 'user', 2), 'user_id', 'id');
-    }
-
-//E# user() function
-
-    /**
-     * S# getUserIdTextAttribute() function
-     * 
-     * Get User Text
-     */
-    public function getUserIdTextAttribute() {
-
-        //Get user model
-        $user_model = $this->user()->first();
-
-        //Return name
-        return $user_model ? $user_model->first_name . ' ' . $user_model->last_name : '';
-    }
-
-//E# getUserIdTextAttribute() function
-
-    /**
      * S# officer() function
      * Set one to one relationship to Officer Model
      */
@@ -235,7 +209,7 @@ class LoanModel extends \BaseModel {
         $officer_model = $this->officer()->first();
 
         //Return name
-        return $officer_model ? $officer_model->first_name . ' ' . $officer_model->last_name : '';
+        return $officer_model->full_name;
     }
 
 //E# getOfficerIdTextAttribute() function

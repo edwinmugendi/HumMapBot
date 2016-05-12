@@ -11,7 +11,7 @@ use Carbon\Carbon;
  * @author Edwin Mugendi
  * @todo We are extending the Payments Validator because PHP does not offer multiple inheritance. We extend alphabetically
  */
-class LoansValidator extends \Lava\Payments\PaymentsValidator {
+class LoansValidator extends \Lava\Accounts\AccountsValidator {
 
     //Message object
     private $message;

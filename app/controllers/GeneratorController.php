@@ -7,18 +7,14 @@ class GeneratorController extends BaseController {
     private $controllers = array(
         //Accounts
         'Lava\Accounts\UserController',
-        'Lava\Accounts\VehicleController',
-        'Lava\Accounts\LeadController',
+        'Lava\Accounts\MpesaController',
+        'Lava\Accounts\LogController',
+        'Lava\Accounts\ReferralController',
+        'Lava\Accounts\ChatController',
         //Merchants
         'Lava\Merchants\MerchantController',
-        'Lava\Merchants\LocationController',
-        //Products
-        'Lava\Products\ProductController',
-        'Lava\Products\PromotionController',
-        'Lava\Products\ReferralController',
         //Payments
         'Lava\Payments\TransactionController',
-        'Lava\Payments\CardController',
         //Loans
         'Lava\Loans\PlanController',
         'Lava\Loans\LoanController',

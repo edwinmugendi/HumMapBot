@@ -17,99 +17,6 @@ class PaymentController extends PaymentsBaseController {
     public $lazyLoad = array();
 
     /**
-     * S# processWithStamps() function
-     * Process trancation with loyalty stamps
-     */
-    public function processWithStamps() {
-        $this->validationRules = array(
-            'product_id' => 'required',
-            'location' => 'latLng',
-            'vehicle_id' => 'required|processTransactionWithStamps',
-        );
-
-        $this->isInputValid();
-    }
-
-//E# process() function
-    /**
-     * S# getLocationStamps() function
-     * @author Edwin Mugendi
-     * Get a users stamps on a certain location
-     * 
-     * @param integer $location_id Location id
-     * @param integer $user_id User id
-     * 
-     * @return Model Feel Model or ''
-     */
-    public function getLocationStamps($location_id, $user_id) {
-        //Fields to select
-        $fields = array('*');
-
-        //Build where clause
-        $where_clause = array(
-            array(
-                'where' => 'where',
-                'column' => 'user_id',
-                'operator' => '=',
-                'operand' => $user_id
-            ),
-            array(
-                'where' => 'where',
-                'column' => 'location_id',
-                'operator' => '=',
-                'operand' => $location_id
-            ),
-            array(
-                'where' => 'where',
-                'column' => 'type',
-                'operator' => '=',
-                'operand' => 4
-            )
-        );
-        //Get feel model
-        return $this->callController(\Util::buildNamespace('merchants', 'feel', 1), 'select', array($fields, $where_clause, 1));
-    }
-
-//E# getLocationStamps() function
-
-    /**
-     * S# updateLoyaltyStamp() function
-     * Update users loyalty stamp
-     * 
-     * @param integer $location_id Location id
-     * @param integer $user_id User id
-     * 
-     */
-    private function updateLoyaltyStamp($location_id, $user_id) {
-        //Get Loyalty stamp
-        $feelModel = $this->getLocationStamps($location_id, $user_id);
-
-        if ($feelModel) {//Stamp exists
-            //Increment stamp by one
-            $feelModel->feeling = ((int) $feelModel->feeling + 1);
-
-            //Save stamps
-            $feelModel->save();
-        } else {//Stamp does not exist
-            //Define feeling array
-            $feelArray = array(
-                'user_id' => $user_id,
-                'location_id' => $location_id,
-                'feeling' => 1,
-                'type' => 4,
-                'status' => $user_id,
-                'created_by' => $user_id,
-                'updated_by' => $user_id,
-            );
-
-            //Create users stamp
-            $this->callController(\Util::buildNamespace('merchants', 'feel', 1), 'createIfValid', array($feelArray, true));
-        }//E# if else statement
-    }
-
-//E# updateLoyaltyStamp() function
-
-    /**
      * S# afterProcessing() function
      * 
      * Call this after successful credit card processing
@@ -303,20 +210,6 @@ class PaymentController extends PaymentsBaseController {
 
 //E# prepare() function
 
-    /**
-     * transact() function
-     * Call the gateway to process the payment
-     * 
-     * @param string $gateway Gateway
-     * @param array $paymentInfo Payment Information
-     * 
-     * @return Array Gateway response
-     */
-    public function transact($gateway, $paymentInfo) {
-        return $this->callController(\Util::buildNamespace('payments', $gateway, 1), 'createTransaction', array($paymentInfo));
-    }
-
-//E# transact() function
 }
 
 //E# PaymentController() function

@@ -16,7 +16,7 @@ use Lava\Payments\TransactionController;
  * @author Edwin Mugendi
  * @todo We are extending the Messages Validator because PHP does not offer multiple inheritance. We extend alphabetically
  */
-class PaymentsValidator extends \Lava\Messages\MessagesValidator {
+class PaymentsValidator extends \Lava\Messages\MessagesValidator{
 
     //Message object
     private $message;

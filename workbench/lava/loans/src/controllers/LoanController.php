@@ -21,10 +21,10 @@ class LoanController extends LoansBaseController {
      */
     public function injectDataSources() {
         //Get this accounts user id
-        $this->view_data['dataSource']['user_id'] = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('first_name', 'last_name'), \Lang::get('common.select')));
+        $this->view_data['dataSource']['user_id'] = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('full_name'), \Lang::get('common.select')));
 
         //Get this accounts officer id
-        $this->view_data['dataSource']['officer_id'] = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('first_name', 'last_name'), \Lang::get('common.select')));
+        $this->view_data['dataSource']['officer_id'] = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('full_name'), \Lang::get('common.select')));
 
         //Get this loans user id
         $this->view_data['dataSource']['plan_id'] = $this->callController(\Util::buildNamespace('loans', 'loan', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('period', 'period_cycle', 'interest_rate', 'pay_every', 'cycle'), \Lang::get('common.select'), ' '));

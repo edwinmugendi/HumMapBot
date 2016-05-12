@@ -101,18 +101,7 @@ class BaseModel extends \Eloquent {
         //Get the logged in user card
         $user = $this->user()->first();
 
-        $name = '';
-        if ($user) {//User exists
-            $name = $user->first_name;
-            if ($user->middle_name) {
-                //Append middle name
-                $name .= ' ' . $user->middle_name;
-            }//E# if statement
-            //Append last name
-            $name .= ' ' . $user->last_name;
-        }//E# if statement
-        //Return employee name
-        return $name;
+        return $user->full_name;
     }
 
 //E# getUserTextAttribute() function
@@ -136,7 +125,7 @@ class BaseModel extends \Eloquent {
         $updater = $this->updater()->first();
 
         //Return employee name
-        return $updater ? $updater->first_name . ' ' . $updater->last_name : '';
+        return $updater->full_name;
     }
 
 //E# getUpdaterTextAttribute() function

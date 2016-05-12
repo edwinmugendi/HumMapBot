@@ -69,8 +69,7 @@ class UserController extends AccountsBaseController {
     public function appendCustomValidationRules() {
         if (!array_key_exists('format', $this->input)) {
             $this->validationRules = array(
-                'first_name' => 'required',
-                'last_name' => 'required',
+                'full_name' => 'required',
                 'merchant_id' => 'required|integer|exists:mct_merchants,id',
                 'email' => 'required|unique:acc_users',
                 'role_id' => 'required'
@@ -165,31 +164,21 @@ class UserController extends AccountsBaseController {
     public function beforeCreating() {
         if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {
             //Generate referral code
-            $this->input['referral_code'] = $this->generateReferralCode($this->input['first_name'], $this->input['last_name']);
+            //$this->input['referral_code'] = $this->generateReferralCode($this->input['first_name'], $this->input['last_name']);
 
-            //Notifications
-            $this->input['notify_sms'] = $this->input['notify_email'] = $this->input['notify_push'] = 1;
+            $this->input['verification_code'] = $this->generateUniqueCode('verification_code', 10000, 99999);
 
-            //Prepare other fields
-            $this->input['password'] = \Hash::make($this->input['password']);
-            $this->input['verification_code'] = $this->generateUniqueField('verification_code', 42);
-            if (array_key_exists('location', $this->input)) {
-                $this->input['lat'] = $this->input['location']['lat'];
-                $this->input['lng'] = $this->input['location']['lng'];
-            }//E# if statement
-            //User the users role
+            $this->input['merchant_id'] = 3;
             $this->input['role_id'] = 3; //Customer
 
             $this->input['status'] = 0;
             $this->input['created_by'] = $this->input['updated_by'] = 1;
         } else {
-            if ($this->user['role_id'] == 2) {
-                $this->input['role_id'] = 1;
-            }//E# if statement
+            $this->input['role_id'] = 2; //Officer
 
             $this->input['status'] = 1;
             $this->input['created_by'] = $this->input['updated_by'] = $this->user['id'];
-        }
+        }//E# if else statement
     }
 
 //E# beforeCreating() function
@@ -198,8 +187,7 @@ class UserController extends AccountsBaseController {
      * 
      * Generate Referral code
      * 
-     * @param str $first_name First name
-     * @param str $last_name Last name
+     * @param str $full_name Full name
      * 
      * @return str Referral code
      *
@@ -242,78 +230,35 @@ class UserController extends AccountsBaseController {
     public function afterCreating(&$controller_model) {
 
         if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {
-            //Create stripe user
-            $this->createStripeUser($controller_model);
 
-            //URL query string array
-            $queryStrArray = array(
-                'verification_code' => $controller_model->verification_code,
-            );
+            /*
+              //URL query string array
+              $queryStrArray = array(
+              'verification_code' => $controller_model->verification_code,
+              );
 
-            //Build url
-            $url = \UtilLibrary::buildUrl('userVerify', $queryStrArray);
+              //Build url
+              $url = \UtilLibrary::buildUrl('userVerify', $queryStrArray);
 
-            //Message parameters
-            $parameters = array(
-                'name' => $controller_model->first_name . ' ' . $controller_model->last_name,
-                'email' => $controller_model->email,
-                'productName' => \Config::get('product.name'),
-                'url' => $url,
-                'status' => $controller_model->status
-            );
+              //Message parameters
+              $parameters = array(
+              'name' => $controller_model->full_name,
+              'email' => $controller_model->email,
+              'productName' => \Config::get('product.name'),
+              'url' => $url,
+              'status' => $controller_model->status
+              );
 
-            $recipient['to'] = $controller_model->email;
-            //Send welcome email
-            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $controller_model->id, $recipient, 'welcome', \Config::get('app.locale'), $parameters));
+              $recipient['to'] = $controller_model->email;
+              //Send welcome email
+              $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $controller_model->id, $recipient, 'welcome', \Config::get('app.locale'), $parameters));
+             */
         } else {
             
         }//E# if else statement
     }
 
 //E# afterCreating() function
-
-    /**
-     * S# createStripeUser() function
-     * Create stripe user
-     * 
-     * @param Model $controller_model User Model
-     * 
-     * @return boolean 1 if stripe created 0 otherwise
-     */
-    public function createStripeUser($controller_model) {
-
-        //Generate random password that firsts stripe specs
-        //The End User’s password as clear-text. This must be alphanumeric, between 8-15 characters in length, and contain at least one letter and one number.
-
-
-        $stripe_user = array(
-            'id' => $controller_model->id,
-            'email' => $controller_model->email,
-            'first_name' => $controller_model->first_name,
-            'last_name' => $controller_model->last_name,
-        );
-
-        if ($controller_model->phone) {//Phone
-            $stripe_user['phone'] = $controller_model->phone;
-        }//E# if statement
-
-        $stripe_user['description'] = json_encode($stripe_user);
-
-        //Create Stripe user
-        $stripe_response = $this->callController(\Util::buildNamespace('payments', 'stripe', 1), 'createUser', array($stripe_user));
-
-        if ($stripe_response['status']) {//Stripe created
-            //Set stripe id
-            $controller_model->stripe_id = $stripe_response['response']->id;
-
-            //Save model
-            $controller_model->save();
-        }//E# if statement
-
-        return $stripe_response['status'];
-    }
-
-//E# createStripeUser() function
 
     /**
      * S# updateLoginSpecificFields() function
@@ -395,69 +340,6 @@ class UserController extends AccountsBaseController {
     }
 
 //E# beforeUpdating() function
-    /**
-     * S# postUpdateUser() function
-     * @author Edwin Mugendi
-     * Update users details
-     */
-    public function postUpdateUser() {
-
-        //$this->validationRules
-        //Validate row to be inserted
-        $user_model = $this->updateIfValid($this->input['id'], $this->input, false);
-
-        if ($user_model) {
-            //Session updated user
-            $this->sessionUser($user_model);
-
-            if ($this->subdomain == 'api') {//From API
-                //Session updated user
-                $this->sessionUser($user_model);
-
-                //Get success message
-                $message = \Lang::get($this->package . '::' . $this->controller . '.api.updateUser');
-
-                throw new \Api200Exception($user_model->toArray(), $message);
-            }//E# if statement
-        } else {
-            
-        }
-        if ($input['form'] == 'personal' || $input['form'] == 'webhook') {//Personal form
-            unset($input['form']);
-        } else if ($input['form'] == 'password') {//Password form
-            unset($input['confirm_password']);
-            unset($input['form']);
-            //Hash password
-            $input['password'] = \Hash::make($input['password']);
-        }//E# if else statement
-        //Update user model
-        $user_model = $this->updateIfValid($this->user['id'], $input, true);
-
-        if ($user_model) {//User updated
-            //Set parameters
-            $parameters['lazyLoad'] = array('logins');
-
-            //Get user by id
-            $user_model = $this->getModelByField('id', $this->user['id'], $parameters);
-
-            //Session updated user
-            $this->sessionUser($user_model);
-
-            //Set notification
-            $this->notification = array(
-                'type' => 'success'
-            );
-        } else {//User not updated
-            //Set notification
-            $this->notification = array(
-                'type' => 'error'
-            );
-        }
-        //Return the notification a as JSON
-        return \Response::json($this->notification);
-    }
-
-//E# postUpdateUser() function
 
     /**
      * S# getSignOut() function
@@ -679,169 +561,9 @@ class UserController extends AccountsBaseController {
 //E# postLogin() function
 
     /**
-     * S# postFacebookLogin() function
-     * Login with facebook
-     */
-    public function postFacebookLogin() {
-
-        //Get the validation rules
-        $this->validationRules = array(
-            'location' => 'latLng',
-            'os' => 'in:ios,android',
-            'device_token' => '',
-            'app_version' => '',
-            'facebook_token' => 'required',
-        );
-
-        //Validate row to be inserted
-        $validation = $this->isInputValid();
-
-        //Get FB configs
-        $fbConfig = array(
-            'appId' => \Config::get('thirdParty.facebook.appId'),
-            'secret' => \Config::get('thirdParty.facebook.appSecret'),
-            'scope' => \Config::get('thirdParty.facebook.scope'),
-            'allowSignedRequest' => false,
-        );
-        try {
-            //Call Facebook
-            $fb = new \Facebook($fbConfig);
-
-            $fb->setAccessToken($this->input['facebook_token']);
-
-            //Try getting user
-            $fb_user_id = trim($fb->getUser());
-
-            if ($fb_user_id) {//User exists
-                //Get user profile from facebook
-                $fb_user_profile = $fb->api('/me', 'GET');
-
-
-                //Fields to select
-                $fields = array('*');
-
-                //Build where clause
-                $where_clause = array(
-                    array(
-                        'where' => 'orWhere',
-                        'column' => 'email',
-                        'operator' => '=',
-                        'operand' => trim($fb_user_profile['email'])
-                    ),
-                    array(
-                        'where' => 'orWhere',
-                        'column' => 'fb_uid',
-                        'operator' => '=',
-                        'operand' => $fb_user_id
-                    )
-                );
-
-                //Get user by facebook id
-                $user_model = $this->select($fields, $where_clause, 1);
-
-                if ($user_model) {//User has already signed in facebook
-                    //TODO: Should I use Stripe 
-                    if (!$user_model->stripe_id) {//User does not an stripe account
-                        $this->createStripeUser($user_model);
-                    }//E# if statement
-                    //Update users email and fb uid
-                    $user_model->email = $fb_user_profile['email'];
-                    $user_model->fb_uid = $fb_user_id;
-
-                    //Push token
-                    if (array_key_exists('device_token', $this->input)) {
-                        $user_model->device_token = $this->input['device_token'];
-                    }//E# if else statement
-                    //App version
-                    if (array_key_exists('app_version', $this->input)) {
-                        $user_model->app_version = $this->input['app_version'];
-                    }//E# if else statement
-                    //Os
-                    if (array_key_exists('os', $this->input)) {
-                        $user_model->os = $this->input['os'];
-                    }//E# if else statement
-                    //Location
-                    if (array_key_exists('location', $this->input)) {
-                        $user_model->lat = $this->input['location']['lat'];
-                        $user_model->lng = $this->input['location']['lng'];
-                    }//E# if else statement
-                    //Update user login specific fields
-                    $this->updateLoginSpecificFields($this, $user_model);
-                } else {//Register
-                    //Generate referral code
-                    $referral_code = $this->generateReferralCode($fb_user_profile['first_name'], $fb_user_profile['last_name']);
-
-                    $newUser = array(
-                        'fb_uid' => $fb_user_id,
-                        'first_name' => $fb_user_profile['first_name'],
-                        'last_name' => $fb_user_profile['last_name'],
-                        'gender' => $fb_user_profile['gender'] ? $fb_user_profile['gender'] : '',
-                        'status' => (int) $fb_user_profile['verified'],
-                        'dob' => Carbon::createFromFormat('m/d/Y', $fb_user_profile['birthday']),
-                        'created_by' => 1,
-                        'updated_by' => 1,
-                        'role_id' => 3,
-                        'notify_sms' => 1,
-                        'notify_push' => 1,
-                        'notify_email' => 1,
-                        'referral_code' => $referral_code,
-                        'email' => $fb_user_profile['email'],
-                        'agent' => $this->input['agent'],
-                        'ip' => $this->input['ip']//TODO remove this
-                    );
-
-                    //Push token
-                    if (array_key_exists('device_token', $this->input)) {
-                        $newUser['device_token'] = $this->input['device_token'];
-                    }//E# if else statement
-                    //App version
-                    if (array_key_exists('app_version', $this->input)) {
-                        $newUser['app_version'] = $this->input['app_version'];
-                    }//E# if else statement
-                    //Os
-                    if (array_key_exists('os', $this->input)) {
-                        $newUser['os'] = $this->input['os'];
-                    }//E# if else statement
-                    //Location
-                    if (array_key_exists('location', $this->input)) {
-                        $newUser['lat'] = $this->input['location']['lat'];
-                        $newUser['lng'] = $this->input['location']['lng'];
-                    }//E# if else statement
-                    //Create user
-                    $user_model = $this->createIfValid($newUser, true);
-
-                    //Post create callback
-                    $this->afterCreating($user_model);
-
-                    //Update login specific fields
-                    $this->updateLoginSpecificFields($this, $user_model);
-                }//E# if else statement
-                //Get success message
-                $message = \Lang::get($this->package . '::' . $this->controller . '.notification.login');
-
-                throw new \Api200Exception($user_model->toArray(), $message);
-            } else {
-
-                //Set notification
-                $this->notification = array(
-                    'field' => 'facebook_token',
-                    'type' => 'User',
-                    'value' => '', //Left blank because facebook token is very long
-                );
-
-                //Throw VRM not found error
-                throw new \Api404Exception($this->notification);
-            }//E# if else statement
-        } catch (FacebookApiException $e) {
-            throw new \Api500Exception($e->getMessage());
-        }//E# try catch exception
-    }
-
-//E# postFacebookLogin() function
-
-    /**
      * S# authenticateApi() function
      * @author Edwin Mugendi
+     * 
      * Authenticate API
      */
     public function authenticateApi() {
@@ -857,85 +579,124 @@ class UserController extends AccountsBaseController {
 //E# authenticateApi() function
 
     /**
-     * S# postRegister() function
+     * S# postApiSendCode() function
      * @author Edwin Mugendi
-     * Register a user
+     * Send the user email to reset his/her password
+     * @return page user registration page
      */
-    public function postRegister() {
-        //Lead model
-        $lead_model = new LeadModel();
+    public function postApiSendCode() {
 
-        //Get and set the model's create validation rules
-        $this->validationRules = $lead_model->createRules;
+        //Get the validation rules
+        $this->validationRules = array(
+            'phone' => 'required',
+            'type' => 'required|in:verify,pin',
+        );
+
+        //Validate inputs
+        $this->validator = $this->isInputValid();
+
+        if ($this->validator->passes()) {//Validation passed
+            //Get user model by phone
+            $user_model = $this->getModelByField('phone', $this->input['phone']);
+
+            if ($this->input['type'] == 'reset') {//Reset
+                $code = $this->generateUniqueCode('reset_code', 10000, 99999);
+                $user_model->reset_code = $code;
+                $user_model->reset_time = Carbon::now();
+            } else {//PIN
+                $code = mt_rand(1000, 9999);
+                $user_model->password = \Hash::make($code);
+            }//E# if else statement
+            //Save user model
+            $user_model->save();
+
+            //Message parameters
+            $parameters = array(
+                'code' => $code,
+            );
+
+            $recipient = $user_model->phone;
+            try {
+                //Converse
+                $isSent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('sms', null, \Config::get('product.alphanumericSender'), $user_model->id, $recipient, $this->input['type'], \Config::get('app.locale'), $parameters));
+            } catch (\Exception $e) {
+                throw new \Api500Exception(\Lang::get($this->package . '::' . $this->controller . '.notification.sending_email_failed'));
+            }//E# try catch block
+        }//E# if statement
+        //Get success message
+        $message = \Lang::get($this->package . '::' . $this->controller . '.notification.code.' . $this->input['type']);
+
+        throw new \Api200Exception(array($user_model->id), $message);
+    }
+
+//E# postApiSendCode() function
+
+    /**
+     * S# postApiUpdate() function
+     * @author Edwin Mugendi
+     * Update a user
+     */
+    public function postApiUpdate() {
+
+        //Validation rules
+        $this->validationRules = array(
+            'full_name' => '',
+            'password' => '',
+            'dob' => '',
+            'gender' => '',
+            'email' => 'email',
+            'app_version' => '',
+            'device_token' => '',
+        );
 
         //Validate row to be inserted
-        $this->validator = $this->isInputValid($this->input, true);
+        $this->validator = $this->isInputValid();
 
-        if ($this->validator->fails()) {//Validation fails
-            $link = \URL::route('userRegistration');
-            $link .='#toregister';
+        if ($this->validator->passes()) {//Validation passes
+            if (array_key_exists('password', $this->input)) {
+                $this->input['password'] = \Hash::make($this->input['password']);
+            }//E# if statement
+            //Update user
+            $user_model = $this->updateIfValid('token', $this->input['token'], $this->input, true);
 
-            //Redirect to login page
-            return \Redirect::to($link)
-                            ->withInput()
-                            ->withErrors($this->validator);
+            //Get success message
+            $message = \Lang::get($this->package . '::' . $this->controller . '.notification.updated');
 
-            //dd($validation->messages());
-            //Build parameters to redirect to
-            //$parameters = array('register');
-            //Redirect to this route with old inputs and errors
-            //return \Redirect::route('userRegistration', $parameters)
-            //                ->withInput()
-            //                ->withErrors($this->validator);
-        } else {//Validation passes
-            //Set other fields
-            $this->input['workflow'] = $this->input['source'] = $this->input['status'] = $this->input['created_by'] = $this->input['updated_by'] = 1;
-
-            $this->input['email'] = $this->input['reg_email'];
-
-            $lead_model = $lead_model->create($this->input);
-
-            //Message parameters
-            $parameters = array(
-                'name' => $lead_model->full_name,
-            );
-
-            //Set recipient
-            $recipient = array('to' => $lead_model->email);
-
-            //Converse
-            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $lead_model->created_by, $recipient, 'registration', \Config::get('app.locale'), $parameters));
-
-            $message = 'Merchant has registered from the website </b>' .
-                    '<p>Full name: <b>' . $this->input['full_name'] . '</b>' .
-                    '<p>Email: <b>' . $this->input['reg_email'] . '</b>' .
-                    '<p>Car wash: <b>' . $this->input['organization'] . '</b>' .
-                    '<p>Phone: <b>' . $this->input['phone'] . '</b>' .
-                    '<p>Country: <b>' . $this->input['country_id'] . '</b>' .
-                    '<p>Town: <b>' . $this->input['town'] . '</b>' .
-                    '<p>Lead id: <b>' . $lead_model->id . '</b>';
-            //Message parameters
-            $parameters = array(
-                'message' => $message,
-            );
-
-            //Set recipient
-            $recipient = array('to' => 'edwinmugendi@gmail.com');
-
-            //Converse
-            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $lead_model->created_by, $recipient, 'contact', \Config::get('app.locale'), $parameters));
-
-            //Flash status code to session
-            \Session::flash('registerCode', 1);
-
-            $link = \URL::route('userRegistration', array('login'));
-            $link .='#toregister';
-            //Redirect to login page
-            return \Redirect::to($link);
+            throw new \Api200Exception(array($user_model->id), $message);
         }//E# if else statement
     }
 
-//E# postRegister() function
+//E# postApiUpdate() function
+
+    /**
+     * S# postApiRegister() function
+     * @author Edwin Mugendi
+     * Register a user
+     */
+    public function postApiRegister() {
+        //Get and set the model's create validation rules
+        $this->validationRules = array(
+            'phone' => 'required|unique:acc_users'
+        );
+
+        //Validate row to be inserted
+        $this->validator = $this->isInputValid();
+
+        if ($this->validator->passes()) {//Validation passes
+            $this->input['merchant_id'] = 1; //Kenya
+            $this->input['role_id'] = 3; //Customer
+            $this->input['created_by'] = $this->input['updated_by'] = 1; //Admin
+            //Create user
+            $user_model = $this->createIfValid($this->input, true);
+
+            //Get success message
+            $message = \Lang::get($this->package . '::' . $this->controller . '.notification.registered');
+
+            throw new \Api200Exception(array($user_model->id), $message);
+        }//E# if else statement
+    }
+
+//E# postApiRegister() function
 
     /**
      * S# postResetPassword() function
@@ -1180,7 +941,7 @@ class UserController extends AccountsBaseController {
 
                 //Message parameters
                 $parameters = array(
-                    'name' => $user_model->first_name . ' ' . $user_model->last_name,
+                    'name' => $user_model->full_name,
                     'reset_code' => $reset_code,
                     'forgot_email' => $this->input['forgot_email'],
                     'passwordMinCharacters' => \Config::get($this->package . '::account.passwordMinCharacters'),

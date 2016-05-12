@@ -133,6 +133,35 @@ class BaseController extends Controller {
 //E# massUpdate() function
 
     /**
+     * S# generateUniqueCode () function
+     * Generate unique field
+     * 
+     * @param string $field Model field
+     * @param int $length Length
+     * @param string $case Upper or lower case
+     * @return string Code value
+     */
+    public function generateUniqueCode($field, $min, $max) {
+        //Start with not unique
+        $notUnique = true;
+        while ($notUnique) {//While till you get the field value is unique
+            //Generate value
+            $value = mt_rand($min, $max);
+
+            //Get model by field
+            $model = $this->getModelByField($field, $value);
+
+            if (!$model) {//Code Unique
+                break;
+            }//E# if statement        
+        }//E# while statement
+
+        return $value;
+    }
+
+//E# generateUniqueCode() function
+
+    /**
      * S# generateUniqueField () function
      * Generate unique field
      * 
@@ -1009,7 +1038,7 @@ class BaseController extends Controller {
 
                     // Set the title
                     $excel->setTitle($this->merchant['name'] . '-' . $this->layout->title);
-                    $excel->setCreator($this->user['first_name'] . ' ' . $this->user['last_name']);
+                    $excel->setCreator($this->user['full_name']);
                     $excel->setCompany($this->merchant['name']);
 
                     // Call them separately

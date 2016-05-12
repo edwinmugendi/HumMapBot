@@ -82,12 +82,16 @@ class MessageController extends MessagesBaseController {
 
         //Prepare sender id
         $sender = is_null($sender) ? \Config::get('product.smsSender') : $sender;
-
+        
+        /*
         foreach ($recipient as &$singleRecipient) {
             $singleRecipient = $this->cleanSmsSender($singleRecipient);
         }//E# foreach statement
+         * 
+         */
+        
         //SMS
-        $sent = $this->callController(\Util::buildNamespace('messages', 'clickatell', 1), 'sms', array($sender, $recipient, $parameters['body']));
+        $sent = $this->callController(\Util::buildNamespace('messages', 'infobips', 1), 'sms', array($sender, $recipient, $parameters['body']));
 
         //Add sent to parameters
         $parameters['sent'] = $sent;

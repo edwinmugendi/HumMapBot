@@ -1,7 +1,7 @@
 <div class="col-md-3 left_col">
     <div class="left_col scroll-view">
         <div class="navbar nav_title" style="border: 0;">
-            <a href="<?php echo \URL::route('paymentsListTransaction'); ?>" class="site_title"><i class="fa fa-paw"></i> <span><?php echo $view_data['logged'] ? \Session::get('merchant_selector_view') : \Config::get('product.name'); ?></span></a>
+            <a href="<?php echo \URL::route('dashboard'); ?>" class="site_title"><i class="fa fa-paw"></i> <span><?php echo $view_data['logged'] ? \Session::get('merchant_selector_view') : \Config::get('product.name'); ?></span></a>
         </div>
         <div class="clearfix"></div>
         <?php if ($view_data['logged']): ?>
@@ -12,7 +12,7 @@
                 </div>
                 <div class="profile_info">
                     <span><?php echo \Lang::get('accounts::user.view.welcome'); ?>,</span>
-                    <h2><?php echo $view_data['user']['first_name'] . ' ' . $view_data['user']['last_name']; ?></h2>
+                    <h2><?php echo $view_data['user']['full_name']; ?></h2>
                 </div>
             </div>
             <!-- /menu prile quick info -->
@@ -28,22 +28,19 @@
                         <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][0] == 'dashboard') ? 'active' : '' ?>">
                             <a href="<?php echo \URL::route('dashboard'); ?>"><i class="fa fa-dashboard"></i> Dashboard</a>
                         </li>
-                        <?php if ($view_data['user']['role_id'] == 1): ?>
-                            <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'merchant') ? 'active' : '' ?>">
-                                <a href="<?php echo \URL::route('merchantsListMerchant'); ?>"><i class="fa fa-building"></i> Merchants</a>
-                            </li>
-                        <?php endif; ?>
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'location') ? 'active' : '' ?>"><a href="<?php echo \URL::route('merchantsListLocation'); ?>"><i class="fa fa-map-marker"></i> Locations</a></li>
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'product') ? 'active' : '' ?>"><a href="<?php echo \URL::route('productsListProduct'); ?>"><i class="fa fa-tint"></i> Products</a></li>
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'promotion') ? 'active' : '' ?>"><a href="<?php echo \URL::route('productsListPromotion'); ?>"><i class="fa fa-bullhorn"></i> Promotions</a></li>
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'transaction') ? 'active' : '' ?>"><a href="<?php echo \URL::route('paymentsListTransaction'); ?>"><i class="fa fa-money"></i> Transactions</a></li>
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'user') ? 'active' : '' ?>"><a href="<?php echo \URL::route('accountsListUser'); ?>"><i class="fa fa-users"></i> Users</a></li>
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'vehicle') ? 'active' : '' ?>"><a href="<?php echo \URL::route('accountsListVehicle'); ?>"><i class="fa fa-car"></i> Vehicles</a></li>
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'card') ? 'active' : '' ?>"><a href="<?php echo \URL::route('paymentsListCard'); ?>"><i class="fa fa-cc"></i> Cards</a></li>
-                        <?php if ($view_data['user']['role_id'] == 1): ?>
-                            <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'referral') ? 'active' : '' ?>"><a href="<?php echo \URL::route('productsListReferral'); ?>"><i class="fa fa-comments"></i> Referrals</a></li>
-                            <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'lead') ? 'active' : '' ?>"><a href="<?php echo \URL::route('accountsListLead'); ?>"><i class="fa fa-building-o"></i> Leads</a></li>
-                        <?php endif; ?>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'merchant') ? 'active' : '' ?>">
+                            <a href="<?php echo \URL::route('merchantsListMerchant'); ?>"><i class="fa fa-building"></i> Merchants</a>
+                        </li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'chat') ? 'active' : '' ?>"><a href="<?php echo \URL::route('accountsListChat'); ?>"><i class="fa fa-map-marker"></i> Chat</a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'user') ? 'active' : '' ?>"><a href="<?php echo \URL::route('accountsListUser'); ?>"><i class="fa fa-map-marker"></i> Users</a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'transaction') ? 'active' : '' ?>"><a href="<?php echo \URL::route('paymentsListTransaction'); ?>"><i class="fa fa-map-marker"></i> Transactions</a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'loan') ? 'active' : '' ?>"><a href="<?php echo \URL::route('loansListLoan'); ?>"><i class="fa fa-map-marker"></i> Loans</a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'offer') ? 'active' : '' ?>"><a href="<?php echo \URL::route('loansListOffer'); ?>"><i class="fa fa-map-marker"></i> Offers</a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'plan') ? 'active' : '' ?>"><a href="<?php echo \URL::route('loansListPlan'); ?>"><i class="fa fa-map-marker"></i> Plans</a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'schedule') ? 'active' : '' ?>"><a href="<?php echo \URL::route('loansListSchedule'); ?>"><i class="fa fa-map-marker"></i> Schedules</a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'mpesa') ? 'active' : '' ?>"><a href="<?php echo \URL::route('accountsListMpesa'); ?>"><i class="fa fa-map-marker"></i> Mpesa</a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'log') ? 'active' : '' ?>"><a href="<?php echo \URL::route('accountsListLog'); ?>"><i class="fa fa-map-marker"></i> Logs</a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'referral') ? 'active' : '' ?>"><a href="<?php echo \URL::route('accountsListReferral'); ?>"><i class="fa fa-map-marker"></i> Referrals</a></li>
                     </ul>
                 </div>
             </div>

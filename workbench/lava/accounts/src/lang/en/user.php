@@ -15,8 +15,13 @@ return array(
         )
     ),
     'notification' => array(
-        'created' => 'User created',
-        'updated' => 'User updated',
+        'code' => array(
+            'verify' => 'Verification code sent via SMS',
+            'pin' => 'We sent you an SMS with a temporary PIN. Please enter it below to reset your PIN',
+        ),
+        'registered' => 'Account registered',
+        'created' => 'Account created',
+        'updated' => 'Account updated',
         'login' => 'Logged in!',
         'list' => 'User profile',
         'forgot_password' => 'We\'ve sent you reset email.',
@@ -41,27 +46,14 @@ return array(
         'field' => array(
             'merchant_id' => 'Merchant',
             'id' => '#',
-            'first_name' => 'First name',
-            'last_name' => 'Last name',
+            'full_name' => 'full name',
             'phone' => 'Phone',
             'role_id' => 'Role',
             'dob' => 'Date of birth',
             'gender' => 'Gender',
             'email' => 'Email',
-            'address' => 'Address',
-            'postal code' => 'Postal code',
-            'notify_sms' => 'Notify sms',
-            'notify_email' => 'Notify email',
-            'notify_push' => 'Notify push',
-            'os' => 'Os',
             'device_token' => 'Device token',
             'app_version' => 'App version',
-            'vehicle_id' => 'Default vehicle',
-            'card_id' => 'Default card',
-            'fb_uid' => 'Facebook id',
-            'stripe_id' => 'Stripe id',
-            'lat' => 'Latitude',
-            'lng' => 'Longitude',
             'referral_code' => 'Referral code',
         ),
         'actions' => array(
@@ -279,27 +271,14 @@ return array(
                                             )
                                         ),
                                         array(
-                                            'name' => 'First name',
+                                            'name' => 'Full name',
                                             'type' => 'text',
                                             'prepend' => 'user',
-                                            'htmlName' => 'first_name',
+                                            'htmlName' => 'full_name',
                                             'displayed' => 1,
                                             'disabled' => 0,
-                                            'placeholder' => 'Type the first name eg \'John\'',
-                                            'help' => '<strong>Description: </strong>The first name of this user.<br/><strong>Do: </strong>Type the first name of this user.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'John\'.',
-                                            'validator' => array(
-                                                'required' => 1
-                                            )
-                                        ),
-                                        array(
-                                            'name' => 'Last name',
-                                            'type' => 'text',
-                                            'prepend' => 'user',
-                                            'htmlName' => 'last_name',
-                                            'displayed' => 1,
-                                            'disabled' => 0,
-                                            'placeholder' => 'Type the last name eg \'Doe\'',
-                                            'help' => '<strong>Description: </strong>The last name of this user.<br/><strong>Do: </strong>Type the last name of this user.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'Doe\'.',
+                                            'placeholder' => 'Type the full name eg \'John Kamau\'',
+                                            'help' => '<strong>Description: </strong>The full name of this user.<br/><strong>Do: </strong>Type the full name of this user.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'John Kamau\'.',
                                             'validator' => array(
                                                 'required' => 1
                                             )

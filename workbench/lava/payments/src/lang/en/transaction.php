@@ -15,17 +15,12 @@ return array(
     'data' => array(
         'gateway' => array(
             '' => 'Select',
-            'stamps' => 'Stamps',
-            'stripe' => 'Stripe',
-            'promotion' => 'Promotion'
+            'mpesa' => 'Mpesa',
         ),
-        'workflow' => array(
+        'type' => array(
             '' => 'Select',
-            1 => 'Started',
-            2 => 'Failed',
-            3 => 'Processed',
-            4 => 'Promotion',
-            5 => 'Stamps',
+            'DR' => 'Debit',
+            'CR' => 'Credit',
         ),
     ),
     'view' => array(
@@ -33,29 +28,22 @@ return array(
         'field' => array(
             'id' => '#',
             'user_id' => 'User',
-            'product_id' => 'Product',
-            'location_id' => 'Location',
+            'type' => 'Type',
+            'phone' => 'Phone',
+            'loan_id' => 'Loan',
             'merchant_id' => 'Merchant',
-            'promotion_id' => 'Promotion',
             'amount' => 'Amount',
             'transaction_date' => 'Date',
-            'refund' => 'Refund',
-            'currency_id' => 'Currency',
+            'currency' => 'Currency',
             'description' => 'Description',
-            'card_used' => 'Card used',
-            'card_token' => 'Card token',
-            'stamps_issued' => 'Stamps issued',
-            'lat' => 'Lat',
-            'lng' => 'Lng',
             'gateway' => 'Gateway',
-            'workflow' => 'Status',
             'gateway_tran_id' => 'Gateway tran_id',
             'gateway_code' => 'Gateway code',
             'user_smsed' => 'User smsed',
             'user_emailed' => 'User emailed',
             'user_pushed' => 'User pushed',
-            'merchant_smsed' => 'Merchant smsed',
-            'merchant_emailed' => 'Merchant emailed',
+            'officer_smsed' => 'Officer smsed',
+            'officer_emailed' => 'Officer emailed',
         ),
         'actions' => array(
             'delete' => array(

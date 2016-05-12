@@ -7,54 +7,14 @@ return array(
       |--------------------------------------------------------------------------
      */
     'communication' => array(
-        'notifyReferrer' => array(
-            'email' => 'Congratulations! :productName has awarded you a free car wash',
-            'sms' => 'Congratulations! :productName has awarded you a free car wash (up to :currency :amount) for referring :referee',
-            'push' => 'Congratulations! :productName has awarded you a free car wash (up to :currency :amount) for referring :referee',
-        ),
-        'notifyReferee' => array(
-            'email' => ':productName has awarded :referrer a free car wash',
-            'sms' => 'Dear :referee, :productName has awarded :referrer a free wash (up to :currency :amount). Use \':code\' to refer your friends and earn a free car wash.',
-            'push' => 'Dear :referee, :productName has awarded :referrer a free wash (up to :currency :amount). Use \':code\' to refer your friends and earn a free car wash.',
-        ),
-        'transactionUserPromotion' => array(
-            'email' => ':product bought :productName at :location. :productName',
-            'sms' => 'Thanks. You bought :product for :vrm at :location on :day at :time. Ref no is :tranId. :productName',
-            'push' => 'Thanks. You bought :product for :vrm at :location on :day at :time. Ref no is :tranId. :productName',
-        ),
-        'transactionUserCard' => array(
-            'email' => ':product bought :productName at :location. :productName',
-            'sms' => 'Thanks. You bought :product for :vrm at :location on :day at :time. Ref no is :tranId. :productName',
-            'push' => 'Thanks. You bought :product for :vrm at :location on :day at :time. Ref no is :tranId. :productName',
-        ),
-        'transactionUserStamps' => array(
-            'email' => 'Product bought :productName at :location. :productName ',
-            'sms' => ':tranId confirmed.  You bought :product for :vrm at :location on :day at :time. :productName',
-            'push' => ':tranId confirmed.  You bought :product for :vrm at :location on :day at :time. :productName',
-        ),
-        'transactionMerchantCard' => array(
-            'email' => ':product - :pdtId purchased by :vrm  at :location. :productName',
-            'sms' => ':vrm has purchased :product for :currencyId :amount at :day :time. Ref no :tranId',
-            'push' => ':vrm has purchased :product for :currencyId :amount at :day :time. Ref no :tranId',
-        ),
-        'transactionMerchantPromotion' => array(
-            'email' => ':product - :pdtId purchased by :vrm  at :location. :productName',
-            'sms' => ':vrm has purchased :product for :currencyId :amount at :day :time. Ref no :tranId',
-            'push' => ':vrm has purchased :product for :currencyId :amount at :day :time. Ref no :tranId',
-        ),
-        'transactionMerchantStamps' => array(
-            'email' => 'Promotion: :product - :pdtId purchased by :vrm  at :location. :productName',
-            'sms' => 'Promotion: :vrm has purchased :product for :currency :amount at :day :time. Ref no :tranId',
-            'push' => 'Promotion: :vrm has purchased :product for :currency :amount at :day :time. Ref no :tranId',
-        ),
-        'sonicPromotion' => array(
-            'email' => '',
-            'sms' => ':product - You\'ve been awarded :promoCode promotion code whose value id :promoValue',
+        'verify' => array(
+            'email' => 'Request to change your :productName account password.',
+            'sms' => 'Welcome to :productName. Your code is :code. Enter it in the app to verify your account.',
             'push' => ''
         ),
-        'resetPassword' => array(
-            'email' => 'Request to change your :productName account password.',
-            'sms' => '',
+        'pin' => array(
+            'email' => ':',
+            'sms' => ':code is your PIN. Enter this pin in app to continue. Welcome back to :productName.',
             'push' => ''
         ),
         'forgotPassword' => array(
@@ -79,3 +39,4 @@ return array(
         )
     )
 );
+

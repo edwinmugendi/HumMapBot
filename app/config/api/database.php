@@ -48,7 +48,7 @@ return array(
         'mysql' => array(
             'driver' => 'mysql',
             'host' => 'localhost',
-            'database' => 'lava',
+            'database' => 'loan',
             'username' => 'root',
             'password' => 'lava123',
             'charset' => 'utf8',

@@ -1,11 +1,5 @@
 <?php
 
-//DVLA Search
-\Route::get('dvlasearch/{licence}', array('as' => 'dvlasearch', 'uses' => 'Lava\Accounts\DvlasearchController@getVehicleDetails'));
-
-//Load Login or Sign up page
-//\Route::get('user/{type}/{resetCode?}', array('as' => 'userRegistration', 'uses' => 'Lava\Accounts\UserController@getRegistration'))
-//        ->where('type', 'register|login|forgot|reset|activate|verify');
 //Load Login or Sign up page
 \Route::get('authenticate', array('as' => 'userRegistration', 'uses' => 'Lava\Accounts\UserController@getRegistration'));
 
@@ -14,31 +8,17 @@
         return \Redirect::route('userRegistration');
     }));
 
-/*
-  //Login page
-  \Route::get('login', array('as' => 'userLogin', function() {
-  return \Redirect::route('userRegistration', array('login'));
-  }));
-
-  //Registration page
-  \Route::get('register', array('as' => 'userRegistrationRegister', function() {
-  return \Redirect::route('userRegistration', array('register'));
-  }));
- */
 
 /* S# API End points */
 //USER API'S
 //Register User
-\Route::post('api/register_user', array('as' => 'apiRegisterUser', 'uses' => 'Lava\Accounts\UserController@postCreate'));
+\Route::post('api/register_user', array('as' => 'apiRegisterUser', 'uses' => 'Lava\Accounts\UserController@postApiRegister'));
 
 //Login User
 \Route::post('api/login_user', array('as' => 'apiLoginUser', 'uses' => 'Lava\Accounts\UserController@postLogin'));
 
-//Login with fabook
-\Route::post('api/login_with_facebook', array('as' => 'userFacebookLogin', 'uses' => 'Lava\Accounts\UserController@postFacebookLogin'));
-
 //Forgot Password
-\Route::post('api/forgot_password', array('as' => 'apiForgotPassword', 'uses' => 'Lava\Accounts\UserController@postForgotPassword'));
+\Route::post('api/send_code', array('as' => 'apiSendCode', 'uses' => 'Lava\Accounts\UserController@postApiSendCode'));
 
 //Reset Password
 \Route::post('api/reset_password', array('as' => 'apiResetPassword', 'uses' => 'Lava\Accounts\UserController@postResetPassword'));
@@ -75,20 +55,7 @@
     \Route::get('api/get_user_profile', array('as' => 'apiGetUserProfile', 'uses' => 'Lava\Accounts\UserController@getProfile'));
 
     //Update User
-    \Route::post('api/update_user', array('as' => 'apiUpdateUser', 'uses' => 'Lava\Accounts\UserController@postUpdate'));
-
-    //VEHICLE API'S
-    //Add vehicle
-    \Route::post('api/add/vehicle', array('as' => 'apiAddVehicle', 'uses' => 'Lava\Accounts\VehicleController@postCreate'));
-
-    //Add vehicle
-    \Route::post('api/update/vehicle', array('as' => 'apiUpdateVehicle', 'uses' => 'Lava\Accounts\VehicleController@postUpdate'));
-
-    //Delete vehicle
-    \Route::post('api/delete/vehicle', array('as' => 'userVehicleDrop', 'uses' => 'Lava\Accounts\VehicleController@postDrop'));
-
-    //Get users vehicles
-    \Route::get('api/get/vehicle', array('as' => 'apiGetVehicle', 'uses' => 'Lava\Accounts\VehicleController@getList'));
+    \Route::post('api/update_user', array('as' => 'apiUpdateUser', 'uses' => 'Lava\Accounts\UserController@postApiUpdate'));
 });
 
 \Route::group(array('before' => 'auth'), function() {
@@ -129,50 +96,89 @@
     \Route::post('accounts/undelete/user', array('as' => 'accountsUndeleteUser', 'uses' => 'Lava\Accounts\UserController@postUndelete'));
 
     /**
-     * Vehicle routes
+     * Referral routes
      */
-    //Detailed vehicle
-    \Route::get('accounts/detailed/vehicle/{id}', array('as' => 'accountsDetailedVehicle', 'uses' => 'Lava\Accounts\VehicleController@getDetailed'));
+    //Detailed referral
+    \Route::get('accounts/detailed/referral/{id}', array('as' => 'accountsDetailedReferral', 'uses' => 'Lava\Accounts\ReferralController@getDetailed'));
 
-    //List vehicle
-    \Route::get('accounts/list/vehicle', array('as' => 'accountsListVehicle', 'uses' => 'Lava\Accounts\VehicleController@getList'));
+    //List referral
+    \Route::get('accounts/list/referral', array('as' => 'accountsListReferral', 'uses' => 'Lava\Accounts\ReferralController@getList'));
 
-    //Post vehicle
-    \Route::get('accounts/post/vehicle/{id?}', array('as' => 'accountsPostVehicle', 'uses' => 'Lava\Accounts\VehicleController@getPost'));
+    //Post referral
+    \Route::get('accounts/post/referral/{id?}', array('as' => 'accountsPostReferral', 'uses' => 'Lava\Accounts\ReferralController@getPost'));
 
-    //Create a vehicle
-    \Route::post('accounts/create/vehicle', array('as' => 'accountsCreateVehicle', 'before' => 'csrf', 'uses' => 'Lava\Accounts\VehicleController@postCreate'));
+    //Create a referral
+    \Route::post('accounts/create/referral', array('as' => 'accountsCreateReferral', 'before' => 'csrf', 'uses' => 'Lava\Accounts\ReferralController@postCreate'));
 
-    //Update a vehicle
-    \Route::post('accounts/update/vehicle', array('as' => 'accountsUpdateVehicle', 'before' => 'csrf', 'uses' => 'Lava\Accounts\VehicleController@postUpdate'));
+    //Update a referral
+    \Route::post('accounts/update/referral', array('as' => 'accountsUpdateReferral', 'before' => 'csrf', 'uses' => 'Lava\Accounts\ReferralController@postUpdate'));
 
-    //Delete vehicle
-    \Route::post('accounts/delete/vehicle', array('as' => 'accountsDeleteVehicle', 'uses' => 'Lava\Accounts\VehicleController@postDelete'));
+    //Delete referral
+    \Route::post('accounts/delete/referral', array('as' => 'accountsDeleteReferral', 'uses' => 'Lava\Accounts\ReferralController@postDelete'));
 
-    //Un-Delete vehicle
-    \Route::post('accounts/undelete/vehicle', array('as' => 'accountsUndeleteVehicle', 'uses' => 'Lava\Accounts\VehicleController@postUndelete'));
+    //Un-Delete referral
+    \Route::post('accounts/undelete/referral', array('as' => 'accountsUndeleteReferral', 'uses' => 'Lava\Accounts\ReferralController@postUndelete'));
 
     /**
-     * Lead routes
+     * Log routes
      */
-    //Detailed lead
-    \Route::get('accounts/detailed/lead/{id}', array('as' => 'accountsDetailedLead', 'uses' => 'Lava\Accounts\LeadController@getDetailed'));
+    //Detailed log
+    \Route::get('accounts/detailed/log/{id}', array('as' => 'accountsDetailedLog', 'uses' => 'Lava\Accounts\LogController@getDetailed'));
 
-    //List lead
-    \Route::get('accounts/list/lead', array('as' => 'accountsListLead', 'uses' => 'Lava\Accounts\LeadController@getList'));
+    //List log
+    \Route::get('accounts/list/log', array('as' => 'accountsListLog', 'uses' => 'Lava\Accounts\LogController@getList'));
 
-    //Post lead
-    \Route::get('accounts/post/lead/{id?}', array('as' => 'accountsPostLead', 'uses' => 'Lava\Accounts\LeadController@getPost'));
+    //Post log
+    \Route::get('accounts/post/log/{id?}', array('as' => 'accountsPostLog', 'uses' => 'Lava\Accounts\LogController@getPost'));
 
-    //Create a lead
-    \Route::post('accounts/create/lead', array('as' => 'accountsCreateLead', 'before' => 'csrf', 'uses' => 'Lava\Accounts\LeadController@postCreate'));
+    //Create a log
+    \Route::post('accounts/create/log', array('as' => 'accountsCreateLog', 'before' => 'csrf', 'uses' => 'Lava\Accounts\LogController@postCreate'));
 
-    //Update a lead
-    \Route::post('accounts/update/lead', array('as' => 'accountsUpdateLead', 'before' => 'csrf', 'uses' => 'Lava\Accounts\LeadController@postUpdate'));
+    //Update a log
+    \Route::post('accounts/update/log', array('as' => 'accountsUpdateLog', 'before' => 'csrf', 'uses' => 'Lava\Accounts\LogController@postUpdate'));
 
-    //Delete lead
-    \Route::post('accounts/delete/lead', array('as' => 'accountsDeleteLead', 'uses' => 'Lava\Accounts\LeadController@postDelete'));
+    //Delete log
+    \Route::post('accounts/delete/log', array('as' => 'accountsDeleteLog', 'uses' => 'Lava\Accounts\LogController@postDelete'));
 
-    //Un-Delete lead
-    \Route::post('accounts/undelete/lead', array('as' => 'accountsUndeleteLead', 'uses' => 'Lava\Accounts\LeadController@postUndelete'));
+    /**
+     * Chat routes
+     */
+    //Detailed chat
+    \Route::get('accounts/detailed/chat/{id}', array('as' => 'accountsDetailedChat', 'uses' => 'Lava\Accounts\ChatController@getDetailed'));
+
+    //List chat
+    \Route::get('accounts/list/chat', array('as' => 'accountsListChat', 'uses' => 'Lava\Accounts\ChatController@getList'));
+
+    //Post chat
+    \Route::get('accounts/post/chat/{id?}', array('as' => 'accountsPostChat', 'uses' => 'Lava\Accounts\ChatController@getPost'));
+
+    //Create a chat
+    \Route::post('accounts/create/chat', array('as' => 'accountsCreateChat', 'before' => 'csrf', 'uses' => 'Lava\Accounts\ChatController@postCreate'));
+
+    //Update a chat
+    \Route::post('accounts/update/chat', array('as' => 'accountsUpdateChat', 'before' => 'csrf', 'uses' => 'Lava\Accounts\ChatController@postUpdate'));
+
+    //Delete chat
+    \Route::post('accounts/delete/chat', array('as' => 'accountsDeleteChat', 'uses' => 'Lava\Accounts\ChatController@postDelete'));
+
+    /**
+     * Mpesa routes
+     */
+    //Detailed mpesa
+    \Route::get('accounts/detailed/mpesa/{id}', array('as' => 'accountsDetailedMpesa', 'uses' => 'Lava\Accounts\MpesaController@getDetailed'));
+
+    //List mpesa
+    \Route::get('accounts/list/mpesa', array('as' => 'accountsListMpesa', 'uses' => 'Lava\Accounts\MpesaController@getList'));
+
+    //Post mpesa
+    \Route::get('accounts/post/mpesa/{id?}', array('as' => 'accountsPostMpesa', 'uses' => 'Lava\Accounts\MpesaController@getPost'));
+
+    //Create a mpesa
+    \Route::post('accounts/create/mpesa', array('as' => 'accountsCreateMpesa', 'before' => 'csrf', 'uses' => 'Lava\Accounts\MpesaController@postCreate'));
+
+    //Update a mpesa
+    \Route::post('accounts/update/mpesa', array('as' => 'accountsUpdateMpesa', 'before' => 'csrf', 'uses' => 'Lava\Accounts\MpesaController@postUpdate'));
+
+    //Delete mpesa
+    \Route::post('accounts/delete/mpesa', array('as' => 'accountsDeleteMpesa', 'uses' => 'Lava\Accounts\MpesaController@postDelete'));
 });

@@ -11,9 +11,6 @@
   |
  */
 
-//Register Sonic Command
-Artisan::add(new SonicCommand);
-
 //Register Generator Command
 Artisan::add(new GeneratorCommand());
 

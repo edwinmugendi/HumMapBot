@@ -35,22 +35,21 @@ class DashboardController extends AccountsBaseController {
      * Count total customers and locations
      * 
      */
-    private function countCustomersAndLocations() {
+    private function countCustomers() {
+
         //Fields
         $fields = array('*');
 
         //Where clause
         $whereClause = array(
+            array(
+                'where' => 'where',
+                'column' => 'role_id',
+                'operator' => '=',
+                'operand' => 3
+            )
         );
 
-        if ($this->user['role_id'] == 2) {
-            $whereClause[] = array(
-                'where' => 'where',
-                'column' => 'merchant_id',
-                'operator' => '=',
-                'operand' => $this->user['merchant_id']
-            );
-        }//E# if statement
         //Status
         $parameters['scope'] = array('statusOne');
 
@@ -58,57 +57,7 @@ class DashboardController extends AccountsBaseController {
         $parameters['count'] = 1;
 
         //Get model
-        $this->view_data['locations_count'] = $this->callController(\Util::buildNamespace('merchants', 'location', 1), 'select', array($fields, $whereClause, 1, $parameters));
-
-        if ($this->user['role_id'] == 1) {
-            //Fields
-            $fields = array('*');
-
-            //Where clause
-            $whereClause = array(
-                array(
-                    'where' => 'where',
-                    'column' => 'role_id',
-                    'operator' => '=',
-                    'operand' => 3
-                )
-            );
-
-            //Status
-            $parameters['scope'] = array('statusOne');
-
-            //Count
-            $parameters['count'] = 1;
-
-            //Get model
-            $this->view_data['users_count'] = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'select', array($fields, $whereClause, 1, $parameters));
-        } else {
-            //Fields
-            $fields = array('*');
-
-            //Where clause
-            $whereClause = array();
-
-            if ($this->user['role_id'] == 2) {
-                $whereClause[] = array(
-                    'where' => 'where',
-                    'column' => 'merchant_id',
-                    'operator' => '=',
-                    'operand' => $this->user['merchant_id']
-                );
-            }//E# if statement
-            //Status
-            $parameters['scope'] = array('statusOne');
-
-            //Count
-            $parameters['distinct'] = 'user_id';
-
-            //Count
-            $parameters['countField'] = 'user_id';
-
-            //Get model`
-            $this->view_data['users_count'] = $this->callController(\Util::buildNamespace('payments', 'transaction', 1), 'select', array($fields, $whereClause, 1, $parameters));
-        }//E# if else statement
+        $this->view_data['users_count'] = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'select', array($fields, $whereClause, 1, $parameters));
     }
 
 //E# countCustomersAndLocations() function
@@ -136,7 +85,7 @@ class DashboardController extends AccountsBaseController {
         //Set list side bar
         $this->view_data['sideBar'] = '';
 
-        $this->countCustomersAndLocations();
+        $this->countCustomers();
 
         //Set layout's title
         $this->layout->title = \Lang::get($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['page'] . '.title');
@@ -254,7 +203,6 @@ class DashboardController extends AccountsBaseController {
             $start_date_timestamp = strtotime($this->input['start_date']);
             $line_graph[$start_date_timestamp] = array($start_date_timestamp, 0);
         }//E# if else statement
-        
         //Get new customer count
         $new_customers = $this->getNewCustomerCount($unique_customer_ids, $start_date);
 

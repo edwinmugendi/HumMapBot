@@ -3,7 +3,7 @@
 namespace Lava\Loans;
 
 /**
- * S# PlansController() function
+ * S# PlanController() function
  * Plan controller
  * @author Edwin Mugendi
  */
