@@ -295,9 +295,9 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         $where_clause = array(
             array(
                 'where' => 'where',
-                'column' => 'email',
+                'column' => $this->data['id_field'],
                 'operator' => '=',
-                'operand' => $this->data['reset_email']
+                'operand' => $this->data['phone_or_email']
             ),
             array(
                 'where' => 'where',
@@ -341,7 +341,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
     public function validateLogin($attribute, $password, $parameters) {
 
         //Set credentials
-        $credentials = array('email' => $this->data['email'], 'password' => $password);
+        $credentials = array($this->data['id_field'] => $this->data['phone_or_email'], 'password' => $password);
 
         //Parameters
         $parameters = array();
@@ -353,7 +353,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         $user_controller = new UserController();
 
         //Get user by email
-        $user_model = $user_controller->getModelByField('email', $credentials['email'], $parameters);
+        $user_model = $user_controller->getModelByField($this->data['id_field'], $credentials[$this->data['id_field']], $parameters);
 
         if ($user_model) {//User with this email exist
             //Previous logins deleted
@@ -401,11 +401,6 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
                         //Os
                         if (array_key_exists('os', $this->data)) {
                             $user_model->os = $this->data['os'];
-                        }//E# if else statement
-                        //Location
-                        if (array_key_exists('location', $this->data)) {
-                            $user_model->lat = $this->data['location']['lat'];
-                            $user_model->lng = $this->data['location']['lng'];
                         }//E# if else statement
                         //Save user
                         $user_model->save();

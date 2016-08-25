@@ -24,8 +24,8 @@ return array(
         'updated' => 'Account updated',
         'login' => 'Logged in!',
         'list' => 'User profile',
-        'forgot_password' => 'We\'ve sent you reset email.',
-        'reset_password' => 'Your password has been reset',
+        'forgot_password' => 'We\'ve smsed you a reset code.',
+        'reset_password' => 'Your pin has been reset',
         'sending_email_failed' => 'Sending email failed. Kindly try again later',
         'sending_sms_failed' => 'Sending sms failed. Kindly try again later',
     ),
@@ -383,8 +383,8 @@ return array(
                         'forgotPassword' => 'Forgot Password?'
                     ),
                     'statusCode' => array(
-                        1 => 'The email or password you entered is incorrect.',
-                        2 => 'The email you specified is not registered. Kindly confirm the email is correct or create an account',
+                        1 => 'The phone or password you entered is incorrect.',
+                        2 => 'The phone you specified is not registered. Kindly confirm the phone is correct or create an account',
                         3 => 'You have exceeded the login attempts. Kindly wait for :lockOut minutes before trying again.',
                         4 => 'Your password was reset successfully.'
                     )

@@ -19,7 +19,7 @@ return array(
         ),
         'forgotPassword' => array(
             'email' => 'Request to change your :productName account password.',
-            'sms' => 'Dear :name, your password reset code is :resetCode',
+            'sms' => 'Dear :name, your :productName password reset code is :resetCode.',
             'push' => ''
         ),
         'welcome' => array(

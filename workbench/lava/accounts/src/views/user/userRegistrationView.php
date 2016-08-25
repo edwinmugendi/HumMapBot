@@ -28,9 +28,10 @@
                     <?php endif; ?>
                 <?php endif; ?>
                 <div>
-                    <?php echo \Form::text('email', '', array('placeholder' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.field.email'), 'class' => 'validate[required,custom[email]]')); ?>
-                    <?php if ($errors->has('email')): ?>
-                        <p class="commonColorRed"><?php echo $errors->first('email'); ?></p>
+                    <?php echo \Form::hidden('id_field', 'email'); ?>
+                    <?php echo \Form::text('phone_or_email', '', array('placeholder' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.field.email'), 'class' => 'validate[required,custom[email]]')); ?>
+                    <?php if ($errors->has('phone_or_email')): ?>
+                        <p class="commonColorRed"><?php echo $errors->first('phone_or_email'); ?></p>
                     <?php endif; ?>
                 </div>
                 <div>

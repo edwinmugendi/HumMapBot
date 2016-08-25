@@ -12,10 +12,10 @@
 /* S# API End points */
 //USER API'S
 //Register User
-\Route::post('api/register_user', array('as' => 'apiRegisterUser', 'uses' => 'Lava\Accounts\UserController@postApiRegister'));
+\Route::post('api/register', array('as' => 'apiRegisterUser', 'uses' => 'Lava\Accounts\UserController@postApiRegister'));
 
 //Login User
-\Route::post('api/login_user', array('as' => 'apiLoginUser', 'uses' => 'Lava\Accounts\UserController@postLogin'));
+\Route::post('api/login', array('as' => 'apiLoginUser', 'uses' => 'Lava\Accounts\UserController@postLogin'));
 
 //Forgot Password
 \Route::post('api/send_code', array('as' => 'apiSendCode', 'uses' => 'Lava\Accounts\UserController@postApiSendCode'));
@@ -28,6 +28,12 @@
 
 //Is email available
 \Route::get('api/is_email_available', array('as' => 'apiIsEmailAvailable', 'uses' => 'Lava\Accounts\UserController@getIsEmailAvailable'));
+
+//Forgot Password
+\Route::post('api/forgot_password', array('as' => 'userForgotPassword', 'uses' => 'Lava\Accounts\UserController@postForgotPassword'));
+
+//Reset Password
+\Route::post('api/reset_password', array('as' => 'userResetPassword', 'uses' => 'Lava\Accounts\UserController@postResetPassword'));
 
 /* E# API End points */
 

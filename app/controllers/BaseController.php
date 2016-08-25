@@ -191,6 +191,35 @@ class BaseController extends Controller {
 //E# generateUniqueField() function
 
     /**
+     * S# generateUniqueInt() function
+     * Generate unique field
+     * 
+     * @param string $field Model field
+     * @param int $min Minimum
+     * @param int $max Maximum
+     * @return string Field value
+     */
+    public function generateUniqueInt($field,$min, $max) {
+        //Start with not unique
+        $notUnique = true;
+        while ($notUnique) {//While till you get the field value is unique
+            //Generate value
+            $value = mt_rand($min, $max);
+            
+            //Get model by field
+            $model = $this->getModelByField($field, $value);
+
+            if (!$model) {//Field Unique
+                break;
+            }//E# if statement        
+        }//E# while statement
+
+        return $value;
+    }
+
+//E# generateUniqueInt() function
+
+    /**
      * S# getMerchantsModels() function
      * 
      * Get merchantanization's models

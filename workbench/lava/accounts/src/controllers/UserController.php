@@ -539,9 +539,10 @@ class UserController extends AccountsBaseController {
 
         //Get the validation rules
         $this->validationRules = array(
-            'email' => 'required|email',
+            'phone_or_email' => 'required',
+            'id_field' => 'required|in:email,phone',
             'os' => 'in:ios,android',
-            'password' => 'required|min:6|login',
+            'password' => 'required|min:4|login',
         );
 
         //Validate inputs
@@ -706,11 +707,15 @@ class UserController extends AccountsBaseController {
     public function postResetPassword() {
         //Get the validation rules
         $this->validationRules = array(
-            'reset_email' => 'required|exists:acc_users,email',
-            'reset_password' => 'required|min:6|resetCode',
-            'confirm_password' => 'min:6|same:reset_password',
+            'reset_code' => 'required',
+            'reset_password' => 'required|min:4|resetCode',
         );
 
+        if ($this->input['phone_or_email'] == 'phone') {
+            $this->validationRules['phone_or_email'] = 'required|exists:acc_users,phone';
+        } else {
+            $this->validationRules['phone_or_email'] = 'required|exists:acc_users,phone';
+        }//E# if else statement
         //Validate row to be inserted
         $this->validator = $this->isInputValid();
 
@@ -749,9 +754,9 @@ class UserController extends AccountsBaseController {
             $where_clause = array(
                 array(
                     'where' => 'where',
-                    'column' => 'email',
+                    'column' => $this->input['id_field'],
                     'operator' => '=',
-                    'operand' => $this->input['reset_email']
+                    'operand' => $this->input['phone_or_email']
                 ),
                 array(
                     'where' => 'where',
@@ -780,14 +785,14 @@ class UserController extends AccountsBaseController {
             //Save this user model
             $user_model->save();
 
-            /*
-              if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//API
-              //Get success message
-              $message = \Lang::get($this->package . '::' . $this->controller . '.notification.reset_password');
 
-              throw new \Api200Exception(array($user_model->id), $message);
-              }//E# if statement
-             */
+            if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//API
+                //Get success message
+                $message = \Lang::get($this->package . '::' . $this->controller . '.notification.reset_password');
+
+                throw new \Api200Exception(array($user_model->id), $message);
+            }//E# if statement
+
             if ($this->input['user_role'] == 'user') {
                 //Flash login error code to session
                 \Session::flash('reset_status_code', 1);
@@ -876,7 +881,8 @@ class UserController extends AccountsBaseController {
 
         //Get the validation rules
         $this->validationRules = array(
-            'forgot_email' => 'required',
+            'phone_or_email' => 'required',
+            'id_field' => 'required',
         );
 
         //Validate inputs
@@ -893,18 +899,14 @@ class UserController extends AccountsBaseController {
              * 
              */
             //Get user by email
-            $user_model = $this->getModelByField('email', $this->input['forgot_email']);
+            $user_model = $this->getModelByField($this->input['id_field'], $this->input['phone_or_email']);
 
             if ($user_model) {//User with that email exists
-                /*
-                  if (($user_model->role_id == 3)) {//Customer
-                  $resetCode = mt_rand(1000, 10000);
-                  } else {
-                  $resetCode = \Str::lower(\Str::random(48));
-                  }//E# if else statement
-                 */
-
-                $reset_code = \Str::upper($this->generateUniqueField('reset_code', 48));
+                if ($this->input['id_field'] == 'phone') {//Customer
+                    $reset_code = $this->generateUniqueInt('reset_code', 1000, 9999);
+                } else {
+                    $reset_code = \Str::upper($this->generateUniqueField('reset_code', 48));
+                }//E# if else statement
 
                 $user_model->reset_code = $reset_code;
 
@@ -912,53 +914,51 @@ class UserController extends AccountsBaseController {
 
                 $user_model->save();
 
+                if ($this->input['id_field'] == 'phone') {//Customer from phone
+                    $parameters = array(
+                        'name' => $user_model->full_name,
+                        'resetCode' => $reset_code,
+                    );
+                    try {
+                        //Converse
+                        $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('sms', null, \Config::get('product.alphanumericSender'), $user_model->id, array($user_model->phone), 'forgotPassword', \Config::get('app.locale'), $parameters));
+                    } catch (\Exception $e) {
+                        throw new \Api500Exception(\Lang::get($this->package . '::' . $this->controller . '.notification.sending_sms_failed'));
+                    }//E# try catch block
+                } else {
 
-                /* if (($user_model->role_id == 3) && ($field == 'phone')) {//Customer from phone
-                  $parameters = array(
-                  'name' => $user_model->first_name . ' ' . $user_model->last_name,
-                  'resetCode' => $resetCode,
-                  );
-                  try {
-                  //Converse
-                  $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('sms', null, null, $user_model->id, array($user_model->phone), 'forgotPassword', \Config::get('app.locale'), $parameters));
-                  } catch (\Exception $e) {
-                  throw new \Api500Exception(\Lang::get($this->package . '::' . $this->controller . '.notification.sending_sms_failed'));
-                  }//E# try catch block
-                  } else {
-                 * 
-                 */
-                $queryStrArray = array(
-                    'reset_code' => $reset_code,
-                    'forgot_email' => $user_model->email,
-                    'sub_view' => 'reset',
-                    'user_role' => $user_model->role_id == 3 ? 'user' : 'merchant'
-                );
+                    $queryStrArray = array(
+                        'reset_code' => $reset_code,
+                        'phone_or_email' => $user_model->email,
+                        'sub_view' => 'reset',
+                        'user_role' => $user_model->role_id == 3 ? 'user' : 'merchant'
+                    );
 
-                //Build url
-                $url = \Util::buildUrl('userRegistration', $queryStrArray);
+                    //Build url
+                    $url = \Util::buildUrl('userRegistration', $queryStrArray);
 
-                $url .= '#toreset';
+                    $url .= '#toreset';
 
-                //Message parameters
-                $parameters = array(
-                    'name' => $user_model->full_name,
-                    'reset_code' => $reset_code,
-                    'forgot_email' => $this->input['forgot_email'],
-                    'passwordMinCharacters' => \Config::get($this->package . '::account.passwordMinCharacters'),
-                    'productName' => \Config::get($this->package . '::product.name'),
-                    'url' => $url,
-                    /* 'field' => $field, */
-                    'role_id' => $user_model->role_id,
-                );
+                    //Message parameters
+                    $parameters = array(
+                        'name' => $user_model->full_name,
+                        'reset_code' => $reset_code,
+                        'phone_or_email' => $this->input['phone_or_email'],
+                        'passwordMinCharacters' => \Config::get($this->package . '::account.passwordMinCharacters'),
+                        'productName' => \Config::get($this->package . '::product.name'),
+                        'url' => $url,
+                        /* 'field' => $field, */
+                        'role_id' => $user_model->role_id,
+                    );
 
-                try {
-                    $recipient['to'] = $user_model->email;
-                    //Converse
-                    $isSent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $user_model->id, $recipient, 'forgotPassword', \Config::get('app.locale'), $parameters));
-                } catch (\Exception $e) {
-                    throw new \Api500Exception(\Lang::get($this->package . '::' . $this->controller . '.notification.sending_email_failed'));
-                }//E# try catch block
-                /* } */
+                    try {
+                        $recipient['to'] = $user_model->email;
+                        //Converse
+                        $isSent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $user_model->id, $recipient, 'forgotPassword', \Config::get('app.locale'), $parameters));
+                    } catch (\Exception $e) {
+                        throw new \Api500Exception(\Lang::get($this->package . '::' . $this->controller . '.notification.sending_email_failed'));
+                    }//E# try catch block
+                }//E# if else statement
 
                 if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {
                     //Get success message
@@ -972,9 +972,9 @@ class UserController extends AccountsBaseController {
                 if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {
                     //Set notification
                     $this->notification = array(
-                        'field' => 'send_to',
+                        'field' => 'phone_or_email',
                         'type' => 'User',
-                        'value' => $this->input['send_to'],
+                        'value' => $this->input['phone_or_email'],
                     );
 
                     //Throw VRM not found error
