@@ -1,0 +1,16 @@
+.commonTextAlignCenter{
+    text-align: center;
+}
+
+.commonPositionCenter{
+    display: block;
+    margin: auto;
+}
+
+.backgroundColor{
+    background: #ff045d;
+}
+
+.commonFontSize22px{
+    font-size: 22px;
+}

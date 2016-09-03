@@ -101,7 +101,7 @@ class BaseModel extends \Eloquent {
         //Get the logged in user card
         $user = $this->user()->first();
 
-        return $user->full_name;
+        return $user ? $user->full_name : '';
     }
 
 //E# getUserTextAttribute() function

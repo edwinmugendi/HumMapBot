@@ -11,6 +11,9 @@ class LoanController extends LoansBaseController {
 
     //Controller
     public $controller = 'loan';
+    
+    //Owned by
+    public $ownedBy = array('merchant', 'user');
 
     /**
      * S# injectDataSources() function
@@ -39,6 +42,12 @@ class LoanController extends LoansBaseController {
 
         //Get and set workflow options to data source
         $this->view_data['dataSource']['workflow'] = \Lang::get($this->package . '::' . $this->controller . '.data.workflow');
+
+        //Get and set use options to data source
+        $this->view_data['dataSource']['use'] = \Lang::get($this->package . '::' . $this->controller . '.data.use');
+
+        //Get and set purpose options to data source
+        $this->view_data['dataSource']['purpose'] = \Lang::get($this->package . '::' . $this->controller . '.data.purpose');
 
         //Get and set period cycle options to data source
         $this->view_data['dataSource']['period_cycle'] = $this->view_data['dataSource']['cycle'] = \Lang::get($this->package . '::' . $this->controller . '.data.cycle');

@@ -1,11 +1,21 @@
 <?php
 
 \Route::group(array('before' => 'api'), function() {
-    
+    //Create a loan
+    \Route::post('api/create_loan', array('as' => 'apiCreateLoan', 'uses' => 'Lava\Loans\LoanController@postCreate'));
+
+    //Update a loan
+    \Route::post('api/update_loan', array('as' => 'apiUpdateLoan', 'uses' => 'Lava\Loans\LoanController@postUpdate'));
+
+    //List loan
+    \Route::get('api/list_loan', array('as' => 'apiListLoan', 'uses' => 'Lava\Loans\LoanController@getList'));
+
+    //Detailed loan
+    \Route::get('api/detailed_loan/{id}', array('as' => 'apiDetailedLoan', 'uses' => 'Lava\Loans\LoanController@getDetailed'));
 });
 
 \Route::group(array('before' => 'auth'), function() {
-    
+
     /**
      * Offer routes
      */

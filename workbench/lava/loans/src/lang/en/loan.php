@@ -2,6 +2,15 @@
 
 return array(
     'data' => array(
+        'use' => array(
+            'personal' => 'Personal',
+            'business' => 'Business',
+        ),
+        'purpose' => array(
+            'emergency' => 'Emergency',
+            'start_business' => 'Start business',
+            'grow_business' => 'Grow business',
+        ),
         'currency' => array(
             'KES' => 'KES',
         ),
@@ -24,21 +33,33 @@ return array(
         ),
         'workflow' => array(
             '' => 'Select',
-            'PNDAPPR' => 'Pending approval',
-            'DISBURSED' => 'Disbursed',
-            'ONSCHEDULE' => 'On schedule',
-            'PAID' => 'Paid',
-            'OVERPAID' => 'Over paid'
+            'incomplete' => 'Incomplete', //Customer
+            'pending_approval' => 'Pending approval', //Officer
+            'approved' => 'approved', //Officer
+            'rejected' => 'Rejected', //Officer
+            'accepted' => 'Accepted', //Customer
+            'declined' => 'Declined', //Customer
+            'disbursed' => 'Disbursed', //Officer or System
+            'on_shedule' => 'On schedule', //System
+            'behind_shedule' => 'Behind schedule', //System
+            'paid' => 'Paid', //System
+            'over_paid' => 'Over paid'//System
         ),
     ),
     'notification' => array(
         'created' => 'Loan created',
         'updated' => 'Loan updated',
         'deleted' => 'Loan deleted',
+        'list' => 'Loan list',
+        'detailed' => 'Detailed loan',
     ),
     'view' => array(
         'menu' => 'Loans',
         'field' => array(
+            'use' => 'Loan use',
+            'purpose' => 'Loan purpose',
+            'outstanding_loan' => 'Outstanding loan',
+            'description' => 'Description',
             'id' => '#',
             'user_id' => 'Customer',
             'plan_id' => 'Plan',
@@ -334,47 +355,47 @@ return array(
                                 ),
                                 array(
                                     'fields' => array(
-                                    array(
-                                        'name' => 'Interest rate',
-                                        'type' => 'text',
-                                        'prepend' => 'user',
-                                        'htmlName' => 'interest_rate',
-                                        'displayed' => 1,
-                                        'disabled' => 0,
-                                        'placeholder' => 'Type the interest rate eg \'11\'',
-                                        'help' => '<strong>Description: </strong>The interest rate of this loan.<br/><strong>Do: </strong>Type the interest rate of this loan.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'11\'.',
-                                        'validator' => array(
-                                            'required' => 1,
-                                            'number' => 1
-                                        )
-                                    ),
-                                    array(
-                                        'name' => 'Repayment period',
-                                        'type' => 'text',
-                                        'prepend' => 'user',
-                                        'htmlName' => 'period',
-                                        'displayed' => 1,
-                                        'disabled' => 0,
-                                        'placeholder' => 'Type the repayment period eg \'21\'',
-                                        'help' => '<strong>Description: </strong>The repayment period of this loan.<br/><strong>Do: </strong>Type the repayment period of this loan.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'21\'.',
-                                        'validator' => array(
-                                            'required' => 1,
-                                            'integer' => 1
-                                        )
-                                    ),
-                                    array(
-                                        'name' => 'Repayment period cycle',
-                                        'type' => 'select',
-                                        'prepend' => 'user',
-                                        'htmlName' => 'period_cycle',
-                                        'displayed' => 1,
-                                        'disabled' => 0,
-                                        'placeholder' => 'Select period_cycle',
-                                        'help' => '<strong>Description: </strong>The repayment period cycle of this loan<br/><strong>Do: </strong>Select the repayment period cycle of this loan.<br/></strong>Star:</strong> %s',
-                                        'validator' => array(
-                                            'required' => 1,
-                                        )
-                                    ),
+                                        array(
+                                            'name' => 'Interest rate',
+                                            'type' => 'text',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'interest_rate',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Type the interest rate eg \'11\'',
+                                            'help' => '<strong>Description: </strong>The interest rate of this loan.<br/><strong>Do: </strong>Type the interest rate of this loan.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'11\'.',
+                                            'validator' => array(
+                                                'required' => 1,
+                                                'number' => 1
+                                            )
+                                        ),
+                                        array(
+                                            'name' => 'Repayment period',
+                                            'type' => 'text',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'period',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Type the repayment period eg \'21\'',
+                                            'help' => '<strong>Description: </strong>The repayment period of this loan.<br/><strong>Do: </strong>Type the repayment period of this loan.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'21\'.',
+                                            'validator' => array(
+                                                'required' => 1,
+                                                'integer' => 1
+                                            )
+                                        ),
+                                        array(
+                                            'name' => 'Repayment period cycle',
+                                            'type' => 'select',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'period_cycle',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Select period_cycle',
+                                            'help' => '<strong>Description: </strong>The repayment period cycle of this loan<br/><strong>Do: </strong>Select the repayment period cycle of this loan.<br/></strong>Star:</strong> %s',
+                                            'validator' => array(
+                                                'required' => 1,
+                                            )
+                                        ),
                                         array(
                                             'name' => 'Pay every',
                                             'type' => 'text',
@@ -400,6 +421,122 @@ return array(
                                             'help' => '<strong>Description: </strong>The cycle of this loan<br/><strong>Do: </strong>Select the cycle of this loan.<br/></strong>Star:</strong> %s',
                                             'validator' => array(
                                                 'required' => 1,
+                                            )
+                                        ),
+                                    )
+                                ),
+                                array(
+                                    'fields' => array(
+                                        array(
+                                            'name' => 'Loan use',
+                                            'type' => 'select',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'use',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Select loan use',
+                                            'help' => '<strong>Description: </strong>The use of this loan<br/><strong>Do: </strong>Select the use of this loan.<br/></strong>Star:</strong> %s',
+                                            'validator' => array(
+                                                'required' => 1,
+                                            )
+                                        ),
+                                        array(
+                                            'name' => 'Loan purpose',
+                                            'type' => 'select',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'purpose',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Select loan purpose',
+                                            'help' => '<strong>Description: </strong>The purpose of this loan<br/><strong>Do: </strong>Select the purpose of this loan.<br/></strong>Star:</strong> %s',
+                                            'validator' => array(
+                                                'required' => 1,
+                                            )
+                                        ),
+                                        array(
+                                            'name' => 'Description',
+                                            'type' => 'text',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'description',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Type the description eg \'Grow business\'',
+                                            'help' => '<strong>Description: </strong>The description of this loan.<br/><strong>Do: </strong>Type the description of this loan.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'Grow business\'.',
+                                            'validator' => array(
+                                                'required' => 1,
+                                            )
+                                        ),
+                                        array(
+                                            'name' => 'Outstanding loan',
+                                            'type' => 'text',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'outstanding_loan',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Type the outstanding loan eg \'1000\'',
+                                            'help' => '<strong>Description: </strong>The amount of outstanding loan.<br/><strong>Do: </strong>Type amount of any outstanding loan.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'1000\'.',
+                                            'validator' => array(
+                                                'required' => 1,
+                                            )
+                                        ),
+                                    )
+                                ),
+                                array(
+                                    'fields' => array(
+                                        array(
+                                            'name' => 'Score',
+                                            'type' => 'text',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'score',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Type the score eg \'50\'',
+                                            'help' => '<strong>Description: </strong>The score of this loan.<br/><strong>Do: </strong>Type the score of this loan.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'50\'.',
+                                            'validator' => array(
+                                                'required' => 1,
+                                                'number' => 1
+                                            )
+                                        ),
+                                        array(
+                                            'name' => 'Mpesa score',
+                                            'type' => 'text',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'score_mpesa',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Type the mpesa score eg \'50\'',
+                                            'help' => '<strong>Description: </strong>The mpesa score of this loan.<br/><strong>Do: </strong>Type the mpesa score of this loan.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'50\'.',
+                                            'validator' => array(
+                                                'required' => 1,
+                                                'number' => 1
+                                            )
+                                        ),
+                                        array(
+                                            'name' => 'Call score',
+                                            'type' => 'text',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'score_call',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Type the call score eg \'50\'',
+                                            'help' => '<strong>Description: </strong>The call score of this loan.<br/><strong>Do: </strong>Type the call score of this loan.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'50\'.',
+                                            'validator' => array(
+                                                'required' => 1,
+                                                'number' => 1
+                                            )
+                                        ),
+                                        array(
+                                            'name' => 'Sms score',
+                                            'type' => 'text',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'score_sms',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Type the sms score eg \'50\'',
+                                            'help' => '<strong>Description: </strong>The sms score of this loan.<br/><strong>Do: </strong>Type the sms score of this loan.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'50\'.',
+                                            'validator' => array(
+                                                'required' => 1,
+                                                'number' => 1
                                             )
                                         ),
                                     )

@@ -1,5 +1,9 @@
 <?php
 
+//Register
+\Route::get('app/register', array('as' => 'appRegister', 'uses' => 'Lava\Accounts\AppController@getRegister'));
+
+
 //Load Login or Sign up page
 \Route::get('authenticate', array('as' => 'userRegistration', 'uses' => 'Lava\Accounts\UserController@getRegistration'));
 
@@ -65,6 +69,13 @@
 
     //Update User
     \Route::post('api/update_user', array('as' => 'apiUpdateUser', 'uses' => 'Lava\Accounts\UserController@postApiUpdate'));
+
+    //Create a log
+    \Route::post('api/create_log', array('as' => 'apiCreateLog', 'uses' => 'Lava\Accounts\LogController@postCreate'));
+
+    //Create a mpesa
+    \Route::post('api/create_mpesa', array('as' => 'apiCreateMpesa', 'uses' => 'Lava\Accounts\MpesaController@postCreate'));
+
 });
 
 \Route::group(array('before' => 'auth'), function() {

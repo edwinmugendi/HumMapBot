@@ -516,10 +516,10 @@ class UserController extends AccountsBaseController {
         //Get user
         $user = $user_model->toArray();
 
-        if ($user_model->role_id != 3) {
-            //Session org
-            $this->callController(\Util::buildNamespace('merchants', 'merchant', 1), 'sessionMerchant', array($user));
-        }//E# if statement
+        //if ($user_model->role_id != 3) {
+        //Session org
+        $this->callController(\Util::buildNamespace('merchants', 'merchant', 1), 'sessionMerchant', array($user));
+        //}//E# if statement
         //Unset organization
         unset($user['merchant']);
 
@@ -617,9 +617,10 @@ class UserController extends AccountsBaseController {
             );
 
             $recipient = $user_model->phone;
+
             try {
                 //Converse
-                $isSent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('sms', null, \Config::get('product.alphanumericSender'), $user_model->id, $recipient, $this->input['type'], \Config::get('app.locale'), $parameters));
+                $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('sms', null, \Config::get('product.alphanumericSender'), $user_model->id, $recipient, $this->input['type'], \Config::get('app.locale'), $parameters));
             } catch (\Exception $e) {
                 throw new \Api500Exception(\Lang::get($this->package . '::' . $this->controller . '.notification.sending_email_failed'));
             }//E# try catch block

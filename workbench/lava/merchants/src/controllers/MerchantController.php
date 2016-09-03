@@ -51,7 +51,6 @@ class MerchantController extends MerchantsBaseController {
 
         $merchant_id = $user_model['merchant_id'];
 
-        var_dump($merchant_id);
         //Set the default merchant
 
         foreach ($user_model['merchants'] as $single_merchant) {

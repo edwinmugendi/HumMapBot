@@ -199,13 +199,13 @@ class BaseController extends Controller {
      * @param int $max Maximum
      * @return string Field value
      */
-    public function generateUniqueInt($field,$min, $max) {
+    public function generateUniqueInt($field, $min, $max) {
         //Start with not unique
         $notUnique = true;
         while ($notUnique) {//While till you get the field value is unique
             //Generate value
             $value = mt_rand($min, $max);
-            
+
             //Get model by field
             $model = $this->getModelByField($field, $value);
 
@@ -781,6 +781,22 @@ class BaseController extends Controller {
 //E# buildSingleList() function
 
     /**
+     * S# canAccessDetailed() function
+     * 
+     * Can user access detailed page
+     * 
+     * @param array $parent_function_arguments Parent's Function Arguments
+     * 
+     * @return boolean true if can, false if cannot
+     * 
+     */
+    public function canAccessDetailed($parent_function_arguments) {
+        return true;
+    }
+
+//E# canAccessDetailed() function
+
+    /**
      * S# getDetailed() function
      * @author Edwin Mugendi
      * Load controller's detailed page
@@ -796,6 +812,9 @@ class BaseController extends Controller {
         //Prepare view data
         $this->view_data = $this->prepareViewData('detailed');
 
+        if (!$this->canAccessDetailed(func_get_args())) {
+            return \Redirect::to('/');
+        }//E# if statement
         //Fields to select
         $fields = array('*');
 
@@ -817,6 +836,21 @@ class BaseController extends Controller {
         //Select this controller model
         $this->view_data['controller_model'] = $this->select($fields, $where_clause, 1, $parameters);
 
+        if (!$this->view_data['controller_model']) {
+            if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {
+
+                //Set notification
+                $this->notification = array(
+                    'field' => 'id',
+                    'type' => 'Loan',
+                    'value' => $id,
+                );
+
+                throw new \Api404Exception($this->notification);
+            } else {
+                return \Redirect::to('/');
+            }//E# if statement
+        }//E# if statement
         //Inject data sources
         $this->injectDataSources();
 
@@ -870,6 +904,13 @@ class BaseController extends Controller {
         //Set layout's side bar partial
         $this->layout->sideBarPartial = $this->getSideBarPartialView();
 
+        if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {
+
+            //Get success message
+            $message = \Lang::get($this->package . '::' . $this->controller . '.notification.detailed');
+
+            throw new \Api200Exception($this->view_data['controller_model']->toArray(), $message);
+        }//E# if statement
         //Set layout's content view
         $this->view_data['contentView'] = \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.' . $this->view_data['view'])
                 ->with('view_data', $this->view_data);

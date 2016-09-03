@@ -22,6 +22,8 @@ class LoanModel extends \BaseModel {
         'workflow' => array(1, 'select', '=', 0),
         'balance' => array(1, 'text', '=', 0),
         'on_schedule' => array(1, 'select', '=', 0),
+        'use' => array(0, 'select', '=', 0),
+        'purpose' => array(0, 'select', '=', 0),
         'disbursement_date' => array(0, 'text', '=', 0),
         'due_date' => array(0, 'text', '=', 0),
         'instalment' => array(0, 'text', '=', 0),
@@ -32,9 +34,16 @@ class LoanModel extends \BaseModel {
         'pay_every' => array(0, 'text', '=', 0),
         'cycle' => array(0, 'select', '=', 0),
         'officer_id' => array(0, 'select', '=', 0),
+        'outstanding_loan' => array(0, 'text', '=', 0),
+        'description' => array(0, 'text', '=', 0),
     );
     //Fillable fields
     protected $fillable = array(
+        'merchant_id',
+        'use',
+        'purpose',
+        'outstanding_loan',
+        'description',
         'user_id',
         'plan_id',
         'currency',
@@ -64,45 +73,44 @@ class LoanModel extends \BaseModel {
     protected $hidden = array();
     //Create validation rules
     public $createRules = array(
-        'user_id' => 'required|integer|exists:acc_users,id',
-        'plan_id' => 'required|integer|exists:lon_plans,id',
-        'currency' => 'required',
-        'principal' => 'required|numeric',
-        'interest' => 'required|numeric',
-        'workflow' => 'required',
+        'user_id' => 'integer|exists:acc_users,id',
+        'plan_id' => '',
+        'principal' => 'numeric',
+        'interest' => 'numeric',
+        'workflow' => '',
         /* 'balance' => 'required|numeric', */
         /* 'on_schedule' => 'required|integer', */
-        'disbursement_date' => 'required|check_date',
-        'due_date' => 'required|check_date',
-        'instalment' => 'required|numeric',
-        'instalments' => 'required|integer',
-        'interest_rate' => 'required|numeric',
-        'period' => 'required|integer',
-        'period_cycle' => 'required',
-        'pay_every' => 'required|integer',
-        'cycle' => 'required',
-        'officer_id' => 'required|integer|exists:acc_users,id',
+        'disbursement_date' => 'check_date',
+        'due_date' => 'check_date',
+        'instalment' => 'numeric',
+        'instalments' => 'integer',
+        'interest_rate' => 'numeric',
+        'period' => 'integer',
+        'period_cycle' => '',
+        'pay_every' => 'integer',
+        'cycle' => '',
+        'officer_id' => 'integer|exists:acc_users,id',
     );
     //Update validation rules
     public $updateRules = array(
-        'user_id' => 'required|integer|exists:acc_users,id',
-        'officer_id' => 'required|integer|exists:acc_users,id',
-        'plan_id' => 'required|integer|exists:lon_plans,id',
-        'currency' => 'required',
-        'principal' => 'required|numeric',
-        'interest' => 'required|numeric',
-        'workflow' => 'required',
+        'user_id' => 'integer|exists:acc_users,id',
+        'officer_id' => 'integer|exists:acc_users,id',
+        'plan_id' => 'integer|exists:lon_plans,id',
+        'currency' => '',
+        'principal' => 'numeric',
+        'interest' => 'numeric',
+        'workflow' => '',
         /* 'balance' => 'required|numeric', */
         /* 'on_schedule' => 'required|integer', */
-        'disbursement_date' => 'required|check_date',
-        'due_date' => 'required|check_date',
-        'instalment' => 'required|numeric',
-        'instalments' => 'required|integer',
-        'interest_rate' => 'required|numeric',
-        'period' => 'required|integer',
-        'period_cycle' => 'required',
-        'pay_every' => 'required|integer',
-        'cycle' => 'required',
+        'disbursement_date' => 'check_date',
+        'due_date' => 'check_date',
+        'instalment' => 'numeric',
+        'instalments' => 'integer',
+        'interest_rate' => 'numeric',
+        'period' => 'integer',
+        'period_cycle' => '',
+        'pay_every' => 'integer',
+        'cycle' => '',
     );
     //Date fields
     public $dateFields = array('disbursement_date', 'due_date');
@@ -139,6 +147,28 @@ class LoanModel extends \BaseModel {
     }
 
 //E# getWorkflowTextAttribute() function
+
+    /**
+     * S# getUseTextAttribute() function
+     * 
+     * Get Use Text
+     */
+    public function getUseTextAttribute() {
+        return $this->attributes['use'] ? \Lang::get('loans::loan.data.use.' . $this->attributes['use']) : '';
+    }
+
+//E# getUseTextAttribute() function
+
+    /**
+     * S# getPurposeTextAttribute() function
+     * 
+     * Get Purpose Text
+     */
+    public function getPurposeTextAttribute() {
+        return $this->attributes['purpose'] ? \Lang::get('loans::loan.data.purpose.' . $this->attributes['purpose']) : '';
+    }
+
+//E# getPurposeTextAttribute() function
 
     /**
      * S# getCycleTextAttribute() function
@@ -209,7 +239,7 @@ class LoanModel extends \BaseModel {
         $officer_model = $this->officer()->first();
 
         //Return name
-        return $officer_model->full_name;
+        return $officer_model ? $officer_model->full_name : '';
     }
 
 //E# getOfficerIdTextAttribute() function
