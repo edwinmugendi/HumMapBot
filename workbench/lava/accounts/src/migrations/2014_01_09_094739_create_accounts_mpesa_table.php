@@ -14,7 +14,7 @@ class CreateAccountsMpesaTable extends Migration {
         Schema::create('acc_mpesa', function(Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('merchant_id')->unsigned();
+            $table->integer('organization_id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->string('type', 255); //dr or cr
             $table->integer('class')->unsigned(); //money in, money out, paybill, top up

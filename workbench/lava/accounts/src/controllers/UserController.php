@@ -22,7 +22,7 @@ class UserController extends AccountsBaseController {
 
         if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//From API
         } else {
-            if ($this->user['role_id'] == 2) {//Merchant
+            if ($this->user['role_id'] == 2) {//Organization
                 //Transaction fields
                 $transaction_fields = array('user_id');
 
@@ -30,9 +30,9 @@ class UserController extends AccountsBaseController {
                 $transaction_where_clause = array(
                     array(
                         'where' => 'where',
-                        'column' => 'merchant_id',
+                        'column' => 'organization_id',
                         'operator' => '=',
-                        'operand' => $this->user['merchant_id']
+                        'operand' => $this->user['organization_id']
                     )
                 );
 
@@ -70,7 +70,7 @@ class UserController extends AccountsBaseController {
         if (!array_key_exists('format', $this->input)) {
             $this->validationRules = array(
                 'full_name' => 'required',
-                'merchant_id' => 'required|integer|exists:mct_merchants,id',
+                'organization_id' => 'required|integer|exists:mct_merchants,id',
                 'email' => 'required|unique:acc_users',
                 'role_id' => 'required'
             );
@@ -94,7 +94,7 @@ class UserController extends AccountsBaseController {
     public function injectDataSources() {
 
         //Get this organization merchant id
-        $this->view_data['dataSource']['merchant_id'] = $this->appGetCustomMerchantHtmlSelect();
+        $this->view_data['dataSource']['organization_id'] = $this->appGetCustomOrganizationHtmlSelect();
 
         //Get and set yes no options to data source
         $this->view_data['dataSource']['notify_sms'] = $this->view_data['dataSource']['notify_email'] = $this->view_data['dataSource']['notify_push'] = \Lang::get($this->package . '::' . $this->controller . '.data.yes_no');
@@ -168,7 +168,7 @@ class UserController extends AccountsBaseController {
 
             $this->input['verification_code'] = $this->generateUniqueCode('verification_code', 10000, 99999);
 
-            $this->input['merchant_id'] = 3;
+            $this->input['organization_id'] = 3;
             $this->input['role_id'] = 3; //Customer
 
             $this->input['status'] = 0;
@@ -518,7 +518,7 @@ class UserController extends AccountsBaseController {
 
         //if ($user_model->role_id != 3) {
         //Session org
-        $this->callController(\Util::buildNamespace('merchants', 'merchant', 1), 'sessionMerchant', array($user));
+        $this->callController(\Util::buildNamespace('merchants', 'merchant', 1), 'sessionOrganization', array($user));
         //}//E# if statement
         //Unset organization
         unset($user['merchant']);
@@ -685,7 +685,7 @@ class UserController extends AccountsBaseController {
         $this->validator = $this->isInputValid();
 
         if ($this->validator->passes()) {//Validation passes
-            $this->input['merchant_id'] = 1; //Kenya
+            $this->input['organization_id'] = 1; //Kenya
             $this->input['role_id'] = 3; //Customer
             $this->input['created_by'] = $this->input['updated_by'] = 1; //Admin
             //Create user

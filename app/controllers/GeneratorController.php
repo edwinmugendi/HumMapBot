@@ -114,7 +114,37 @@ class GeneratorController extends BaseController {
             if (\File::exists($full_post_path)) {//Detailed file exists
                 \File::put($full_post_path, $post_view);
             }//E# if else statement
+            //Generate import sample file
+
+            $this->generateImportSampleFile($this_model, $controller->package, $controller->controller);
         }//E# foreach statement
     }
 
+    /**
+     * S# generateImportSampleField() function
+     * 
+     * Generate import sample
+     * 
+     */
+    private function generateImportSampleFile($model, $package, $controller) {
+        $this->view_data['fields'] = array_keys($model->viewFields);
+
+        if (($key = array_search('id', $this->view_data['fields'])) !== false) {
+            unset($this->view_data['fields'][$key]);
+        }
+
+        $name = \Str::title(\Str::snake($package . '_' . $controller));
+
+        \Excel::create($name, function($excel) {
+
+            $data_array = $this->view_data['fields'];
+
+            $excel->sheet('Sheet 1', function($sheet) use($data_array) {
+
+                $sheet->fromArray($data_array);
+            });
+        })->store('csv');
+    }
+
+//E# generateImportSampleField() function
 }

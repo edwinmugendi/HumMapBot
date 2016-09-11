@@ -8,7 +8,7 @@
         <?php endif; ?>
                          
                                         <td><?php echo $view_data['singleModel']['id']; ?></td>
-                                                                        <td><?php echo $view_data['singleModel']['merchant_id_text']; ?></td>
+                                                                        <td><?php echo $view_data['singleModel']['organization_id_text']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['full_name']; ?></td>
                                                                         <td><?php echo $view_data['singleModel']['role_id_text']; ?></td>
@@ -31,7 +31,7 @@
     <td colspan="100%">
                      
                                         <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.id') .': '.$view_data['singleModel']['id']; ?> </div>
-                                                            <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.merchant_id') .': '.$view_data['singleModel']['merchant_id_text']; ?> </div>
+                                                            <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.organization_id') .': '.$view_data['singleModel']['organization_id_text']; ?> </div>
                      
                                         <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.full_name') .': '.$view_data['singleModel']['full_name']; ?> </div>
                                                             <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.role_id') .': '.$view_data['singleModel']['role_id_text']; ?> </div>

@@ -14,7 +14,7 @@ class CreateAccountsUsersTable extends Migration {
         Schema::create('acc_users', function(Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('merchant_id')->unsigned();
+            $table->integer('organization_id')->unsigned();
             $table->integer('role_id')->unsigned();
 
             //About

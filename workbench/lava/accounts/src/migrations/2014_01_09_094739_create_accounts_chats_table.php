@@ -14,7 +14,7 @@ class CreateAccountsChatsTable extends Migration {
         Schema::create('acc_chats', function(Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('merchant_id')->unsigned();
+            $table->integer('organization_id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->integer('sender_id')->unsigned();
             $table->integer('recipient_id')->unsigned();

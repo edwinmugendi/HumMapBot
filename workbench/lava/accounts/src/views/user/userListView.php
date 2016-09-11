@@ -61,7 +61,7 @@
                         $order = 'asc';
                         $is_ordered = false;
                         ?>
-                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'merchant_id'): ?>
+                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'organization_id'): ?>
                              <?php $is_ordered = true;?>
                                 <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
                                 <?php
@@ -75,16 +75,16 @@
                         <?php endif ?>
 
                         <?php if ($view_data['paginationAppends']): ?>
-                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=merchant_id'; ?>
+                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=organization_id'; ?>
                         <?php else: ?>
-                            <?php $url = 'order=' . $order . '&sort=merchant_id';?>
+                            <?php $url = 'order=' . $order . '&sort=organization_id';?>
                         <?php endif;?>                                <th>   
                                     <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
-                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.merchant_id'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
+                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.organization_id'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
                                         <?php endif; ?>                                    </a>
                                 </th>
                                 <?php else: ?>                                <th>
-                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.merchant_id'); ?>                                </th>
+                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.organization_id'); ?>                                </th>
                                 <?php endif; ?>                                                                                                                <?php if (!array_key_exists('export', $view_data)): ?>                                <?php
                         $order = 'asc';
                         $is_ordered = false;
@@ -235,7 +235,7 @@
                                                                             <?php echo \Form::text('id', isset($view_data['input']['id']) ? $view_data['input']['id'] : '', array('class' => 'form-control')); ?>                                                                    </td>
                                 
                                                                                     <td>
-                                                                            <?php echo \Form::compositeSelect('merchant_id', $view_data['dataSource']['merchant_id'], isset($view_data['input']['merchant_id']) ? $view_data['input']['merchant_id'] : '', array('class' => 'form-control')); ?>                                                                    </td>
+                                                                            <?php echo \Form::compositeSelect('organization_id', $view_data['dataSource']['organization_id'], isset($view_data['input']['organization_id']) ? $view_data['input']['organization_id'] : '', array('class' => 'form-control')); ?>                                                                    </td>
                                 
                                                                                     <td>
                                                                             <?php echo \Form::text('full_name', isset($view_data['input']['full_name']) ? $view_data['input']['full_name'] : '', array('class' => 'form-control')); ?>                                                                    </td>

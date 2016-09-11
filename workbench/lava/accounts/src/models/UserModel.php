@@ -16,7 +16,7 @@ class UserModel extends \BaseModel {
     //View fields
     public $viewFields = array(
         'id' => array(1, 'text', '='),
-        'merchant_id' => array(1, 'select', '='),
+        'organization_id' => array(1, 'select', '='),
         'full_name' => array(1, 'text', 'like', 1),
         'role_id' => array(1, 'select', '=', 0),
         'email' => array(1, 'text', 'like', 0),
@@ -32,7 +32,7 @@ class UserModel extends \BaseModel {
     );
     //Fillable fields
     protected $fillable = array(
-        'merchant_id',
+        'organization_id',
         'full_name',
         'phone',
         'password',
@@ -92,29 +92,29 @@ class UserModel extends \BaseModel {
 
     /**
      * S# merchant() function
-     * Set one to one relationship to Merchant Model
+     * Set one to one relationship to Organization Model
      */
     public function merchant() {
-        return $this->belongsTo(\Util::buildNamespace('merchants', 'merchant', 2), 'merchant_id');
+        return $this->belongsTo(\Util::buildNamespace('merchants', 'merchant', 2), 'organization_id');
     }
 
 //E# merchant() function
 
     /**
-     * S# getMerchantIdTextAttribute() function
+     * S# getOrganizationIdTextAttribute() function
      * 
-     * Get Merchant Text
+     * Get Organization Text
      */
-    public function getMerchantIdTextAttribute() {
+    public function getOrganizationIdTextAttribute() {
 
         //Get merchant model
-        $merchant_model = $this->merchant()->first();
+        $merchant_model = $this->org()->first();
 
         //Return name
         return $merchant_model ? $merchant_model->name : '';
     }
 
-//E# getMerchantIdTextAttribute() function
+//E# getOrganizationIdTextAttribute() function
 
     /**
      * S# getRoleIdTextAttribute() function
@@ -149,7 +149,7 @@ class UserModel extends \BaseModel {
 
     /**
      * S# merchants() function
-     * Set one to one relationship to Merchants Model
+     * Set one to one relationship to Organizations Model
      */
     public function merchants() {
         return $this->hasMany(\Util::buildNamespace('merchants', 'merchant', 2), 'user_id');

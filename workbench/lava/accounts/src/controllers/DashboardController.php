@@ -149,9 +149,9 @@ class DashboardController extends AccountsBaseController {
         if ($this->user['role_id'] == 2) {
             $whereClause[] = array(
                 'where' => 'where',
-                'column' => 'merchant_id',
+                'column' => 'organization_id',
                 'operator' => '=',
-                'operand' => $this->user['merchant_id']
+                'operand' => $this->user['organization_id']
             );
         }//E# if statement
         //Order by id in descending order
@@ -302,9 +302,9 @@ class DashboardController extends AccountsBaseController {
             if ($this->user['role_id'] == 2) {
                 $whereClause[] = array(
                     'where' => 'where',
-                    'column' => 'merchant_id',
+                    'column' => 'organization_id',
                     'operator' => '=',
-                    'operand' => $this->user['merchant_id']
+                    'operand' => $this->user['organization_id']
                 );
             }//E# if statement
             //Status

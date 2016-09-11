@@ -14,7 +14,7 @@ class CreateAccountsLogsTable extends Migration {
         Schema::create('acc_logs', function(Blueprint $table) {
             $table->increments('id');
 
-            $table->integer('merchant_id')->unsigned();
+            $table->integer('organization_id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->string('type', 255); //Call or SMS
             $table->string('in_out'); //Incoming or outgoing

@@ -189,7 +189,7 @@ class ReferralController extends AccountsBaseController {
      */
     public function injectDataSources() {
         //Get this organization user id
-        $this->view_data['dataSource']['referrer_id'] = $this->view_data['dataSource']['referee_id'] = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getMerchantsHtmlSelect', array($this->merchant['id'], 'id', array('full_name'), \Lang::get('common.select')));
+        $this->view_data['dataSource']['referrer_id'] = $this->view_data['dataSource']['referee_id'] = $this->callController(\Util::buildNamespace('accounts', 'user', 1), 'getOrganizationsHtmlSelect', array($this->org['id'], 'id', array('full_name'), \Lang::get('common.select')));
 
         //Get and set workflow options to data source
         $this->view_data['dataSource']['workflow'] = \Lang::get($this->package . '::' . $this->controller . '.data.workflow');

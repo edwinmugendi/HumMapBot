@@ -77,7 +77,7 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Promotion found',
-                    'example' => '{"http_status_code":200,"system_code":700,"message":"Promotion list","data":{"id":"4","location_id":"0","code":"PROMO","description":"PROMO","type":"1","value":"10.00","new_customer":"0","expiry_date":"2016-03-05","status":"1","created_by":"36","updated_by":"36","created_at":"2016-03-04 11:42:11","updated_at":"2016-03-04 11:42:11","merchant_id":"1","ip":"127.0.0.1","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36","user_owns":1}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Promotion list","data":{"id":"4","location_id":"0","code":"PROMO","description":"PROMO","type":"1","value":"10.00","new_customer":"0","expiry_date":"2016-03-05","status":"1","created_by":"36","updated_by":"36","created_at":"2016-03-04 11:42:11","updated_at":"2016-03-04 11:42:11","organization_id":"1","ip":"127.0.0.1","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36","user_owns":1}}'
                 ),
                 array(
                     'action' => 'Error',
@@ -124,7 +124,7 @@ return array(
                     'action' => 'Success',
                     'httpCode' => 200,
                     'note' => 'Promotions found',
-                    'example' => '{"http_status_code":200,"system_code":700,"message":"Promotion list","data":{"total":1,"per_page":30,"current_page":1,"last_page":1,"from":1,"to":1,"data":[{"id":"4","location_id":"0","code":"PROMO","description":"PROMO","type":"1","value":"10.00","new_customer":"0","expiry_date":"2016-03-05","status":"1","created_by":"36","updated_by":"36","created_at":"2016-03-04 11:42:11","updated_at":"2016-03-04 11:42:11","merchant_id":"1","ip":"127.0.0.1","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36","user_owns":1}]}}'
+                    'example' => '{"http_status_code":200,"system_code":700,"message":"Promotion list","data":{"total":1,"per_page":30,"current_page":1,"last_page":1,"from":1,"to":1,"data":[{"id":"4","location_id":"0","code":"PROMO","description":"PROMO","type":"1","value":"10.00","new_customer":"0","expiry_date":"2016-03-05","status":"1","created_by":"36","updated_by":"36","created_at":"2016-03-04 11:42:11","updated_at":"2016-03-04 11:42:11","organization_id":"1","ip":"127.0.0.1","agent":"Mozilla\/5.0 (X11; Linux x86_64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/46.0.2490.80 Safari\/537.36","user_owns":1}]}}'
                 ),
                 array(
                     'action' => 'Error',

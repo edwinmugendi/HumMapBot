@@ -30,7 +30,7 @@ class MpesaModel extends \BaseModel {
     );
     //Fillable fields
     protected $fillable = array(
-        'merchant_id',
+        'organization_id',
         'user_id',
         'tran_id',
         'currency',
@@ -77,29 +77,29 @@ class MpesaModel extends \BaseModel {
 //E# getClassTextAttribute() function
     /**
      * S# merchant() function
-     * Set one to one relationship to Merchant Model
+     * Set one to one relationship to Organization Model
      */
     public function merchant() {
-        return $this->belongsTo(\Util::buildNamespace('merchants', 'merchant', 2), 'merchant_id');
+        return $this->belongsTo(\Util::buildNamespace('merchants', 'merchant', 2), 'organization_id');
     }
 
 //E# merchant() function
 
     /**
-     * S# getMerchantIdTextAttribute() function
+     * S# getOrganizationIdTextAttribute() function
      * 
-     * Get Merchant Text
+     * Get Organization Text
      */
-    public function getMerchantIdTextAttribute() {
+    public function getOrganizationIdTextAttribute() {
 
         //Get merchant model
-        $merchant_model = $this->merchant()->first();
+        $merchant_model = $this->org()->first();
 
         //Return name
         return $merchant_model ? $merchant_model->name : '';
     }
 
-//E# getMerchantIdTextAttribute() function
+//E# getOrganizationIdTextAttribute() function
 }
 
 //E# MpesaModel() Class

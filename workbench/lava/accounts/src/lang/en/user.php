@@ -10,7 +10,7 @@ return array(
         'role_id' => array(
             '' => 'Select',
             1 => 'Admin',
-            2 => 'Merchant',
+            2 => 'Organization',
             3 => 'App user'
         )
     ),
@@ -44,7 +44,7 @@ return array(
         'welcome' => 'Welcome',
         'signout' => 'Sign out',
         'field' => array(
-            'merchant_id' => 'Merchant',
+            'organization_id' => 'Organization',
             'id' => '#',
             'full_name' => 'full name',
             'phone' => 'Phone',
@@ -78,6 +78,9 @@ return array(
     ),
     'userDetailedPage' => array(
         'title' => 'User: :title #:id'
+    ),
+    'userImportPage' => array(
+        'title' => 'Import users'
     ),
     'action' => array(
         'validating' => 'Validating post inputs',
@@ -245,10 +248,10 @@ return array(
                                 array(
                                     'fields' => array(
                                         array(
-                                            'name' => 'Merchant',
+                                            'name' => 'Organization',
                                             'type' => 'select',
                                             'prepend' => 'user',
-                                            'htmlName' => 'merchant_id',
+                                            'htmlName' => 'organization_id',
                                             'displayed' => 1,
                                             'disabled' => 0,
                                             'placeholder' => 'Select merchant',

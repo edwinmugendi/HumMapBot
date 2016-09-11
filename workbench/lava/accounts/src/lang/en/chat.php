@@ -49,6 +49,9 @@ return array(
             'found' => '{0} :count chats | {1} :count chat | [2,Inf] :count chats',
         )
     ),
+    'chatImportPage' => array(
+        'title' => 'Import chats'
+    ),
     'chatDetailedPage' => array(
         'title' => 'Chat: :title #:id'
     ),

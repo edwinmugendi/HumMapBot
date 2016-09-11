@@ -1326,6 +1326,14 @@ class BaseController extends Controller {
         if (array_key_exists('echo', $this->input)) {
             return $this->view_data['contentView'];
         }//E# if statement
+        //Set import sub view
+        $this->view_data['stepView'] = \View::make('import.steps.step1View')
+                ->with('view_data', $this->view_data);
+
+        //Set import view
+        $this->view_data['contentView'] .= \View::make('import.importView')
+                ->with('view_data', $this->view_data);
+
         //Set container view
         $this->layout->containerView = $this->getContainerViewPartialView();
 

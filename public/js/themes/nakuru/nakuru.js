@@ -12,6 +12,251 @@ var $infoWindow, $map, $marker, $geocoder, $latLng = null;
 var $deletedRows = [];
 
 /**
+ * S# importOnViewChange() function
+ * 
+ * Action to take when view changes
+ * 
+ * @param {Object} $that that button
+ * @param {array} $data Data
+ * 
+ * */
+function importOnViewChange($that, $data) {
+    $('#idImportContainer').html($data.view);
+
+    //Remove indicators
+    $('#idStep1Indicator,#idStep2Indicator,#idStep3Indicator').removeClass('complete disabled active');
+
+    //Get current step
+    var $currentStep = $('#idStepView').data('step');
+
+    if (parseInt($currentStep) === 1) {//Step 1
+        //Show hide buttons
+        $('#idCancelButton').show();
+        $('#idBackButton').hide();
+        //Set step
+        $('#idNextButton').data('step', 2);
+        $('#idBackButton').data('step', 1);
+        //Indicate
+        $('#idStep1Indicator').addClass('active');
+        $('#idStep2Indicator,#idStep3Indicator').addClass('disabled');
+    } else if (parseInt($currentStep) === 2) {//Step 2
+        //Show hide buttons
+        $('#idBackButton').show();
+        $('#idCancelButton').hide();
+
+        //Set step
+        $('#idNextButton').data('step', 3);
+        $('#idBackButton').data('step', 1);
+
+        //Indicate
+        $('#idStep1Indicator').addClass('complete');
+        $('#idStep2Indicator').addClass('active');
+        $('#idStep3Indicator').addClass('disabled');
+
+        //Change back text
+        $('#idNextButton').text($('#idNextButton').data('next'));
+
+    } else if (parseInt($currentStep) === 3) {//Step 3
+        $that.text($('#idNextButton').data('import'));
+        $('#idCancelButton').hide();
+
+        //Set step
+        $('#idNextButton').data('step', 3);
+        $('#idBackButton').data('step', 2);
+
+        //Indicate
+        $('#idStep1Indicator,#idStep2Indicator,#idStep3Indicator').addClass('complete');
+    }//E# if else statement
+}//E# importOnViewChange() function
+
+/**
+ * S# importFunction
+ * 
+ * Import function
+ * 
+ * */
+function importFunction() {
+    //Select all recotds
+    $('#idImportModal').on('click', '#idImportSelectAll', function () {
+        $('.classImportSingleSelect').prop('checked', $(this).is(':checked'));
+    });
+
+    //When the radio button is seletect in step 3
+    $('#idImportModal').on('change', '.classImportSingleSelect', function () {
+        var $checked = true;
+        $('.classImportSingleSelect').each(function () {
+            if ($(this).is(':checked') === false) {
+                $checked = false;
+                return false;
+            }//E# foreach statement
+        });
+        $('#idImportSelectAll').prop('checked', $checked);
+    });
+
+    //Show import modal
+    $('#idImportButton').click(function () {
+        var $modal = $('#idImportModal');
+        $modal.modal('show');
+    });
+
+    //Delete an import row in step 3
+    $('#idImportModal').on('click', '.classImportDeleteRow', function () {
+        var $idToDelete = $(this).data('id');
+
+        //Hide this row
+        $('table#idTableRowsToImport').find('.classImportRow').each(function () {
+            var $thisRow = $(this);
+            var $rowId = $thisRow.data('id');
+            if ($rowId == $idToDelete) {
+                //Hide row
+                $thisRow.slideUp('slow').remove();
+            }//E# if statement
+        });
+        tableRowChanged('#idTableRowsToImport', '.classImportRowNumber');
+    });
+
+    //Buttons action
+    $('#idImportModal').on('click', '#idNextButton,#idBackButton,#idImportValidOnesButton', function () {
+        var $that = $(this);
+        var $buttonStep = parseInt($that.data('step'));
+        var $viewStep = parseInt($('#idStepView').data('step'));
+
+        var $ajaxData = getImportData($buttonStep, $viewStep);
+
+        if ((parseInt($ajaxData.view_step) === 1) && ($that.attr('id') === 'idNextButton') && !$('#idImportFile').val()) {
+            $('#idImportError').html($('#idImportError').data('select-file'));
+            return false;
+        }//E# if statement
+
+        //Remove error message
+        $('#idImportError').empty();
+
+        if ($that.attr('id') === 'idBackButton') {
+            $('#idImportValidOnesButton').hide();
+        }//E# if statement
+
+        if ((parseInt($ajaxData.view_step) === 3) && (($that.attr('id') === 'idNextButton') || ($that.attr('id') === 'idImportValidOnesButton'))) {
+            var $importData = {};
+            var $checkedData = {};
+            $('.classImportFields').each(function () {
+                var $that = $(this);
+                var $field = $that.val();
+                $importData[$field] = $("[name='" + $field + "\\[\\]']")
+                        .map(function () {
+                            return $(this).val();
+                        }).get();
+            });
+
+            $('.classImportSingleSelect').each(function ($index, $row) {
+                $checkedData[$index] = $(this).is(':checked') ? 1 : 0;
+            });
+
+            $(this).is(':checked')
+            var $ajaxOptions = new AjaxOptions('/import/import');
+            $ajaxOptions.type = 'POST';
+            $ajaxOptions.dataType = 'JSON';
+            $ajaxOptions.data = {
+                clean_data_to_be_imported: $importData, //Long fields name to prevent field name conflict
+                rows_that_are_checked: $checkedData,
+                force_import_valid_records: $that.attr('id') === 'idImportValidOnesButton' ? 1 : 0
+            };
+            $ajaxOptions.done = function ($data) {
+
+                if ($data.type === 'success') {
+                    showNotificationBar($data);
+                    $('#idImportModal').modal('hide');
+                } else if ($data.type === 'error') {
+                    $('#idImportError').html($data.message);
+
+                    $('#idImportValidOnesButton').show();
+
+                }
+            }//E# done function
+
+            ajaxify($ajaxOptions);
+
+        } else {
+            var $ajaxOptions = new AjaxOptions('/import/get_step');
+            $ajaxOptions.type = 'GET';
+            $ajaxOptions.dataType = 'JSON';
+            $ajaxOptions.data = $ajaxData;
+            $ajaxOptions.done = function ($data) {
+                importOnViewChange($that, $data)
+            }//E# done function
+
+            ajaxify($ajaxOptions);
+        }//E# if else statement
+    });
+
+    //Upload file
+    $('#idImportFile').change(function () {
+        //Remove error message
+        $('#idImportError').empty();
+
+        var $data = new FormData();
+
+        $data.append('file', $('#idImportFile')[0].files[0]);
+        $data.append('import_controller', $('#idImportController').val());
+        $data.append('import_package', $('#idImportPackage').val());
+
+        console.log(inlineJs.baseUrl);
+        $.ajax({
+            type: 'POST',
+            url: inlineJs.baseUrl + '/import/uploading',
+            enctype: 'multipart/form-data',
+            data: $data,
+            success: function ($data) {
+                if ($data.type === 'error') {
+                    $('#idImportError').html($data.message)
+                }//E# if else statement
+            },
+            cache: false,
+            processData: false,
+            contentType: false,
+            always: function ($idUploadDataButton) {
+
+            }
+        });
+    });
+}//E# importFunction() function
+
+/**
+ * S# getImportData() function
+ * 
+ * Get import data
+ * 
+ * @param {str} $buttonStep Button Step
+ * @param {str} $viewStep View step
+ * 
+ * 
+ **/
+function getImportData($buttonStep, $viewStep) {
+    if ($buttonStep === 1) {//Upload
+        return {
+            button_step: $buttonStep,
+            view_step: $viewStep
+        }
+    } else if ($buttonStep === 2) {//Map
+        return {
+            button_step: $buttonStep,
+            view_step: $viewStep
+        }
+    } else if ($buttonStep === 3) {//Import
+        var $systemYourFieldMap = {};
+        $('tr.singleImportRow').each(function () {
+            var $that = $(this);
+            var $systemField = $that.find('td').first().data('system-field');
+            $systemYourFieldMap[$systemField] = $that.find('select').val();
+        });
+        return {
+            button_step: $buttonStep,
+            view_step: $viewStep,
+            fields_mapping: $systemYourFieldMap
+        }
+    }//E# if else statement
+}//E# getImportData
+
+/**
  *S# onDragStart() closure
  *@author Edwin Mugendi
  *@link Google Maps https://developers.google.com/maps/
@@ -1481,6 +1726,8 @@ function drawGraph($data) {
 
 }
 jQuery(document).ready(function ($) {
+    importFunction();
+
     /*Initialize tooltip*/
     $('[data-toggle=tooltip]').tooltip({container: 'body'});
 

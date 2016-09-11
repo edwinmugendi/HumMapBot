@@ -17,3 +17,12 @@ if (\App::environment() == 'local') {
         \Log::debug(json_encode($sql));
     });
 }
+
+//Import: Get Step
+\Route::get('import/get_step', array('as' => 'getImportStep', 'uses' => '\ImportController@getStep'));
+
+//Import: Import Upload
+\Route::post('import/uploading', array('as' => 'postImportUpload', 'uses' => '\ImportController@postUpload'));
+
+//Import: Import
+\Route::post('import/import', array('as' => 'postImportImport', 'uses' => '\ImportController@postImport'));

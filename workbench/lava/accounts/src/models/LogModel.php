@@ -26,7 +26,7 @@ class LogModel extends \BaseModel {
     );
     //Fillable fields
     protected $fillable = array(
-        'merchant_id',
+        'organization_id',
         'user_id',
         'type',
         'in_out',

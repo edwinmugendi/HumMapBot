@@ -55,6 +55,9 @@ return array(
             'found' => '{0} :count referrals | {1} :count referral | [2,Inf] :count referrals',
         )
     ),
+    'referralImportPage' => array(
+        'title' => 'Import referrals'
+    ),
     'referralDetailedPage' => array(
         'title' => 'Referral: :title #:id'
     ),
@@ -125,10 +128,10 @@ return array(
                                 array(
                                     'fields' => array(
                                         array(
-                                            'name' => 'Merchant',
+                                            'name' => 'Organization',
                                             'type' => 'select',
                                             'prepend' => 'user',
-                                            'htmlName' => 'merchant_id',
+                                            'htmlName' => 'organization_id',
                                             'displayed' => 1,
                                             'disabled' => 0,
                                             'placeholder' => 'Select merchant',

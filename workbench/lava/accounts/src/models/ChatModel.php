@@ -23,7 +23,7 @@ class ChatModel extends \BaseModel {
     );
     //Fillable fields
     protected $fillable = array(
-        'merchant_id',
+        'organization_id',
         'user_id',
         'sender_id',
         'recipient_id',

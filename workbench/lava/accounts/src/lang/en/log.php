@@ -50,6 +50,9 @@ return array(
             'found' => '{0} :count logs | {1} :count log | [2,Inf] :count logs',
         )
     ),
+    'logImportPage' => array(
+        'title' => 'Import logs'
+    ),
     'logDetailedPage' => array(
         'title' => 'Log: :title #:id'
     ),

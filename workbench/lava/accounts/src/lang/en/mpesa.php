@@ -60,6 +60,9 @@ return array(
             'found' => '{0} :count mpesa | {1} :count mpesa | [2,Inf] :count mpesa',
         )
     ),
+    'mpesaImportPage' => array(
+        'title' => 'Import mpesa'
+    ),
     'mpesaDetailedPage' => array(
         'title' => 'Mpesa: :title #:id'
     ),

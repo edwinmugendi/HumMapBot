@@ -108,18 +108,16 @@ return array(
         'Lava\Accounts\AccountsServiceProvider',
         //Register Docs Service Provider
         'Lava\Docs\DocsServiceProvider',
-        //Register Merchants Service Provider
-        'Lava\Merchants\MerchantsServiceProvider',
+        //Register Organizations Service Provider
+        'Lava\Organizations\OrganizationsServiceProvider',
         //Register Messages Service Provider
         'Lava\Messages\MessagesServiceProvider',
-        //Register Payments Service Provider
-        'Lava\Payments\PaymentsServiceProvider',
         //Register Media Service Provider
         'Lava\Media\MediaServiceProvider',
         //Register Location Service Provider
         'Lava\Locations\LocationsServiceProvider',
-        //Register Loan Service Provider
-        'Lava\Loans\LoansServiceProvider',
+        //Register Surveys Service Provider
+        'Lava\Surveys\SurveysServiceProvider',
     ),
     /*
       |--------------------------------------------------------------------------
