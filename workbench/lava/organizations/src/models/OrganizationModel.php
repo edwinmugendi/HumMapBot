@@ -139,7 +139,7 @@ class OrganizationModel extends \BaseModel {
      * Set one to many relationship to Location Model
      */
     public function locations() {
-        return $this->hasMany(\Util::buildNamespace('merchants', 'location', 2), 'location_id');
+        return $this->hasMany(\Util::buildNamespace('organizations', 'location', 2), 'location_id');
     }
 
 //E# locations() function
@@ -149,7 +149,7 @@ class OrganizationModel extends \BaseModel {
      * Set one to many relationship to Product Model
      */
     public function products() {
-        return $this->hasMany(\Util::buildNamespace('merchants', 'product', 2), 'product_id');
+        return $this->hasMany(\Util::buildNamespace('organizations', 'product', 2), 'product_id');
     }
 
 //E# products() function
@@ -168,7 +168,7 @@ class OrganizationModel extends \BaseModel {
             $label = 'label label-danger';
         }//E# if else statement
 
-        return \Lang::has('merchants::merchant.data.workflow.' . $this->attributes['workflow']) ? '<span class="' . $label . '">' . \Lang::get('merchants::merchant.data.workflow.' . $this->attributes['workflow']) . '</span>' : '';
+        return \Lang::has('organizations::organization.data.workflow.' . $this->attributes['workflow']) ? '<span class="' . $label . '">' . \Lang::get('organizations::organization.data.workflow.' . $this->attributes['workflow']) . '</span>' : '';
     }
 
 //E# getWorkflowTextAttribute() function
@@ -178,7 +178,7 @@ class OrganizationModel extends \BaseModel {
      * Get DateFormat Text
      */
     public function getDateFormatTextAttribute() {
-        return \Lang::has('merchants::merchant.data.date_format.' . $this->attributes['date_format']) ? \Lang::get('merchants::merchant.data.date_format.' . $this->attributes['date_format']) : '';
+        return \Lang::has('organizations::organization.data.date_format.' . $this->attributes['date_format']) ? \Lang::get('organizations::organization.data.date_format.' . $this->attributes['date_format']) : '';
     }
 
 //E# getDateFormatTextAttribute() function

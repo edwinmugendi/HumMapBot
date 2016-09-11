@@ -91,14 +91,14 @@ class UserModel extends \BaseModel {
     );
 
     /**
-     * S# merchant() function
+     * S# organization() function
      * Set one to one relationship to Organization Model
      */
-    public function merchant() {
-        return $this->belongsTo(\Util::buildNamespace('merchants', 'merchant', 2), 'organization_id');
+    public function organization() {
+        return $this->belongsTo(\Util::buildNamespace('organizations', 'organization', 2), 'organization_id');
     }
 
-//E# merchant() function
+//E# organization() function
 
     /**
      * S# getOrganizationIdTextAttribute() function
@@ -107,11 +107,11 @@ class UserModel extends \BaseModel {
      */
     public function getOrganizationIdTextAttribute() {
 
-        //Get merchant model
-        $merchant_model = $this->org()->first();
+        //Get organization model
+        $organization_model = $this->org()->first();
 
         //Return name
-        return $merchant_model ? $merchant_model->name : '';
+        return $organization_model ? $organization_model->name : '';
     }
 
 //E# getOrganizationIdTextAttribute() function
@@ -148,14 +148,14 @@ class UserModel extends \BaseModel {
 //E# transactions() function
 
     /**
-     * S# merchants() function
+     * S# organizations() function
      * Set one to one relationship to Organizations Model
      */
-    public function merchants() {
-        return $this->hasMany(\Util::buildNamespace('merchants', 'merchant', 2), 'user_id');
+    public function organizations() {
+        return $this->hasMany(\Util::buildNamespace('organizations', 'organization', 2), 'user_id');
     }
 
-//E# merchants() function
+//E# organizations() function
 }
 
 //E# UserModel() Class

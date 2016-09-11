@@ -347,7 +347,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         $parameters = array();
 
         //Set parameters
-        $parameters['lazyLoad'] = array('logins', 'merchants');
+        $parameters['lazyLoad'] = array('logins', 'organizations');
 
         //User controller
         $user_controller = new UserController();
@@ -503,7 +503,7 @@ class AccountsValidator extends \Illuminate\Validation\Validator {
         $parameters = array();
 
         //Set parameters
-        $parameters['lazyLoad'] = array('merchants');
+        $parameters['lazyLoad'] = array('organizations');
 
         //Get user by token
         $user_model = $user_controller->getModelByField('token', $token, $parameters);

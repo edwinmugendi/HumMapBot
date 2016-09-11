@@ -30,6 +30,7 @@
                         <th></th>
                         <?php endif; ?>
                         <?php if ((!array_key_exists('export', $view_data)) || ((array_key_exists('export', $view_data) && in_array($view_data['export'],array('pdf','print')))) ): ?>                  
+                                                    <th><?php echo \Lang::get('media::media.view.image'); ?></th>
                                                 <?php endif; ?>                                                                                    <?php if (!array_key_exists('export', $view_data)): ?>                                <?php
                         $order = 'asc';
                         $is_ordered = false;
@@ -114,124 +115,13 @@
                                 </th>
                                 <?php else: ?>                                <th>
                                     <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.workflow'); ?>                                </th>
-                                <?php endif; ?>                                                                                                                <?php if (!array_key_exists('export', $view_data)): ?>                                <?php
-                        $order = 'asc';
-                        $is_ordered = false;
-                        ?>
-                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'reg_no'): ?>
-                             <?php $is_ordered = true;?>
-                                <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
-                                <?php
-                                $order = 'asc';
-                                ?>
-                            <?php else: ?>
-                                <?php
-                                $order = 'desc';
-                                ?>
-                            <?php endif; ?>
-                        <?php endif ?>
-
-                        <?php if ($view_data['paginationAppends']): ?>
-                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=reg_no'; ?>
-                        <?php else: ?>
-                            <?php $url = 'order=' . $order . '&sort=reg_no';?>
-                        <?php endif;?>                                <th>   
-                                    <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
-                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.reg_no'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
-                                        <?php endif; ?>                                    </a>
-                                </th>
-                                <?php else: ?>                                <th>
-                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.reg_no'); ?>                                </th>
-                                <?php endif; ?>                                                                                                                <?php if (!array_key_exists('export', $view_data)): ?>                                <?php
-                        $order = 'asc';
-                        $is_ordered = false;
-                        ?>
-                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'tax_id'): ?>
-                             <?php $is_ordered = true;?>
-                                <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
-                                <?php
-                                $order = 'asc';
-                                ?>
-                            <?php else: ?>
-                                <?php
-                                $order = 'desc';
-                                ?>
-                            <?php endif; ?>
-                        <?php endif ?>
-
-                        <?php if ($view_data['paginationAppends']): ?>
-                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=tax_id'; ?>
-                        <?php else: ?>
-                            <?php $url = 'order=' . $order . '&sort=tax_id';?>
-                        <?php endif;?>                                <th>   
-                                    <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
-                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.tax_id'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
-                                        <?php endif; ?>                                    </a>
-                                </th>
-                                <?php else: ?>                                <th>
-                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.tax_id'); ?>                                </th>
-                                <?php endif; ?>                                                                                                                <?php if (!array_key_exists('export', $view_data)): ?>                                <?php
-                        $order = 'asc';
-                        $is_ordered = false;
-                        ?>
-                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'phone'): ?>
-                             <?php $is_ordered = true;?>
-                                <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
-                                <?php
-                                $order = 'asc';
-                                ?>
-                            <?php else: ?>
-                                <?php
-                                $order = 'desc';
-                                ?>
-                            <?php endif; ?>
-                        <?php endif ?>
-
-                        <?php if ($view_data['paginationAppends']): ?>
-                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=phone'; ?>
-                        <?php else: ?>
-                            <?php $url = 'order=' . $order . '&sort=phone';?>
-                        <?php endif;?>                                <th>   
-                                    <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
-                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.phone'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
-                                        <?php endif; ?>                                    </a>
-                                </th>
-                                <?php else: ?>                                <th>
-                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.phone'); ?>                                </th>
-                                <?php endif; ?>                                                                                                                <?php if (!array_key_exists('export', $view_data)): ?>                                <?php
-                        $order = 'asc';
-                        $is_ordered = false;
-                        ?>
-                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'email'): ?>
-                             <?php $is_ordered = true;?>
-                                <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
-                                <?php
-                                $order = 'asc';
-                                ?>
-                            <?php else: ?>
-                                <?php
-                                $order = 'desc';
-                                ?>
-                            <?php endif; ?>
-                        <?php endif ?>
-
-                        <?php if ($view_data['paginationAppends']): ?>
-                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=email'; ?>
-                        <?php else: ?>
-                            <?php $url = 'order=' . $order . '&sort=email';?>
-                        <?php endif;?>                                <th>   
-                                    <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
-                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.email'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
-                                        <?php endif; ?>                                    </a>
-                                </th>
-                                <?php else: ?>                                <th>
-                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.email'); ?>                                </th>
-                                <?php endif; ?>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <?php if (!array_key_exists('export', $view_data)): ?>                        <th><?php echo \Lang::get('common.view.actions.actions'); ?></th>
+                                <?php endif; ?>                                                                            <?php if (!array_key_exists('export', $view_data)): ?>                        <th><?php echo \Lang::get('common.view.actions.actions'); ?></th>
                         <?php endif; ?>                    </tr>
                 <tbody>
                     <?php if (!array_key_exists('export', $view_data)): ?>                    <tr>
                         <?php echo \Form::open(array('route' => camel_case($view_data['package'] . '_list_' . $view_data['controller']), 'method' => 'get', 'id' => 'idSearchByForm')); ?>                        <td></td>
                         <td></td>
+                                                    <td></td>
                                                                                                             <td>
                                                                             <?php echo \Form::text('id', isset($view_data['input']['id']) ? $view_data['input']['id'] : '', array('class' => 'form-control')); ?>                                                                    </td>
                                 
@@ -241,34 +131,6 @@
                                                                                     <td>
                                                                             <?php echo \Form::compositeSelect('workflow', $view_data['dataSource']['workflow'], isset($view_data['input']['workflow']) ? $view_data['input']['workflow'] : '', array('class' => 'form-control')); ?>                                                                    </td>
                                 
-                                                                                    <td>
-                                                                            <?php echo \Form::text('reg_no', isset($view_data['input']['reg_no']) ? $view_data['input']['reg_no'] : '', array('class' => 'form-control')); ?>                                                                    </td>
-                                
-                                                                                    <td>
-                                                                            <?php echo \Form::text('tax_id', isset($view_data['input']['tax_id']) ? $view_data['input']['tax_id'] : '', array('class' => 'form-control')); ?>                                                                    </td>
-                                
-                                                                                    <td>
-                                                                            <?php echo \Form::text('phone', isset($view_data['input']['phone']) ? $view_data['input']['phone'] : '', array('class' => 'form-control')); ?>                                                                    </td>
-                                
-                                                                                    <td>
-                                                                            <?php echo \Form::text('email', isset($view_data['input']['email']) ? $view_data['input']['email'] : '', array('class' => 'form-control')); ?>                                                                    </td>
-                                
-                                                        
-                                                        
-                                                        
-                                                        
-                                                        
-                                                        
-                                                        
-                                                        
-                                                        
-                                                        
-                                                        
-                                                        
-                                                        
-                                                        
-                                                        
-                                                        
                                                 <td>
                             <a title="<?php echo \Lang::get('common.view.actions.search.search'); ?>" class="pull-left searchSubmit"><span class="icon-data-search icon-data-2x text-danger"></span></a>
                             <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])); ?>" class="pull-left" title="<?php echo \Lang::get('common.view.actions.clear.clear'); ?>"><span class="icon-data-clear icon-data-2x text-danger"></span></a>

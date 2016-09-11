@@ -19,7 +19,7 @@ class OrganizationsServiceProvider extends ServiceProvider {
      * @return void
      */
     public function boot() {
-        $this->package('lava/merchants');
+        $this->package('lava/organizations');
 
         //Register routes
         include __DIR__ . '/../../routes.php';

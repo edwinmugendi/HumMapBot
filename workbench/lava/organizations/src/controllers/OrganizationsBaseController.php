@@ -10,7 +10,7 @@ namespace Lava\Organizations;
 class OrganizationsBaseController extends \BaseController {
 
     //Package
-    public $package = 'merchants';
+    public $package = 'organizations';
 
 }
 

@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-class CreateAccountsLogsTable extends Migration {
+class CreateSurveysOptionsTable extends Migration {
 
     /**
      * Run the migrations.
@@ -11,17 +11,15 @@ class CreateAccountsLogsTable extends Migration {
      * @return void
      */
     public function up() {
-        Schema::create('acc_logs', function(Blueprint $table) {
+        Schema::create('svy_options', function(Blueprint $table) {
             $table->increments('id');
-
             $table->integer('organization_id')->unsigned();
             $table->integer('user_id')->unsigned();
-            $table->string('type', 255); //Call or SMS
-            $table->string('in_out'); //Incoming or outgoing
-            $table->string('account_number', 255);
-            $table->date('log_date');
-            $table->datetime('log_datetime');
-            $table->integer('seconds')->unsigned();
+            $table->integer('form_id')->unsigned();
+            $table->integer('question_id')->unsigned();
+
+            $table->string('title', 255);
+            $table->string('value', 255);
 
             $table->string('agent', 255);
             $table->string('ip', 255);
@@ -38,7 +36,7 @@ class CreateAccountsLogsTable extends Migration {
      * @return void
      */
     public function down() {
-        Schema::drop('acc_logs');
+        Schema::drop('mct_organizations');
     }
 
 }

@@ -166,7 +166,7 @@ class ImportController extends BaseController {
             $destination_path = public_path() . '/import/uploads/';
 
             if (in_array($file->getClientOriginalExtension(), array('csv', 'xls', 'xlsx'))) {
-                $file_name = \Str::lower($this->merchant['name'] . '_' . $this->input['import_package'] . '_' . $this->input['import_controller'] . '_' . mt_rand(1, 10000)) . '.' . $file->getClientOriginalExtension();
+                $file_name = \Str::lower($this->org['name'] . '_' . $this->input['import_package'] . '_' . $this->input['import_controller'] . '_' . mt_rand(1, 10000)) . '.' . $file->getClientOriginalExtension();
 
                 $file->move($destination_path, $file_name);
 

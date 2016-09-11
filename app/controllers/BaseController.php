@@ -28,7 +28,7 @@ class BaseController extends Controller {
     //Notification
     public $notification;
     //User
-    public $user, $currentUser, $merchant;
+    public $user, $currentUser, $organization;
     //Inputs
     public $input = array();
     //Searchable fields
@@ -55,8 +55,8 @@ class BaseController extends Controller {
         //Get POSTed data
         $this->input = \Input::get();
 
-        //Current merchant
-        $this->merchant = $this->sessionedMerchant();
+        //Current organization
+        $this->org = $this->sessionedMerchant();
 
         //Cache ip
         $this->input['ip'] = \Request::getClientIp();
@@ -71,7 +71,7 @@ class BaseController extends Controller {
     /**
      * S# appGetCustomMerchantHtmlSelect() function
      * 
-     * Get merchant html select based on their role
+     * Get organization html select based on their role
      * 
      */
     public function appGetCustomMerchantHtmlSelect() {
@@ -87,11 +87,11 @@ class BaseController extends Controller {
             $parameters['orderBy'][] = array('name' => 'asc');
 
             //Select models
-            $model = $this->callController(\Util::buildNamespace('merchants', 'merchant', 1), 'select', array($fields, $where_clause, 2, $parameters));
+            $model = $this->callController(\Util::buildNamespace('organizations', 'organization', 1), 'select', array($fields, $where_clause, 2, $parameters));
 
             return $this->buildHtmlSelectArray($model, 'id', 'name', \Lang::get('common.select'), '-', array());
         } else if ($this->user['role_id'] == 2) {//Merchant
-            return array('' => \Lang::get('common.select'), $this->merchant['id'] => $this->merchant['name']);
+            return array('' => \Lang::get('common.select'), $this->org['id'] => $this->org['name']);
         } else {
             return array();
         }//E# if else statement
@@ -222,24 +222,24 @@ class BaseController extends Controller {
     /**
      * S# getMerchantsModels() function
      * 
-     * Get merchantanization's models
+     * Get organizationanization's models
      * 
-     * @param int $merchantId Merchant id
+     * @param int $organizationId Merchant id
      * @param array $where_clause Where clause
      * @param array $parameters Parameters
      * 
      * @return array Merchant's model
      */
-    public function getMerchantsModels($merchantId, $where_clause = array(), $parameters = array()) {
+    public function getMerchantsModels($organizationId, $where_clause = array(), $parameters = array()) {
         //Fields to select
         $fields = array('*');
 
         //Build where clause
         $where_clause[] = array(
             'where' => 'where',
-            'column' => 'merchant_id',
+            'column' => 'organization_id',
             'operator' => '=',
-            'operand' => $merchantId
+            'operand' => $organizationId
         );
 
         //Set scope
@@ -254,9 +254,9 @@ class BaseController extends Controller {
     /**
      * S# getMerchantsHtmlSelect() function
      * 
-     * Get merchantanizations html select
+     * Get organizationanizations html select
      * 
-     * @param int $merchantId Merchant id
+     * @param int $organizationId Merchant id
      * @param string $fieldId Field to be the id
      * @param mixed $fieldName Fields to the text
      * @param str $firstLabel First Label
@@ -266,7 +266,7 @@ class BaseController extends Controller {
      * 
      * 
      */
-    public function getMerchantsHtmlSelect($merchantId, $fieldId, $fieldName, $firstLabel = null, $separator = '-', $optionAttributes = null, $specific_where_clause = null) {
+    public function getMerchantsHtmlSelect($organizationId, $fieldId, $fieldName, $firstLabel = null, $separator = '-', $optionAttributes = null, $specific_where_clause = null) {
         //Fields to select
         $fields = array('*');
 
@@ -277,9 +277,9 @@ class BaseController extends Controller {
             $where_clause = array(
                 array(
                     'where' => 'where',
-                    'column' => 'merchant_id',
+                    'column' => 'organization_id',
                     'operator' => '=',
-                    'operand' => $merchantId
+                    'operand' => $organizationId
                 )
             );
         }//E# if statement
@@ -390,12 +390,12 @@ class BaseController extends Controller {
      * S# sessionedMerchant() function
      * @author Edwin Mugendi
      * 
-     * Get logged in user's merchant
+     * Get logged in user's organization
      * 
-     * @return array The logged in user's merchant
+     * @return array The logged in user's organization
      */
     protected function sessionedMerchant() {
-        return \Session::get('merchant');
+        return \Session::get('organization');
     }
 
 //E# sessionedMerchant() function
@@ -667,8 +667,8 @@ class BaseController extends Controller {
      * @return str date format
      */
     public function getDateFormat() {
-        if (\Auth::check() && $this->merchant['date_format']) {
-            $date_format = \Str::upper($this->merchant['date_format']);
+        if (\Auth::check() && $this->org['date_format']) {
+            $date_format = \Str::upper($this->org['date_format']);
         } else {
             $date_format = 'DD/MM/YYYY';
         }//E# if else statement
@@ -1008,7 +1008,7 @@ class BaseController extends Controller {
             $controller_model['lng'] = -1;
         }//E# if else statement
         //TODO: Set the organization id from the session
-        $controller_model['merchant_id'] = $this->merchant['id'];
+        $controller_model['organization_id'] = $this->org['id'];
 
         //Set organization to inline js data
         $this->view_data['controller_model'] = $controller_model;
@@ -1104,12 +1104,12 @@ class BaseController extends Controller {
      * @return CSV download or text to show on browser
      */
     public function exportToCsv() {
-        return \Excel::create($this->merchant['name'] . '-' . $this->layout->title, function($excel) {
+        return \Excel::create($this->org['name'] . '-' . $this->layout->title, function($excel) {
 
                     // Set the title
-                    $excel->setTitle($this->merchant['name'] . '-' . $this->layout->title);
+                    $excel->setTitle($this->org['name'] . '-' . $this->layout->title);
                     $excel->setCreator($this->user['full_name']);
-                    $excel->setCompany($this->merchant['name']);
+                    $excel->setCompany($this->org['name']);
 
                     // Call them separately
                     $excel->setDescription($this->layout->title);
@@ -1154,7 +1154,7 @@ class BaseController extends Controller {
             $orientation = 'landscape';
         }//E# if statement
         //Return PDF
-        $this->pdf($pdf_content, $orientation, 'A4', $download_or_show, $this->merchant['name'] . '-' . $this->layout->title);
+        $this->pdf($pdf_content, $orientation, 'A4', $download_or_show, $this->org['name'] . '-' . $this->layout->title);
     }
 
 //E# exportToPdf() function
@@ -1458,13 +1458,13 @@ class BaseController extends Controller {
                         'operand' => $this->user['id']
                     );
                 }//E# if statement
-                //Owned by current merchant
-                if ($singleOwnedBy == 'merchant') {
+                //Owned by current organization
+                if ($singleOwnedBy == 'organization') {
                     $where_clause[] = array(
                         'where' => 'where',
-                        'column' => 'merchant_id',
+                        'column' => 'organization_id',
                         'operator' => '=',
-                        'operand' => $this->merchant['id']
+                        'operand' => $this->org['id']
                     );
                 }//E# if statement
             }//E# foreach statement
@@ -1942,9 +1942,9 @@ class BaseController extends Controller {
         //Set current user to view data
         //$this->view_data['currentUser'] = $this->currentUser;
         //Set current user to view data
-        $this->view_data['merchant'] = $this->merchant;
+        $this->view_data['organization'] = $this->org;
 
-        //dd($this->view_data['merchant']);
+        //dd($this->view_data['organization']);
         //Set input data to view data
         $this->view_data['input'] = $this->input;
 
@@ -2801,9 +2801,9 @@ class BaseController extends Controller {
                 if ($singleOwnedBy == 'user') {
                     $this->input['user_id'] = $this->user['id'];
                 }//E# if statement
-                //Owned by current merchant
-                if ($singleOwnedBy == 'merchant') {
-                    $this->input['merchant_id'] = $this->merchant['id'];
+                //Owned by current organization
+                if ($singleOwnedBy == 'organization') {
+                    $this->input['organization_id'] = $this->org['id'];
                 }//E# if statement
             }//E# foreach statement
         }//E# if statement

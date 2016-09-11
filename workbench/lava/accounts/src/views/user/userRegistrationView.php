@@ -206,7 +206,7 @@
                             <?php echo \Form::submit($resetPassword, array('class' => 'registrationSubmitButton btn-processing btn btn-default', 'data-processing' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.processing'))); ?>
                         </div>
                         <div class="clearfix"></div>
-                        <?php if ($view_data['input']['user_role'] == 'merchant'): ?>
+                        <?php if ($view_data['input']['user_role'] == 'organization'): ?>
                             <div class="separator">
                                 <p class="change_link">Already a member?
                                     <a href="#tologin" class="to_register"> <?php echo $login; ?> </a>

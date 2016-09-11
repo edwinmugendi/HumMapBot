@@ -1,6 +1,6 @@
 {
-    "name": "lava/merchants",
-    "description": "Organizations Module",
+    "name": "lava/surveys",
+    "description": "Surveys Module",
     "authors": [
         {
             "name": "Edwin Mugendi",
@@ -9,7 +9,7 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "illuminate/support": "4.1.*"
+        "illuminate/support": "4.2.*"
     },
     "autoload": {
         "classmap": [
@@ -19,7 +19,7 @@
             "src/extends"
         ],
         "psr-0": {
-            "Lava\\Organizations\\": "src/"
+            "Lava\\Surveys\\": "src/"
         }
     },
     "minimum-stability": "stable"

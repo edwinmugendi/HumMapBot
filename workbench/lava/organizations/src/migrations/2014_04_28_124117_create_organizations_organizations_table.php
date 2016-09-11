@@ -11,7 +11,7 @@ class CreateOrganizationsOrganizationsTable extends Migration {
      * @return void
      */
     public function up() {
-        Schema::create('mct_merchants', function(Blueprint $table) {
+        Schema::create('org_organizations', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('default')->unsigned();
             $table->integer('user_id')->unsigned();
@@ -24,7 +24,7 @@ class CreateOrganizationsOrganizationsTable extends Migration {
             //Contacts
             $table->string('phone', 255);
             $table->string('email', 255);
-            
+
             //Currency
             $table->integer('currency_id')->unsigned();
             $table->string('date_format', 10);
@@ -46,7 +46,7 @@ class CreateOrganizationsOrganizationsTable extends Migration {
      * @return void
      */
     public function down() {
-        Schema::drop('mct_merchants');
+        Schema::drop('org_organizations');
     }
 
 }

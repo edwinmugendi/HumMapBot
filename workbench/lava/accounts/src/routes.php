@@ -75,7 +75,6 @@
 
     //Create a mpesa
     \Route::post('api/create_mpesa', array('as' => 'apiCreateMpesa', 'uses' => 'Lava\Accounts\MpesaController@postCreate'));
-
 });
 
 \Route::group(array('before' => 'auth'), function() {
@@ -114,91 +113,4 @@
 
     //Un-Delete user
     \Route::post('accounts/undelete/user', array('as' => 'accountsUndeleteUser', 'uses' => 'Lava\Accounts\UserController@postUndelete'));
-
-    /**
-     * Referral routes
-     */
-    //Detailed referral
-    \Route::get('accounts/detailed/referral/{id}', array('as' => 'accountsDetailedReferral', 'uses' => 'Lava\Accounts\ReferralController@getDetailed'));
-
-    //List referral
-    \Route::get('accounts/list/referral', array('as' => 'accountsListReferral', 'uses' => 'Lava\Accounts\ReferralController@getList'));
-
-    //Post referral
-    \Route::get('accounts/post/referral/{id?}', array('as' => 'accountsPostReferral', 'uses' => 'Lava\Accounts\ReferralController@getPost'));
-
-    //Create a referral
-    \Route::post('accounts/create/referral', array('as' => 'accountsCreateReferral', 'before' => 'csrf', 'uses' => 'Lava\Accounts\ReferralController@postCreate'));
-
-    //Update a referral
-    \Route::post('accounts/update/referral', array('as' => 'accountsUpdateReferral', 'before' => 'csrf', 'uses' => 'Lava\Accounts\ReferralController@postUpdate'));
-
-    //Delete referral
-    \Route::post('accounts/delete/referral', array('as' => 'accountsDeleteReferral', 'uses' => 'Lava\Accounts\ReferralController@postDelete'));
-
-    //Un-Delete referral
-    \Route::post('accounts/undelete/referral', array('as' => 'accountsUndeleteReferral', 'uses' => 'Lava\Accounts\ReferralController@postUndelete'));
-
-    /**
-     * Log routes
-     */
-    //Detailed log
-    \Route::get('accounts/detailed/log/{id}', array('as' => 'accountsDetailedLog', 'uses' => 'Lava\Accounts\LogController@getDetailed'));
-
-    //List log
-    \Route::get('accounts/list/log', array('as' => 'accountsListLog', 'uses' => 'Lava\Accounts\LogController@getList'));
-
-    //Post log
-    \Route::get('accounts/post/log/{id?}', array('as' => 'accountsPostLog', 'uses' => 'Lava\Accounts\LogController@getPost'));
-
-    //Create a log
-    \Route::post('accounts/create/log', array('as' => 'accountsCreateLog', 'before' => 'csrf', 'uses' => 'Lava\Accounts\LogController@postCreate'));
-
-    //Update a log
-    \Route::post('accounts/update/log', array('as' => 'accountsUpdateLog', 'before' => 'csrf', 'uses' => 'Lava\Accounts\LogController@postUpdate'));
-
-    //Delete log
-    \Route::post('accounts/delete/log', array('as' => 'accountsDeleteLog', 'uses' => 'Lava\Accounts\LogController@postDelete'));
-
-    /**
-     * Chat routes
-     */
-    //Detailed chat
-    \Route::get('accounts/detailed/chat/{id}', array('as' => 'accountsDetailedChat', 'uses' => 'Lava\Accounts\ChatController@getDetailed'));
-
-    //List chat
-    \Route::get('accounts/list/chat', array('as' => 'accountsListChat', 'uses' => 'Lava\Accounts\ChatController@getList'));
-
-    //Post chat
-    \Route::get('accounts/post/chat/{id?}', array('as' => 'accountsPostChat', 'uses' => 'Lava\Accounts\ChatController@getPost'));
-
-    //Create a chat
-    \Route::post('accounts/create/chat', array('as' => 'accountsCreateChat', 'before' => 'csrf', 'uses' => 'Lava\Accounts\ChatController@postCreate'));
-
-    //Update a chat
-    \Route::post('accounts/update/chat', array('as' => 'accountsUpdateChat', 'before' => 'csrf', 'uses' => 'Lava\Accounts\ChatController@postUpdate'));
-
-    //Delete chat
-    \Route::post('accounts/delete/chat', array('as' => 'accountsDeleteChat', 'uses' => 'Lava\Accounts\ChatController@postDelete'));
-
-    /**
-     * Mpesa routes
-     */
-    //Detailed mpesa
-    \Route::get('accounts/detailed/mpesa/{id}', array('as' => 'accountsDetailedMpesa', 'uses' => 'Lava\Accounts\MpesaController@getDetailed'));
-
-    //List mpesa
-    \Route::get('accounts/list/mpesa', array('as' => 'accountsListMpesa', 'uses' => 'Lava\Accounts\MpesaController@getList'));
-
-    //Post mpesa
-    \Route::get('accounts/post/mpesa/{id?}', array('as' => 'accountsPostMpesa', 'uses' => 'Lava\Accounts\MpesaController@getPost'));
-
-    //Create a mpesa
-    \Route::post('accounts/create/mpesa', array('as' => 'accountsCreateMpesa', 'before' => 'csrf', 'uses' => 'Lava\Accounts\MpesaController@postCreate'));
-
-    //Update a mpesa
-    \Route::post('accounts/update/mpesa', array('as' => 'accountsUpdateMpesa', 'before' => 'csrf', 'uses' => 'Lava\Accounts\MpesaController@postUpdate'));
-
-    //Delete mpesa
-    \Route::post('accounts/delete/mpesa', array('as' => 'accountsDeleteMpesa', 'uses' => 'Lava\Accounts\MpesaController@postDelete'));
 });

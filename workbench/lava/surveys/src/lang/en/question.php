@@ -3,85 +3,76 @@
 return array(
     /*
       |--------------------------------------------------------------------------
-      | Form Language Lines
+      | Question Language Lines
       |--------------------------------------------------------------------------
      */
     'data' => array(
-        'workflow' => array(
+        'type' => array(
             '' => 'Select',
-            'published' => 'Published',
-            'unpublished' => 'Un-unpublished',
+            'text' => 'Text',
+            'integer' => 'Integer',
+            'decimal' => 'Decimal',
+            'photo' => 'Photo',
+            'gps' => 'GPS',
+            'radio' => 'Single select (Radio)',
+            'checkbox' => 'Multi select (checkbox)'
         ),
     ),
     'notification' => array(
-        'created' => 'Form created',
-        'updated' => 'Form updated',
-        'deleted' => 'Form deleted',
+        'created' => 'Question created',
+        'updated' => 'Question updated',
+        'deleted' => 'Question deleted',
     ),
     'view' => array(
-        'menu' => 'Forms',
+        'menu' => 'Questions',
         'field' => array(
             'id' => '#',
             'name' => 'Name',
-            'workflow' => 'Status',
+            'type' => 'Type',
+            'regex' => 'regex',
+            'title' => 'Title',
         ),
         'actions' => array(
             'delete' => array(
-                'confirm' => 'Delete form?',
-                'deleteMany' => 'Deleted :count forms',
-                'confirmMany' => 'Delete :count forms?',
+                'confirm' => 'Delete question?',
+                'deleteMany' => 'Deleted :count questions',
+                'confirmMany' => 'Delete :count questions?',
                 'delete' => 'Delete',
                 'cancel' => 'Cancel',
             ),
             'undelete' => array(
                 'undoDelete' => 'Undo delete',
                 'undeleting' => 'Un deleting...',
-                'undeleted' => 'Un deleted :count forms',
+                'undeleted' => 'Un deleted :count questions',
             ),
         ),
         'link' => array(
-            'list' => 'Forms list',
-            'add' => 'Add form',
-            'found' => '{0} :count forms | {1} :count form | [2,Inf] :count forms',
+            'list' => 'Questions list',
+            'add' => 'Add question',
+            'found' => '{0} :count questions | {1} :count question | [2,Inf] :count questions',
         )
     ),
-    'formDetailedPage' => array(
-        'title' => 'Form: :title #:id'
+    'questionDetailedPage' => array(
+        'title' => 'Question: :title #:id'
     ),
-    'formListPage' => array(
-        'title' => 'List of forms'
+    'questionListPage' => array(
+        'title' => 'List of questions'
     ),
-    'formPostPage' => array(
+    'questionPostPage' => array(
         'actionTitle' => array(
-            1 => 'Create forms',
-            2 => 'Update forms'
+            1 => 'Create questions',
+            2 => 'Update questions'
         ),
-        'formPostView' => array(
+        'questionPostView' => array(
             'form' => array(
-                'media' => array(
-                    'count' => 10,
-                    'describe' => 0,
-                    'type' => 'image',
-                    'accept' => 'image/*',
-                    'icons' => array(
-                        array(
-                            'name' => 'Photo',
-                            'icon' => 'arrow-down'
-                        )
-                    ),
-                    'heading' => 'How to upload ',
-                    'list' => array(
-                        'Click the <strong>CAMERA</strong> <i class="icon-data-camera common-color"></i> icon below to choose your photos,',
-                    )
-                ),
-                'formPost' => array(
+                'questionPost' => array(
                     'attributes' => array(
                         'method' => 'POST',
                         'route' => array(
-                            1 => 'surveysCreateForm',
-                            2 => 'surveysUpdateForm'
+                            1 => 'surveysCreateQuestion',
+                            2 => 'surveysUpdateQuestion'
                         ),
-                        'id' => 'formPost',
+                        'id' => 'questionPost',
                         'class' => 'commonContainer'
                     ),
                     'stars' => array(
@@ -123,22 +114,22 @@ return array(
                     'portlets' => array(
                         array(
                             'id' => 'details',
-                            'title' => 'Form\'s details',
-                            'heading' => 'Please fill in the details of the form.',
-                            'help' => 'Please fill in all the mandatory details of this form.',
+                            'title' => 'Question\'s details',
+                            'heading' => 'Please fill in the details of the question.',
+                            'help' => 'Please fill in all the mandatory details of this question.',
                             'stared' => 1,
                             'rows' => array(
                                 array(
                                     'fields' => array(
                                         array(
-                                            'name' => 'Status',
-                                            'type' => 'select',
+                                            'name' => 'Title',
+                                            'type' => 'text',
                                             'prepend' => 'user',
-                                            'htmlName' => 'workflow',
+                                            'htmlName' => 'title',
                                             'displayed' => 1,
                                             'disabled' => 0,
-                                            'placeholder' => 'Select status',
-                                            'help' => '<strong>Description: </strong>The status of this form.<br/><strong>Do: </strong>Select the status of this form.<br/><strong>Star: </strong> %s ',
+                                            'placeholder' => 'Type the title eg \'What\'s your age?\'',
+                                            'help' => '<strong>Description: </strong>The title of this question.<br/><strong>Do: </strong>Type the title of this question.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'What\'s your age?\'.',
                                             'validator' => array(
                                                 'required' => 1
                                             )
@@ -150,8 +141,38 @@ return array(
                                             'htmlName' => 'name',
                                             'displayed' => 1,
                                             'disabled' => 0,
-                                            'placeholder' => 'Type the name eg \'Contact form\'',
-                                            'help' => '<strong>Description: </strong>The name of this form.<br/><strong>Do: </strong>Type the name of this form.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'Contact form\'.',
+                                            'placeholder' => 'Type the name eg \'age\'',
+                                            'help' => '<strong>Description: </strong>The name of this question.<br/><strong>Do: </strong>Type the name of this question.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'age\'.',
+                                            'validator' => array(
+                                                'required' => 1
+                                            )
+                                        ),
+                                    )
+                                ),
+                                array(
+                                    'fields' => array(
+                                        array(
+                                            'name' => 'Type',
+                                            'type' => 'select',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'type',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Select type',
+                                            'help' => '<strong>Description: </strong>The type of this question.<br/><strong>Do: </strong>Select the type of this question.<br/><strong>Star: </strong> %s ',
+                                            'validator' => array(
+                                                'required' => 1
+                                            )
+                                        ),
+                                        array(
+                                            'name' => 'Regex',
+                                            'type' => 'text',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'regex',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Type the regex eg \'number\'',
+                                            'help' => '<strong>Description: </strong>The regex of this question.<br/><strong>Do: </strong>Type the regex of this question.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'number\'.',
                                             'validator' => array(
                                                 'required' => 1
                                             )
@@ -167,22 +188,6 @@ return array(
                                         )
                                     )
                                 ),
-                            )
-                        ),
-                        array(
-                            'id' => 'logo',
-                            'title' => 'Images',
-                            'heading' => 'Please upload the images of the form.',
-                            'help' => 'Please upload the images of the form.',
-                            'stared' => 0,
-                            'rows' => array(
-                                array(
-                                    'fields' => array(
-                                        array(
-                                            'dataSource' => 'mediaView'
-                                        )
-                                    )
-                                )
                             )
                         ),
                     )

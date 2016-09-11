@@ -10,7 +10,7 @@ namespace Lava\Organizations;
 class OrganizationController extends OrganizationsBaseController {
 
     //Controller
-    public $controller = 'merchant';
+    public $controller = 'organization';
 
     /**
      * S# injectDataSources() function

@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-class CreateAccountsChatsTable extends Migration {
+class CreateSurveysQuestionsTable extends Migration {
 
     /**
      * Run the migrations.
@@ -11,16 +11,16 @@ class CreateAccountsChatsTable extends Migration {
      * @return void
      */
     public function up() {
-        Schema::create('acc_chats', function(Blueprint $table) {
+        Schema::create('svy_questions', function(Blueprint $table) {
             $table->increments('id');
-
             $table->integer('organization_id')->unsigned();
             $table->integer('user_id')->unsigned();
-            $table->integer('sender_id')->unsigned();
-            $table->integer('recipient_id')->unsigned();
-            $table->text('message');
-            $table->string('in_out'); //Incoming or outgoing
-            $table->integer('workflow')->unsigned();
+            $table->integer('form_id')->unsigned();
+
+            $table->string('title', 255);
+            $table->string('name', 255);
+            $table->string('type', 255);
+            $table->string('regex', 255);
 
             $table->string('agent', 255);
             $table->string('ip', 255);
@@ -37,7 +37,7 @@ class CreateAccountsChatsTable extends Migration {
      * @return void
      */
     public function down() {
-        Schema::drop('acc_chats');
+        Schema::drop('mct_organizations');
     }
 
 }

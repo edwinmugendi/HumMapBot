@@ -70,7 +70,7 @@ class UserController extends AccountsBaseController {
         if (!array_key_exists('format', $this->input)) {
             $this->validationRules = array(
                 'full_name' => 'required',
-                'organization_id' => 'required|integer|exists:mct_merchants,id',
+                'organization_id' => 'required|integer|exists:mct_organizations,id',
                 'email' => 'required|unique:acc_users',
                 'role_id' => 'required'
             );
@@ -93,7 +93,7 @@ class UserController extends AccountsBaseController {
      */
     public function injectDataSources() {
 
-        //Get this organization merchant id
+        //Get this organization organization id
         $this->view_data['dataSource']['organization_id'] = $this->appGetCustomOrganizationHtmlSelect();
 
         //Get and set yes no options to data source
@@ -282,7 +282,7 @@ class UserController extends AccountsBaseController {
         $controller_model->save();
 
         //Set parameters
-        $parameters['lazyLoad'] = array('merchants');
+        $parameters['lazyLoad'] = array('organizations');
 
         //Get user model
         $user_model = $this->getModelByField('token', $controller_model->token, $parameters);
@@ -518,10 +518,10 @@ class UserController extends AccountsBaseController {
 
         //if ($user_model->role_id != 3) {
         //Session org
-        $this->callController(\Util::buildNamespace('merchants', 'merchant', 1), 'sessionOrganization', array($user));
+        $this->callController(\Util::buildNamespace('organizations', 'organization', 1), 'sessionOrg', array($user));
         //}//E# if statement
         //Unset organization
-        unset($user['merchant']);
+        unset($user['organization']);
 
         //Put the user in session
         \Session::put('user', $user);
@@ -932,7 +932,7 @@ class UserController extends AccountsBaseController {
                         'reset_code' => $reset_code,
                         'phone_or_email' => $user_model->email,
                         'sub_view' => 'reset',
-                        'user_role' => $user_model->role_id == 3 ? 'user' : 'merchant'
+                        'user_role' => $user_model->role_id == 3 ? 'user' : 'organization'
                     );
 
                     //Build url

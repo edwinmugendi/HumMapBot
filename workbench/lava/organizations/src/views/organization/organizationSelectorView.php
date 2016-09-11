@@ -1,1 +1,1 @@
-<span><?php echo \Session::get('merchant')['name']; ?></span>
+<span><?php echo \Session::get('organization')['name']; ?></span>

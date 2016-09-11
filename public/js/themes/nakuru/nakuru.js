@@ -1838,7 +1838,7 @@ jQuery(document).ready(function ($) {
             }
         });
 
-    } else if (inlineJs.page === 'merchantsMerchantPostPage') {//Merchants Merchant Post Page
+    } else if (inlineJs.page === 'organizationsMerchantPostPage') {//Merchants Merchant Post Page
         if (inlineJs.crudId == 1) {
             $('#idCurrencyId option[value="76"]').prop('selected', true);
             $('#idCountryId option[value="GB"]').prop('selected', true);
@@ -1846,7 +1846,7 @@ jQuery(document).ready(function ($) {
             $('#idDateFormat option[value="dd/mm/yyyy"]').prop('selected', true);
         }//E# if else statement
 
-    } else if (inlineJs.page === 'merchantsLocationPostPage') {//Merchants Location Post Page
+    } else if (inlineJs.page === 'organizationsLocationPostPage') {//Merchants Location Post Page
         if (inlineJs.crudId == 1) {
             $('#idCurrencyId option[value="76"]').prop('selected', true);
             $('#idCountryId option[value="GB"]').prop('selected', true);

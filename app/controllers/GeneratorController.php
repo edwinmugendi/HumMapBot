@@ -7,19 +7,12 @@ class GeneratorController extends BaseController {
     private $controllers = array(
         //Accounts
         'Lava\Accounts\UserController',
-        'Lava\Accounts\MpesaController',
-        'Lava\Accounts\LogController',
-        'Lava\Accounts\ReferralController',
-        'Lava\Accounts\ChatController',
         //Merchants
-        'Lava\Merchants\MerchantController',
-        //Payments
-        'Lava\Payments\TransactionController',
-        //Loans
-        'Lava\Loans\PlanController',
-        'Lava\Loans\LoanController',
-        'Lava\Loans\ScheduleController',
-        'Lava\Loans\OfferController',
+        'Lava\Organizations\OrganizationController',
+        //Surveys
+        'Lava\Surveys\FormController',
+        'Lava\Surveys\QuestionController',
+        'Lava\Surveys\OptionController',
     );
 
     public function generateViews() {

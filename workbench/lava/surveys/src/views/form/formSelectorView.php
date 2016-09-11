@@ -1,1 +1,0 @@
-<span><?php echo \Session::get('merchant')['name']; ?></span>

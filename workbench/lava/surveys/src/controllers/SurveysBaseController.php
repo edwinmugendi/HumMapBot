@@ -1,17 +1,17 @@
 <?php
 
-namespace Lava\Organizations;
+namespace Lava\Surveys;
 
 /**
- * S# OrganizationsBaseController() function
- * Organizations Base Controller
+ * S# SurveysBaseController() function
+ * Surveys Base Controller
  * @author Edwin Mugendi
  */
-class OrganizationsBaseController extends \BaseController {
+class SurveysBaseController extends \BaseController {
 
     //Package
-    public $package = 'merchants';
+    public $package = 'surveys';
 
 }
 
-//E# OrganizationsBaseController() function
+//E# SurveysBaseController() function

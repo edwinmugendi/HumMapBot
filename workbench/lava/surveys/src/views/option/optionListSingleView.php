@@ -8,15 +8,10 @@
         <?php endif; ?>
                          
                                         <td><?php echo $view_data['singleModel']['id']; ?></td>
-                                                                        <td><?php echo $view_data['singleModel']['user_id_text']; ?></td>
-                                                                        <td><?php echo $view_data['singleModel']['type_text']; ?></td>
-                                                                        <td><?php echo $view_data['singleModel']['in_out_text']; ?></td>
                                  
-                                        <td><?php echo $view_data['singleModel']['account_number']; ?></td>
+                                        <td><?php echo $view_data['singleModel']['title']; ?></td>
                                  
-                                        <td><?php echo $view_data['singleModel']['log_date']; ?></td>
-                                             
-                                        <td><?php echo $view_data['singleModel']['seconds']; ?></td>
+                                        <td><?php echo $view_data['singleModel']['value']; ?></td>
                 <?php if (!array_key_exists('export', $view_data)): ?>    <td>
         <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get('common.view.actions.detailed.detailed'); ?>" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> <?php echo \Lang::get('common.view.actions.detailed.view'); ?></a>
         <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_post_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get('common.view.actions.edit.edit'); ?>"  class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> <?php echo \Lang::get('common.view.actions.edit.edit'); ?></a>
@@ -30,17 +25,10 @@
     <td colspan="100%">
                      
                                         <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.id') .': '.$view_data['singleModel']['id']; ?> </div>
-                                                            <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.user_id') .': '.$view_data['singleModel']['user_id_text']; ?> </div>
-                                                            <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.type') .': '.$view_data['singleModel']['type_text']; ?> </div>
-                                                            <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.in_out') .': '.$view_data['singleModel']['in_out_text']; ?> </div>
                      
-                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.account_number') .': '.$view_data['singleModel']['account_number']; ?> </div>
+                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.title') .': '.$view_data['singleModel']['title']; ?> </div>
                      
-                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.log_date') .': '.$view_data['singleModel']['log_date']; ?> </div>
-                     
-                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.log_datetime') .': '.$view_data['singleModel']['log_datetime']; ?> </div>
-                     
-                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.seconds') .': '.$view_data['singleModel']['seconds']; ?> </div>
+                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.value') .': '.$view_data['singleModel']['value']; ?> </div>
                 
     </td>
 </tr>

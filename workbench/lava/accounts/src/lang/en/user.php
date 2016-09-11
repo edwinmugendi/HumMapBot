@@ -254,8 +254,8 @@ return array(
                                             'htmlName' => 'organization_id',
                                             'displayed' => 1,
                                             'disabled' => 0,
-                                            'placeholder' => 'Select merchant',
-                                            'help' => '<strong>Description: </strong>The merchant of this user<br/><strong>Do: </strong>Select the merchant of this user.<br/></strong>Star:</strong> %s',
+                                            'placeholder' => 'Select organization',
+                                            'help' => '<strong>Description: </strong>The organization of this user<br/><strong>Do: </strong>Select the organization of this user.<br/></strong>Star:</strong> %s',
                                             'validator' => array(
                                                 'required' => 1,
                                             )
@@ -386,8 +386,8 @@ return array(
                         'forgotPassword' => 'Forgot Password?'
                     ),
                     'statusCode' => array(
-                        1 => 'The phone or password you entered is incorrect.',
-                        2 => 'The phone you specified is not registered. Kindly confirm the phone is correct or create an account',
+                        1 => 'The email or password you entered is incorrect.',
+                        2 => 'The email you specified is not registered. Kindly confirm the email is correct or create an account',
                         3 => 'You have exceeded the login attempts. Kindly wait for :lockOut minutes before trying again.',
                         4 => 'Your password was reset successfully.'
                     )

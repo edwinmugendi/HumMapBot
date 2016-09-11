@@ -91,7 +91,7 @@ Tables
         </style>
     </head>
     <body>
-        <h1><?php echo $view_data['merchant']['name']; ?></h1>
+        <h1><?php echo $view_data['organization']['name']; ?></h1>
         <?php if ($view_data['action'] == 'list'): ?>
             <p><?php echo $view_data['title']; ?></p>
         <?php endif; ?>

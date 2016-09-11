@@ -1,1 +1,1 @@
-"merchant_id","full_name","role_id","email","phone","referral_code","dob","gender","notify_sms","notify_email","notify_push","device_token","app_version"
+"organization_id","full_name","role_id","email","phone","referral_code","dob","gender","notify_sms","notify_email","notify_push","device_token","app_version"

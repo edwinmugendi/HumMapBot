@@ -1,10 +1,10 @@
 <?php
 
-namespace Lava\Organizations;
+namespace Lava\Surveys;
 
 use Illuminate\Support\ServiceProvider;
 
-class OrganizationsServiceProvider extends ServiceProvider {
+class SurveysServiceProvider extends ServiceProvider {
 
     /**
      * Indicates if loading of the provider is deferred.
@@ -19,7 +19,7 @@ class OrganizationsServiceProvider extends ServiceProvider {
      * @return void
      */
     public function boot() {
-        $this->package('lava/merchants');
+        $this->package('lava/surveys');
 
         //Register routes
         include __DIR__ . '/../../routes.php';

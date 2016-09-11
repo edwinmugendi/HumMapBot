@@ -11,7 +11,7 @@ use Carbon\Carbon;
  * @author Edwin Mugendi
  * @todo We are extending the Organization Validator because PHP does not offer multiple inheritance. We extend alphabetically
  */
-class MessagesValidator extends \Lava\Organizations\OrganizationsValidator {
+class MessagesValidator extends \Lava\Accounts\AccountsValidator {
 
     //Message object
     private $message;
