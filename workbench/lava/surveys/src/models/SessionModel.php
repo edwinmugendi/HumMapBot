@@ -3,29 +3,30 @@
 namespace Lava\Surveys;
 
 /**
- * S# OptionModel() Class
+ * S# SessionModel() Class
  * @author Edwin Mugendi
- * Option Model
+ * Session Model
  */
-class OptionModel extends \BaseModel {
+class SessionModel extends \BaseModel {
 
     //Table
-    protected $table = 'svy_options';
+    protected $table = 'svy_sessions';
     //View fields
     public $viewFields = array(
         'id' => array(1, 'text', '='),
-        'title' => array(1, 'text', 'like', 1),
-        'value' => array(1, 'text', 'like', 1),
+        'full_name' => array(1, 'text', 'like', 1),
+        'phone' => array(1, 'text', 'like', 1),
+        'current_question' => array(1, 'text', '='),
     );
     //Fillable fields
     protected $fillable = array(
         'id',
         'organization_id',
         'form_id',
-        'question_id',
         'user_id',
-        'title',
-        'value',
+        'full_name',
+        'phone',
+        'current_question',
         'agent',
         'ip',
         'status',
@@ -39,13 +40,15 @@ class OptionModel extends \BaseModel {
     protected $hidden = array();
     //Create validation rules
     public $createRules = array(
-        'title' => 'required',
-        'value' => 'required',
+        'full_name' => 'required',
+        'phone' => 'required',
+        'current_question' => 'required',
     );
-    //Update validation rules
+    //Create validation rules
     public $updateRules = array(
-        'title' => 'required',
-        'value' => 'required',
+        'full_name' => 'required',
+        'phone' => 'required',
+        'current_question' => 'required',
     );
 
 }

@@ -18,14 +18,19 @@ class QuestionModel extends \BaseModel {
         'name' => array(1, 'text', 'like', 1),
         'regex' => array(1, 'text', '='),
         'type' => array(1, 'select', '='),
+        'error_message' => array(1, 'text', 'like'),
     );
     //Fillable fields
     protected $fillable = array(
         'id',
+        'organization_id',
+        'form_id',
+        'user_id',
         'title',
         'name',
         'regex',
         'type',
+        'error_message',
         'agent',
         'ip',
         'status',
@@ -44,6 +49,7 @@ class QuestionModel extends \BaseModel {
         'name' => 'required',
         'type' => 'required',
         'regex' => '',
+        'error_message' => '',
     );
     //Create validation rules
     public $updateRules = array(
@@ -51,6 +57,7 @@ class QuestionModel extends \BaseModel {
         'name' => 'required',
         'type' => 'required',
         'regex' => '',
+        'error_message' => '',
     );
 
     /**

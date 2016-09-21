@@ -2,8 +2,39 @@
 
 \Route::group(array('before' => 'auth'), function() {
     /**
+     * Session routes
+     */
+    //Detailed session
+    \Route::get('surveys/detailed/session/{id}', array('as' => 'surveysDetailedSession', 'uses' => 'Lava\Surveys\SessionController@getDetailed'));
+
+    //List session
+    \Route::get('surveys/list/session', array('as' => 'surveysListSession', 'uses' => 'Lava\Surveys\SessionController@getList'));
+
+    //Post session
+    \Route::get('surveys/post/session/{id?}', array('as' => 'surveysPostSession', 'uses' => 'Lava\Surveys\SessionController@getPost'));
+
+    //Create a session
+    \Route::post('surveys/create/session', array('as' => 'surveysCreateSession', 'before' => 'csrf', 'uses' => 'Lava\Surveys\SessionController@postCreate'));
+
+    //Update a session
+    \Route::post('surveys/update/session', array('as' => 'surveysUpdateSession', 'before' => 'csrf', 'uses' => 'Lava\Surveys\SessionController@postUpdate'));
+
+    //Delete session
+    \Route::post('surveys/delete/session', array('as' => 'surveysDeleteSession', 'uses' => 'Lava\Surveys\SessionController@postDelete'));
+
+    //Un-Delete session
+    \Route::post('surveys/undelete/session', array('as' => 'surveysUndeleteSession', 'uses' => 'Lava\Surveys\SessionController@postUndelete'));
+
+
+    /**
      * Form routes
      */
+    //Question form
+    \Route::get('surveys/question/form/{id}', array('as' => 'surveysQuestionForm', 'uses' => 'Lava\Surveys\FormController@getQuestion'));
+    
+    //Post question form
+    \Route::post('surveys/post_question_form', array('as' => 'surveysPostFormQuestion', 'uses' => 'Lava\Surveys\FormController@postQuestion'));
+
     //Detailed form
     \Route::get('surveys/detailed/form/{id}', array('as' => 'surveysDetailedForm', 'uses' => 'Lava\Surveys\FormController@getDetailed'));
 
@@ -49,7 +80,7 @@
     //Un-Delete question
     \Route::post('surveys/undelete/question', array('as' => 'surveysUndeleteQuestion', 'uses' => 'Lava\Surveys\QuestionController@postUndelete'));
 
-        /**
+    /**
      * Option routes
      */
     //Detailed option
@@ -72,7 +103,6 @@
 
     //Un-Delete option
     \Route::post('surveys/undelete/option', array('as' => 'surveysUndeleteOption', 'uses' => 'Lava\Surveys\OptionController@postUndelete'));
-
 });
 
 

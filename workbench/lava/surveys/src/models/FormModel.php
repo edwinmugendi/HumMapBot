@@ -11,7 +11,6 @@ class FormModel extends \BaseModel {
 
     //Table
     protected $table = 'svy_forms';
-    
     //View fields
     public $viewFields = array(
         'id' => array(1, 'text', '='),
@@ -21,6 +20,8 @@ class FormModel extends \BaseModel {
     //Fillable fields
     protected $fillable = array(
         'id',
+        'organization_id',
+        'user_id',
         'name',
         'workflow',
         'agent',
@@ -46,6 +47,15 @@ class FormModel extends \BaseModel {
         'workflow' => '',
     );
 
+    /**
+     * S# questions() function
+     * Set one to many relationship to Question Model
+     */
+    public function questions() {
+        return $this->hasMany(\Util::buildNamespace('surveys', 'question', 2), 'form_id');
+    }
+
+//E# questions() function
     /**
      * S# getWorkflowTextAttribute() function
      * Get Workflow Text

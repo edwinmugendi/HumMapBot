@@ -3,91 +3,63 @@
 return array(
     /*
       |--------------------------------------------------------------------------
-      | Form Language Lines
+      | Session Language Lines
       |--------------------------------------------------------------------------
      */
-    'data' => array(
-        'workflow' => array(
-            '' => 'Select',
-            'published' => 'Published',
-            'unpublished' => 'Un-unpublished',
-        ),
-    ),
     'notification' => array(
-        'created' => 'Form created',
-        'updated' => 'Form updated',
-        'deleted' => 'Form deleted',
+        'created' => 'Session created',
+        'updated' => 'Session updated',
+        'deleted' => 'Session deleted',
     ),
     'view' => array(
-        'menu' => 'Forms',
+        'menu' => 'Sessions',
         'field' => array(
             'id' => '#',
-            'name' => 'Name',
-            'workflow' => 'Status',
+            'full_name' => 'Full name',
+            'phone' => 'Phone',
+            'current_question' => 'Current question',
         ),
         'actions' => array(
             'delete' => array(
-                'confirm' => 'Delete form?',
-                'deleteMany' => 'Deleted :count forms',
-                'confirmMany' => 'Delete :count forms?',
+                'confirm' => 'Delete session?',
+                'deleteMany' => 'Deleted :count sessions',
+                'confirmMany' => 'Delete :count sessions?',
                 'delete' => 'Delete',
                 'cancel' => 'Cancel',
             ),
             'undelete' => array(
                 'undoDelete' => 'Undo delete',
                 'undeleting' => 'Un deleting...',
-                'undeleted' => 'Un deleted :count forms',
-            ),
-            'edit_questions' => array(
-                'edit_questions' => 'Edit questions'
+                'undeleted' => 'Un deleted :count sessions',
             ),
         ),
         'link' => array(
-            'list' => 'Forms list',
-            'add' => 'Add form',
-            'found' => '{0} :count forms | {1} :count form | [2,Inf] :count forms',
+            'list' => 'Sessions list',
+            'add' => 'Add session',
+            'found' => '{0} :count sessions | {1} :count session | [2,Inf] :count sessions',
         )
     ),
-    'formQuestionPage' => array(
-        'title' => 'Form: :title #:id',
+    'sessionDetailedPage' => array(
+        'title' => 'Session: :title #:id'
     ),
-    'formDetailedPage' => array(
-        'title' => 'Form: :title #:id'
+    'sessionListPage' => array(
+        'title' => 'List of sessions'
     ),
-    'formListPage' => array(
-        'title' => 'List of forms'
-    ),
-    'formPostPage' => array(
+    'sessionPostPage' => array(
         'actionTitle' => array(
-            1 => 'Create forms',
-            2 => 'Update forms'
+            1 => 'Create sessions',
+            2 => 'Update sessions'
         ),
-        'formPostView' => array(
+        'sessionPostView' => array(
             'form' => array(
-                'media' => array(
-                    'count' => 10,
-                    'describe' => 0,
-                    'type' => 'image',
-                    'accept' => 'image/*',
-                    'icons' => array(
-                        array(
-                            'name' => 'Photo',
-                            'icon' => 'arrow-down'
-                        )
-                    ),
-                    'heading' => 'How to upload ',
-                    'list' => array(
-                        'Click the <strong>CAMERA</strong> <i class="icon-data-camera common-color"></i> icon below to choose your photos,',
-                    )
-                ),
-                'formPost' => array(
+                'sessionPost' => array(
                     'attributes' => array(
                         'method' => 'POST',
                         'route' => array(
-                            1 => 'surveysCreateForm',
-                            2 => 'surveysUpdateForm'
+                            1 => 'surveysCreateSession',
+                            2 => 'surveysUpdateSession'
                         ),
-                        'id' => 'formPost',
+                        'id' => 'sessionPost',
                         'class' => 'commonContainer'
                     ),
                     'stars' => array(
@@ -129,35 +101,48 @@ return array(
                     'portlets' => array(
                         array(
                             'id' => 'details',
-                            'title' => 'Form\'s details',
-                            'heading' => 'Please fill in the details of the form.',
-                            'help' => 'Please fill in all the mandatory details of this form.',
+                            'title' => 'Session\'s details',
+                            'heading' => 'Please fill in the details of the session.',
+                            'help' => 'Please fill in all the mandatory details of this session.',
                             'stared' => 1,
                             'rows' => array(
                                 array(
                                     'fields' => array(
                                         array(
-                                            'name' => 'Status',
-                                            'type' => 'select',
+                                            'name' => 'Full name',
+                                            'type' => 'text',
                                             'prepend' => 'user',
-                                            'htmlName' => 'workflow',
+                                            'htmlName' => 'full_name',
                                             'displayed' => 1,
                                             'disabled' => 0,
-                                            'placeholder' => 'Select status',
-                                            'help' => '<strong>Description: </strong>The status of this form.<br/><strong>Do: </strong>Select the status of this form.<br/><strong>Star: </strong> %s ',
+                                            'placeholder' => 'Type the full name eg \'John Doe\'',
+                                            'help' => '<strong>Description: </strong>The full name of this session.<br/><strong>Do: </strong>Type the full name of this session.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'John Doe\'.',
                                             'validator' => array(
                                                 'required' => 1
                                             )
                                         ),
                                         array(
-                                            'name' => 'Name',
+                                            'name' => 'Phone',
                                             'type' => 'text',
                                             'prepend' => 'user',
-                                            'htmlName' => 'name',
+                                            'htmlName' => 'phone',
                                             'displayed' => 1,
                                             'disabled' => 0,
-                                            'placeholder' => 'Type the name eg \'Contact form\'',
-                                            'help' => '<strong>Description: </strong>The name of this form.<br/><strong>Do: </strong>Type the name of this form.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'Contact form\'.',
+                                            'placeholder' => 'Type the phone eg \'254722906835\'',
+                                            'help' => '<strong>Description: </strong>The phone of this session.<br/><strong>Do: </strong>Type the phone of this session.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'254722906835\'.',
+                                            'validator' => array(
+                                                'required' => 1
+                                            )
+                                        ),
+                                        array(
+                                            'name' => 'Current question',
+                                            'type' => 'text',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'current_question',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Type the current question eg \'2\'',
+                                            'help' => '<strong>Description: </strong>The current question of this session.<br/><strong>Do: </strong>Type the current question of this session.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'2\'.',
                                             'validator' => array(
                                                 'required' => 1
                                             )
@@ -173,22 +158,6 @@ return array(
                                         )
                                     )
                                 ),
-                            )
-                        ),
-                        array(
-                            'id' => 'logo',
-                            'title' => 'Images',
-                            'heading' => 'Please upload the images of the form.',
-                            'help' => 'Please upload the images of the form.',
-                            'stared' => 0,
-                            'rows' => array(
-                                array(
-                                    'fields' => array(
-                                        array(
-                                            'dataSource' => 'mediaView'
-                                        )
-                                    )
-                                )
                             )
                         ),
                     )

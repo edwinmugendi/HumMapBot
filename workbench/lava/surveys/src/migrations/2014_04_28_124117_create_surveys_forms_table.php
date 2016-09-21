@@ -35,7 +35,7 @@ class CreateSurveysFormsTable extends Migration {
      * @return void
      */
     public function down() {
-        Schema::drop('mct_organizations');
+        Schema::drop('svy_forms');
     }
 
 }

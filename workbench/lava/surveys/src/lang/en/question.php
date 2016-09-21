@@ -22,15 +22,18 @@ return array(
         'created' => 'Question created',
         'updated' => 'Question updated',
         'deleted' => 'Question deleted',
+        'form_updated' => '{0} 0 questions updated | {1} 1 question updated | [2,Inf] :updated of :count questions updated',
     ),
     'view' => array(
         'menu' => 'Questions',
+        'questions_list' => 'List of questions',
         'field' => array(
             'id' => '#',
             'name' => 'Name',
             'type' => 'Type',
             'regex' => 'regex',
             'title' => 'Title',
+            'error_message' => 'Error message',
         ),
         'actions' => array(
             'delete' => array(
@@ -175,6 +178,22 @@ return array(
                                             'help' => '<strong>Description: </strong>The regex of this question.<br/><strong>Do: </strong>Type the regex of this question.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'number\'.',
                                             'validator' => array(
                                                 'required' => 1
+                                            )
+                                        ),
+                                    )
+                                ),
+                                array(
+                                    'fields' => array(
+                                        array(
+                                            'name' => 'Error message',
+                                            'type' => 'text',
+                                            'prepend' => 'user',
+                                            'htmlName' => 'error_message',
+                                            'displayed' => 1,
+                                            'disabled' => 0,
+                                            'placeholder' => 'Type the error message eg \'This field is required\'',
+                                            'help' => '<strong>Description: </strong>The error message of this question.<br/><strong>Do: </strong>Type the error message of this question.<br/><strong>Star: </strong> %s <br/><strong>Examples: </strong>\'This field is required\'.',
+                                            'validator' => array(
                                             )
                                         ),
                                     )

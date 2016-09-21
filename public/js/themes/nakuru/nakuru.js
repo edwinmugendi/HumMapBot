@@ -1821,41 +1821,35 @@ jQuery(document).ready(function ($) {
 
     });
 
-    if (inlineJs.page === 'docsDocDocsPage') {//Docs Doc Docs Page
-        $('h3').each(function () {
-            if ($(this).html() == 'Returns') {
-                var $table = $(this).next();
-
-                $table.find('tr').each(function ($index) {
-                    if ($index != 0) {
-                        var $row = $(this);
-                        var $json = JSON.stringify($.parseJSON($row.find('td').eq(3).html()), undefined, 2);
-
-                        $row.find('td').eq(3).html('<pre>' + $json + '</pre>');
-
-                    }
-                })
-            }
+    if (inlineJs.page === 'surveysFormQuestionPage') {//Surveys Form Question Page
+        //Add  row
+        $('#questionView').on('click', '#idAddQuestion', function ($event) {
+            //Find first row
+            var $clone = $('#idHiddenTable').find('tr').first().clone();
+            //Clear text
+            //Inject it
+            $('#tableQuestion').find('tbody').append($clone);
+            //Table changed event
+            //tableRowChanged();
+            //Prevent default
+            $event.preventDefault();
         });
 
-    } else if (inlineJs.page === 'organizationsMerchantPostPage') {//Merchants Merchant Post Page
-        if (inlineJs.crudId == 1) {
-            $('#idCurrencyId option[value="76"]').prop('selected', true);
-            $('#idCountryId option[value="GB"]').prop('selected', true);
-            $('#idTimezoneId option[value="2"]').prop('selected', true);
-            $('#idDateFormat option[value="dd/mm/yyyy"]').prop('selected', true);
-        }//E# if else statement
+        //Delete row
+        $('#tableQuestion').on('click', '.deleteQuestion', function ($event) {
 
-    } else if (inlineJs.page === 'organizationsLocationPostPage') {//Merchants Location Post Page
-        if (inlineJs.crudId == 1) {
-            $('#idCurrencyId option[value="76"]').prop('selected', true);
-            $('#idCountryId option[value="GB"]').prop('selected', true);
-            $('#idTimezoneId option[value="2"]').prop('selected', true);
-            $('#idDateFormat option[value="dd/mm/yyyy"]').prop('selected', true);
-        }//E# if else statement
+            //Find row
+            var $tr = $(this).closest('tr.rowQuestion');
 
-        $('#idPostalCode').blur(function () {
-            zoomTo($(this).val(), 15);
+            //Fade out and remove
+            $tr.fadeOut(400, function () {
+                //Remove tr
+                $tr.remove();
+                //Table changed event
+                //tableRowChanged();
+            });
+            //Prevent default
+            $event.preventDefault();
         });
     } else if (inlineJs.page === 'accountsDashboardDashboardPage') {//Accounts Dashboard Dashboard Page
         //Date range picker

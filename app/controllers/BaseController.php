@@ -56,7 +56,7 @@ class BaseController extends Controller {
         $this->input = \Input::get();
 
         //Current organization
-        $this->org = $this->sessionedMerchant();
+        $this->org = $this->sessionedOrg();
 
         //Cache ip
         $this->input['ip'] = \Request::getClientIp();
@@ -67,6 +67,24 @@ class BaseController extends Controller {
     }
 
 //E# __construct() function
+
+    /**
+     * S# formatErrors() function
+     * Format errors
+     * 
+     * @param array $message Message
+     * 
+     * @return str error message
+     */
+    public function formatErrors($message) {
+        $error_message = '';
+        foreach ($message as $single_message) {
+            $error_message .= $single_message;
+        }
+        return $error_message;
+    }
+
+//E# formatErrors() function
 
     /**
      * S# appGetCustomMerchantHtmlSelect() function
@@ -387,18 +405,16 @@ class BaseController extends Controller {
 //E# sessionedUser() function
 
     /**
-     * S# sessionedMerchant() function
+     * S# sessionedOrg() function
      * @author Edwin Mugendi
-     * 
      * Get logged in user's organization
-     * 
      * @return array The logged in user's organization
      */
-    protected function sessionedMerchant() {
-        return \Session::get('organization');
+    protected function sessionedOrg() {
+        return \Session::get('org');
     }
 
-//E# sessionedMerchant() function
+//E# sessionedOrg() function
 
     /**
      * S# getManyModelBelongingToUser() function
@@ -547,7 +563,6 @@ class BaseController extends Controller {
         //Validate model is owned by a user
         $this->validateModelIsUserOwned($modelObject);
 
-        //dd($this->validationRules);
         //Validate row to be inserted
         $this->isInputValid();
 
@@ -1098,6 +1113,19 @@ class BaseController extends Controller {
 //E# registerPostTemplates() function
 
     /**
+     * S# beforeExportingToCsv() function
+     * 
+     * Before exporting to Csv
+     * 
+     * @param array $data_array Data array
+     */
+    public function beforeExportingToCsv(&$data_array) {
+        
+    }
+
+//E# beforeExportingToCsv() function
+
+    /**
      * S# exportToCsv() function
      * Export to CSV
      * 
@@ -1120,6 +1148,8 @@ class BaseController extends Controller {
                         $data_array = $this->view_data['controller_model']->toArray();
                         $data_array = $data_array['data'];
                     }//E# if else statement
+                    //Before exporting to CSV
+                    $this->beforeExportingToCsv($data_array);
 
                     $excel->sheet('Sheet 1', function($sheet) use($data_array) {
 
@@ -1367,7 +1397,7 @@ class BaseController extends Controller {
      * 
      */
     public function injectDataSources() {
-        
+        $this->view_data['dataSource'] = array();
     }
 
 //E# injectDataSources() function
@@ -1733,7 +1763,6 @@ class BaseController extends Controller {
             $this->assets['js'][] = \HTML::script('js/fileupload/jquery.fileupload-ui.js');
             $this->assets['js'][] = \HTML::script('js/fileupload/main.js');
         }//E# if statement
-        // dd($parameters['page']);
         //Switch through the pages
         switch ($parameters['page']) {
             case 'organizationPostPage': {//Organization Post page
@@ -1944,7 +1973,6 @@ class BaseController extends Controller {
         //Set current user to view data
         $this->view_data['organization'] = $this->org;
 
-        //dd($this->view_data['organization']);
         //Set input data to view data
         $this->view_data['input'] = $this->input;
 
