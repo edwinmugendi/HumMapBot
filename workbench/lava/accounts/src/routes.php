@@ -1,6 +1,6 @@
 <?php
 
-\Route::group(array('before' => array('auth', 'https')), function() {
+\Route::group(array('before' => array('https')), function() {
 
     //Register
     \Route::get('app/register', array('as' => 'appRegister', 'uses' => 'Lava\Accounts\AppController@getRegister'));
