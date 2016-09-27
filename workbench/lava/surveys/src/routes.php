@@ -2,7 +2,10 @@
 
 \Route::group(array('before' => array('https')), function() {
     //Telegram webhook
-    \Route::get('tg', array('as' => 'telegramWebhook', 'uses' => 'Lava\Surveys\TelegramController@webhookTelegram'));
+    \Route::get('tg', array('as' => 'telegramGetWebhook', 'uses' => 'Lava\Surveys\TelegramController@webhookTelegram'));
+
+    //Telegram webhook
+    \Route::post('tg', array('as' => 'telegramPostWebhook', 'uses' => 'Lava\Surveys\TelegramController@webhookTelegram'));
 });
 
 \Route::group(array('before' => array('auth', 'https')), function() {
