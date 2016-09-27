@@ -284,6 +284,7 @@ class ImportController extends BaseController {
 
             $this->view_data['data_to_import'] = $data_to_import;
             $this->view_data['import_header'] = \Session::get('import_header');
+            
             //Get this controllers data sources
             $this_controller->injectDataSources();
 

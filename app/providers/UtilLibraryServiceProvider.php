@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\ServiceProvider;
-use \UtilFacade;
 
 class UtilLibraryServiceProvider extends ServiceProvider {
 

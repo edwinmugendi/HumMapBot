@@ -1428,9 +1428,9 @@ function registerViewPayroll() {
  * S# tableRowChanged() function
  * Table row changed
  **/
-function tableRowChanged() {
-    $('#tableBracket')
-            .find('.bracketLevel')
+function tableRowChanged($tableId, $rowClass) {
+    $($tableId)
+            .find($rowClass)
             .each(function ($index, $cell) {
                 $(this).html($index + 1);
             });
@@ -1830,7 +1830,7 @@ jQuery(document).ready(function ($) {
             //Inject it
             $('#tableQuestion').find('tbody').append($clone);
             //Table changed event
-            //tableRowChanged();
+            tableRowChanged('#tableQuestion', '.questionNumber');
             //Prevent default
             $event.preventDefault();
         });
@@ -1846,11 +1846,15 @@ jQuery(document).ready(function ($) {
                 //Remove tr
                 $tr.remove();
                 //Table changed event
-                //tableRowChanged();
+                tableRowChanged('#tableQuestion', '.questionNumber');
             });
             //Prevent default
             $event.preventDefault();
         });
+
+        //Validate form
+        validateForm('form#idFormQuestionId');
+
     } else if (inlineJs.page === 'accountsDashboardDashboardPage') {//Accounts Dashboard Dashboard Page
         //Date range picker
         $('#daterange').daterangepicker({

@@ -36,11 +36,14 @@ class FormController extends SurveysBaseController {
                 if ($index != 0) {
                     $question_array = array(
                         'organization_id' => $this->org['id'],
+                        'user_id' => $this->user['id'],
                         'title' => $single_title,
                         'question_id' => $this->input['question_ids'][$index],
                         'name' => $this->input['names'][$index],
                         'type' => $this->input['types'][$index],
                         'error_message' => $this->input['error_messages'][$index],
+                        'ip' => $this->input['ip'],
+                        'agent' => $this->input['agent'],
                         'status' => 1,
                         'created_by' => 1,
                         'updated_by' => 1,
@@ -66,7 +69,7 @@ class FormController extends SurveysBaseController {
         //Set notification
         $this->notification = array(
             'type' => 'success',
-            'message' => \Lang::choice($this->package . '::question.notification.form_updated', $question_updated, array('count' => ($index-1), 'updated' => $question_updated))
+            'message' => \Lang::choice($this->package . '::question.notification.form_updated', $question_updated, array('count' => ($index - 1), 'updated' => $question_updated))
         );
 
         return \Redirect::route(camel_case($this->package . '_question_' . $this->controller), array($controller_model->id))->with('notification', $this->notification);
@@ -80,6 +83,10 @@ class FormController extends SurveysBaseController {
      * Load question view
      */
     public function getQuestion($id) {
+
+        $this->crudId = 2;
+
+        $this->add_validation_assets = true;
 
         //Prepare view data
         $this->view_data = $this->prepareViewData('question');
@@ -105,14 +112,15 @@ class FormController extends SurveysBaseController {
         //Select this controller model
         $this->view_data['controller_model'] = $this->select($fields, $where_clause, 1, $parameters);
 
-        //Get question view    
-        $this->getQuestionView();
 
         //Get and set type options to data source
         $this->view_data['dataSource']['type'] = \Lang::get($this->package . '::question.data.type');
 
         //Inject data sources
         $this->injectDataSources();
+
+        //Get question view    
+        $this->getQuestionView();
 
         //Prepare fields for detailed view
         $this->beforeViewing($this->view_data['controller_model']);
@@ -163,27 +171,38 @@ class FormController extends SurveysBaseController {
     private function getQuestionView() {
         //Return single bracket view
         $this->view_data['singleQuestion'] = '';
-
+        $index = 1;
         if ($this->crudId == 2) {
-            /// dd($this->view_data['controller_model']->bills[0]['id']);
-            foreach ($this->view_data['controller_model']->bills as $single_bill) {
-                $penalty_date = '';
-                if ($single_bill->pivot->penalty_date != '0000-00-00') {
-                    $penalty_date = Carbon::createFromFormat('Y-m-d', $single_bill->pivot->penalty_date)->format('d/m/Y');
-                }//E# if statement
-                $this->view_data['single_bill_id'] = $single_bill['id'];
-                $this->view_data['single_amount'] = $single_bill->pivot->value;
-                $this->view_data['single_commissionable'] = $single_bill->pivot->commissionable;
-                $this->view_data['single_penalty_date'] = $penalty_date;
-                $this->view_data['single_penalty_amount'] = $single_bill->pivot->penalty_amount;
-                $this->view_data['single_amount_placeholder'] = $single_bill['type'] == 1 ? 'Amount' : 'Current reading';
+            foreach ($this->view_data['controller_model']->questions as $single_question) {
+                $this->view_data['single_index'] = $index;
+                $this->view_data['single_question_id'] = $single_question->id;
+                $this->view_data['single_title'] = $single_question->title;
+                $this->view_data['single_name'] = $single_question->name;
+                $this->view_data['single_type'] = $single_question->type;
+                $this->view_data['single_error_message'] = $single_question->error_message;
 
                 //Return single bracket view
-                $this->view_data['singleQuestion'] .= \View::make($this->package . '::' . $this->controller . '.billSingleView')
+                $this->view_data['singleQuestion'] .= \View::make($this->package . '::' . $this->controller . '.questionSingleView')
                         ->with('view_data', $this->view_data)
                         ->render();
+
+                $index++;
             }
-        }//E# if  statements
+        }//E# if statements
+        //Increment index
+        $this->view_data['single_index'] = $index;
+
+        unset($this->view_data['single_question_id']);
+        unset($this->view_data['single_title']);
+        unset($this->view_data['single_name']);
+        unset($this->view_data['single_type']);
+        unset($this->view_data['single_error_message']);
+
+        //Return single bracket view
+        $this->view_data['singleQuestion'] .= \View::make($this->package . '::' . $this->controller . '.questionSingleView')
+                ->with('view_data', $this->view_data)
+                ->render();
+
         //return \View::make($this->package . '::' . $this->controller . '.billView')
         //                ->with('view_data', $this->view_data);
     }

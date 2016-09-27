@@ -14,12 +14,12 @@ class CreateSurveysSessionsTable extends Migration {
         Schema::create('svy_sessions', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('organization_id')->unsigned();
-            $table->integer('user_id')->unsigned();
             $table->integer('form_id')->unsigned();
-
+            $table->integer('question_id')->unsigned();
+            $table->string('channel', 255); //Telegram, Facebook, Allo
+            $table->string('channel_chat_id', 255);
             $table->string('full_name', 255);
-            $table->string('phone', 255);
-            $table->integer('current_question')->unsigned();
+            $table->string('answer', 255);
 
             $table->string('agent', 255);
             $table->string('ip', 255);

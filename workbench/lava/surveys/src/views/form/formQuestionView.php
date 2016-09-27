@@ -5,7 +5,7 @@
             <hr>
         </div>
     </div>
-    <?php echo \Form::open(array('route' => 'surveysPostFormQuestion', 'method' => 'post')); ?>
+    <?php echo \Form::open(array('id' => 'idFormQuestionId', 'route' => 'surveysPostFormQuestion', 'method' => 'post')); ?>
     <?php echo \Form::hidden('form_id', $view_data['controller_model']['id']); ?>
     <h4 class="commonFontWeightBold"><?php echo \Lang::get($view_data['package'] . '::question.view.questions_list'); ?></h4>
     <div class="row">
@@ -34,7 +34,7 @@
                     </tr>
                 </thead> 
                 <tbody>
-
+                    <?php echo $view_data['singleQuestion']; ?>
                 </tbody>
             </table>    
         </div>

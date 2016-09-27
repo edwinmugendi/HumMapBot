@@ -87,12 +87,12 @@ class BaseController extends Controller {
 //E# formatErrors() function
 
     /**
-     * S# appGetCustomOrganizationHtmlSelect() function
+     * S# appGetCustomMerchantHtmlSelect() function
      * 
      * Get organization html select based on their role
      * 
      */
-    public function appGetCustomOrganizationHtmlSelect() {
+    public function appGetCustomMerchantHtmlSelect() {
         if ($this->user['role_id'] == 1) {//Admin
             //Fields to select
             $fields = array('*');
@@ -108,14 +108,14 @@ class BaseController extends Controller {
             $model = $this->callController(\Util::buildNamespace('organizations', 'organization', 1), 'select', array($fields, $where_clause, 2, $parameters));
 
             return $this->buildHtmlSelectArray($model, 'id', 'name', \Lang::get('common.select'), '-', array());
-        } else if ($this->user['role_id'] == 2) {//Organization
+        } else if ($this->user['role_id'] == 2) {//Merchant
             return array('' => \Lang::get('common.select'), $this->org['id'] => $this->org['name']);
         } else {
             return array();
         }//E# if else statement
     }
 
-//E# appGetCustomOrganizationHtmlSelect() function
+//E# appGetCustomMerchantHtmlSelect() function
 
     /**
      * Setup the layout used by the controller.
@@ -238,17 +238,17 @@ class BaseController extends Controller {
 //E# generateUniqueInt() function
 
     /**
-     * S# getOrganizationsModels() function
+     * S# getMerchantsModels() function
      * 
      * Get organizationanization's models
      * 
-     * @param int $organizationId Organization id
+     * @param int $organizationId Merchant id
      * @param array $where_clause Where clause
      * @param array $parameters Parameters
      * 
-     * @return array Organization's model
+     * @return array Merchant's model
      */
-    public function getOrganizationsModels($organizationId, $where_clause = array(), $parameters = array()) {
+    public function getMerchantsModels($organizationId, $where_clause = array(), $parameters = array()) {
         //Fields to select
         $fields = array('*');
 
@@ -267,14 +267,14 @@ class BaseController extends Controller {
         return $this->select($fields, $where_clause, 2, $parameters);
     }
 
-//E# getOrganizationsModels() function
+//E# getMerchantsModels() function
 
     /**
-     * S# getOrganizationsHtmlSelect() function
+     * S# getMerchantsHtmlSelect() function
      * 
      * Get organizationanizations html select
      * 
-     * @param int $organizationId Organization id
+     * @param int $organizationId Merchant id
      * @param string $fieldId Field to be the id
      * @param mixed $fieldName Fields to the text
      * @param str $firstLabel First Label
@@ -284,7 +284,7 @@ class BaseController extends Controller {
      * 
      * 
      */
-    public function getOrganizationsHtmlSelect($organizationId, $fieldId, $fieldName, $firstLabel = null, $separator = '-', $optionAttributes = null, $specific_where_clause = null) {
+    public function getMerchantsHtmlSelect($organizationId, $fieldId, $fieldName, $firstLabel = null, $separator = '-', $optionAttributes = null, $specific_where_clause = null) {
         //Fields to select
         $fields = array('*');
 
@@ -322,7 +322,7 @@ class BaseController extends Controller {
         return $this->buildHtmlSelectArray($model, $fieldId, $fieldName, $firstLabel, $separator, $optionAttributes);
     }
 
-//E# getOrganizationsHtmlSelect() function
+//E# getMerchantsHtmlSelect() function
 
     /**
      * S# buildHtmlSelectArray() function

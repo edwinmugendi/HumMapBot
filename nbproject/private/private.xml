@@ -13,10 +13,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/sapama/projects/web/bot/app/controllers/BaseController.php</file>
+            <file>file:/home/sapama/projects/web/bot/workbench/lava/surveys/src/controllers/SessionController.php</file>
             <file>file:/home/sapama/projects/web/bot/workbench/lava/surveys/src/controllers/QuestionController.php</file>
-            <file>file:/home/sapama/projects/web/bot/workbench/lava/surveys/src/views/form/formQuestionView.php</file>
-            <file>file:/home/sapama/projects/web/bot/workbench/lava/surveys/src/routes.php</file>
+            <file>file:/home/sapama/projects/web/bot/app/controllers/BaseController_1.php</file>
             <file>file:/home/sapama/projects/web/bot/workbench/lava/surveys/src/controllers/FormController.php</file>
+            <file>file:/home/sapama/projects/web/bot/workbench/lava/surveys/src/lang/en/session.php</file>
         </group>
     </open-files>
 </project-private>

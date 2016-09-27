@@ -25,9 +25,10 @@
                 <div class="menu_section">
                     <p>&nbsp;</p>
                     <ul class="nav side-menu">
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'form') ? 'active' : '' ?>"><a href="<?php echo \URL::route('surveysListForm'); ?>"><i class="fa fa-map-marker"></i> Products</a></li>
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'question') ? 'active' : '' ?>"><a href="<?php echo \URL::route('surveysListQuestion'); ?>"><i class="fa fa-map-marker"></i> Comparisons</a></li>
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'option') ? 'active' : '' ?>"><a href="<?php echo \URL::route('surveysListOption'); ?>"><i class="fa fa-map-marker"></i> Competitors</a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'form') ? 'active' : '' ?>"><a href="<?php echo \URL::route('surveysListForm'); ?>"><i class="fa fa-map-marker"></i> <?php echo \Lang::get('surveys::form.view.menu'); ?></a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'question') ? 'active' : '' ?>"><a href="<?php echo \URL::route('surveysListQuestion'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('surveys::question.view.menu'); ?></a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'option') ? 'active' : '' ?>"><a href="<?php echo \URL::route('surveysListOption'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('surveys::option.view.menu'); ?></a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'session') ? 'active' : '' ?>"><a href="<?php echo \URL::route('surveysListSession'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('surveys::session.view.menu'); ?></a></li>
                     </ul>
                 </div>
             </div>

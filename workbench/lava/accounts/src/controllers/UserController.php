@@ -302,7 +302,7 @@ class UserController extends AccountsBaseController {
      * @throws \Api200Exception
      * */
     public function apiLoginSuccess($controller_model) {
-        if ($this->subdomain == 'api') {//From API
+        if (array_key_exists('format', $this->input) && ($this->input['format'] == 'json')) {//From API
             $this->notification = array(
                 'token' => $controller_model->token
             );
@@ -313,6 +313,8 @@ class UserController extends AccountsBaseController {
             throw new \Api200Exception($this->notification, $message);
         }//E# if statement
     }
+
+//E# apiLoginSuccess() function
 
     /**
      * S# beforeUpdating() function

@@ -15,9 +15,12 @@ return array(
         'menu' => 'Sessions',
         'field' => array(
             'id' => '#',
+            'form_id' => 'Form',
+            'question_id' => 'Question',
+            'channel' => 'Channel',
+            'channel_chat_id' => 'Chat id',
             'full_name' => 'Full name',
-            'phone' => 'Phone',
-            'current_question' => 'Current question',
+            'answer' => 'Answer',
         ),
         'actions' => array(
             'delete' => array(
