@@ -3,9 +3,8 @@
 //Register
 \Route::get('app/register', array('as' => 'appRegister', 'uses' => 'Lava\Accounts\AppController@getRegister'));
 
-
 //Load Login or Sign up page
-\Route::get('authenticate', array('as' => 'userRegistration', 'uses' => 'Lava\Accounts\UserController@getRegistration'));
+\Route::get('login', array('as' => 'userRegistration', 'uses' => 'Lava\Accounts\UserController@getRegistration'));
 
 //Login page
 \Route::get('/', array('as' => 'userLogin', function() {
