@@ -19,7 +19,10 @@ class TelegramController extends SurveysBaseController {
      * 
      */
     public function webhookTelegram() {
-        
+
+        \Log::info('TG ' . json_encode($this->input));
+
+        return "true";
     }
 
 //E# webhookTelegram() function
