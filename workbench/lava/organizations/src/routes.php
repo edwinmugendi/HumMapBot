@@ -1,10 +1,6 @@
 <?php
 
-\Route::group(array('before' => 'api'), function() {
-    
-});
-
-\Route::group(array('before' => 'auth'), function() {
+\Route::group(array('before' => array('auth', 'https')), function() {
 
     /**
      * Organization routes

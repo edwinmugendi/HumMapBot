@@ -1,6 +1,11 @@
 <?php
 
-\Route::group(array('before' => 'auth'), function() {
+\Route::group(array('before' => array('https')), function() {
+    //Telegram webhook
+    \Route::get('tg', array('as' => 'telegramWebhook', 'uses' => 'Lava\Surveys\TelegramController@webhookTelegram'));
+});
+
+\Route::group(array('before' => array('auth', 'https')), function() {
     /**
      * Session routes
      */
@@ -31,7 +36,7 @@
      */
     //Question form
     \Route::get('surveys/question/form/{id}', array('as' => 'surveysQuestionForm', 'uses' => 'Lava\Surveys\FormController@getQuestion'));
-    
+
     //Post question form
     \Route::post('surveys/post_question_form', array('as' => 'surveysPostFormQuestion', 'uses' => 'Lava\Surveys\FormController@postQuestion'));
 
