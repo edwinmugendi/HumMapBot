@@ -25,7 +25,50 @@ class TelegramController extends SurveysBaseController {
 
         \Log::info('TG ' . json_encode($this->input));
 
-        return array('chat_id'=>'215795746','text'=>'What is your name?');
+        //Update array
+        $update_array = array(
+            'channel' => 'telegram',
+            'type' => 'incoming',
+            'update_id' => $this->input['update_id'],
+            'message' => json_encode($this->input['message']),
+            'status' => 1,
+            'created_by' => 1,
+            'updated_by' => 1
+        );
+
+        //Fields to select
+        $fields = array('*');
+
+
+        //Set where clause
+        $where_clause = array(
+            array(
+                'where' => 'where',
+                'column' => 'update_id',
+                'operator' => '=',
+                'operand' => $this->input['update_id']
+            ),
+            array(
+                'where' => 'where',
+                'column' => 'channel',
+                'operator' => '=',
+                'operand' => 'telegram'
+            )
+        );
+
+        //Set scope
+        $parameters['scope'] = array('statusOne');
+
+        //Select update
+        $update_model = $this->callController(\Util::buildNamespace('surveys', 'update', 1), 'select', array($fields, 1, $where_clause, $parameters));
+
+        if (!$update_model) {
+
+            //Create update
+            $update_model = $this->callController(\Util::buildNamespace('surveys', 'update', 1), 'createIfValid', array($update_array, true));
+        }//E# if statement
+
+        return array('chat_id' => '215795746', 'text' => 'What is your name?');
     }
 
 //E# webhookTelegram() function

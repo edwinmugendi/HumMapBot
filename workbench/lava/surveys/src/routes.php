@@ -9,6 +9,32 @@
 });
 
 \Route::group(array('before' => array('auth', 'https')), function() {
+
+    /**
+     * Update routes
+     */
+    //Detailed update
+    \Route::get('surveys/detailed/update/{id}', array('as' => 'surveysDetailedUpdate', 'uses' => 'Lava\Surveys\UpdateController@getDetailed'));
+
+    //List update
+    \Route::get('surveys/list/update', array('as' => 'surveysListUpdate', 'uses' => 'Lava\Surveys\UpdateController@getList'));
+
+    //Post update
+    \Route::get('surveys/post/update/{id?}', array('as' => 'surveysPostUpdate', 'uses' => 'Lava\Surveys\UpdateController@getPost'));
+
+    //Create a update
+    \Route::post('surveys/create/update', array('as' => 'surveysCreateUpdate', 'before' => 'csrf', 'uses' => 'Lava\Surveys\UpdateController@postCreate'));
+
+    //Update a update
+    \Route::post('surveys/update/update', array('as' => 'surveysUpdateUpdate', 'before' => 'csrf', 'uses' => 'Lava\Surveys\UpdateController@postUpdate'));
+
+    //Delete update
+    \Route::post('surveys/delete/update', array('as' => 'surveysDeleteUpdate', 'uses' => 'Lava\Surveys\UpdateController@postDelete'));
+
+    //Un-Delete update
+    \Route::post('surveys/undelete/update', array('as' => 'surveysUndeleteUpdate', 'uses' => 'Lava\Surveys\UpdateController@postUndelete'));
+
+
     /**
      * Session routes
      */

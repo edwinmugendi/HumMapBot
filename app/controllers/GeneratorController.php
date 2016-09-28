@@ -14,6 +14,7 @@ class GeneratorController extends BaseController {
         'Lava\Surveys\QuestionController',
         'Lava\Surveys\OptionController',
         'Lava\Surveys\SessionController',
+        'Lava\Surveys\UpdateController',
     );
 
     public function generateViews() {

@@ -7,7 +7,7 @@ use Carbon\Carbon;
  * @author Edwin Mugendi
  * Base Controller
  */
-class BaseController extends Controller {
+class BaseController_1 extends Controller {
 
     //Bundle
     public $layout = 'layouts.master';
