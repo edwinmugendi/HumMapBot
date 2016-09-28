@@ -26,6 +26,8 @@ class TelegramController extends SurveysBaseController {
     public function webhookTelegram() {
 
         \Log::info('TG ' . json_encode($this->input));
+        $this->input['chat']['id'];
+        \Log::info('Chat id ' . $this->input['chat']['id']);
 
         //Update array
         $update_array = array(
@@ -68,15 +70,14 @@ class TelegramController extends SurveysBaseController {
             //Create update
             $update_model = $this->callController(\Util::buildNamespace('surveys', 'update', 1), 'createIfValid', array($update_array, true));
         }//E# if statement
-        
         // Create Telegram API object
         $telegram = new Telegram(\Config::get('thirdParty.telegram.api_key'), \Config::get('thirdParty.telegram.bot'));
 
         $request = new \Longman\TelegramBot\Request($telegram);
 
-        $result = $request->sendMessage(['chat_id' => '215795746', 'text' => 'Your utf8 text 😜 ...']);
+        $result = $request->sendMessage(['chat_id' => $this->input['chat']['id'], 'text' => 'Your utf8 text 😜 ...']);
 
-        return array('chat_id' => '215795746', 'text' => 'What is your name?');
+        return array('chat_id' => $this->input['chat']['id'], 'text' => 'What is your name?');
     }
 
 //E# webhookTelegram() function
