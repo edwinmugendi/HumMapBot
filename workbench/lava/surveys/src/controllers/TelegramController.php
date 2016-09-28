@@ -74,7 +74,7 @@ class TelegramController extends SurveysBaseController {
 
         $request = new \Longman\TelegramBot\Request($telegram);
 
-        $result = $request->sendMessage(['chat_id' => $this->input['message']['chat']['id'], 'text' => 'Your utf8 text 😜 ...']);
+        $result = $request->sendMessage(['chat_id' => $this->input['message']['chat']['id'], 'text' => 'You are the best']);
 
         return array('chat_id' => $this->input['message']['chat']['id'], 'text' => 'What is your name?');
     }
