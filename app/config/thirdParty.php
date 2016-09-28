@@ -1,6 +1,10 @@
 <?php
 
 return array(
+    'telegram' => array(
+        'api_key' => '265033849:AAHAs6vKVlY7UyqWFUHoE7Toe2TsGvu0sf4',
+        'bot' => 'edwinmugendibot',
+    ),
     'google' => array(
         'api_key' => 'AIzaSyAOipzmRP_vDquiIuzvifQ6ldiEA-se6YU'
     ),

@@ -2,6 +2,8 @@
 
 namespace Lava\Surveys;
 
+use \Longman\TelegramBot\Telegram;
+
 /**
  * S# TelegramController() function
  * Telegram controller
@@ -63,10 +65,16 @@ class TelegramController extends SurveysBaseController {
         $update_model = $this->callController(\Util::buildNamespace('surveys', 'update', 1), 'select', array($fields, $where_clause, 1, $parameters));
 
         if (!$update_model) {
-
             //Create update
             $update_model = $this->callController(\Util::buildNamespace('surveys', 'update', 1), 'createIfValid', array($update_array, true));
         }//E# if statement
+        
+        // Create Telegram API object
+        $telegram = new Telegram(\Config::get('thirdParty.telegram.api_key'), \Config::get('thirdParty.telegram.bot'));
+
+        $request = new \Longman\TelegramBot\Request($telegram);
+
+        $result = $request->sendMessage(['chat_id' => '215795746', 'text' => 'Your utf8 text 😜 ...']);
 
         return array('chat_id' => '215795746', 'text' => 'What is your name?');
     }
