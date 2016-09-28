@@ -60,7 +60,7 @@ class TelegramController extends SurveysBaseController {
         $parameters['scope'] = array('statusOne');
 
         //Select update
-        $update_model = $this->callController(\Util::buildNamespace('surveys', 'update', 1), 'select', array($fields, $where_clause1, 1, $parameters));
+        $update_model = $this->callController(\Util::buildNamespace('surveys', 'update', 1), 'select', array($fields, $where_clause, 1, $parameters));
 
         if (!$update_model) {
 
