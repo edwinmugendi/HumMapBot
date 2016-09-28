@@ -27,7 +27,7 @@ class TelegramController extends SurveysBaseController {
 
         \Log::info('TG ' . json_encode($this->input));
         $this->input['chat']['id'];
-        \Log::info('Chat id ' . $this->input['chat']['id']);
+        \Log::info('Chat id ' . json_encode($this->input['chat']));
 
         //Update array
         $update_array = array(
