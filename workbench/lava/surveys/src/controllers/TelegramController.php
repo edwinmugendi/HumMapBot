@@ -276,12 +276,18 @@ class TelegramController extends SurveysBaseController {
             $session_model = $this->callController(\Util::buildNamespace('surveys', 'session', 1), 'select', array($fields, $where_clause, 1, $parameters));
 
             if (!$session_model) {
+
+                $names = $this->input['message']['from']['first_name'];
+                if (array_key_exists('first_name', $this->input['message']['from'])) {
+                    $names .= $this->input['message']['from']['last_name'];
+                }//E# if statement
+
                 $actual_form_array = array(
                     'organization_id' => $form_model->organization_id,
                     'form_id' => $form_model->id,
                     'channel' => 'telegram',
                     'channel_chat_id' => $this->input['message']['chat']['id'],
-                    'names' => $this->input['message']['from']['first_name'] . ' ' . $this->input['message']['from']['last_name'],
+                    'names' => $names,
                     'status' => 1,
                     'created_by' => 1,
                     'updated_by' => 1,
@@ -298,7 +304,7 @@ class TelegramController extends SurveysBaseController {
                     'channel_chat_id' => $this->input['message']['chat']['id'],
                     'next_question' => 0,
                     'total_questions' => count($form_model['questions']),
-                    'full_name' => $this->input['message']['from']['first_name'] . ' ' . $this->input['message']['from']['last_name'],
+                    'full_name' => $names,
                     'status' => 1,
                     'created_by' => 1,
                     'updated_by' => 1,
