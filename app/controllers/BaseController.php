@@ -1474,6 +1474,13 @@ class BaseController extends Controller {
                 }//E# if statement
             }//E# foreach statement
         }//E# if statement
+        if (array_key_exists('order', $this->input) && $this->input['order']) {
+            $this->view_data['paginationAppends']['order'] = $this->input['order'];
+        }//E# if statement   
+
+        if (array_key_exists('sort', $this->input) && $this->input['sort']) {
+            $this->view_data['paginationAppends']['sort'] = $this->input['sort'];
+        }//E# if statement   
     }
 
 //E# buildSearchWhereClause() function

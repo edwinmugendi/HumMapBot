@@ -14,20 +14,24 @@ class SessionModel extends \BaseModel {
     //View fields
     public $viewFields = array(
         'id' => array(1, 'text', '='),
-        'answer' => array(1, 'text', '='),
+        'full_name' => array(1, 'text', 'like', 1),
         'form_id' => array(1, 'select', '=', 1),
-        'question_id' => array(1, 'select', '=', 1),
-        'channel' => array(1, 'text', '=', 1),
+        'channel' => array(1, 'select', '=', 1),
+        'next_question' => array(1, 'text', '='),
+        'total_questions' => array(1, 'text', '='),
         'channel_chat_id' => array(1, 'text', '='),
-        'full_name' => array(1, 'text', '='),
+        'actual_form_id' => array(1, 'text', '='),
     );
     //Fillable fields
     protected $fillable = array(
         'id',
+        'actual_form_id',
         'organization_id',
-        'answer',
+        'next_question',
+        'total_questions',
+        'channel',
+        'channel_chat_id',
         'form_id',
-        'question_id',
         'channel',
         'channel_chat_id',
         'full_name',
@@ -44,17 +48,26 @@ class SessionModel extends \BaseModel {
     protected $hidden = array();
     //Create validation rules
     public $createRules = array(
-        'full_name' => 'required',
-        'phone' => 'required',
-        'current_question' => 'required',
+        'form_id' => 'required',
+        'channel' => 'required',
+        'channel_chat_id' => 'required',
     );
     //Create validation rules
     public $updateRules = array(
-        'full_name' => 'required',
-        'phone' => 'required',
-        'current_question' => 'required',
+        'form_id' => 'required',
+        'channel' => 'required',
+        'channel_chat_id' => 'required',
     );
 
+    /**
+     * S# getChannelTextAttribute() function
+     * Get Channel Text
+     */
+    public function getChannelTextAttribute() {
+        return $this->attributes['channel'] ? \Lang::get('surveys::session.data.channel.' . $this->attributes['channel']) : '';
+    }
+
+//E# getChannelTextAttribute() function
     /**
      * S# form() function
      * Set one to one relationship to Form Model

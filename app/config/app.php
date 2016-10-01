@@ -129,6 +129,8 @@ return array(
         'Lava\Locations\LocationsServiceProvider',
         //Register Surveys Service Provider
         'Lava\Surveys\SurveysServiceProvider',
+        //Register Forms Service Provider
+        'Lava\Forms\FormsServiceProvider',
     ),
     /*
       |--------------------------------------------------------------------------

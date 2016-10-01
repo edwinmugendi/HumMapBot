@@ -15,7 +15,7 @@ return array(
             'photo' => 'Photo',
             'gps' => 'GPS',
             'radio' => 'Single select (Radio)',
-            'checkbox' => 'Multi select (checkbox)'
+            'checkbox' => 'Multi select (Checkbox)'
         ),
     ),
     'notification' => array(

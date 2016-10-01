@@ -1,30 +1,38 @@
 <?php
 
+\Route::group(array('before' => array('https')), function() {
+    //Telegram webhook
+    \Route::get('tg', array('as' => 'telegramGetWebhook', 'uses' => 'Lava\Surveys\TelegramController@webhookTelegram'));
+
+    //Telegram webhook
+    \Route::post('tg', array('as' => 'telegramPostWebhook', 'uses' => 'Lava\Surveys\TelegramController@webhookTelegram'));
+});
+
 \Route::group(array('before' => array('auth', 'https')), function() {
 
     /**
-     * Contact routes
+     * Update routes
      */
-    //Detailed contact
-    \Route::get('forms/detailed/contact/{id}', array('as' => 'formsDetailedContact', 'uses' => 'Lava\Forms\ContactController@getDetailed'));
+    //Detailed update
+    \Route::get('surveys/detailed/update/{id}', array('as' => 'surveysDetailedUpdate', 'uses' => 'Lava\Surveys\UpdateController@getDetailed'));
 
-    //List contact
-    \Route::get('forms/list/contact', array('as' => 'formsListContact', 'uses' => 'Lava\Forms\ContactController@getList'));
+    //List update
+    \Route::get('surveys/list/update', array('as' => 'surveysListUpdate', 'uses' => 'Lava\Surveys\UpdateController@getList'));
 
-    //Post contact
-    \Route::get('forms/post/contact/{id?}', array('as' => 'formsPostContact', 'uses' => 'Lava\Forms\ContactController@getPost'));
+    //Post update
+    \Route::get('surveys/post/update/{id?}', array('as' => 'surveysPostUpdate', 'uses' => 'Lava\Surveys\UpdateController@getPost'));
 
-    //Create a contact
-    \Route::post('forms/create/contact', array('as' => 'formsCreateContact', 'before' => 'csrf', 'uses' => 'Lava\Forms\ContactController@postCreate'));
+    //Create a update
+    \Route::post('surveys/create/update', array('as' => 'surveysCreateUpdate', 'before' => 'csrf', 'uses' => 'Lava\Surveys\UpdateController@postCreate'));
 
-    //Update a contact
-    \Route::post('forms/update/contact', array('as' => 'formsUpdateContact', 'before' => 'csrf', 'uses' => 'Lava\Forms\ContactController@postUpdate'));
+    //Update a update
+    \Route::post('surveys/update/update', array('as' => 'surveysUpdateUpdate', 'before' => 'csrf', 'uses' => 'Lava\Surveys\UpdateController@postUpdate'));
 
-    //Delete contact
-    \Route::post('forms/delete/contact', array('as' => 'formsDeleteContact', 'uses' => 'Lava\Forms\ContactController@postDelete'));
+    //Delete update
+    \Route::post('surveys/delete/update', array('as' => 'surveysDeleteUpdate', 'uses' => 'Lava\Surveys\UpdateController@postDelete'));
 
-    //Un-Delete contact
-    \Route::post('forms/undelete/contact', array('as' => 'formsUndeleteContact', 'uses' => 'Lava\Forms\ContactController@postUndelete'));
+    //Un-Delete update
+    \Route::post('surveys/undelete/update', array('as' => 'surveysUndeleteUpdate', 'uses' => 'Lava\Surveys\UpdateController@postUndelete'));
 
 
     /**
