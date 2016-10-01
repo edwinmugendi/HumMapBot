@@ -319,7 +319,7 @@ class TelegramController extends SurveysBaseController {
             $parameters = array(
                 'type' => 'text',
                 'chat_id' => $this->input['message']['chat']['id'],
-                'text' => 'Welcome to SurveyBot. To respond to a survey type "/start {form}" eg /start contact'
+                'text' => 'Welcome to SurveyBot. To respond to a survey, type "/start {form}" eg /start contact'
             );
 
             $this->sendMessage($parameters);
