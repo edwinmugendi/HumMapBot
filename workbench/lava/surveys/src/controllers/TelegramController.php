@@ -47,7 +47,7 @@ class TelegramController extends SurveysBaseController {
      */
     public function webhookTelegram() {
 
-        //\Log::info('Chat id ' . json_encode($this->input['mes']['chat']));
+        \Log::info('Chat id ' . json_encode($this->input));
         //Update array
         $update_array = array(
             'channel' => 'telegram',
