@@ -278,7 +278,7 @@ class TelegramController extends SurveysBaseController {
             if (!$session_model) {
 
                 $names = $this->input['message']['from']['first_name'];
-                if (array_key_exists('first_name', $this->input['message']['from'])) {
+                if (array_key_exists('last_name', $this->input['message']['from'])) {
                     $names .= $this->input['message']['from']['last_name'];
                 }//E# if statement
 
