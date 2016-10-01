@@ -115,39 +115,53 @@ class TelegramController extends SurveysBaseController {
         //Select session
         $session_model = $this->callController(\Util::buildNamespace('surveys', 'session', 1), 'getModelByField', array('channel_chat_id', $this->input['message']['chat']['id'], $parameters));
 
-
         if ($session_model) {
-            $parameters = array();
 
-            //Set scope
-            $parameters['scope'] = array('statusOne');
-
-            //Select form
-            $form_model = $this->callController(\Util::buildNamespace('surveys', 'form', 1), 'getModelByField', array('id', $session_model->form_id, $parameters));
-
-            $question_model = $form_model->questions[$session_model->next_question];
-
-            $is_valid = $this->validateResponse($question_model);
-
-            if ($is_valid) {
-                $data_to_update = array(
-                    '' . $question_model->name . '' => $this->input['message']['text'],
-                );
-
-                //Update actual form
-                $actual_form_model = $this->callController(\Util::buildNamespace('forms', $form_model->name, 1), 'updateIfValid', array('id', $session_model->actual_form_id, $data_to_update));
-
-                $session_model->next_question +=1;
-
-                $session_model->save();
-
-                $this->sendNextQuestion($form_model, $session_model);
-            } else {
+            if ($session_model->next_question == ($session_model->total_questions - 1)) {
                 $parameters = array(
                     'type' => 'text',
-                    'chat_id' => $this->input['message']['chat']['id'],
-                    'text' => $question_model->error_message
+                    'chat_id' => $session_model->channel_chat_id,
+                    'text' => 'Thank you for completing this form',
                 );
+
+                $this->sendMessage($parameters);
+                return '';
+            } else {
+                $parameters = array();
+
+                //Set scope
+                $parameters['scope'] = array('statusOne');
+
+                //Select form
+                $form_model = $this->callController(\Util::buildNamespace('surveys', 'form', 1), 'getModelByField', array('id', $session_model->form_id, $parameters));
+
+                $question_model = $form_model->questions[$session_model->next_question];
+
+                $is_valid = $this->validateResponse($question_model);
+
+                if ($is_valid) {
+                    $data_to_update = array(
+                        '' . $question_model->name . '' => $this->input['message']['text'],
+                    );
+
+                    //Update actual form
+                    $actual_form_model = $this->callController(\Util::buildNamespace('forms', $form_model->name, 1), 'updateIfValid', array('id', $session_model->actual_form_id, $data_to_update));
+
+                    if ($session_model->next_question <= ($session_model->total_questions - 1)) {
+                        $session_model->next_question += 1;
+
+                        $session_model->save();
+                    }//E# if statement
+
+                    $this->sendNextQuestion($form_model, $session_model);
+                } else {
+                    $parameters = array(
+                        'type' => 'text',
+                        'chat_id' => $this->input['message']['chat']['id'],
+                        'text' => $question_model->error_message
+                    );
+                    $this->sendMessage($parameters);
+                }//E# if else statement
             }//E# if else statement
         } else {
 
@@ -188,9 +202,11 @@ class TelegramController extends SurveysBaseController {
                     break;
                 }//E# case
             case 'photo': {
+                    return true;
                     break;
                 }//E# case
             case 'gps': {
+                    return true;
                     break;
                 }//E# case
             case 'radio': {
@@ -199,10 +215,12 @@ class TelegramController extends SurveysBaseController {
                     break;
                 }//E# case
             case 'checkbox': {
+                    return true;
                     break;
                 }//E# case
 
             default:
+                return true;
                 break;
         }//E# switch statement
     }
@@ -325,14 +343,6 @@ class TelegramController extends SurveysBaseController {
         }//E# if else statement
 
         $this->sendMessage($parameters);
-
-        /*
-          //Update session model
-          $session_model->next_question +=1;
-
-          $session_model->save();
-         * 
-         */
     }
 
 //E# sendNextQuestion() function

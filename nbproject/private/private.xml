@@ -11,6 +11,15 @@
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/home/sapama/projects/web/bot/workbench/lava/forms/src/migrations/2014_04_28_124117_create_surveys_contacts_table.php</file>
+            <file>file:/home/sapama/projects/web/bot/workbench/lava/surveys/src/controllers/TelegramController.php</file>
+            <file>file:/home/sapama/projects/web/bot/workbench/lava/surveys/src/lang/en/question.php</file>
+            <file>file:/home/sapama/projects/web/bot/workbench/lava/forms/src/models/ContactModel.php</file>
+            <file>file:/home/sapama/projects/web/bot/workbench/lava/forms/src/lang/en/contact.php</file>
+            <file>file:/home/sapama/projects/web/bot/workbench/lava/surveys/src/lang/en/session.php</file>
+            <file>file:/home/sapama/projects/web/bot/workbench/lava/surveys/src/migrations/2014_04_28_124117_create_surveys_sessions_table.php</file>
+            <file>file:/home/sapama/projects/web/bot/workbench/lava/surveys/src/models/SessionModel.php</file>
+        </group>
     </open-files>
 </project-private>
