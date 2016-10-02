@@ -16,8 +16,8 @@ return array(
             'n' => 'No',
         ),
         'workflow' => array(
-            'y' => 'Yes',
-            'n' => 'No',
+            'complete' => 'Complete',
+            'incomplete' => 'Incomplete',
         )
     ),
     'notification' => array(
@@ -36,8 +36,8 @@ return array(
             'phone' => 'Phone',
             'gender' => 'Gender',
             'height' => 'Height',
-            'lat' => 'Lat',
-            'lng' => 'Lng',
+            'latitude' => 'Latitude',
+            'longitude' => 'Longitude',
             'food_chicken' => 'Chicken',
             'food_fish' => 'Fish',
             'names' => 'Names',

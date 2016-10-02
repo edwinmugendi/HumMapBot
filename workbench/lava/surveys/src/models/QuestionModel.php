@@ -69,6 +69,16 @@ class QuestionModel extends \BaseModel {
     }
 
 //E# getTypeTextAttribute() function
+
+    /**
+     * S# options() function
+     * Set one to many relationship to Question Model
+     */
+    public function options() {
+        return $this->hasMany(\Util::buildNamespace('surveys', 'option', 2), 'question_id');
+    }
+
+//E# options() function
 }
 
 //E# SurveyModel() Class

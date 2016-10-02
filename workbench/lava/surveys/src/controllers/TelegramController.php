@@ -3,6 +3,11 @@
 namespace Lava\Surveys;
 
 use \Longman\TelegramBot\Telegram;
+use \Longman\TelegramBot\Entities\InlineKeyboardMarkup;
+use \Longman\TelegramBot\Entities\InlineKeyboardButton;
+use \Longman\TelegramBot\Request;
+use Longman\TelegramBot\Entities\ReplyKeyboardHide;
+use Longman\TelegramBot\Entities\ReplyKeyboardMarkup;
 
 /**
  * S# TelegramController() function
@@ -34,7 +39,7 @@ class TelegramController extends SurveysBaseController {
         $this->tg_service = new Telegram($this->tg_configs['api_key'], $this->tg_configs['bot']);
 
         //Get request
-        $this->tg_request = new \Longman\TelegramBot\Request($this->tg_service);
+        $this->tg_request = new Request($this->tg_service);
     }
 
 //E# __contruct() function
@@ -48,6 +53,21 @@ class TelegramController extends SurveysBaseController {
     public function webhookTelegram() {
 
         \Log::info('Chat id ' . json_encode($this->input));
+        /*
+          $keyboard = $parameters = array();
+          $keyboard[] = [['category1' => 2, 'category2' => 4]];
+          $keyboards[] = $keyboard;
+          $parameters['chat_id'] = '283329263';
+          $parameters['text'] = 'Cal';
+
+          $parameters['reply_markup'] = new ReplyKeyboardMarkup([
+          'keyboard' => $keyboards[0],
+          'resize_keyboard' => true,
+          'one_time_keyboard' => true,
+          'selective' => false
+          ]);
+          return Request::sendMessage($parameters);
+         */
         //Update array
         $update_array = array(
             'channel' => 'telegram',
@@ -117,7 +137,7 @@ class TelegramController extends SurveysBaseController {
 
         if ($session_model) {
 
-            if ($session_model->next_question == ($session_model->total_questions - 1)) {
+            if ($session_model->next_question == ($session_model->total_questions)) {
                 $parameters = array(
                     'type' => 'text',
                     'chat_id' => $session_model->channel_chat_id,
@@ -138,20 +158,23 @@ class TelegramController extends SurveysBaseController {
                 $question_model = $form_model->questions[$session_model->next_question];
 
                 $is_valid = $this->validateResponse($question_model);
-
+                //dd($is_valid);
                 if ($is_valid) {
-                    $data_to_update = array(
-                        '' . $question_model->name . '' => $this->input['message']['text'],
-                    );
 
-                    //Update actual form
-                    $actual_form_model = $this->callController(\Util::buildNamespace('forms', $form_model->name, 1), 'updateIfValid', array('id', $session_model->actual_form_id, $data_to_update));
+                    $data_to_update = $this->setDataToUpdate($question_model);
 
-                    if ($session_model->next_question <= ($session_model->total_questions - 1)) {
+                    if ($session_model->next_question < ($session_model->total_questions)) {
                         $session_model->next_question += 1;
+
+                        if ($session_model->next_question == $session_model->total_questions) {
+                            $data_to_update['workflow'] = 'complete';
+                        }//E# if statement
 
                         $session_model->save();
                     }//E# if statement
+                    //dd($data_to_update);
+                    //Update actual form
+                    $actual_form_model = $this->callController(\Util::buildNamespace('forms', $form_model->name, 1), 'updateIfValid', array('id', $session_model->actual_form_id, $data_to_update));
 
                     $this->sendNextQuestion($form_model, $session_model);
                 } else {
@@ -178,6 +201,58 @@ class TelegramController extends SurveysBaseController {
 //E# processAnswer() function
 
     /**
+     * S# setDataToUpdate() function
+     * 
+     * Set data to update
+     * 
+     * @param Model $question_model Question Model
+     * 
+     * @return array Data to update
+     */
+    private function setDataToUpdate($question_model) {
+        $data_to_update = array();
+
+        switch ($question_model['type']) {
+            case 'text': {
+                    $data_to_update['' . $question_model->name . ''] = $this->input['message']['text'];
+                    break;
+                }//E# case
+            case 'integer': {
+                    $data_to_update['' . $question_model->name . ''] = $this->input['message']['text'];
+                    break;
+                }//E# case
+            case 'decimal': {
+                    $data_to_update['' . $question_model->name . ''] = $this->input['message']['text'];
+                    break;
+                }//E# case
+            case 'photo': {
+                    break;
+                }//E# case
+            case 'gps': {
+                    $data_to_update['latitude'] = $this->input['message']['location']['latitude'];
+                    $data_to_update['longitude'] = $this->input['message']['location']['longitude'];
+                    break;
+                }//E# case
+            case 'radio': {
+                    $data_to_update['' . $question_model->name . ''] = $this->input['message']['text'];
+                    break;
+                }//E# case
+            case 'checkbox': {
+                    return true;
+                    break;
+                }//E# case
+
+            default:
+                return true;
+                break;
+        }//E# switch statement
+
+        return $data_to_update;
+    }
+
+//E# setDataToUpdate() function
+
+    /**
      * S# validateResponse() function
      * 
      * Validate response
@@ -194,11 +269,11 @@ class TelegramController extends SurveysBaseController {
                     break;
                 }//E# case
             case 'integer': {
-                    return is_int((int) $response);
+                    return ctype_digit((string) $response);
                     break;
                 }//E# case
             case 'decimal': {
-                    return is_numeric((float) $response);
+                    return is_numeric($response);
                     break;
                 }//E# case
             case 'photo': {
@@ -206,11 +281,11 @@ class TelegramController extends SurveysBaseController {
                     break;
                 }//E# case
             case 'gps': {
-                    return true;
+                    return (array_key_exists('location', $this->input['message']) && array_key_exists('latitude', $this->input['message']['location']) && array_key_exists('longitude', $this->input['message']['location']));
                     break;
                 }//E# case
             case 'radio': {
-                    $option = $question_model->options->lists('value');
+                    $option_values = $question_model->options->lists('title');
                     return in_array($response, $option_values);
                     break;
                 }//E# case
@@ -228,13 +303,19 @@ class TelegramController extends SurveysBaseController {
 //E# validateResponse() function
 
     /**
-     * S# processCommandStart() function
+     * S# processCommandFill() function
      * 
-     * Process Command Start
+     * Process Command Fill
      * 
      */
-    private function processCommandStart() {
+    private function processCommandFill() {
+
         $form = $this->getFormText();
+
+        $names = $this->input['message']['from']['first_name'];
+        if (array_key_exists('last_name', $this->input['message']['from'])) {
+            $names .= $this->input['message']['from']['last_name'];
+        }//E# if statement
 
         $parameters = array();
         //Set scope
@@ -277,11 +358,6 @@ class TelegramController extends SurveysBaseController {
 
             if (!$session_model) {
 
-                $names = $this->input['message']['from']['first_name'];
-                if (array_key_exists('last_name', $this->input['message']['from'])) {
-                    $names .= $this->input['message']['from']['last_name'];
-                }//E# if statement
-
                 $actual_form_array = array(
                     'organization_id' => $form_model->organization_id,
                     'form_id' => $form_model->id,
@@ -312,18 +388,46 @@ class TelegramController extends SurveysBaseController {
 
                 //Create session
                 $session_model = $this->callController(\Util::buildNamespace('surveys', 'session', 1), 'createIfValid', array($session_array, true));
-            }//E# if statement
+            } else {
+                //Session
+                $session_array = array(
+                    'next_question' => 0,
+                    'full_name' => $names,
+                    'total_questions' => count($form_model['questions']),
+                );
+
+                //Update session
+                $session_model = $this->callController(\Util::buildNamespace('surveys', 'session', 1), 'updateIfValid', array('id', $session_model->id, $session_array, true));
+            }//E# if else statement
             //Send next question
             $this->sendNextQuestion($form_model, $session_model);
         } else {
             $parameters = array(
                 'type' => 'text',
                 'chat_id' => $this->input['message']['chat']['id'],
-                'text' => 'Welcome to SurveyBot. To respond to a survey, type "/start {form}" eg /start contact'
+                'text' => 'Sorry, form not found. to start filling a form, type "/fill {form}" eg /fill contact'
             );
 
-            $this->sendMessage($parameters);
+            return $this->sendMessage($parameters);
         }//E# if else statement
+    }
+
+//E# processCommandFill() function
+
+    /**
+     * S# processCommandStart() function
+     * 
+     * Process Command Start
+     * 
+     */
+    private function processCommandStart() {
+        $parameters = array(
+            'type' => 'text',
+            'chat_id' => $this->input['message']['chat']['id'],
+            'text' => 'Welcome to SurveyBot. To respond to a survey, type "/fill {form}" eg /fill contact'
+        );
+
+        return $this->sendMessage($parameters);
     }
 
 //E# processCommandStart() function
@@ -370,14 +474,46 @@ class TelegramController extends SurveysBaseController {
 
         if (in_array($question_model['type'], array('text', 'integer', 'decimal'))) {
             $text = $question_model->title;
+            $parameters = array(
+                'type' => 'text',
+                'chat_id' => $session_model->channel_chat_id,
+                'text' => $text
+            );
+        } else if ($question_model['type'] == 'gps') {
+            $keyboard = $parameters = array();
+            $keyboard[] = [
+                [
+                    'text' => 'request_location',
+                    'request_location' => true
+                ]
+            ];
+            $keyboards[] = $keyboard;
+            $parameters['chat_id'] = $session_model->channel_chat_id;
+            $parameters['text'] = $question_model->title;
+            $parameters['type'] = 'gps';
+            $parameters['reply_markup'] = new ReplyKeyboardMarkup([
+                'keyboard' => $keyboards[0],
+                'resize_keyboard' => true,
+                'one_time_keyboard' => true,
+                'selective' => false
+            ]);
+        } else if ($question_model['type'] == 'radio') {
+            $keyboard = $parameters = array();
+            foreach ($question_model->options as $single_option) {
+                $keyboard[] = [$single_option['title']];
+            }//E# foreach statement
+            $keyboards[] = $keyboard;
+
+            $parameters['chat_id'] = $session_model->channel_chat_id;
+            $parameters['text'] = $question_model->title;
+            $parameters['type'] = 'radio';
+            $parameters['reply_markup'] = new ReplyKeyboardMarkup([
+                'keyboard' => $keyboards[0],
+                'resize_keyboard' => true,
+                'one_time_keyboard' => true,
+                'selective' => false
+            ]);
         }//E# if else statement
-
-        $parameters = array(
-            'type' => 'text',
-            'chat_id' => $session_model->channel_chat_id,
-            'text' => $text
-        );
-
         return $parameters;
     }
 
@@ -394,10 +530,18 @@ class TelegramController extends SurveysBaseController {
         $command = $this->getCommand();
 
         switch ($command) {
-            case '/start':
-                $this->processCommandStart();
+            case '/start': {
+                    $this->processCommandStart();
+                    break;
+                }//E# case statement
+            case '/fill': {
+                    $this->processCommandFill();
+                    break;
+                }//E# case statement
             default:
-        }
+        }//E# switch statement
+
+        return true;
     }
 
 //E# processCommands() function
@@ -449,9 +593,21 @@ class TelegramController extends SurveysBaseController {
                     $this->tg_request->sendMessage(['chat_id' => $parameters['chat_id'], 'text' => $parameters['text']]);
                     break;
                 }//E# case
+            case 'gps': {
+                    unset($parameters['type']);
+                    $this->tg_request->sendMessage($parameters);
+                    break;
+                }//E# case
+            case 'radio': {
+                    unset($parameters['type']);
+                    $this->tg_request->sendMessage($parameters);
+                    break;
+                }//E# case
             default:
                 break;
         }//E# switch() statement
+
+        return true;
     }
 
 //E# sendMessage() function
