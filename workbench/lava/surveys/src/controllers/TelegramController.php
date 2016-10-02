@@ -405,7 +405,7 @@ class TelegramController extends SurveysBaseController {
             $parameters = array(
                 'type' => 'text',
                 'chat_id' => $this->input['message']['chat']['id'],
-                'text' => 'Sorry, form not found. to start filling a form, type "/fill {form}" eg /fill contact'
+                'text' => 'Sorry, form not found. to start filling a form, type "/fill {form name}" try /fill contact'
             );
 
             return $this->sendMessage($parameters);
@@ -424,7 +424,7 @@ class TelegramController extends SurveysBaseController {
         $parameters = array(
             'type' => 'text',
             'chat_id' => $this->input['message']['chat']['id'],
-            'text' => 'Welcome to SurveyBot. To respond to a survey, type "/fill {form}" eg /fill contact'
+            'text' => 'Welcome to SurveyBot. To respond to a survey, type "/fill {form}" try /fill contact'
         );
 
         return $this->sendMessage($parameters);
