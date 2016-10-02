@@ -20,15 +20,15 @@
                                         <td><?php echo $view_data['singleModel']['height']; ?></td>
                                                                         <td><?php echo $view_data['singleModel']['gender_text']; ?></td>
                                  
-                                        <td><?php echo $view_data['singleModel']['lat']; ?></td>
+                                        <td><?php echo $view_data['singleModel']['latitude']; ?></td>
                                  
-                                        <td><?php echo $view_data['singleModel']['lng']; ?></td>
+                                        <td><?php echo $view_data['singleModel']['longitude']; ?></td>
                                                                         <td><?php echo $view_data['singleModel']['food_chicken_text']; ?></td>
                                                                         <td><?php echo $view_data['singleModel']['food_fish_text']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['session_id']; ?></td>
                                                                         <td><?php echo $view_data['singleModel']['workflow_text']; ?></td>
-                            <?php if (!array_key_exists('export', $view_data)): ?>    <td>
+                                        <?php if (!array_key_exists('export', $view_data)): ?>    <td>
         <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get('common.view.actions.detailed.detailed'); ?>" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> <?php echo \Lang::get('common.view.actions.detailed.view'); ?></a>
         <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_post_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get('common.view.actions.edit.edit'); ?>"  class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> <?php echo \Lang::get('common.view.actions.edit.edit'); ?></a>
         <a href="#" data-id="<?php echo $view_data['singleModel']['id']; ?>"  data-ids="<?php echo $view_data['singleModel']['id']; ?>" class="deleteRow btn btn-danger btn-xs" title="<?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.actions.delete.delete'); ?>"><i class="fa fa-trash-o"></i> <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.actions.delete.delete'); ?></a>
@@ -53,9 +53,9 @@
                                         <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.height') .': '.$view_data['singleModel']['height']; ?> </div>
                                                             <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.gender') .': '.$view_data['singleModel']['gender_text']; ?> </div>
                      
-                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.lat') .': '.$view_data['singleModel']['lat']; ?> </div>
+                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.latitude') .': '.$view_data['singleModel']['latitude']; ?> </div>
                      
-                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.lng') .': '.$view_data['singleModel']['lng']; ?> </div>
+                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.longitude') .': '.$view_data['singleModel']['longitude']; ?> </div>
                                                             <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.food_chicken') .': '.$view_data['singleModel']['food_chicken_text']; ?> </div>
                                                             <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.food_fish') .': '.$view_data['singleModel']['food_fish_text']; ?> </div>
                      
@@ -63,6 +63,8 @@
                                                             <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.workflow') .': '.$view_data['singleModel']['workflow_text']; ?> </div>
                      
                                         <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.channel_chat_id') .': '.$view_data['singleModel']['channel_chat_id']; ?> </div>
+                     
+                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.channel') .': '.$view_data['singleModel']['channel']; ?> </div>
                 
     </td>
 </tr>
