@@ -14,11 +14,12 @@
                 <tr class="rowQuestion">
                     <td class="questionNumber">1</td>
                     <td>
-                        <?php echo \Form::text('question_ids[]'); ?>
+                        <?php echo \Form::hidden('question_ids[]'); ?>
                         <?php echo \Form::text('titles[]', '', array('class' => 'validate[required]', 'placeholder' => \Lang::get($view_data['package'] . '::question.view.field.title'))); ?></td>
                     <td><?php echo \Form::text('names[]', '', array('class' => 'validate[required]', 'placeholder' => \Lang::get($view_data['package'] . '::question.view.field.name'))); ?></td>
                     <td><?php echo \Form::compositeSelect('types[]', $view_data['dataSource']['type'], '', array('class' => 'form-control validate[required]')); ?></td>
                     <td><?php echo \Form::text('error_messages[]', '', array('class' => 'validate[required]', 'placeholder' => \Lang::get($view_data['package'] . '::question.view.field.error_message'))); ?></td>
+                    <td></td>
                     <td><a href="#"><i class="fa fa-trash fa-2x commonColorRed deleteQuestion"></i></a></td>
                 </tr>
             </table>
@@ -30,6 +31,7 @@
                         <td><?php echo \Lang::get($view_data['package'] . '::question.view.field.name'); ?></td>
                         <td><?php echo \Lang::get($view_data['package'] . '::question.view.field.type'); ?></td>
                         <td><?php echo \Lang::get($view_data['package'] . '::question.view.field.error_message'); ?></td>
+                        <td><?php echo \Lang::get($view_data['package'] . '::question.view.field.options'); ?></td>
                         <td><?php echo \Lang::get('common.view.actions.actions'); ?></td>
                     </tr>
                 </thead> 

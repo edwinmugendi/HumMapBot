@@ -13,9 +13,9 @@ return array(
             'integer' => 'Integer',
             'decimal' => 'Decimal',
             'photo' => 'Photo',
+            'radio' => 'Radio',
             'gps' => 'GPS',
-            'radio' => 'Single select (Radio)',
-            'checkbox' => 'Multi select (Checkbox)'
+        /* 'checkbox' => 'Multi select (Checkbox)' */
         ),
     ),
     'notification' => array(
@@ -34,6 +34,7 @@ return array(
             'regex' => 'regex',
             'title' => 'Title',
             'error_message' => 'Error message',
+            'options' => 'Options'
         ),
         'actions' => array(
             'delete' => array(

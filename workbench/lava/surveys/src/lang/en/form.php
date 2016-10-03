@@ -20,6 +20,7 @@ return array(
     ),
     'view' => array(
         'menu' => 'Forms',
+        'modal_heading' => 'Options',
         'field' => array(
             'id' => '#',
             'name' => 'Name',

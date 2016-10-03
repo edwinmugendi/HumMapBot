@@ -29,7 +29,11 @@ class FormController extends SurveysBaseController {
         //Get form by id
         $controller_model = $this->getModelByField('id', $this->input['form_id'], $parameters);
 
-        $question_array = array();
+        //Get old question ids
+        $old_question_ids = $controller_model->questions->lists('id');
+
+        $new_question_ids = $question_array = array();
+
         if (array_key_exists('titles', $this->input) && is_array($this->input['titles'])) {
             $index = $question_updated = 0;
             foreach ($this->input['titles'] as $single_title) {
@@ -53,19 +57,36 @@ class FormController extends SurveysBaseController {
 
                     if ($question_array['question_id']) {//Question exists
                         //Update question
-                        $this->callController(\Util::buildNamespace('surveys', 'question', 1), 'updateIfValid', array('id', $question_array['question_id'], $question_array));
+                        $question_model = $this->callController(\Util::buildNamespace('surveys', 'question', 1), 'updateIfValid', array('id', $question_array['question_id'], $question_array));
                     } else {
                         //Create question
                         $question_model = $this->callController(\Util::buildNamespace('surveys', 'question', 1), 'createIfValid', array($question_array, true));
 
                         $controller_model->questions()->save($question_model);
                     }//E# if else statement
+
+                    $new_question_ids[] = $question_model->id;
                     $question_updated++;
                 }//E# if statement
 
                 $index++;
             }//E# foreach statement
         }//E# if statement
+
+        $delete_question_ids = array_diff($old_question_ids, $new_question_ids);
+
+        if ($delete_question_ids) {
+            //Set where clause
+            $where_clause = array(
+                array(
+                    'where' => 'whereIn',
+                    'column' => 'id',
+                    'operand' => $delete_question_ids
+                )
+            );
+            //Mass delete
+            $question_model = $this->callController(\Util::buildNamespace('surveys', 'question', 1), 'massDelete', array($where_clause));
+        }//E# if statements
         //Set notification
         $this->notification = array(
             'type' => 'success',
@@ -112,7 +133,6 @@ class FormController extends SurveysBaseController {
         //Select this controller model
         $this->view_data['controller_model'] = $this->select($fields, $where_clause, 1, $parameters);
 
-
         //Get and set type options to data source
         $this->view_data['dataSource']['type'] = \Lang::get($this->package . '::question.data.type');
 
@@ -153,7 +173,8 @@ class FormController extends SurveysBaseController {
         $this->layout->containerView = $this->getContainerViewPartialView();
 
         //Register templates
-        $this->layout->containerView .= $this->registerDetailedTemplates();
+        $this->layout->containerView .= \View::make($this->view_data['package'] . '::' . $this->view_data['controller'] . '.optionModalView')
+                ->with('view_data', $this->view_data);
 
         //Render page
         return $this->layout;
@@ -202,9 +223,6 @@ class FormController extends SurveysBaseController {
         $this->view_data['singleQuestion'] .= \View::make($this->package . '::' . $this->controller . '.questionSingleView')
                 ->with('view_data', $this->view_data)
                 ->render();
-
-        //return \View::make($this->package . '::' . $this->controller . '.billView')
-        //                ->with('view_data', $this->view_data);
     }
 
 //E# getQuestionView() function

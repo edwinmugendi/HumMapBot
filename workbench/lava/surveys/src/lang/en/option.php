@@ -11,6 +11,7 @@ return array(
         'created' => 'Option created',
         'updated' => 'Option updated',
         'deleted' => 'Option deleted',
+        'option_updated' => '{0} 0 options updated | {1} 1 option updated | [2,Inf] :updated of :count options updated',
     ),
     'view' => array(
         'menu' => 'Options',

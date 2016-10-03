@@ -93,6 +93,12 @@
     /**
      * Question routes
      */
+    //Get options question
+    \Route::get('surveys/option/question', array('as' => 'surveysGetOptionQuestion', 'uses' => 'Lava\Surveys\QuestionController@getOptionView'));
+    
+    //Save options question
+    \Route::post('surveys/save_option/question', array('as' => 'surveysSaveOptionQuestion', 'uses' => 'Lava\Surveys\QuestionController@postSaveOption'));
+
     //Detailed question
     \Route::get('surveys/detailed/question/{id}', array('as' => 'surveysDetailedQuestion', 'uses' => 'Lava\Surveys\QuestionController@getDetailed'));
 

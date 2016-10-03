@@ -131,6 +131,26 @@ class BaseController extends Controller {
 //E# setupLayout() function
 
     /**
+     * S# massDelete() function
+     * @author Edwin Mugendi
+     * Mass delete
+     */
+    public function massDelete($where_clause) {
+
+        //Build model namespace
+        $modelName = \Util::buildNamespace($this->package, $this->controller, 2);
+
+        //Create a model object
+        $model = new $modelName();
+
+        $this->buildWhereClause($model, $where_clause);
+
+        return $model->delete();
+    }
+
+//E# massDelete() function
+
+    /**
      * S# massUpdate() function
      * @author Edwin Mugendi
      * Mass update

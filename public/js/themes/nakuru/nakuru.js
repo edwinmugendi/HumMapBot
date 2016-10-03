@@ -1822,6 +1822,89 @@ jQuery(document).ready(function ($) {
     });
 
     if (inlineJs.page === 'surveysFormQuestionPage') {//Surveys Form Question Page
+        var $idOptionModal = $('#idOptionModal');
+
+        $('#idOptionModal').on('click', '#idOptionSave', function ($event) {
+            var $titles = [];
+            var $optionIds = [];
+            $('.classOptionTitles').each(function () {
+                $titles.push($(this).val());
+            });
+
+            $('.classOptionIds').each(function () {
+                $optionIds.push($(this).val());
+            });
+
+            console.log($titles);
+
+            var $ajaxOptions = new AjaxOptions('/surveys/save_option/question');
+            $ajaxOptions.type = 'POST';
+            $ajaxOptions.dataType = 'JSON';
+            $ajaxOptions.data = {
+                question_id: $('#idOptionQuestionId').val(),
+                form_id: $('#idOptionFormId').val(),
+                titles: $titles,
+                option_ids: $optionIds
+            };
+            $ajaxOptions.done = function ($data) {
+                $idOptionModal.modal('hide');
+                showNotificationBar($data);
+            }//E# done function
+
+            ajaxify($ajaxOptions);
+        });
+
+
+
+        //Show add option modal
+        $('.classAddOptions').click(function () {
+            var $idQuestionId = $(this).data('question-id');
+            $idOptionModal.modal('show');
+            $idOptionModal.find('#idOptionQuestionId').val($idQuestionId);
+
+            var $ajaxOptions = new AjaxOptions('/surveys/option/question');
+            $ajaxOptions.type = 'GET';
+            $ajaxOptions.dataType = 'JSON';
+            $ajaxOptions.data = {
+                question_id: $idQuestionId,
+            };
+            $ajaxOptions.done = function ($data) {
+                $('#idOptionContainer').html($data.message);
+            }//E# done function
+
+            ajaxify($ajaxOptions);
+        });
+
+        //Add  row
+        $('#idOptionModal').on('click', '#idAddOption', function ($event) {
+            //Find first row
+            var $clone = $('#idOptionHiddenTable').find('tr').first().clone();
+
+            //Clear text
+            //Inject it
+            $('#tableOption').find('tbody').append($clone);
+            //Table changed event
+            tableRowChanged('#tableOption', '.optionNumber');
+            //Prevent default
+            $event.preventDefault();
+        });
+
+        //Delete row
+        $('#idOptionModal').on('click', '.deleteOption', function ($event) {
+            //Find row
+            var $tr = $(this).closest('tr.rowOption');
+
+            //Fade out and remove
+            $tr.fadeOut(400, function () {
+                //Remove tr
+                $tr.remove();
+                //Table changed event
+                tableRowChanged('#tableOption', '.optionNumber');
+            });
+            //Prevent default
+            $event.preventDefault();
+        });
+
         //Add  row
         $('#questionView').on('click', '#idAddQuestion', function ($event) {
             //Find first row
@@ -1837,7 +1920,6 @@ jQuery(document).ready(function ($) {
 
         //Delete row
         $('#tableQuestion').on('click', '.deleteQuestion', function ($event) {
-
             //Find row
             var $tr = $(this).closest('tr.rowQuestion');
 
