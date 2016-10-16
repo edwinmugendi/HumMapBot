@@ -54,6 +54,7 @@ class TelegramController extends SurveysBaseController {
 
         \Log::info('Chat id ' . json_encode($this->input));
 
+        //Image ::[2016-10-16 16:38:58] prod.INFO: Chat id {"update_id":503766539,"message":{"message_id":496,"from":{"id":215795746,"first_name":"Edwin","last_name":"Mugendi"},"chat":{"id":215795746,"first_name":"Edwin","last_name":"Mugendi","type":"private"},"date":1476635938,"photo":[{"file_id":"AgADBAADqacxGyLI3Az9YNUPGyV2mvC0XxkABN37nA09u76ZkYICAAEC","file_size":1375,"file_path":"photo\/file_0.jpg","width":67,"height":90},{"file_id":"AgADBAADqacxGyLI3Az9YNUPGyV2mvC0XxkABJztvVmQ_ublkoICAAEC","file_size":17092,"width":240,"height":320},{"file_id":"AgADBAADqacxGyLI3Az9YNUPGyV2mvC0XxkABHouqgvCSPFVk4ICAAEC","file_size":67977,"width":600,"height":800},{"file_id":"AgADBAADqacxGyLI3Az9YNUPGyV2mvC0XxkABGSZ6CXVYx-lkIICAAEC","file_size":109523,"width":960,"height":1280}]},"ip":"149.154.167.206","agent":null} [] []
         return 'here';
         /*
           $keyboard = $parameters = array();
@@ -228,6 +229,7 @@ class TelegramController extends SurveysBaseController {
                     break;
                 }//E# case
             case 'photo': {
+                
                     break;
                 }//E# case
             case 'gps': {
@@ -474,7 +476,7 @@ class TelegramController extends SurveysBaseController {
 
         $question_model = $form_model['questions'][$next_question];
 
-        if (in_array($question_model['type'], array('text', 'integer', 'decimal'))) {
+        if (in_array($question_model['type'], array('text', 'integer', 'decimal', 'photo'))) {
             $text = $question_model->title;
             $parameters = array(
                 'type' => 'text',
