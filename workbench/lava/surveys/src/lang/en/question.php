@@ -29,7 +29,7 @@ return array(
         'questions_list' => 'List of questions',
         'field' => array(
             'id' => '#',
-            'name' => 'Name',
+            'name' => 'Name (Unique)',
             'type' => 'Type',
             'regex' => 'regex',
             'title' => 'Title',

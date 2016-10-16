@@ -10,7 +10,7 @@ return array(
         'workflow' => array(
             '' => 'Select',
             'published' => 'Published',
-            'unpublished' => 'Un-unpublished',
+            'unpublished' => 'Unpublished',
         ),
     ),
     'notification' => array(
@@ -27,6 +27,22 @@ return array(
             'workflow' => 'Status',
         ),
         'actions' => array(
+            'publish' => array(
+                'confirm' => 'Publish form?',
+                'publishMany' => 'Published :count form',
+                'confirmMany' => 'Publish :count form?',
+                'publish' => 'Publish',
+                'cancel' => 'Cancel',
+                'by' => 'Published by :name'
+            ),
+            'unpublish' => array(
+                'confirm' => 'Un-publish form?',
+                'unpublishMany' => 'Un-published :count form',
+                'confirmMany' => 'Un-publish :count form?',
+                'unpublish' => 'Un-publish',
+                'cancel' => 'Cancel',
+                'by' => 'Un-published by :name'
+            ),
             'delete' => array(
                 'confirm' => 'Delete form?',
                 'deleteMany' => 'Deleted :count forms',
@@ -137,19 +153,6 @@ return array(
                             'rows' => array(
                                 array(
                                     'fields' => array(
-                                        array(
-                                            'name' => 'Status',
-                                            'type' => 'select',
-                                            'prepend' => 'user',
-                                            'htmlName' => 'workflow',
-                                            'displayed' => 1,
-                                            'disabled' => 0,
-                                            'placeholder' => 'Select status',
-                                            'help' => '<strong>Description: </strong>The status of this form.<br/><strong>Do: </strong>Select the status of this form.<br/><strong>Star: </strong> %s ',
-                                            'validator' => array(
-                                                'required' => 1
-                                            )
-                                        ),
                                         array(
                                             'name' => 'Name',
                                             'type' => 'text',

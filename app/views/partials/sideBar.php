@@ -25,17 +25,22 @@
                 <div class="menu_section">
                     <p>&nbsp;</p>
                     <ul class="nav side-menu">
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'form') ? 'active' : '' ?>"><a href="<?php echo \URL::route('surveysListForm'); ?>"><i class="fa fa-map-marker"></i> <?php echo \Lang::get('surveys::form.view.menu'); ?></a></li>
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'question') ? 'active' : '' ?>"><a href="<?php echo \URL::route('surveysListQuestion'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('surveys::question.view.menu'); ?></a></li>
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'option') ? 'active' : '' ?>"><a href="<?php echo \URL::route('surveysListOption'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('surveys::option.view.menu'); ?></a></li>
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'session') ? 'active' : '' ?>"><a href="<?php echo \URL::route('surveysListSession'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('surveys::session.view.menu'); ?></a></li>
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'update') ? 'active' : '' ?>"><a href="<?php echo \URL::route('surveysListUpdate'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('surveys::update.view.menu'); ?></a></li>
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'contact') ? 'active' : '' ?>"><a href="<?php echo \URL::route('formsListContact'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('forms::contact.view.menu'); ?></a></li>
+                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'form') ? 'current-page' : '' ?>"><a href="<?php echo \URL::route('surveysListForm'); ?>"><i class="fa fa-map-marker"></i> <?php echo \Lang::get('surveys::form.view.menu'); ?></a></li>
+                        <?php foreach ($view_data['user_form_model'] as $single_form): ?>
+                            <?php $snake_case_form_name = snake_case(\Str::lower($single_form['name'])); ?>
+                            <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == $snake_case_form_name) ? 'current-page' : '' ?>"><a href="<?php echo \URL::route(camel_case('formsList_' . $snake_case_form_name)); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('forms::' . camel_case($snake_case_form_name) . '.view.menu'); ?></a></li>
+                        <?php endforeach; ?>
+                        <?php if ($view_data['user']['id'] == 1): ?> 
+                            <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'question') ? 'current-page' : '' ?>"><a href="<?php echo \URL::route('surveysListQuestion'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('surveys::question.view.menu'); ?></a></li>
+                            <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'option') ? 'current-page' : '' ?>"><a href="<?php echo \URL::route('surveysListOption'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('surveys::option.view.menu'); ?></a></li>
+                            <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'session') ? 'current-page' : '' ?>"><a href="<?php echo \URL::route('surveysListSession'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('surveys::session.view.menu'); ?></a></li>
+                            <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'update') ? 'current-page' : '' ?>"><a href="<?php echo \URL::route('surveysListUpdate'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('surveys::update.view.menu'); ?></a></li>
+                            <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'contact') ? 'current-page' : '' ?>"><a href="<?php echo \URL::route('formsListContact'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('forms::contact.view.menu'); ?></a></li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </div>
             <!-- /sidebar menu -->
-
             <!-- /menu footer buttons -->
             <div class="sidebar-footer hidden-small">
                 <a data-toggle="tooltip" data-placement="top" title="<?php echo \Lang::get('accounts::user.view.signout'); ?>" href="<?php echo \URL::route('userSignOut'); ?>">

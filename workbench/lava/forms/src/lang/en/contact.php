@@ -1,11 +1,11 @@
 <?php
 
 return array(
-    /*
-      |--------------------------------------------------------------------------
-      | Contact Language Lines
-      |--------------------------------------------------------------------------
-     */
+/*
+|--------------------------------------------------------------------------
+| Contact Language Lines
+|--------------------------------------------------------------------------
+*/
     'data' => array(
         'gender' => array(
             'male' => 'Male',
@@ -16,8 +16,8 @@ return array(
             'n' => 'No',
         ),
         'workflow' => array(
-            'complete' => 'Complete',
-            'incomplete' => 'Incomplete',
+            'y' => 'Yes',
+            'n' => 'No',
         )
     ),
     'notification' => array(
@@ -25,51 +25,51 @@ return array(
         'updated' => 'Contact updated',
         'deleted' => 'Contact deleted',
     ),
-    'view' => array(
+'view' => array(
         'menu' => 'Contacts',
-        'field' => array(
+'field' => array(
             'workflow' => 'status',
-            'id' => '#',
+'id' => '#',
             'session_id' => 'Session id',
             'full_name' => 'Full name',
             'age' => 'Age',
             'phone' => 'Phone',
             'gender' => 'Gender',
             'height' => 'Height',
-            'latitude' => 'Latitude',
-            'longitude' => 'Longitude',
+            'lat' => 'Lat',
+            'lng' => 'Lng',
             'food_chicken' => 'Chicken',
             'food_fish' => 'Fish',
-            'names' => 'Names',
-            'channel_chat_id' => 'Chat id',
+'names' => 'Names',
+'channel_chat_id' => 'Chat id',
             'channel' => 'Channel'
-        ),
-        'actions' => array(
-            'delete' => array(
+),
+'actions' => array(
+'delete' => array(
                 'confirm' => 'Delete contact?',
                 'deleteMany' => 'Deleted :count contacts',
                 'confirmMany' => 'Delete :count contacts?',
-                'delete' => 'Delete',
-                'cancel' => 'Cancel',
-            ),
-            'undelete' => array(
-                'undoDelete' => 'Undo delete',
-                'undeleting' => 'Un deleting...',
+'delete' => 'Delete',
+'cancel' => 'Cancel',
+),
+'undelete' => array(
+'undoDelete' => 'Undo delete',
+'undeleting' => 'Un deleting...',
                 'undeleted' => 'Un deleted :count contacts',
-            ),
-        ),
-        'link' => array(
+),
+),
+'link' => array(
             'list' => 'Contacts list',
             'add' => 'Add contact',
             'found' => '{0} :count contacts | {1} :count contact | [2,Inf] :count contacts',
-        )
-    ),
-    'contactDetailedPage' => array(
-        'title' => 'Contact: :title #:id'
-    ),
-    'contactListPage' => array(
+)
+),
+'contactDetailedPage' => array(
+'title' => 'Contact: :title #:id'
+),
+'contactListPage' => array(
         'title' => 'List of contacts'
-    ),
+),
     'contactPostPage' => array(
         'actionTitle' => array(
             1 => 'Create contacts',

@@ -14,7 +14,138 @@ class FormController extends SurveysBaseController {
     //Controller
     public $controller = 'form';
     public $imageable = true;
+    //Set ownedBy
+    public $ownedBy = array('organization', 'user');
+    //Define workflow
+    public $workflow = array(
+        'publish' => 'published',
+        'unpublish' => 'unpublished',
+    );
 
+    /**
+     * S# postWorkflow() function
+     * Worflow - Approve or disapprove field
+     */
+    public function postWorkflow() {
+
+        //TODO: Check if user owns this model or 
+        //TODO: is owned by his organization
+        //Get this controller's model
+        $modelObject = $this->getModelObject();
+
+        if (is_array($this->input['ids'])) {
+            //Fields
+            $fields = array('*');
+
+            //Set date range
+            $where_clause = array(
+                array(
+                    'where' => 'whereIn',
+                    'column' => 'id',
+                    'operand' => $this->input['ids']
+                )
+            );
+
+            //Set scope
+            $parameters['scope'] = array('statusOne');
+
+            $parameters['lazyload'] = array('questions');
+
+            //Get model by field
+            $controller_model = $this->select($fields, $where_clause, 2, $parameters);
+
+            if ($controller_model) {//models exist
+                foreach ($controller_model as $single_model) {
+                    //Define response
+                    $response = array();
+
+                    if (in_array($this->input['action'], array_keys($this->workflow))) {//Actions
+                        $single_model->workflow = $this->workflow[$this->input['action']];
+
+                        $single_model->updated_by = $this->user['id'] ? $this->user['id'] : 1;
+
+                        if ($this->input['action'] == 'publish') {
+                            //Get updated form
+                            $parameters = array();
+
+                            $parameters['lazyLoad'] = array('questions');
+
+                            //Get form by id
+                            $controller_model = $this->getModelByField('id', $single_model->id, $parameters);
+
+                            //Build form
+                            $this->callController(\Util::buildNamespace('forms', 'builder', 1), 'buildForm', array($controller_model));
+                        }//E# if statement
+                        $single_model->save();
+                        //Set reponse for this model
+                        $response = array(
+                            'id' => $single_model->id,
+                            'code' => 200,
+                            'message' => \Lang::get($this->package . '::' . $this->controller . '.view.actions.' . $this->input['action'] . '.by', array('name' => $this->user['full_name']))
+                        );
+                    } else {
+                        //Set notification
+                        $parameters = array(
+                            'field' => 'id',
+                            'type' => Str::title($this->controller),
+                            'value' => $single_model->id,
+                        );
+
+                        //Set reponse for this model
+                        $response = array(
+                            'id' => $single_model->id,
+                            'code' => 404,
+                            'message' => \Lang::get('httpStatus.systemCode.904.developerMessage', $parameters)
+                        );
+                    }//E# if else statement
+
+                    $this->notification[] = $response;
+                }//E# foreach statement
+            }//E# if statement
+        }//E# if statement
+        return $this->notification;
+    }
+
+//E# postWorkflow() function
+
+    /**
+     * S# appendCustomValidationRules() function
+     * 
+     * Append custom validation rules.
+     * 
+     * This mainly happens when we need to access the id of object. Eg when updating an object with unique validation rule in it
+     * 
+     * Make sure you have if else for create and update
+     * if($this->crudId == 2){}
+     */
+    public function appendCustomValidationRules() {
+        if ($this->crudId == 1) {
+            $this->validationRules['name'] = 'required|unique:svy_forms,name';
+        } else if ($this->crudId == 2) {
+            $this->validationRules['name'] = 'required|unique:svy_forms,name,' . $this->input['id'] . ',id';
+        }//E# 
+
+        return;
+    }
+
+//E# appendCustomValidationRules() function
+
+    /**
+     * S# beforeCreating() function
+     * @author Edwin Mugendi
+     * Call this just before creating the model
+     * Can be used to prepare the inputs
+     * @return 
+     */
+    public function beforeCreating() {
+        $this->input['workflow'] = 'unpublished';
+        $this->input['status'] = 1;
+        $this->input['created_by'] = $this->user['id'] ? $this->user['id'] : 1;
+        $this->input['updated_by'] = $this->user['id'] ? $this->user['id'] : 1;
+        return;
+    }
+
+//E# beforeCreating() function
     /**
      * S# postQuestion() function
      * 
@@ -87,6 +218,17 @@ class FormController extends SurveysBaseController {
             //Mass delete
             $question_model = $this->callController(\Util::buildNamespace('surveys', 'question', 1), 'massDelete', array($where_clause));
         }//E# if statements
+        //Get updated form
+        $parameters = array();
+
+        $parameters['lazyLoad'] = array('questions');
+
+        //Get form by id
+        $controller_model = $this->getModelByField('id', $this->input['form_id'], $parameters);
+
+        //Build form
+        $this->callController(\Util::buildNamespace('forms', 'builder', 1), 'buildForm', array($controller_model));
+
         //Set notification
         $this->notification = array(
             'type' => 'success',

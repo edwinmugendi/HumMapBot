@@ -2,7 +2,9 @@
     <?php echo '<?php if (!array_key_exists(\'export\', $view_data)): ?>'; ?>
     <div class="row">
         <div class="col-md-6">
-            <a href="<?php echo '<?php echo \URL::route(camel_case($view_data[\'package\'] . \'_post_\' . $view_data[\'controller\']));?>' ?>" class="btn btn-primary"><i class="fa fa-plus"></i>&nbsp;<?php echo '<?php echo \Lang::get($view_data[\'package\'] . \'::\' . $view_data[\'controller\'] . \'.view.link.add\');?>' ?></a>
+            <?php if (!$auto_generated): ?>
+                <a href="<?php echo '<?php echo \URL::route(camel_case($view_data[\'package\'] . \'_post_\' . $view_data[\'controller\']));?>' ?>" class="btn btn-primary"><i class="fa fa-plus"></i>&nbsp;<?php echo '<?php echo \Lang::get($view_data[\'package\'] . \'::\' . $view_data[\'controller\'] . \'.view.link.add\');?>' ?></a>
+            <?php endif; ?>
         </div>
         <div class="col-md-6">
             <p class="pull-right commonFontWeightBold commonColor">
@@ -14,8 +16,10 @@
     </div>
     <div class="row commonMarginTop5">
         <div class="col-md-12">
-            <div class="btn-group"> 
-                <button id="idDeleteRow" disabled type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo '<?php echo \Lang::get($view_data[\'package\'] . \'::\' . $view_data[\'controller\'] . \'.view.actions.delete.delete\');?>' ?>"><i class="fa fa-trash fa-2x" aria-hidden="true"></i></button>
+            <div class="btn-group">
+                <?php if (!$auto_generated): ?>
+                    <button id="idDeleteRow" disabled type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo '<?php echo \Lang::get($view_data[\'package\'] . \'::\' . $view_data[\'controller\'] . \'.view.actions.delete.delete\');?>' ?>"><i class="fa fa-trash fa-2x" aria-hidden="true"></i></button>
+                <?php endif; ?>
                 <a href="<?php echo '<?php echo \URL::route(camel_case($view_data[\'package\'] . \'_list_\' . $view_data[\'controller\']), $view_data[\'paginationAppends\']) . \'&export=print\';?>'; ?>" target="_blank" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo '<?php echo \Lang::get(\'common.view.actions.print.print\');?>' ?>"><i class="fa fa-print fa-2x" aria-hidden="true"></i></a>
                 <a href="<?php echo '<?php echo \URL::route(camel_case($view_data[\'package\'] . \'_list_\' . $view_data[\'controller\']), $view_data[\'paginationAppends\']) . \'&export=pdf\'?>'; ?>" target="_blank" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo '<?php echo \Lang::get(\'common.view.actions.pdf.pdf\');?>' ?>"><i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i></a>
                 <a href="<?php echo '<?php echo \URL::route(camel_case($view_data[\'package\'] . \'_list_\' . $view_data[\'controller\']), $view_data[\'paginationAppends\']) . \'&export=xls\'?>'; ?>" target="_blank" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo '<?php echo \Lang::get(\'common.view.actions.xls.xls\');?>' ?>"><i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i></a>
@@ -30,7 +34,9 @@
                 <thead> 
                     <tr>
                         <?php echo '<?php if (!array_key_exists(\'export\', $view_data)): ?>'; ?>
-                        <th><?php echo '<?php echo \Form::checkbox(\'check_all\', 1, null, array(\'id\' => \'idCheckUnCheckRow\')); ?>'; ?></th>  
+                        <?php if (!$auto_generated): ?>
+                            <th><?php echo '<?php echo \Form::checkbox(\'check_all\', 1, null, array(\'id\' => \'idCheckUnCheckRow\')); ?>'; ?></th>  
+                        <?php endif; ?>
                         <th></th>
                         <?php echo '<?php endif; ?>'; ?>
 
@@ -87,7 +93,9 @@
                     <?php echo '<?php if (!array_key_exists(\'export\', $view_data)): ?>'; ?>
                     <tr>
                         <?php echo '<?php echo \Form::open(array(\'route\' => camel_case($view_data[\'package\'] . \'_list_\' . $view_data[\'controller\']), \'method\' => \'get\', \'id\' => \'idSearchByForm\')); ?>'; ?>
-                        <td></td>
+                        <?php if (!$auto_generated): ?>
+                            <td></td>
+                        <?php endif; ?>
                         <td></td>
                         <?php if ($imageable): ?>
                             <td></td>

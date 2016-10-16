@@ -4,8 +4,8 @@
             <tr class="rowOption">
                 <td class="optionNumber">1</td>
                 <td>
-                    <?php echo \Form::hidden('question_ids[]', '', array('class' => 'classOptionIds')); ?>
-                    <?php echo \Form::text('titles[]', '', array('class' => 'classOptionTitles validate[required]', 'placeholder' => \Lang::get($view_data['package'] . '::question.view.field.title'))); ?></td>
+                    <?php echo \Form::hidden('option_ids[]', '', array('class' => 'classOptionIds')); ?>
+                    <?php echo \Form::text('option_titles[]', '', array('class' => 'classOptionTitles validate[required]', 'placeholder' => \Lang::get($view_data['package'] . '::question.view.field.title'))); ?></td>
                 <td><a href="#"><i class="fa fa-trash fa-2x commonColorRed deleteOption"></i></a></td>
             </tr>
         </table>

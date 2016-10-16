@@ -38,7 +38,7 @@ class FormModel extends \BaseModel {
     protected $hidden = array();
     //Create validation rules
     public $createRules = array(
-        'name' => 'required',
+        'name' => 'required|unique:svy_forms,name',
         'workflow' => '',
     );
     //Create validation rules

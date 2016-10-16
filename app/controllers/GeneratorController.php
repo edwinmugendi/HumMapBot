@@ -4,7 +4,7 @@ class GeneratorController extends BaseController {
 
     public $controller = 'generator';
     private $workbenchFolder = 'lava';
-    private $controllers = array(
+    public $controllers = array(
         //Accounts
         'Lava\Accounts\UserController',
         //Merchants
@@ -19,7 +19,7 @@ class GeneratorController extends BaseController {
         'Lava\Forms\ContactController',
     );
 
-    public function generateViews() {
+    public function generateViews($auto_generated = false) {
         foreach ($this->controllers as $controller) {
 
             $controller = new $controller();
@@ -47,6 +47,7 @@ class GeneratorController extends BaseController {
             $single_view = \View::make($template_single_path)
                     ->with('fields', $this_model->viewFields)
                     ->with('imageable', $controller->imageable)
+                    ->with('auto_generated', $auto_generated)
                     ->render();
 
             if (\File::exists($full_single_path)) {//Single file exists
@@ -65,6 +66,7 @@ class GeneratorController extends BaseController {
                 $list_view = \View::make($template_list_path)
                         ->with('fields', $this_model->viewFields)
                         ->with('imageable', $controller->imageable)
+                        ->with('auto_generated', $auto_generated)
                         ->render();
 
                 if (\File::exists($full_list_path)) {//List file exists
@@ -86,6 +88,7 @@ class GeneratorController extends BaseController {
             $detailed_view = \View::make($template_detailed_path)
                     ->with('fields', $this_model->viewFields)
                     ->with('imageable', $controller->imageable)
+                    ->with('auto_generated', $auto_generated)
                     ->render();
 
             if (\File::exists($full_detailed_path)) {//Detailed file exists
@@ -106,6 +109,7 @@ class GeneratorController extends BaseController {
             $post_view = \View::make($template_post_path)
                     ->with('fields', $this_model->viewFields)
                     ->with('imageable', $controller->imageable)
+                    ->with('auto_generated', $auto_generated)
                     ->render();
 
             if (\File::exists($full_post_path)) {//Detailed file exists

@@ -841,11 +841,13 @@ $(window).resize(function () {
 });
 
 function ajaxBeforeSending() {
-    var $notificationData = {
-        type: 'info',
-        message: 'Processing...'
-    }
-    showNotificationBar($notificationData);
+    /*
+     var $notificationData = {
+     type: 'info',
+     message: 'Processing...'
+     }
+     showNotificationBar($notificationData);
+     */
 }
 /**
  * S# AjaxOptions() function
@@ -985,7 +987,7 @@ function registerFormEvents() {
  * Hide notifications
  * */
 function hideNotification() {
-    $.pnotify_remove_all();
+    //$('.notifyjs-wrapper').trigger('notify-hide');
 }//E# hideNotification() function
 
 String.prototype.capitalize = function () {
@@ -1285,7 +1287,6 @@ function registerUndoDelete() {
 function registerWorkflow($htmlElement, $action) {
     $($htmlElement).click(function ($event) {
 
-
         //Define source and confirm message
         var $source, $confirmMessage;
 
@@ -1379,6 +1380,8 @@ function registerWorkflow($htmlElement, $action) {
                             $message = $jsonData[0].message;
                         }//E# if else statement
 
+                        hideNotification();
+
                         //Show notification
                         var $notificationData = {
                             type: 'success',
@@ -1393,7 +1396,7 @@ function registerWorkflow($htmlElement, $action) {
             },
         }//E# bootBoxOptions
 
-        //Confirm delet
+        //Confirm delete
         bootbox.confirm($bootBoxOptions);
 
         //Prevent default event
@@ -1820,8 +1823,18 @@ jQuery(document).ready(function ($) {
         className: "my-modal"
 
     });
+    if (inlineJs.page === 'surveysFormListPage') {//Surveys Form List Page
+        //Register publish event
+        registerWorkflow('#idPublishRow,.publishRow', 'publish');
 
-    if (inlineJs.page === 'surveysFormQuestionPage') {//Surveys Form Question Page
+        //Register unpublished event
+        registerWorkflow('#idUnpublishRow,.unpublishRow', 'unpublish');
+
+    } else if (inlineJs.page === 'surveysFormPostPage') {//Surveys Form Post Page
+        if (inlineJs.controller_model.workflow == 'published') {
+            $('#idName').prop('disabled', true);
+        }//E# if statement
+    } else if (inlineJs.page === 'surveysFormQuestionPage') {//Surveys Form Question Page
         var $idOptionModal = $('#idOptionModal');
 
         $('#idOptionModal').on('click', '#idOptionSave', function ($event) {
@@ -1834,8 +1847,6 @@ jQuery(document).ready(function ($) {
             $('.classOptionIds').each(function () {
                 $optionIds.push($(this).val());
             });
-
-            console.log($titles);
 
             var $ajaxOptions = new AjaxOptions('/surveys/save_option/question');
             $ajaxOptions.type = 'POST';
@@ -1853,8 +1864,6 @@ jQuery(document).ready(function ($) {
 
             ajaxify($ajaxOptions);
         });
-
-
 
         //Show add option modal
         $('.classAddOptions').click(function () {

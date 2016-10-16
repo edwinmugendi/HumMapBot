@@ -27,4 +27,5 @@
     \Route::post('forms/undelete/contact', array('as' => 'formsUndeleteContact', 'uses' => 'Lava\Forms\ContactController@postUndelete'));
 });
 
+require_once __DIR__ . '/routes/all_form_routes.php';
 

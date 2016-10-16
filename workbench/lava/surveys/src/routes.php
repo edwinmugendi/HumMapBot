@@ -90,12 +90,15 @@
     //Un-Delete form
     \Route::post('surveys/undelete/form', array('as' => 'surveysUndeleteForm', 'uses' => 'Lava\Surveys\FormController@postUndelete'));
 
+    //Workflow form
+    \Route::post('surveys/workflow/form', array('as' => 'surveysWorkflowForm', 'uses' => 'Lava\Surveys\FormController@postWorkflow'));
+
     /**
      * Question routes
      */
     //Get options question
     \Route::get('surveys/option/question', array('as' => 'surveysGetOptionQuestion', 'uses' => 'Lava\Surveys\QuestionController@getOptionView'));
-    
+
     //Save options question
     \Route::post('surveys/save_option/question', array('as' => 'surveysSaveOptionQuestion', 'uses' => 'Lava\Surveys\QuestionController@postSaveOption'));
 
