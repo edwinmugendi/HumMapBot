@@ -8,6 +8,8 @@ use \Longman\TelegramBot\Entities\InlineKeyboardButton;
 use \Longman\TelegramBot\Request;
 use Longman\TelegramBot\Entities\ReplyKeyboardHide;
 use Longman\TelegramBot\Entities\ReplyKeyboardMarkup;
+use GuzzleHttp\Client as GuzzleClient;
+use Intervention\Image\Image as InterventionImage;
 
 /**
  * S# TelegramController() function
@@ -55,7 +57,7 @@ class TelegramController extends SurveysBaseController {
         \Log::info('Chat id ' . json_encode($this->input));
 
         //Image ::[2016-10-16 16:38:58] prod.INFO: Chat id {"update_id":503766539,"message":{"message_id":496,"from":{"id":215795746,"first_name":"Edwin","last_name":"Mugendi"},"chat":{"id":215795746,"first_name":"Edwin","last_name":"Mugendi","type":"private"},"date":1476635938,"photo":[{"file_id":"AgADBAADqacxGyLI3Az9YNUPGyV2mvC0XxkABN37nA09u76ZkYICAAEC","file_size":1375,"file_path":"photo\/file_0.jpg","width":67,"height":90},{"file_id":"AgADBAADqacxGyLI3Az9YNUPGyV2mvC0XxkABJztvVmQ_ublkoICAAEC","file_size":17092,"width":240,"height":320},{"file_id":"AgADBAADqacxGyLI3Az9YNUPGyV2mvC0XxkABHouqgvCSPFVk4ICAAEC","file_size":67977,"width":600,"height":800},{"file_id":"AgADBAADqacxGyLI3Az9YNUPGyV2mvC0XxkABGSZ6CXVYx-lkIICAAEC","file_size":109523,"width":960,"height":1280}]},"ip":"149.154.167.206","agent":null} [] []
-        return 'here';
+
         /*
           $keyboard = $parameters = array();
           $keyboard[] = [['category1' => 2, 'category2' => 4]];
@@ -164,7 +166,7 @@ class TelegramController extends SurveysBaseController {
                 //dd($is_valid);
                 if ($is_valid) {
 
-                    $data_to_update = $this->setDataToUpdate($question_model);
+                    $data_to_update = $this->setDataToUpdate($session_model, $question_model);
 
                     if ($session_model->next_question < ($session_model->total_questions)) {
                         $session_model->next_question += 1;
@@ -208,11 +210,12 @@ class TelegramController extends SurveysBaseController {
      * 
      * Set data to update
      * 
+     * @param Model $session_model Session Model
      * @param Model $question_model Question Model
      * 
      * @return array Data to update
      */
-    private function setDataToUpdate($question_model) {
+    private function setDataToUpdate($session_model, $question_model) {
         $data_to_update = array();
 
         switch ($question_model['type']) {
@@ -229,7 +232,12 @@ class TelegramController extends SurveysBaseController {
                     break;
                 }//E# case
             case 'photo': {
-                
+                    $photos = $this->input['message']['photo'];
+
+                    $photos_count = count($photos);
+
+                    $this->savePhoto($session_model, $question_model, $photos[($photos_count - 1)]);
+
                     break;
                 }//E# case
             case 'gps': {
@@ -257,6 +265,94 @@ class TelegramController extends SurveysBaseController {
 //E# setDataToUpdate() function
 
     /**
+     * S# savePhoto() function
+     * 
+     * Save photo
+     * 
+     * @param Model $session_model Session model
+     * @param Model $form_model Form model
+     * @param array $photo Photo
+     * 
+     * 
+     */
+    private function savePhoto($session_model, $form_model, $photo) {
+        //Telegram link
+        $telegram_link = 'https://api.telegram.org/bot' . $this->tg_configs['api_key'] . '/getFile?file_id=' . $photo['file_id'];
+
+        //Create guzzle client
+        $guzzle_client = new GuzzleClient();
+
+        $json_response = json_decode($guzzle_client->get($telegram_link)->getJson(), true);
+
+        if ($json_response['ok'] == 'true') {
+
+            //https://api.telegram.org/file/bot265033849:AAHAs6vKVlY7UyqWFUHoE7Toe2TsGvu0sf4/photo/file_0.jpg
+            //Telegram file link
+            $telegram_file_link = 'https://api.telegram.org/file/bot' . $this->tg_configs['api_key'] . '/photo/' . $json_response['result']['file_path'];
+
+            //Build upload path
+            $upload_path = public_path() . \Config::get('media::media.uploadPath');
+            //Get image
+            $image = $thumbnail = InterventionImage::make($telegram_file_link);
+
+            //Get mime
+            $mime = $image->mime();
+
+            if ($mime == 'image/jpeg') {
+                $extension = '.jpg';
+            } elseif ($mime == 'image/png') {
+                $extension = '.png';
+            } elseif ($mime == 'image/gif') {
+                $extension = '.gif';
+            } else {
+                $extension = '';
+            }//E# if else statement
+            //Resize images
+            $image->resize(\Config::get('media::media.mainWidth'), \Config::get('media::media.mainHeight'));
+            $thumbnail->resize(\Config::get('media::media.thumbnailWidth'), \Config::get('media::media.thumbnailHeight'));
+
+            //Build media name
+            $media_name = \Str::random(\Config::get('media::media.mediaNameLength')) . $extension;
+
+            //Save images
+            $image->save($upload_path . '/' . $media_name);
+            $thumbnail->save($upload_path . '/thumbnails/' . $media_name);
+
+            //Define media row 
+            $mediaRow[] = array(
+                /* 2 New fields */
+                'is_image' => 1,
+                'original_name' => $media_name,
+                'controller_type' => str_replace(' ', '_', \Str::lower($form_model->name)),
+                'type' => 'photo',
+                'name' => $media_name,
+                'extension' => $extension,
+                'main_size' => $json_response['result']['file_size'],
+                'thumbnail_size' => 1,
+                'is_thumbnailed' => 1,
+                'is_resized' => 1,
+                'order' => 0,
+                'refresh_key' => 1,
+                'agent' => \Request::getClientIp(),
+                'ip' => \Request::server('HTTP_USER_AGENT'),
+                'status' => 1,
+                'created_by' => 1,
+                'updated_by' => 1
+            );
+
+            //Create a Media
+            $media_model = $this->callController(\Util::buildNamespace('media', 'media', 1), 'createIfValid', $mediaRow);
+
+            //Update actual form
+            $actual_form_model = $this->callController(\Util::buildNamespace('forms', $form_model->name, 1), 'getModelByField', array('id', $session_model->actual_form_id));
+
+            $actual_form_model->media()->save($media_model);
+        }//E# if statement
+    }
+
+//E# savePhoto() function
+
+    /**
      * S# validateResponse() function
      * 
      * Validate response
@@ -281,7 +377,7 @@ class TelegramController extends SurveysBaseController {
                     break;
                 }//E# case
             case 'photo': {
-                    return true;
+                    return (array_key_exists('photo', $this->input['message'])) && (count($this->input['message']['photo']) > 0);
                     break;
                 }//E# case
             case 'gps': {
@@ -585,6 +681,10 @@ class TelegramController extends SurveysBaseController {
     private function sendMessage($parameters) {
 
         switch ($parameters['type']) {
+            case 'photo': {
+                    $this->tg_request->sendMessage(['chat_id' => $parameters['chat_id'], 'text' => $parameters['text']]);
+                    break;
+                }//E# case
             case 'text': {
                     $this->tg_request->sendMessage(['chat_id' => $parameters['chat_id'], 'text' => $parameters['text']]);
                     break;

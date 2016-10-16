@@ -6,7 +6,7 @@
     "require": {
         "laravel/framework": "4.2.*",
         "patricktalmadge/bootstrapper": "~5",
-        "guzzlehttp/guzzle": "~4.0",
+        "guzzlehttp/guzzle": "~6.0",
         "arcturial/clickatell": "*",
         "thujohn/pdf": "dev-master",
         "maatwebsite/excel": "~1.3.0",
