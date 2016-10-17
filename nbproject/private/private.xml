@@ -11,6 +11,15 @@
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/home/sapama/projects/web/bot/workbench/lava/forms/src/views/builder/builderMigrationView.php</file>
+            <file>file:/home/sapama/projects/web/bot/workbench/lava/surveys/src/controllers/TelegramController.php</file>
+            <file>file:/home/sapama/projects/web/bot/workbench/lava/forms/src/views/builder/builderControllerView.php</file>
+            <file>file:/home/sapama/projects/web/bot/workbench/lava/forms/src/routes/all_form_routes.php</file>
+            <file>file:/home/sapama/projects/web/bot/workbench/lava/forms/src/routes.php</file>
+            <file>file:/home/sapama/projects/web/bot/app/config/app.php</file>
+            <file>file:/home/sapama/projects/web/bot/app/config/prod/app.php</file>
+            <file>file:/home/sapama/projects/web/bot/workbench/lava/forms/src/controllers/BuilderController.php</file>
+        </group>
     </open-files>
 </project-private>

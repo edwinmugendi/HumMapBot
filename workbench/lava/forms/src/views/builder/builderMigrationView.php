@@ -12,7 +12,7 @@ class <?php echo $class_name; ?> extends Migration {
 */
 public function up() {
 
-Schema::create('frm_<?php echo $table_name; ?>', function(Blueprint $table) {
+Schema::create('frm_<?php echo str_replace(' ', '_', \Str::lower($table_name)); ?>', function(Blueprint $table) {
 //System fields
 $table->increments('id');
 $table->integer('organization_id')->unsigned();

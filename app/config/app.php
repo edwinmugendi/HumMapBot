@@ -107,6 +107,8 @@ return array(
         'Illuminate\Workbench\WorkbenchServiceProvider',
         //Thujohn Pdf Service Provider',
         'Thujohn\Pdf\PdfServiceProvider',
+        //Intervention Image
+        'Intervention\Image\ImageServiceProvider',
         //Maatwebsite Excel Service Provider
         'Maatwebsite\Excel\ExcelServiceProvider',
         //Bootstrapper Service Provider
@@ -220,5 +222,7 @@ return array(
         //PDF
         'PDF' => 'Thujohn\Pdf\PdfFacade',
         'Excel' => 'Maatwebsite\Excel\Facades\Excel',
+        //Interventions Image
+        'Image' => 'Intervention\Image\Facades\Image'
     ),
 );

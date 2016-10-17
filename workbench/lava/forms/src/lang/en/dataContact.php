@@ -25,6 +25,7 @@ return array(
     'age' => 'age',
     'height' => 'height',
     'gender' => 'gender',
+    'selfie' => 'selfie',
     'latitude' => 'latitude',
     'longitude' => 'longitude',
 ),

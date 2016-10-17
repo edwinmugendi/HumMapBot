@@ -172,6 +172,34 @@
                         $order = 'asc';
                         $is_ordered = false;
                         ?>
+                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'selfie'): ?>
+                             <?php $is_ordered = true;?>
+                                <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
+                                <?php
+                                $order = 'asc';
+                                ?>
+                            <?php else: ?>
+                                <?php
+                                $order = 'desc';
+                                ?>
+                            <?php endif; ?>
+                        <?php endif ?>
+
+                        <?php if ($view_data['paginationAppends']): ?>
+                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=selfie'; ?>
+                        <?php else: ?>
+                            <?php $url = 'order=' . $order . '&sort=selfie';?>
+                        <?php endif;?>                                <th>   
+                                    <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
+                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.selfie'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
+                                        <?php endif; ?>                                    </a>
+                                </th>
+                                <?php else: ?>                                <th>
+                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.selfie'); ?>                                </th>
+                                <?php endif; ?>                                                                                                                <?php if (!array_key_exists('export', $view_data)): ?>                                <?php
+                        $order = 'asc';
+                        $is_ordered = false;
+                        ?>
                         <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'latitude'): ?>
                              <?php $is_ordered = true;?>
                                 <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
@@ -328,6 +356,9 @@
                                 
                                                                                     <td>
                                                                             <?php echo \Form::text('gender', isset($view_data['input']['gender']) ? $view_data['input']['gender'] : '', array('class' => 'form-control')); ?>                                                                    </td>
+                                
+                                                                                    <td>
+                                                                            <?php echo \Form::text('selfie', isset($view_data['input']['selfie']) ? $view_data['input']['selfie'] : '', array('class' => 'form-control')); ?>                                                                    </td>
                                 
                                                                                     <td>
                                                                             <?php echo \Form::text('latitude', isset($view_data['input']['latitude']) ? $view_data['input']['latitude'] : '', array('class' => 'form-control')); ?>                                                                    </td>

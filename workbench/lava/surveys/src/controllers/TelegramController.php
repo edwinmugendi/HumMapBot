@@ -9,7 +9,7 @@ use \Longman\TelegramBot\Request;
 use Longman\TelegramBot\Entities\ReplyKeyboardHide;
 use Longman\TelegramBot\Entities\ReplyKeyboardMarkup;
 use GuzzleHttp\Client as GuzzleClient;
-use Intervention\Image\Image as InterventionImage;
+use Intervention\Image\Facades\Image as InterventionImage;
 
 /**
  * S# TelegramController() function
@@ -26,6 +26,7 @@ class TelegramController extends SurveysBaseController {
 
     // {"update_id":503766379,"message":{"message_id":15,"from":{"id":215795746,"first_name":"Edwin","last_name":"Mugendi"},"chat":{"id":215795746,"first_name":"Edwin","last_name":"Mugendi","type":"private"},"date":1474988534,"text":"\/start","entities":[{"type":"bot_command","offset":0,"length":6}]},"ip":"149.154.167.206","agent":null} [] []
     // {"update_id":503766380,"message":{"message_id":16,"from":{"id":215795746,"first_name":"Edwin","last_name":"Mugendi"},"chat":{"id":215795746,"first_name":"Edwin","last_name":"Mugendi","type":"private"},"date":1474988575,"text":"Hello"},"ip":"149.154.167.206","agent":null} [] []
+    //Image ::[2016-10-16 16:38:58] prod.INFO: Chat id {"update_id":503766539,"message":{"message_id":496,"from":{"id":215795746,"first_name":"Edwin","last_name":"Mugendi"},"chat":{"id":215795746,"first_name":"Edwin","last_name":"Mugendi","type":"private"},"date":1476635938,"photo":[{"file_id":"AgADBAADqacxGyLI3Az9YNUPGyV2mvC0XxkABN37nA09u76ZkYICAAEC","file_size":1375,"file_path":"photo\/file_0.jpg","width":67,"height":90},{"file_id":"AgADBAADqacxGyLI3Az9YNUPGyV2mvC0XxkABJztvVmQ_ublkoICAAEC","file_size":17092,"width":240,"height":320},{"file_id":"AgADBAADqacxGyLI3Az9YNUPGyV2mvC0XxkABHouqgvCSPFVk4ICAAEC","file_size":67977,"width":600,"height":800},{"file_id":"AgADBAADqacxGyLI3Az9YNUPGyV2mvC0XxkABGSZ6CXVYx-lkIICAAEC","file_size":109523,"width":960,"height":1280}]},"ip":"149.154.167.206","agent":null} [] []
 
     /**
      * S# __construct() function
@@ -56,7 +57,6 @@ class TelegramController extends SurveysBaseController {
 
         \Log::info('Chat id ' . json_encode($this->input));
 
-        //Image ::[2016-10-16 16:38:58] prod.INFO: Chat id {"update_id":503766539,"message":{"message_id":496,"from":{"id":215795746,"first_name":"Edwin","last_name":"Mugendi"},"chat":{"id":215795746,"first_name":"Edwin","last_name":"Mugendi","type":"private"},"date":1476635938,"photo":[{"file_id":"AgADBAADqacxGyLI3Az9YNUPGyV2mvC0XxkABN37nA09u76ZkYICAAEC","file_size":1375,"file_path":"photo\/file_0.jpg","width":67,"height":90},{"file_id":"AgADBAADqacxGyLI3Az9YNUPGyV2mvC0XxkABJztvVmQ_ublkoICAAEC","file_size":17092,"width":240,"height":320},{"file_id":"AgADBAADqacxGyLI3Az9YNUPGyV2mvC0XxkABHouqgvCSPFVk4ICAAEC","file_size":67977,"width":600,"height":800},{"file_id":"AgADBAADqacxGyLI3Az9YNUPGyV2mvC0XxkABGSZ6CXVYx-lkIICAAEC","file_size":109523,"width":960,"height":1280}]},"ip":"149.154.167.206","agent":null} [] []
 
         /*
           $keyboard = $parameters = array();
@@ -166,7 +166,7 @@ class TelegramController extends SurveysBaseController {
                 //dd($is_valid);
                 if ($is_valid) {
 
-                    $data_to_update = $this->setDataToUpdate($session_model, $question_model);
+                    $data_to_update = $this->setDataToUpdate($session_model, $form_model, $question_model);
 
                     if ($session_model->next_question < ($session_model->total_questions)) {
                         $session_model->next_question += 1;
@@ -211,11 +211,12 @@ class TelegramController extends SurveysBaseController {
      * Set data to update
      * 
      * @param Model $session_model Session Model
+     * @param Model $form_model Form Model
      * @param Model $question_model Question Model
      * 
      * @return array Data to update
      */
-    private function setDataToUpdate($session_model, $question_model) {
+    private function setDataToUpdate($session_model, $form_model, $question_model) {
         $data_to_update = array();
 
         switch ($question_model['type']) {
@@ -236,7 +237,7 @@ class TelegramController extends SurveysBaseController {
 
                     $photos_count = count($photos);
 
-                    $this->savePhoto($session_model, $question_model, $photos[($photos_count - 1)]);
+                    $this->savePhoto($session_model, $form_model, $question_model, $photos[($photos_count - 1)]);
 
                     break;
                 }//E# case
@@ -271,24 +272,26 @@ class TelegramController extends SurveysBaseController {
      * 
      * @param Model $session_model Session model
      * @param Model $form_model Form model
+     * @param Model $form_model Form model
      * @param array $photo Photo
-     * 
-     * 
      */
-    private function savePhoto($session_model, $form_model, $photo) {
+    private function savePhoto($session_model, $form_model, $question_model, $photo) {
         //Telegram link
         $telegram_link = 'https://api.telegram.org/bot' . $this->tg_configs['api_key'] . '/getFile?file_id=' . $photo['file_id'];
 
+        echo $telegram_link;
         //Create guzzle client
         $guzzle_client = new GuzzleClient();
 
-        $json_response = json_decode($guzzle_client->get($telegram_link)->getJson(), true);
-
+        //Call telegram
+        $request = $guzzle_client->get($telegram_link);
+        //Decode json
+        $json_response = json_decode($request->getBody(), true);
         if ($json_response['ok'] == 'true') {
 
             //https://api.telegram.org/file/bot265033849:AAHAs6vKVlY7UyqWFUHoE7Toe2TsGvu0sf4/photo/file_0.jpg
             //Telegram file link
-            $telegram_file_link = 'https://api.telegram.org/file/bot' . $this->tg_configs['api_key'] . '/photo/' . $json_response['result']['file_path'];
+            $telegram_file_link = 'https://api.telegram.org/file/bot' . $this->tg_configs['api_key'] . '/' . $json_response['result']['file_path'];
 
             //Build upload path
             $upload_path = public_path() . \Config::get('media::media.uploadPath');
@@ -361,7 +364,6 @@ class TelegramController extends SurveysBaseController {
      * 
      */
     private function validateResponse($question_model) {
-        $response = $this->input['message']['text'];
 
         switch ($question_model['type']) {
             case 'text': {
@@ -369,11 +371,11 @@ class TelegramController extends SurveysBaseController {
                     break;
                 }//E# case
             case 'integer': {
-                    return ctype_digit((string) $response);
+                    return ctype_digit((string) $this->input['message']['text']);
                     break;
                 }//E# case
             case 'decimal': {
-                    return is_numeric($response);
+                    return is_numeric($this->input['message']['text']);
                     break;
                 }//E# case
             case 'photo': {
@@ -386,7 +388,7 @@ class TelegramController extends SurveysBaseController {
                 }//E# case
             case 'radio': {
                     $option_values = $question_model->options->lists('title');
-                    return in_array($response, $option_values);
+                    return in_array($this->input['message']['text'], $option_values);
                     break;
                 }//E# case
             case 'checkbox': {
@@ -416,6 +418,24 @@ class TelegramController extends SurveysBaseController {
         if (array_key_exists('last_name', $this->input['message']['from'])) {
             $names .= $this->input['message']['from']['last_name'];
         }//E# if statement
+        //Fields to select
+        $fields = array('*');
+
+        //Set where clause
+        $where_clause = array(
+            array(
+                'where' => 'where',
+                'column' => 'name',
+                'operator' => '=',
+                'operand' => $form
+            ),
+            array(
+                'where' => 'where',
+                'column' => 'workflow',
+                'operator' => '=',
+                'operand' => 'published'
+            )
+        );
 
         $parameters = array();
         //Set scope
@@ -425,7 +445,7 @@ class TelegramController extends SurveysBaseController {
         $parameters['scope'] = array('statusOne');
 
         //Select form
-        $form_model = $this->callController(\Util::buildNamespace('surveys', 'form', 1), 'getModelByField', array('name', $form, $parameters));
+        $form_model = $this->callController(\Util::buildNamespace('surveys', 'form', 1), 'select', array($fields, $where_clause, 1, $parameters));
 
         if ($form_model) {
 

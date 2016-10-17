@@ -23,6 +23,8 @@
                                  
                                         <td><?php echo $view_data['singleModel']['gender']; ?></td>
                                  
+                                        <td><?php echo $view_data['singleModel']['selfie']; ?></td>
+                                 
                                         <td><?php echo $view_data['singleModel']['latitude']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['longitude']; ?></td>
@@ -50,6 +52,8 @@
                                         <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.height') .': '.$view_data['singleModel']['height']; ?> </div>
                      
                                         <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.gender') .': '.$view_data['singleModel']['gender']; ?> </div>
+                     
+                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.selfie') .': '.$view_data['singleModel']['selfie']; ?> </div>
                      
                                         <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.latitude') .': '.$view_data['singleModel']['latitude']; ?> </div>
                      

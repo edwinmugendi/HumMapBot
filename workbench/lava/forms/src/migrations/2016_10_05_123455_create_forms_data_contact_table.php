@@ -11,7 +11,7 @@ class CreateFormsDataContactTable extends Migration {
 */
 public function up() {
 
-Schema::create('frm_data contact', function(Blueprint $table) {
+Schema::create('frm_data_contact', function(Blueprint $table) {
 //System fields
 $table->increments('id');
 $table->integer('organization_id')->unsigned();
@@ -26,6 +26,7 @@ $table->string('channel', 255);
                 $table->string('age', 255);
                 $table->string('height', 255);
                 $table->string('gender', 255);
+                $table->string('selfie', 255);
                 $table->decimal('latitude', 10, 6);
                 $table->decimal('longitude', 10, 6);
     
