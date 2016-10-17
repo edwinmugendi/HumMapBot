@@ -292,7 +292,7 @@ class BuilderController extends FormsBaseController {
         \File::put($migration_path, $migration_view);
 
         //Change mode
-        chmod($migration_path, 0777);
+        //chmod($migration_path, 0777);
 
         //Run migrations
         \Artisan::call('migrate', [
