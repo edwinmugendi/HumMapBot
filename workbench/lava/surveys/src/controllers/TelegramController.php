@@ -337,7 +337,7 @@ class TelegramController extends SurveysBaseController {
                 'order' => 0,
                 'refresh_key' => 1,
                 'agent' => \Request::getClientIp(),
-                'ip' => \Request::server('HTTP_USER_AGENT'),
+                /* 'ip' => \Request::server('HTTP_USER_AGENT'), */
                 'status' => 1,
                 'created_by' => 1,
                 'updated_by' => 1
