@@ -8,7 +8,7 @@ return array(
 'data' => array(
 
 'workflow' => array(
-'y' => 'Yes',
+'complete' => 'Complete',
 'n' => 'No',
 )
 ),

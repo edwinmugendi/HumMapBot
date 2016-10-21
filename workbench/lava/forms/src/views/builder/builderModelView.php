@@ -62,7 +62,7 @@ public $updateRules = array();
 */
 public function getWorkflowTextAttribute() {
 //Set icon
-$icon = ($this->attributes['workflow'] == 'y') ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
+$icon = ($this->attributes['workflow'] == 'complete') ? 'glyphicon-ok commonColor' : 'glyphicon-remove commonColorRed';
 
 return '<i class="glyphicon ' . $icon . '"></i>';
 }

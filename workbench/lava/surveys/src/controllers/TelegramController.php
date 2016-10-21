@@ -149,7 +149,8 @@ class TelegramController extends SurveysBaseController {
                 );
 
                 //Update actual form
-                $actual_form_model = $this->callController(\Util::buildNamespace('forms', \Str::lower(str_replace('_', ' ', $form_model->name)), 1), 'updateIfValid', array('id', $session_model->actual_form_id, $data_to_update));
+                $actual_form_model = $this->callController(\Util::buildNamespace('forms', \Str::lower(str_replace('_', ' ', $form_model->name)), 1), 'updateIfValid', array('id', $session_model->actual_form_id, $data_to_update, true));
+
 
                 $parameters = array(
                     'type' => 'text',
@@ -187,7 +188,7 @@ class TelegramController extends SurveysBaseController {
                     }//E# if statement
                     //dd($data_to_update);
                     //Update actual form
-                    $actual_form_model = $this->callController(\Util::buildNamespace('forms', $form_model->name, 1), 'updateIfValid', array('id', $session_model->actual_form_id, $data_to_update));
+                    $actual_form_model = $this->callController(\Util::buildNamespace('forms', $form_model->name, 1), 'updateIfValid', array('id', $session_model->actual_form_id, $data_to_update, true));
 
                     $this->sendNextQuestion($form_model, $session_model);
                 } else {

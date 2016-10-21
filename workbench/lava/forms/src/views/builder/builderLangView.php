@@ -9,8 +9,8 @@ return array(
 'data' => array(
 
 'workflow' => array(
-'y' => 'Yes',
-'n' => 'No',
+'complete' => 'Complete',
+'incomplete' => 'Incomplete',
 )
 ),
 'view' => array(
