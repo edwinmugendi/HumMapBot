@@ -57,7 +57,6 @@ class TelegramController extends SurveysBaseController {
 
         \Log::info('Chat id ' . json_encode($this->input));
 
-
         /*
           $keyboard = $parameters = array();
           $keyboard[] = [['category1' => 2, 'category2' => 4]];
@@ -143,6 +142,15 @@ class TelegramController extends SurveysBaseController {
         if ($session_model) {
 
             if ($session_model->next_question == ($session_model->total_questions)) {
+
+                //Data to update
+                $data_to_update = array(
+                    'workflow' => 'y',
+                );
+
+                //Update actual form
+                $actual_form_model = $this->callController(\Util::buildNamespace('forms', $form_model->name, 1), 'updateIfValid', array('id', $session_model->actual_form_id, $data_to_update));
+
                 $parameters = array(
                     'type' => 'text',
                     'chat_id' => $session_model->channel_chat_id,
@@ -192,7 +200,6 @@ class TelegramController extends SurveysBaseController {
                 }//E# if else statement
             }//E# if else statement
         } else {
-
             $parameters = array(
                 'type' => 'text',
                 'chat_id' => $this->input['message']['chat']['id'],
@@ -242,8 +249,8 @@ class TelegramController extends SurveysBaseController {
                     break;
                 }//E# case
             case 'gps': {
-                    $data_to_update['latitude'] = $this->input['message']['location']['latitude'];
-                    $data_to_update['longitude'] = $this->input['message']['location']['longitude'];
+                    $data_to_update['lat'] = $this->input['message']['location']['latitude'];
+                    $data_to_update['lng'] = $this->input['message']['location']['longitude'];
                     break;
                 }//E# case
             case 'radio': {
@@ -279,7 +286,6 @@ class TelegramController extends SurveysBaseController {
         //Telegram link
         $telegram_link = 'https://api.telegram.org/bot' . $this->tg_configs['api_key'] . '/getFile?file_id=' . $photo['file_id'];
 
-        echo $telegram_link;
         //Create guzzle client
         $guzzle_client = new GuzzleClient();
 
@@ -289,7 +295,6 @@ class TelegramController extends SurveysBaseController {
         $json_response = json_decode($request->getBody(), true);
         if ($json_response['ok'] == 'true') {
 
-            //https://api.telegram.org/file/bot265033849:AAHAs6vKVlY7UyqWFUHoE7Toe2TsGvu0sf4/photo/file_0.jpg
             //Telegram file link
             $telegram_file_link = 'https://api.telegram.org/file/bot' . $this->tg_configs['api_key'] . '/' . $json_response['result']['file_path'];
 
@@ -519,6 +524,20 @@ class TelegramController extends SurveysBaseController {
                 //Update session
                 $session_model = $this->callController(\Util::buildNamespace('surveys', 'session', 1), 'updateIfValid', array('id', $session_model->id, $session_array, true));
             }//E# if else statement
+
+            if ($session_model->next_question == 0 && $form_model->media) {
+
+                $link = asset('media/lava/upload/' . $form_model->media[0]['name']);
+
+                $parameters = array(
+                    'type' => 'photo',
+                    'chat_id' => $this->input['message']['chat']['id'],
+                    'link' => $link,
+                );
+
+                $this->sendMessage($parameters);
+            }
+
             //Send next question
             $this->sendNextQuestion($form_model, $session_model);
         } else {
@@ -541,6 +560,7 @@ class TelegramController extends SurveysBaseController {
      * 
      */
     private function processCommandStart() {
+
         $parameters = array(
             'type' => 'text',
             'chat_id' => $this->input['message']['chat']['id'],
@@ -702,7 +722,7 @@ class TelegramController extends SurveysBaseController {
 
         switch ($parameters['type']) {
             case 'photo': {
-                    $this->tg_request->sendMessage(['chat_id' => $parameters['chat_id'], 'text' => $parameters['text']]);
+                    $this->tg_request->sendPhoto(['chat_id' => $parameters['chat_id']], $parameters['link']);
                     break;
                 }//E# case
             case 'text': {

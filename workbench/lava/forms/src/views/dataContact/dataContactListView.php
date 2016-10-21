@@ -144,7 +144,7 @@
                         $order = 'asc';
                         $is_ordered = false;
                         ?>
-                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'gender'): ?>
+                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'lat'): ?>
                              <?php $is_ordered = true;?>
                                 <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
                                 <?php
@@ -158,21 +158,21 @@
                         <?php endif ?>
 
                         <?php if ($view_data['paginationAppends']): ?>
-                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=gender'; ?>
+                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=lat'; ?>
                         <?php else: ?>
-                            <?php $url = 'order=' . $order . '&sort=gender';?>
+                            <?php $url = 'order=' . $order . '&sort=lat';?>
                         <?php endif;?>                                <th>   
                                     <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
-                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.gender'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
+                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.lat'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
                                         <?php endif; ?>                                    </a>
                                 </th>
                                 <?php else: ?>                                <th>
-                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.gender'); ?>                                </th>
+                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.lat'); ?>                                </th>
                                 <?php endif; ?>                                                                                                                <?php if (!array_key_exists('export', $view_data)): ?>                                <?php
                         $order = 'asc';
                         $is_ordered = false;
                         ?>
-                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'selfie'): ?>
+                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'lng'): ?>
                              <?php $is_ordered = true;?>
                                 <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
                                 <?php
@@ -186,21 +186,21 @@
                         <?php endif ?>
 
                         <?php if ($view_data['paginationAppends']): ?>
-                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=selfie'; ?>
+                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=lng'; ?>
                         <?php else: ?>
-                            <?php $url = 'order=' . $order . '&sort=selfie';?>
+                            <?php $url = 'order=' . $order . '&sort=lng';?>
                         <?php endif;?>                                <th>   
                                     <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
-                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.selfie'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
+                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.lng'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
                                         <?php endif; ?>                                    </a>
                                 </th>
                                 <?php else: ?>                                <th>
-                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.selfie'); ?>                                </th>
+                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.lng'); ?>                                </th>
                                 <?php endif; ?>                                                                                                                <?php if (!array_key_exists('export', $view_data)): ?>                                <?php
                         $order = 'asc';
                         $is_ordered = false;
                         ?>
-                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'latitude'): ?>
+                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'male'): ?>
                              <?php $is_ordered = true;?>
                                 <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
                                 <?php
@@ -214,21 +214,21 @@
                         <?php endif ?>
 
                         <?php if ($view_data['paginationAppends']): ?>
-                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=latitude'; ?>
+                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=male'; ?>
                         <?php else: ?>
-                            <?php $url = 'order=' . $order . '&sort=latitude';?>
+                            <?php $url = 'order=' . $order . '&sort=male';?>
                         <?php endif;?>                                <th>   
                                     <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
-                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.latitude'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
+                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.male'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
                                         <?php endif; ?>                                    </a>
                                 </th>
                                 <?php else: ?>                                <th>
-                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.latitude'); ?>                                </th>
+                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.male'); ?>                                </th>
                                 <?php endif; ?>                                                                                                                <?php if (!array_key_exists('export', $view_data)): ?>                                <?php
                         $order = 'asc';
                         $is_ordered = false;
                         ?>
-                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'longitude'): ?>
+                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'female'): ?>
                              <?php $is_ordered = true;?>
                                 <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
                                 <?php
@@ -242,16 +242,16 @@
                         <?php endif ?>
 
                         <?php if ($view_data['paginationAppends']): ?>
-                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=longitude'; ?>
+                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=female'; ?>
                         <?php else: ?>
-                            <?php $url = 'order=' . $order . '&sort=longitude';?>
+                            <?php $url = 'order=' . $order . '&sort=female';?>
                         <?php endif;?>                                <th>   
                                     <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
-                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.longitude'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
+                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.female'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
                                         <?php endif; ?>                                    </a>
                                 </th>
                                 <?php else: ?>                                <th>
-                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.longitude'); ?>                                </th>
+                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.female'); ?>                                </th>
                                 <?php endif; ?>                                                                                                                <?php if (!array_key_exists('export', $view_data)): ?>                                <?php
                         $order = 'asc';
                         $is_ordered = false;
@@ -355,16 +355,16 @@
                                                                             <?php echo \Form::text('height', isset($view_data['input']['height']) ? $view_data['input']['height'] : '', array('class' => 'form-control')); ?>                                                                    </td>
                                 
                                                                                     <td>
-                                                                            <?php echo \Form::text('gender', isset($view_data['input']['gender']) ? $view_data['input']['gender'] : '', array('class' => 'form-control')); ?>                                                                    </td>
+                                                                            <?php echo \Form::text('lat', isset($view_data['input']['lat']) ? $view_data['input']['lat'] : '', array('class' => 'form-control')); ?>                                                                    </td>
                                 
                                                                                     <td>
-                                                                            <?php echo \Form::text('selfie', isset($view_data['input']['selfie']) ? $view_data['input']['selfie'] : '', array('class' => 'form-control')); ?>                                                                    </td>
+                                                                            <?php echo \Form::text('lng', isset($view_data['input']['lng']) ? $view_data['input']['lng'] : '', array('class' => 'form-control')); ?>                                                                    </td>
                                 
                                                                                     <td>
-                                                                            <?php echo \Form::text('latitude', isset($view_data['input']['latitude']) ? $view_data['input']['latitude'] : '', array('class' => 'form-control')); ?>                                                                    </td>
+                                                                            <?php echo \Form::text('male', isset($view_data['input']['male']) ? $view_data['input']['male'] : '', array('class' => 'form-control')); ?>                                                                    </td>
                                 
                                                                                     <td>
-                                                                            <?php echo \Form::text('longitude', isset($view_data['input']['longitude']) ? $view_data['input']['longitude'] : '', array('class' => 'form-control')); ?>                                                                    </td>
+                                                                            <?php echo \Form::text('female', isset($view_data['input']['female']) ? $view_data['input']['female'] : '', array('class' => 'form-control')); ?>                                                                    </td>
                                 
                                                                                     <td>
                                                                             <?php echo \Form::text('names', isset($view_data['input']['names']) ? $view_data['input']['names'] : '', array('class' => 'form-control')); ?>                                                                    </td>

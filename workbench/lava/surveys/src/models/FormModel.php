@@ -43,7 +43,7 @@ class FormModel extends \BaseModel {
     );
     //Create validation rules
     public $updateRules = array(
-        'name' => 'required',
+        /*'name' => 'required',*/
         'workflow' => '',
     );
 

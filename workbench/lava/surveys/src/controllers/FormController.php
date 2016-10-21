@@ -122,7 +122,7 @@ class FormController extends SurveysBaseController {
         if ($this->crudId == 1) {
             $this->validationRules['name'] = 'required|unique:svy_forms,name';
         } else if ($this->crudId == 2) {
-            $this->validationRules['name'] = 'required|unique:svy_forms,name,' . $this->input['id'] . ',id';
+            $this->validationRules['name'] = 'unique:svy_forms,name,' . $this->input['id'] . ',id';
         }//E# 
 
         return;

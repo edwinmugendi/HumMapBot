@@ -12,9 +12,10 @@ class <?php echo $controller_name; ?> extends FormsBaseController {
 //Controller
 public $controller = '<?php echo str_replace(' ', '_', \Str::lower($table_name)); ?>';
 
-//Imageable
-public $imageable = true;
-
+<?php if ($form_immageable): ?>
+    //Imageable
+    public $imageable = true;
+<?php endif; ?>
 /**
 * S# injectDataSources() function
 * @author Edwin Mugendi

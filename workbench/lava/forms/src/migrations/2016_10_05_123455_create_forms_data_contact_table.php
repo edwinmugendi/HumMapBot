@@ -25,10 +25,10 @@ $table->string('channel', 255);
             $table->string('full_name', 255);
                 $table->string('age', 255);
                 $table->string('height', 255);
-                $table->string('gender', 255);
-                $table->string('selfie', 255);
-                $table->decimal('latitude', 10, 6);
-                $table->decimal('longitude', 10, 6);
+                $table->decimal('lat', 10, 6);
+                $table->decimal('lng', 10, 6);
+                $table->string('male', 255);
+                $table->string('female', 255);
     
 //System fields
 $table->string('workflow', 255);

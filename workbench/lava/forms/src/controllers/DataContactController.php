@@ -10,9 +10,8 @@ class DataContactController extends FormsBaseController {
 //Controller
 public $controller = 'data_contact';
 
-//Imageable
-public $imageable = true;
-
+    //Imageable
+    public $imageable = true;
 /**
 * S# injectDataSources() function
 * @author Edwin Mugendi

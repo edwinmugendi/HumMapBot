@@ -24,10 +24,10 @@ return array(
     'full_name' => 'full name',
     'age' => 'age',
     'height' => 'height',
-    'gender' => 'gender',
-    'selfie' => 'selfie',
-    'latitude' => 'latitude',
-    'longitude' => 'longitude',
+    'lat' => 'lat',
+    'lng' => 'lng',
+    'male' => 'male',
+    'female' => 'female',
 ),
 'actions' => array(
 'delete' => array(

@@ -18,17 +18,23 @@ class BuilderController extends FormsBaseController {
      * S# buildForm() function
      */
     public function buildForm($form_model) {
-
+        $form_imaggable = false;
         $fields = array();
         foreach ($form_model->questions as $single_question) {
-            $fields[snake_case(\Str::lower($single_question->name))] = 'string';
-        }//E# foreach statement
 
-        if (array_key_exists('gps', $fields)) {
-            unset($fields['gps']);
-            $fields['latitude'] = 'decimal';
-            $fields['longitude'] = 'decimal';
-        }//E# if statement
+            if ($single_question->type == 'photo') {
+                $form_imaggable = true;
+            } else if ($single_question->type == 'gps') {
+                $fields['lat'] = 'decimal';
+                $fields['lng'] = 'decimal';
+            } else if ($single_question->type == 'radio') {
+                foreach ($single_question->options as $single_option) {
+                    $fields[$single_option->title] = 'string';
+                }//E# foreach statement
+            } else {
+                $fields[snake_case(\Str::lower($single_question->name))] = 'string';
+            }//E# if else statement
+        }//E# foreach statement
 
         $form_name = \Str::lower($form_model->name);
 
@@ -42,7 +48,7 @@ class BuilderController extends FormsBaseController {
         $this->buildModelView($form_name, $fields);
 
         //Build controller view
-        $this->buildControllerView($form_name, $fields);
+        $this->buildControllerView($form_name, $fields, $form_imaggable);
 
         //Build language view
         $this->buildLangView($form_name, $fields);
@@ -56,7 +62,6 @@ class BuilderController extends FormsBaseController {
 
         //Build generator view
         $this->buildGeneratorView('lava', 'forms', $form_name);
-
     }
 
 //E# buildForm() function
@@ -232,9 +237,10 @@ class BuilderController extends FormsBaseController {
      * 
      * @param str $table_name Table name
      * @param array $fields Fields
+     * @param boolean $form_immageable Form immageable
      * 
      */
-    private function buildControllerView($table_name, $fields) {
+    private function buildControllerView($table_name, $fields, $form_immageable) {
         //Controller name
         $controller_name = ucwords(camel_case(\Str::lower($table_name))) . 'Controller';
 
@@ -249,6 +255,7 @@ class BuilderController extends FormsBaseController {
                 ->with('fields', $fields)
                 ->with('table_name', $table_name)
                 ->with('controller_name', $controller_name)
+                ->with('form_immageable', $form_immageable)
                 ->render();
 
         //Create lang file
@@ -293,7 +300,6 @@ class BuilderController extends FormsBaseController {
 
         //Change mode
         //chmod($migration_path, 0777);
-
         //Run migrations
         \Artisan::call('migrate', [
             '--bench' => $workbench . '/' . $package
