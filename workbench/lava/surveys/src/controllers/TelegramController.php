@@ -149,7 +149,7 @@ class TelegramController extends SurveysBaseController {
                 );
 
                 //Update actual form
-                $actual_form_model = $this->callController(\Util::buildNamespace('forms', $form_model->name, 1), 'updateIfValid', array('id', $session_model->actual_form_id, $data_to_update));
+                $actual_form_model = $this->callController(\Util::buildNamespace('forms', \Str::lower(str_replace('_', ' ', $form_model->name)), 1), 'updateIfValid', array('id', $session_model->actual_form_id, $data_to_update));
 
                 $parameters = array(
                     'type' => 'text',
@@ -254,7 +254,7 @@ class TelegramController extends SurveysBaseController {
                     break;
                 }//E# case
             case 'radio': {
-                    $data_to_update['' . $question_model->name . ''] = $this->input['message']['text'];
+                    $data_to_update['' . \Str::lower($this->input['message']['text']) . ''] = $this->input['message']['text'];
                     break;
                 }//E# case
             case 'checkbox': {

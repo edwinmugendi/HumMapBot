@@ -23,7 +23,7 @@ return array(
 'session_id' => 'Session id',
 'workflow' => 'Status',
 <?php foreach ($fields as $key => $type): ?>
-    '<?php echo $key; ?>' => '<?php echo str_replace('_', ' ', $key); ?>',
+    '<?php echo $key; ?>' => '<?php echo \Str::title(str_replace('_', ' ', $key)); ?>',
 <?php endforeach; ?>
 ),
 'actions' => array(
