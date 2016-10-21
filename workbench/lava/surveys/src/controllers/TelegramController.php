@@ -255,7 +255,7 @@ class TelegramController extends SurveysBaseController {
                     break;
                 }//E# case
             case 'radio': {
-                    $data_to_update['' . \Str::lower($this->input['message']['text']) . ''] = $this->input['message']['text'];
+                    $data_to_update[\Str::lower(trim($this->input['message']['text']))] = $this->input['message']['text'];
                     break;
                 }//E# case
             case 'checkbox': {
@@ -514,6 +514,9 @@ class TelegramController extends SurveysBaseController {
 
                 //Create session
                 $session_model = $this->callController(\Util::buildNamespace('surveys', 'session', 1), 'createIfValid', array($session_array, true));
+
+                //Update session id
+                $actual_form_model->session_id = $session_model->id;
             } else {
                 //Session
                 $session_array = array(
