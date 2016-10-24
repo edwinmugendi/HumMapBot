@@ -158,7 +158,7 @@ class TelegramController extends SurveysBaseController {
                 $parameters = array(
                     'type' => 'text',
                     'chat_id' => $session_model->channel_chat_id,
-                    'text' => 'Thank you for completing this form ' . json_decode('"' . $emoticons . '"'),
+                    'text' => 'Thanks for completing this survey ' . json_decode('"' . $emoticons . '"'),
                 );
 
                 $this->sendMessage($parameters);
@@ -597,10 +597,14 @@ class TelegramController extends SurveysBaseController {
      */
     private function sendNextQuestion($form_model, $session_model) {
         if ($session_model->next_question == $session_model->total_questions) {
+
+            //Emoticons
+            $emoticons = "\uD83D\uDC4D";
+
             $parameters = array(
                 'type' => 'text',
                 'chat_id' => $session_model->channel_chat_id,
-                'text' => 'Thank you for completing this form',
+                'text' => 'Thanks for completing this survey ' . json_decode('"' . $emoticons . '"'),
             );
         } else {
             $parameters = $this->buildNextQuestion($form_model, $session_model);
