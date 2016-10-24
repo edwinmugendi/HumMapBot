@@ -9,7 +9,7 @@ return array(
 
 'workflow' => array(
 'complete' => 'Complete',
-'n' => 'No',
+'incomplete' => 'Incomplete',
 )
 ),
 'view' => array(
@@ -21,13 +21,13 @@ return array(
 'channel' => 'Channel',
 'session_id' => 'Session id',
 'workflow' => 'Status',
-    'full_name' => 'full name',
-    'age' => 'age',
-    'height' => 'height',
-    'lat' => 'lat',
-    'lng' => 'lng',
-    'male' => 'male',
-    'female' => 'female',
+    'full_name' => 'Full Name',
+    'age' => 'Age',
+    'height' => 'Height',
+    'lat' => 'Lat',
+    'lng' => 'Lng',
+    'male' => 'Male',
+    'female' => 'Female',
 ),
 'actions' => array(
 'delete' => array(

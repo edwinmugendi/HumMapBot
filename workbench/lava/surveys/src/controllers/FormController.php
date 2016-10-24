@@ -458,6 +458,7 @@ class FormController extends SurveysBaseController {
      * Prepare fields for list view
      */
     public function beforeViewing(&$singleModel) {
+        /*
         //Form name
         $form_name = \Str::lower(str_replace(' ', '_', $singleModel->name));
 
@@ -487,6 +488,8 @@ class FormController extends SurveysBaseController {
 
             $singleModel->responses = $form_count;
         }
+         * 
+         */
     }
 
 //E# beforeViewing() function
