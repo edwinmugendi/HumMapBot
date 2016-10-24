@@ -139,6 +139,7 @@ class TelegramController extends SurveysBaseController {
         //Select session
         $session_model = $this->callController(\Util::buildNamespace('surveys', 'session', 1), 'getModelByField', array('channel_chat_id', $this->input['message']['chat']['id'], $parameters));
 
+
         if ($session_model) {
 
             if ($session_model->next_question == ($session_model->total_questions)) {
@@ -151,11 +152,13 @@ class TelegramController extends SurveysBaseController {
                 //Update actual form
                 $actual_form_model = $this->callController(\Util::buildNamespace('forms', \Str::lower(str_replace('_', ' ', $form_model->name)), 1), 'updateIfValid', array('id', $session_model->actual_form_id, $data_to_update, true));
 
+                //Emoticons
+                $emoticons = "\uD83D\uDC4D";
 
                 $parameters = array(
                     'type' => 'text',
                     'chat_id' => $session_model->channel_chat_id,
-                    'text' => 'Thank you for completing this form',
+                    'text' => 'Thank you for completing this form ' . json_decode('"' . $emoticons . '"'),
                 );
 
                 $this->sendMessage($parameters);
@@ -169,8 +172,10 @@ class TelegramController extends SurveysBaseController {
                 //Select form
                 $form_model = $this->callController(\Util::buildNamespace('surveys', 'form', 1), 'getModelByField', array('id', $session_model->form_id, $parameters));
 
+
                 $question_model = $form_model->questions[$session_model->next_question];
 
+                echo $question_model->name;
                 $is_valid = $this->validateResponse($question_model);
                 //dd($is_valid);
                 if ($is_valid) {
@@ -394,6 +399,7 @@ class TelegramController extends SurveysBaseController {
                 }//E# case
             case 'radio': {
                     $option_values = $question_model->options->lists('title');
+
                     return in_array($this->input['message']['text'], $option_values);
                     break;
                 }//E# case
@@ -529,7 +535,7 @@ class TelegramController extends SurveysBaseController {
                 $session_model = $this->callController(\Util::buildNamespace('surveys', 'session', 1), 'updateIfValid', array('id', $session_model->id, $session_array, true));
             }//E# if else statement
 
-            if ($session_model->next_question == 0 && $form_model->media) {
+            if ($session_model->next_question == 0 && count($form_model->media)) {
 
                 $link = asset('media/lava/upload/' . $form_model->media[0]['name']);
 
@@ -565,10 +571,14 @@ class TelegramController extends SurveysBaseController {
      */
     private function processCommandStart() {
 
+        //Emoticons
+        $emoticons = "\uD83D\uDC4F";
+
+
         $parameters = array(
             'type' => 'text',
             'chat_id' => $this->input['message']['chat']['id'],
-            'text' => 'Welcome to SurveyBot. To respond to a survey, type "/fill {form name}" try /fill contact'
+            'text' => json_decode('"' . $emoticons . '"') . ' Welcome to SurveyBot. To respond to a survey, type "/fill {form name}" try /fill contact'
         );
 
         return $this->sendMessage($parameters);
@@ -616,7 +626,8 @@ class TelegramController extends SurveysBaseController {
 
         $question_model = $form_model['questions'][$next_question];
 
-        $text = ($session_model->next_question +1) . '/' . $session_model->total_questions . '. ';
+        $text = ($session_model->next_question + 1) . '/' . $session_model->total_questions . '. ';
+
 
         $text .= $question_model->title;
 
@@ -638,7 +649,7 @@ class TelegramController extends SurveysBaseController {
             ];
             $keyboards[] = $keyboard;
             $parameters['chat_id'] = $session_model->channel_chat_id;
-            $parameters['text'] = $title;
+            $parameters['text'] = $text;
             $parameters['type'] = 'gps';
             $parameters['reply_markup'] = new ReplyKeyboardMarkup([
                 'keyboard' => $keyboards[0],

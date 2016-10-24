@@ -36,7 +36,6 @@
                             <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'option') ? 'current-page' : '' ?>"><a href="<?php echo \URL::route('surveysListOption'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('surveys::option.view.menu'); ?></a></li>
                             <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'session') ? 'current-page' : '' ?>"><a href="<?php echo \URL::route('surveysListSession'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('surveys::session.view.menu'); ?></a></li>
                             <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'update') ? 'current-page' : '' ?>"><a href="<?php echo \URL::route('surveysListUpdate'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('surveys::update.view.menu'); ?></a></li>
-                            <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'contact') ? 'current-page' : '' ?>"><a href="<?php echo \URL::route('formsListContact'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('forms::contact.view.menu'); ?></a></li>
                         <?php endif; ?>
                     </ul>
                 </div>
