@@ -452,6 +452,33 @@ class FormController extends SurveysBaseController {
     }
 
 //E# injectDataSources() function
+
+    /**
+     * S# beforeViewing() function
+     * Prepare fields for list view
+     */
+    public function beforeViewing(&$singleModel) {
+        //Fields to select
+        $fields = array('*');
+
+        //Set where clause
+        $where_clause = array();
+
+        //Parameters
+        $parameters = array();
+
+        $parameters['count'] = 1;
+
+        //Form name
+        $form_name = \Str::lower(str_replace(' ', '_', $singleModel->name));
+
+        //Form count
+        $form_count = $this->callController(\Util::buildNamespace('forms', $form_name, 1), 'select', array($fields, $where_clause, 1, $parameters));
+
+        $singleModel->responses = $form_count;
+    }
+
+//E# beforeViewing() function
 }
 
 //E# FormController() function

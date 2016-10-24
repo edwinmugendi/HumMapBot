@@ -18,6 +18,8 @@
                                  
                                         <td><?php echo $view_data['singleModel']['name']; ?></td>
                                                                         <td><?php echo $view_data['singleModel']['workflow_text']; ?></td>
+                                 
+                                        <td><?php echo $view_data['singleModel']['responses']; ?></td>
                 <?php if (!array_key_exists('export', $view_data)): ?>    <td>
         <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_question_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get($view_data['package'].'::'.$view_data['controller'].'.view.actions.edit_questions.edit_questions'); ?>" class="btn btn-warning btn-xs"><i class="fa fa-question"></i> <?php echo \Lang::get($view_data['package'].'::'.$view_data['controller'].'.view.actions.edit_questions.edit_questions'); ?></a>
         <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get('common.view.actions.detailed.detailed'); ?>" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> <?php echo \Lang::get('common.view.actions.detailed.view'); ?></a>
@@ -37,6 +39,8 @@
                      
                                         <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.name') .': '.$view_data['singleModel']['name']; ?> </div>
                                                             <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.workflow') .': '.$view_data['singleModel']['workflow_text']; ?> </div>
+                     
+                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.responses') .': '.$view_data['singleModel']['responses']; ?> </div>
                             <?php if ($view_data['singleModel']['image_count']): ?>            <div class="commonClearBoth commonFloatLeft">
                 <?php echo \Lang::get('media::media.view.image'); ?> 
                 <a  title="<?php echo \Lang::get('media::media.view.view_image'); ?>" data-toggle="modal" href="#" data-url="<?php echo $view_data['singleModel']['main_url']; ?>" class="viewImage">

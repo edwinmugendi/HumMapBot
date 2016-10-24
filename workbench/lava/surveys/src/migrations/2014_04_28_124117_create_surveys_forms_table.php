@@ -19,6 +19,7 @@ class CreateSurveysFormsTable extends Migration {
             //About
             $table->string('name', 255);
             $table->string('workflow', 255);
+            $table->integer('responses')->unsigned();
 
             $table->string('agent', 255);
             $table->string('ip', 255);

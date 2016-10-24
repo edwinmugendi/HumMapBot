@@ -616,8 +616,13 @@ class TelegramController extends SurveysBaseController {
 
         $question_model = $form_model['questions'][$next_question];
 
+        $text = $session_model->next_question . '/' . $session_model->total_questions . '.';
+
+        $text .= $question_model->title;
+
         if (in_array($question_model['type'], array('text', 'integer', 'decimal', 'photo'))) {
-            $text = $question_model->title;
+
+
             $parameters = array(
                 'type' => 'text',
                 'chat_id' => $session_model->channel_chat_id,
@@ -633,7 +638,7 @@ class TelegramController extends SurveysBaseController {
             ];
             $keyboards[] = $keyboard;
             $parameters['chat_id'] = $session_model->channel_chat_id;
-            $parameters['text'] = $question_model->title;
+            $parameters['text'] = $title;
             $parameters['type'] = 'gps';
             $parameters['reply_markup'] = new ReplyKeyboardMarkup([
                 'keyboard' => $keyboards[0],

@@ -25,6 +25,7 @@ return array(
             'id' => '#',
             'name' => 'Name',
             'workflow' => 'Status',
+            'responses' => '# of responses',
         ),
         'actions' => array(
             'publish' => array(

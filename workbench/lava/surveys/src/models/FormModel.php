@@ -16,6 +16,7 @@ class FormModel extends \BaseModel {
         'id' => array(1, 'text', '='),
         'name' => array(1, 'text', 'like', 1),
         'workflow' => array(1, 'select', '='),
+        'responses' => array(1, 'text', '='),
     );
     //Fillable fields
     protected $fillable = array(
