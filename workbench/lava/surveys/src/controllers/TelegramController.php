@@ -616,7 +616,7 @@ class TelegramController extends SurveysBaseController {
 
         $question_model = $form_model['questions'][$next_question];
 
-        $text = $session_model->next_question . '/' . $session_model->total_questions . '.';
+        $text = ($session_model->next_question +1) . '/' . $session_model->total_questions . '.';
 
         $text .= $question_model->title;
 
