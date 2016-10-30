@@ -76,8 +76,8 @@ return array(
      */
     'currencyFormat' => '#,###.##',
     'meta' => array(
-        'description' => 'Online Web-based Human Resource Management System',
-        'keywords' => 'hr software in Kenya, hrm system in Kenya, payroll software in Kenya, leave management system, human resource management, hr software in kenya'
+        'description' => 'Create surveys online and get answers via Telegram',
+        'keywords' => 'telegram, survey bot, bot, chat bot, survey, survey chat, survey via telegram'
     ),
     'smsSender' => '+254722906835'
 );
