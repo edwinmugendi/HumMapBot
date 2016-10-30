@@ -2,6 +2,10 @@
 
 return array(
     'telegram' => array(
+        'api_key' => '235165049:AAHatMAVLQX_0v04tZWuvmBgWlAd5sRvFMg',
+        'bot' => 'surveychatbot',
+    ),
+    'telegram1' => array(
         'api_key' => '265033849:AAHAs6vKVlY7UyqWFUHoE7Toe2TsGvu0sf4',
         'bot' => 'edwinmugendibot',
     ),
