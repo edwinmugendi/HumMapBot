@@ -1,6 +1,5 @@
 <div class="img-responsive" style="margin-top: 30px;">
-    <img src="<?php echo asset('img/logo.png'); ?>" width="300" style=" display: block;
-    margin: 0 auto;">
+    <a href="<?php echo \URL::to('/'); ?>"><img src="<?php echo asset('img/logo.png'); ?>" width="300" style=" display: block;margin: 0 auto;"></a>
 </div>
 <div class="">
     <a class="hiddenanchor" id="toregister"></a>
