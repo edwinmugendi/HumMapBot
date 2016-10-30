@@ -46,7 +46,7 @@
                 </div>
                 <div class="clearfix"></div>
                 <div class="separator">
-                    <p class="change_link">Have a car wash?
+                    <p class="change_link">Don't have an account?
                         <a href="#toregister" class="to_register"> <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.register.submit'); ?> </a>
                     </p>
                     <div class="clearfix"></div>
@@ -66,7 +66,7 @@
                     <h2><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.register.received', array('productName' => \Config::get('product.name'))); ?></h2>
                 <?php else: ?>
                     <?php echo \Form::open(array('route' => 'userRegister', 'id' => 'userPost')); ?>
-                    <h1><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.register.trial'); ?></h1>
+                    <h1><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.register.trial',array('product'=>\Config::get('product.name'))); ?></h1>
                     <div>
                         <?php echo \Form::text('full_name', '', array('placeholder' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.register.field.fullName'), 'class' => 'validate[required, minSize[2]]')); ?>
                         <?php if ($errors->has('full_name')): ?>
@@ -89,12 +89,6 @@
                         <?php echo \Form::text('phone', '', array('placeholder' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.register.field.phone'), 'class' => 'validate[required,, custom[phone]')); ?>
                         <?php if ($errors->has('phone')): ?>
                             <p class="commonColorRed"><?php echo $errors->first('phone'); ?></p>
-                        <?php endif; ?>
-                    </div>
-                    <div>
-                        <?php echo \Form::text('town', '', array('placeholder' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.register.field.town'), 'class' => 'validate[required,, custom[town]')); ?>
-                        <?php if ($errors->has('town')): ?>
-                            <p class="commonColorRed"><?php echo $errors->first('town'); ?></p>
                         <?php endif; ?>
                     </div>
                     <div>

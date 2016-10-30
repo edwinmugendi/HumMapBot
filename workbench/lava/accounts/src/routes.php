@@ -8,11 +8,8 @@
     //Load Login or Sign up page
     \Route::get('login', array('as' => 'userRegistration', 'uses' => 'Lava\Accounts\UserController@getRegistration'));
 
-    //Login page
-    \Route::get('/', array('as' => 'userLogin', function() {
-            return \Redirect::route('userRegistration');
-        }));
-
+    //Home
+    \Route::get('/', array('as' => 'home', 'uses' => 'Lava\Accounts\FrontendController@getHome'));
 
     /* S# API End points */
     //USER API'S
@@ -100,4 +97,28 @@
 
     //Un-Delete user
     \Route::post('accounts/undelete/user', array('as' => 'accountsUndeleteUser', 'uses' => 'Lava\Accounts\UserController@postUndelete'));
+
+    /**
+     * Lead routes
+     */
+    //Detailed lead
+    \Route::get('accounts/detailed/lead/{id}', array('as' => 'accountsDetailedLead', 'uses' => 'Lava\Accounts\LeadController@getDetailed'));
+
+    //List lead
+    \Route::get('accounts/list/lead', array('as' => 'accountsListLead', 'uses' => 'Lava\Accounts\LeadController@getList'));
+
+    //Post lead
+    \Route::get('accounts/post/lead/{id?}', array('as' => 'accountsPostLead', 'uses' => 'Lava\Accounts\LeadController@getPost'));
+
+    //Create a lead
+    \Route::post('accounts/create/lead', array('as' => 'accountsCreateLead', 'before' => 'csrf', 'uses' => 'Lava\Accounts\LeadController@postCreate'));
+
+    //Update a lead
+    \Route::post('accounts/update/lead', array('as' => 'accountsUpdateLead', 'before' => 'csrf', 'uses' => 'Lava\Accounts\LeadController@postUpdate'));
+
+    //Delete lead
+    \Route::post('accounts/delete/lead', array('as' => 'accountsDeleteLead', 'uses' => 'Lava\Accounts\LeadController@postDelete'));
+
+    //Un-Delete lead
+    \Route::post('accounts/undelete/lead', array('as' => 'accountsUndeleteLead', 'uses' => 'Lava\Accounts\LeadController@postUndelete'));
 });

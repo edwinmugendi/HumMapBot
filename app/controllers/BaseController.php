@@ -1749,6 +1749,55 @@ class BaseController extends Controller {
      * @return array assets array
      */
     public function registerAssets($parameters = array()) {
+        if ($this->theme == 'frontend') {
+            return $this->registerFrontendAssets($parameters);
+        } else {
+            return $this->registerMasterAssets($parameters);
+        }//E# if else statement
+    }
+
+//E# registerAssets() method
+
+    /**
+     * S# registerFrontendAssets() function
+     * 
+     * Register master assets
+     * 
+     * @param array $parameters Parameters
+     * 
+     */
+    private function registerFrontendAssets($parameters = array()) {
+        //CSS
+        $this->assets['css'][] = \HTML::style('frontend/css/bootstrap.min.css');
+        $this->assets['css'][] = \HTML::style('frontend/css/font-awesome.min.css');
+        $this->assets['css'][] = \HTML::style('frontend/css/pe-icon-7-stroke.css');
+        $this->assets['css'][] = \HTML::style('frontend/css/animate.min.css');
+        $this->assets['css'][] = \HTML::style('frontend/css/styles.css');
+
+        //JS
+        $this->assets['js'][] = \HTML::script('frontend/js/bootstrap.min.js');
+        $this->assets['js'][] = \HTML::script('frontend/js/jquery.scrollTo.min.js');
+        $this->assets['js'][] = \HTML::script('frontend/js/jquery.matchHeight-min.js');
+        $this->assets['js'][] = \HTML::script('frontend/js/jquery.validate.min.js');
+        $this->assets['js'][] = \HTML::script('frontend/js/jquery.inview.min.js');
+        $this->assets['js'][] = \HTML::script('frontend/js/isMobile.min.js');
+        $this->assets['js'][] = \HTML::script('frontend/js/back-to-top.js');
+        $this->assets['js'][] = \HTML::script('frontend/js/main.js');
+        $this->assets['js'][] = \HTML::script('frontend/js/animations.js');
+
+        return $this->assets;
+    }
+
+//E# registerFrontendAssets() function
+    /**
+     * S# registerMasterAssets() function
+     * 
+     * Register master assets
+     * 
+     * @param array $parameters Parameters
+     * 
+     */
+    private function registerMasterAssets($parameters = array()) {
         //Register global css assets
         $this->assets['css'][] = \HTML::style('bootstrap/css/bootstrap.min.css');
         $this->assets['css'][] = \HTML::style('bootstrap/css/font-awesome.min.css');
@@ -1865,7 +1914,7 @@ class BaseController extends Controller {
         return $this->assets;
     }
 
-//E# registerAssets() method
+//E# registerMasterAssets() function
 
     /**
      * S# getSideBarPartialView() method

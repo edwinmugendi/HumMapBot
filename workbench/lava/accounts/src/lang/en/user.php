@@ -360,7 +360,7 @@ return array(
             ),
             'form' => array(
                 'register' => array(
-                    'trial' => 'Register your car wash',
+                    'trial' => 'Start using :product for free',
                     'received' => 'Thank you for your interest in :productName. We\'ll respond soonest possible to activate your account.',
                     'heading' => 'Register',
                     'suggest' => 'Have an account?',
@@ -370,7 +370,7 @@ return array(
                         'fullName' => 'Full name',
                         'phone' => 'Phone',
                         'email' => 'Email',
-                        'organization' => 'Car wash name',
+                        'organization' => 'Organization / Company',
                         'country' => 'Country',
                         'town' => 'Town',
                     )

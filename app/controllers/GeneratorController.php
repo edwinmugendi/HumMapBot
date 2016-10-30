@@ -7,6 +7,7 @@ class GeneratorController extends BaseController {
     public $controllers = array(
         //Accounts
         'Lava\Accounts\UserController',
+        'Lava\Accounts\LeadController',
         //Merchants
         'Lava\Organizations\OrganizationController',
         //Surveys

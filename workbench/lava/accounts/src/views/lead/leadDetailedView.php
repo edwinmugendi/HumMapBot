@@ -3,7 +3,9 @@
         <div class="col-md-12">
             <div class="btn-group"> 
                 <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_list_' . $view_data['controller']));?>" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get('common.back_to_list');?>"><i class="fa fa-chevron-left fa-2x" aria-hidden="true"></i></a>
-                                <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array('id' => $view_data['controller_model']['id'])) . '?export=pdf';?>" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get('common.view.actions.pdf.pdf');?>"><i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i></a>
+                <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_post_' . $view_data['controller']), array($view_data['controller_model']['id']));?>" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get('common.edit');?>"><i class="fa fa-pencil fa-2x" aria-hidden="true"></i></a>
+                <button type="button" class="deleteRow btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.actions.delete.delete');?>" data-ids="<?php echo $view_data['controller_model']['id']; ?>"><i class="fa fa-trash fa-2x" aria-hidden="true"></i></button>
+                <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array('id' => $view_data['controller_model']['id'])) . '?export=pdf';?>" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get('common.view.actions.pdf.pdf');?>"><i class="fa fa-file-pdf-o fa-2x" aria-hidden="true"></i></a>
                 <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array('id' => $view_data['controller_model']['id'])) . '?export=print';?>" target="_blank" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get('common.view.actions.print.print');?>"><i class="fa fa-print fa-2x" aria-hidden="true"></i></a>
                 <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_list_' . $view_data['controller']), array('id' => $view_data['controller_model']['id'])) . '&export=xls';?>" target="_blank" type="button" class="btn btn-default" data-container="body" data-toggle="tooltip" data-placement="bottom" title="<?php echo \Lang::get('common.view.actions.xls.xls');?>"><i class="fa fa-file-excel-o fa-2x" aria-hidden="true"></i></a>
             </div>
@@ -30,14 +32,6 @@
                 </table>    
             </div>
         </div>
-                    <div class="col-md-6">
-                <div class="commonBorderRadius commonBorderColor commonPadding5">
-                    <p class="commonFontWeightBold"><?php echo \Lang::get('media::media.view.attached_documents'); ?></p>
-                    <div class="commonBorderTop">
-                        <?php echo $view_data['dataSource']['mediaView']; ?>  
-                    </div>
-                </div>
-            </div>
             </div>
 </div>
 </div>

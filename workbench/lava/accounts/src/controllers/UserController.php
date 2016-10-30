@@ -10,6 +10,88 @@ class UserController extends AccountsBaseController {
     public $controller = 'user';
 
     /**
+     * S# postRegister() function
+     * @author Edwin Mugendi
+     * 
+     * Register a user
+     * 
+     */
+    public function postRegister() {
+        //Lead model
+        $lead_model = new LeadModel();
+
+        //Get and set the model's create validation rules
+        $this->validationRules = $lead_model->createRules;
+
+        //Validate row to be inserted
+        $this->validator = $this->isInputValid($this->input, true);
+
+        if ($this->validator->fails()) {//Validation fails
+            $link = \URL::route('userRegistration');
+            $link .='#toregister';
+
+            //Redirect to login page
+            return \Redirect::to($link)
+                            ->withInput()
+                            ->withErrors($this->validator);
+
+            //dd($validation->messages());
+            //Build parameters to redirect to
+            //$parameters = array('register');
+            //Redirect to this route with old inputs and errors
+            //return \Redirect::route('userRegistration', $parameters)
+            //                ->withInput()
+            //                ->withErrors($this->validator);
+        } else {//Validation passes
+            //Set other fields
+            $this->input['workflow'] = $this->input['source'] = $this->input['status'] = $this->input['created_by'] = $this->input['updated_by'] = 1;
+
+            $this->input['email'] = $this->input['reg_email'];
+
+            $lead_model = $lead_model->create($this->input);
+
+            //Message parameters
+            $parameters = array(
+                'name' => $lead_model->full_name,
+            );
+
+            //Set recipient
+            $recipient = array('to' => $lead_model->email);
+
+            //Converse
+            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $lead_model->created_by, $recipient, 'registration', \Config::get('app.locale'), $parameters));
+
+            $message = 'Registration request from '.\Config::get('product.name').'</br>' .
+                    '<p>Full name: <b>' . $this->input['full_name'] . '</b>' .
+                    '<p>Email: <b>' . $this->input['reg_email'] . '</b>' .
+                    '<p>Car wash: <b>' . $this->input['organization'] . '</b>' .
+                    '<p>Phone: <b>' . $this->input['phone'] . '</b>' .
+                    '<p>Country: <b>' . $this->input['country_id'] . '</b>' .
+                    '<p>Lead id: <b>' . $lead_model->id . '</b>';
+            //Message parameters
+            $parameters = array(
+                'message' => $message,
+            );
+
+            //Set recipient
+            $recipient = array('to' => 'edwinmugendi@gmail.com');
+
+            //Converse
+            $sent = $this->callController(\Util::buildNamespace('messages', 'message', 1), 'converse', array('email', null, null, $lead_model->created_by, $recipient, 'contact', \Config::get('app.locale'), $parameters));
+
+            //Flash status code to session
+            \Session::flash('registerCode', 1);
+
+            $link = \URL::route('userRegistration', array('login'));
+            $link .='#toregister';
+            //Redirect to login page
+            return \Redirect::to($link);
+        }//E# if else statement
+    }
+
+//E# postRegister() function
+
+    /**
      * S# controllerSpecificWhereClause() function
      * @author Edwin Mugendi
      * 

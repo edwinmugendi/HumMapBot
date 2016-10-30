@@ -348,20 +348,6 @@
                                             </td>
                                         </tr>
                                     </table>
-                                    <table class="row callout" style="border-spacing: 0; border-collapse: collapse; vertical-align: top; text-align: left; width: 100%; position: relative; display: block; padding: 0px;"><tr style="vertical-align: top; text-align: left; padding: 0;" align="left"><td class="wrapper last" style="word-break: break-word; -webkit-hyphens: auto; -moz-hyphens: auto; hyphens: auto; border-collapse: collapse !important; vertical-align: top; text-align: left; position: relative; color: #222222; font-family: 'Helvetica Neue', 'Arial', sans-serif; font-weight: normal; line-height: 19px; font-size: 14px; margin: 0; padding: 50px 0px 0px;" align="left" valign="top">
-
-                                                <table class="twelve columns" style="border-spacing: 0; border-collapse: collapse; vertical-align: top; text-align: left; width: 580px; margin: 0 auto; padding: 0;"><tr style="vertical-align: top; text-align: left; padding: 0;" align="left"><td class="panel" style="word-break: break-word; -webkit-hyphens: auto; -moz-hyphens: auto; hyphens: auto; border-collapse: collapse !important; vertical-align: top; text-align: left; color: #222222; font-family: 'Helvetica Neue', 'Arial', sans-serif; font-weight: normal; line-height: 19px; font-size: 14px; background: #F8F8F8; margin: 0; padding: 10px; border: 1px solid #d9d9d9;" align="left" bgcolor="#F8F8F8" valign="top">
-                                                            <p style="text-align: center; font-size: 12px; color: #555; font-family: 'Helvetica Neue', 'Arial', sans-serif; font-weight: normal; line-height: 19px; margin: 0 0 10px; padding: 0;" align="center">
-                                                                <?php echo \Config::get('product.name'); ?> is a product of <?php echo \Config::get('product.companyName'); ?>
-                                                            </p>
-                                                            <p style="text-align: center; font-size: 12px; color: #555; font-family: 'Helvetica Neue', 'Arial', sans-serif; font-weight: normal; line-height: 19px; margin: 2px; padding: 0;" align="center">
-                                                                <?php echo \Config::get('product.postalAddress'); ?>
-                                                            </p>
-                                                        </td>
-                                                        <td class="expander" style="word-break: break-word; -webkit-hyphens: auto; -moz-hyphens: auto; hyphens: auto; border-collapse: collapse !important; vertical-align: top; text-align: left; visibility: hidden; width: 0px; color: #222222; font-family: 'Helvetica Neue', 'Arial', sans-serif; font-weight: normal; line-height: 19px; font-size: 14px; margin: 0; padding: 0;" align="left" valign="top"></td>
-                                                    </tr></table></td>
-                                        </tr>
-                                    </table>
                                 </td>
                             </tr>
                         </table>
