@@ -537,10 +537,9 @@ class TelegramController extends SurveysBaseController {
             }//E# if else statement
 
             if ($session_model->next_question == 0 && count($form_model->media)) {
-                /*
+                
                   $link = asset('media/lava/upload/' . $form_model->media[0]['name']);
 
-                  dd($this->input['message']['chat']['id']);
                   $parameters = array(
                   'type' => 'photo',
                   'chat_id' => $this->input['message']['chat']['id'],
@@ -548,8 +547,7 @@ class TelegramController extends SurveysBaseController {
                   );
 
                   $this->sendMessage($parameters);
-                 * 
-                 */
+                
             }
 
             //Send next question
