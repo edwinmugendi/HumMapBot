@@ -153,10 +153,7 @@
         <div class="footer-content text-center">
             <div class="social-container">
                 <ul class="list-inline social-list">
-                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                    <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-                    <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                    <li><a target="_blank" href="https://twitter.com/surveychat"><i class="fa fa-twitter"></i></a></li>
                 </ul><!--//social-list-->
             </div><!--//social-container-->
             <div class="copyright">&copy; <?php echo date('Y'); ?>&nbsp;<?php echo \Config::get('product.name'); ?> | All rights reserved </div>  
