@@ -14,7 +14,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="logo.svg">
+   sodipodi:docname="logo-1.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -64,6 +64,10 @@
          id="tspan2987"
          x="4.0000019"
          y="1048.9336"
-         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#ffffff;font-family:URW Bookman L;-inkscape-font-specification:URW Bookman L Bold">Survey Chat</tspan></text>
+         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#000000;font-family:URW Bookman L;-inkscape-font-specification:URW Bookman L Bold"><tspan
+           style="font-weight:bold;fill:#0000ff;-inkscape-font-specification:URW Bookman L Bold"
+           id="tspan3850">Survey</tspan><tspan
+           style="font-weight:bold;fill:#ff0000;-inkscape-font-specification:URW Bookman L Bold"
+           id="tspan3852"> Chat</tspan></tspan></text>
   </g>
 </svg>

@@ -1,3 +1,7 @@
+<div class="img-responsive" style="margin-top: 30px;">
+    <img src="<?php echo asset('img/logo.png'); ?>" width="300" style=" display: block;
+    margin: 0 auto;">
+</div>
 <div class="">
     <a class="hiddenanchor" id="toregister"></a>
     <a class="hiddenanchor" id="tologin"></a>
@@ -66,7 +70,7 @@
                     <h2><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.register.received', array('productName' => \Config::get('product.name'))); ?></h2>
                 <?php else: ?>
                     <?php echo \Form::open(array('route' => 'userRegister', 'id' => 'userPost')); ?>
-                    <h1><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.register.trial',array('product'=>\Config::get('product.name'))); ?></h1>
+                    <h1><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.register.trial', array('product' => \Config::get('product.name'))); ?></h1>
                     <div>
                         <?php echo \Form::text('full_name', '', array('placeholder' => \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.register.field.fullName'), 'class' => 'validate[required, minSize[2]]')); ?>
                         <?php if ($errors->has('full_name')): ?>

@@ -288,14 +288,14 @@ textarea {
   color: #36435A;
 }
 .header-scrolled h1.logo a {
-  background: transparent url('../../img/logo.png') no-repeat left top;
+  background: transparent url('../../img/logo-1.svg') no-repeat left top;
 }
 h1.logo {
   margin-top: 0;
   margin-bottom: 0;
 }
 h1.logo a {
-  background: transparent url('../../img/logo.png') no-repeat left top;
+  background: transparent url('../../img/logo.svg') no-repeat left top;
   display: inline-block;
   height: 18px;
   width: 130px;
