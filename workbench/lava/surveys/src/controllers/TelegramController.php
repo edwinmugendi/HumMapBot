@@ -299,6 +299,7 @@ class TelegramController extends SurveysBaseController {
         $request = $guzzle_client->get($telegram_link);
         //Decode json
         $json_response = json_decode($request->getBody(), true);
+        
         if ($json_response['ok'] == 'true') {
 
             //Telegram file link
