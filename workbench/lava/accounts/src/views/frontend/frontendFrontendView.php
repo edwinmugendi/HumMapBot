@@ -130,7 +130,7 @@
 <section id="contact" class="contact-section section">
     <h2 class="section-title text-center">Want to contact us?</h2>
     <div class="contact-form-container">    
-        <p class="text-center"><i class="fa fa-envelope"></i>&nbsp;<a href="mailto:info@sapamatech.com">info@sapamatech.com</a></p>
+        <p class="text-center"><i class="fa fa-envelope"></i>&nbsp;<a href="mailto:chat@sapamatech.com">chat@sapamatech.com</a></p>
     </div><!--//contact-form-container-->
 
 </section><!--//contact-container-->
