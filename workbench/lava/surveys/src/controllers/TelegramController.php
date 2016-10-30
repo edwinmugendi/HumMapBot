@@ -574,11 +574,10 @@ class TelegramController extends SurveysBaseController {
         //Emoticons
         $emoticons = "\uD83D\uDC4F";
 
-
         $parameters = array(
             'type' => 'text',
             'chat_id' => $this->input['message']['chat']['id'],
-            'text' => json_decode('"' . $emoticons . '"') . ' Welcome to SurveyBot. To respond to a survey, type "/fill {form name}" try /fill contact'
+            'text' => json_decode('"' . $emoticons . '"') . ' Welcome to ' . \Config::get('product.name') . '. To respond to a survey, type "/fill {form name}" try /fill contact'
         );
 
         return $this->sendMessage($parameters);
