@@ -20,6 +20,10 @@
                                         <td><?php echo $view_data['singleModel']['channel_chat_id']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['actual_form_id']; ?></td>
+                                 
+                                        <td><?php echo $view_data['singleModel']['created_at']; ?></td>
+                                 
+                                        <td><?php echo $view_data['singleModel']['updated_at']; ?></td>
                 <?php if (!array_key_exists('export', $view_data)): ?>    <td>
         <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_detailed_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get('common.view.actions.detailed.detailed'); ?>" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> <?php echo \Lang::get('common.view.actions.detailed.view'); ?></a>
                     <a href="<?php echo \URL::route(camel_case($view_data['package'] . '_post_' . $view_data['controller']), array($view_data['singleModel']['id'])); ?>" title="<?php echo \Lang::get('common.view.actions.edit.edit'); ?>"  class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> <?php echo \Lang::get('common.view.actions.edit.edit'); ?></a>
@@ -45,6 +49,10 @@
                                         <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.channel_chat_id') .': '.$view_data['singleModel']['channel_chat_id']; ?> </div>
                      
                                         <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.actual_form_id') .': '.$view_data['singleModel']['actual_form_id']; ?> </div>
+                     
+                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.created_at') .': '.$view_data['singleModel']['created_at']; ?> </div>
+                     
+                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.updated_at') .': '.$view_data['singleModel']['updated_at']; ?> </div>
                 
     </td>
 </tr>

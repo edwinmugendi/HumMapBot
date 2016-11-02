@@ -30,6 +30,8 @@ return array(
             'next_question' => 'Next question',
             'total_questions' => 'Total questions',
             'actual_form_id' => 'Actual form id',
+            'created_at' => 'Created at',
+            'updated_at' => 'Updated at',
         ),
         'actions' => array(
             'delete' => array(

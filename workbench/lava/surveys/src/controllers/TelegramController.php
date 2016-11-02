@@ -10,6 +10,7 @@ use Longman\TelegramBot\Entities\ReplyKeyboardHide;
 use Longman\TelegramBot\Entities\ReplyKeyboardMarkup;
 use GuzzleHttp\Client as GuzzleClient;
 use Intervention\Image\Facades\Image as InterventionImage;
+use Carbon\Carbon;
 
 /**
  * S# TelegramController() function
@@ -136,11 +137,17 @@ class TelegramController extends SurveysBaseController {
         //Set scope
         $parameters['scope'] = array('statusOne');
 
+        //Order by
+        $parameters['orderBy'][] = array('updated_at' => 'asc');
+
         //Select session
         $session_model = $this->callController(\Util::buildNamespace('surveys', 'session', 1), 'getModelByField', array('channel_chat_id', $this->input['message']['chat']['id'], $parameters));
 
-
         if ($session_model) {
+
+            $session_model->updated_at = Carbon::now();
+
+            $session_model->save();
 
             if ($session_model->next_question == ($session_model->total_questions)) {
 

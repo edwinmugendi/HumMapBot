@@ -254,6 +254,62 @@
                                 </th>
                                 <?php else: ?>                                <th>
                                     <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.actual_form_id'); ?>                                </th>
+                                <?php endif; ?>                                                                                                                <?php if (!array_key_exists('export', $view_data)): ?>                                <?php
+                        $order = 'asc';
+                        $is_ordered = false;
+                        ?>
+                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'created_at'): ?>
+                             <?php $is_ordered = true;?>
+                                <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
+                                <?php
+                                $order = 'asc';
+                                ?>
+                            <?php else: ?>
+                                <?php
+                                $order = 'desc';
+                                ?>
+                            <?php endif; ?>
+                        <?php endif ?>
+
+                        <?php if ($view_data['paginationAppends']): ?>
+                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=created_at'; ?>
+                        <?php else: ?>
+                            <?php $url = 'order=' . $order . '&sort=created_at';?>
+                        <?php endif;?>                                <th>   
+                                    <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
+                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.created_at'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
+                                        <?php endif; ?>                                    </a>
+                                </th>
+                                <?php else: ?>                                <th>
+                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.created_at'); ?>                                </th>
+                                <?php endif; ?>                                                                                                                <?php if (!array_key_exists('export', $view_data)): ?>                                <?php
+                        $order = 'asc';
+                        $is_ordered = false;
+                        ?>
+                        <?php if (array_key_exists('sort', $view_data['input']) && $view_data['input']['sort'] == 'updated_at'): ?>
+                             <?php $is_ordered = true;?>
+                                <?php if (array_key_exists('order', $view_data['input']) && $view_data['input']['order'] == 'desc'): ?>
+                                <?php
+                                $order = 'asc';
+                                ?>
+                            <?php else: ?>
+                                <?php
+                                $order = 'desc';
+                                ?>
+                            <?php endif; ?>
+                        <?php endif ?>
+
+                        <?php if ($view_data['paginationAppends']): ?>
+                            <?php $url = http_build_query($view_data['paginationAppends']) . '&order=' . $order . '&sort=updated_at'; ?>
+                        <?php else: ?>
+                            <?php $url = 'order=' . $order . '&sort=updated_at';?>
+                        <?php endif;?>                                <th>   
+                                    <a href="<?php echo \Route(camel_case($view_data['package'] . '_list_' . $view_data['controller'])) . '?' . $url ?>">
+                                        <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.updated_at'); ?>                                        <?php if ($is_ordered): ?>                                        <span class="<?php echo ($order == 'asc') ? 'dropdown':'dropup';?>"><span class="caret"></span></span>
+                                        <?php endif; ?>                                    </a>
+                                </th>
+                                <?php else: ?>                                <th>
+                                    <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.updated_at'); ?>                                </th>
                                 <?php endif; ?>                                                                            <?php if (!array_key_exists('export', $view_data)): ?>                        <th><?php echo \Lang::get('common.view.actions.actions'); ?></th>
                         <?php endif; ?>                    </tr>
                 <tbody>
@@ -283,6 +339,12 @@
                                 
                                                                                     <td>
                                                                             <?php echo \Form::text('actual_form_id', isset($view_data['input']['actual_form_id']) ? $view_data['input']['actual_form_id'] : '', array('class' => 'form-control')); ?>                                                                    </td>
+                                
+                                                                                    <td>
+                                                                            <?php echo \Form::text('created_at', isset($view_data['input']['created_at']) ? $view_data['input']['created_at'] : '', array('class' => 'form-control')); ?>                                                                    </td>
+                                
+                                                                                    <td>
+                                                                            <?php echo \Form::text('updated_at', isset($view_data['input']['updated_at']) ? $view_data['input']['updated_at'] : '', array('class' => 'form-control')); ?>                                                                    </td>
                                 
                                                 <td>
                             <a title="<?php echo \Lang::get('common.view.actions.search.search'); ?>" class="pull-left searchSubmit"><span class="icon-data-search icon-data-2x text-danger"></span></a>

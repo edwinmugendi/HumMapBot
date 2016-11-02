@@ -21,6 +21,8 @@ class SessionModel extends \BaseModel {
         'total_questions' => array(1, 'text', '='),
         'channel_chat_id' => array(1, 'text', '='),
         'actual_form_id' => array(1, 'text', '='),
+        'created_at' => array(1, 'text', '='),
+        'updated_at' => array(1, 'text', '='),
     );
     //Fillable fields
     protected $fillable = array(
