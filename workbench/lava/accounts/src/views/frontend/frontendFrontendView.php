@@ -148,7 +148,7 @@
                 <h3 class="text-center">Sign up to create surveys and collect data via Telegram</h3> 
                 <a class="button btn btn-lg btn-primary center-block" style="width: 200px;" href="<?php echo \URL::route('userRegistration') ?>#toregister">Sign up</a>
                 <h3 class="text-center">Already designed a form?</h3> 
-                <a class="btn btn-lg btn-primary  center-block" style="width: 450px;" target="_blank" href="http://telegram.me/surveychatbot">Go to @surveychatbot</a>
+                <a class="btn btn-lg btn-primary center-block" target="_blank" href="http://telegram.me/surveychatbot" style="width:auto;">Go to @surveychatbot</a>
             </div>
         </div><!--//row-->
     </div><!--//container-->
