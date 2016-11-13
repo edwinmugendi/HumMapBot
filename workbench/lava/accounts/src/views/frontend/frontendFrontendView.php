@@ -28,6 +28,11 @@
     <div class="container">
         <h2 class="headline text-center">Create Surveys <br class="visible-sm-block"> & Get Answers via Telegram</h2>
         <div class="overview-wrapper row">
+            <div class="product-holder col-xs-12 col-md-5 col-md-offset-2" style="margin-bottom: 40px;">
+                <a class="btn btn-lg btn-primary col-md-offset-3" href="http://telegram.me/surveychatbot">Go to @surveychatbot on Telegram</a>
+            </div><!--//product-holder-->
+        </div><!--//overview-wrapper-->
+        <div class="overview-wrapper row">
             <div class="product-holder col-xs-12 col-md-5 col-md-offset-3">
                 <img class="img-responsive product-image" src="<?php echo asset('img/homePage/surveybot.png'); ?>" alt="">
                 <div class="control text-center">
