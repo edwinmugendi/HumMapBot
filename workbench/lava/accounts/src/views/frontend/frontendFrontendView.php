@@ -29,7 +29,7 @@
         <h2 class="headline text-center">Create Surveys <br class="visible-sm-block"> & Get Answers via Telegram</h2>
         <div class="overview-wrapper row">
             <div class="product-holder col-xs-12 col-md-5 col-md-offset-2" style="margin-bottom: 40px;">
-                <a class="btn btn-lg btn-primary col-md-offset-3" href="http://telegram.me/surveychatbot" target="_blank">Go to @surveychatbot on Telegram</a>
+                <a class="btn btn-lg btn-primary col-md-offset-2" href="http://telegram.me/surveychatbot" target="_blank">Go to @surveychatbot</a>
             </div><!--//product-holder-->
         </div><!--//overview-wrapper-->
         <div class="overview-wrapper row">
@@ -148,7 +148,7 @@
                 <h3 class="text-center">Sign up to create surveys and collect data via Telegram</h3> 
                 <a class="button btn btn-lg btn-primary center-block" style="width: 200px;" href="<?php echo \URL::route('userRegistration') ?>#toregister">Sign up</a>
                 <h3 class="text-center">Already designed a form?</h3> 
-                <a class="btn btn-lg btn-primary  center-block" style="width: 450px;" target="_blank" href="http://telegram.me/surveychatbot">Go to @surveychatbot on Telegram</a>
+                <a class="btn btn-lg btn-primary  center-block" style="width: 450px;" target="_blank" href="http://telegram.me/surveychatbot">Go to @surveychatbot</a>
             </div>
         </div><!--//row-->
     </div><!--//container-->
