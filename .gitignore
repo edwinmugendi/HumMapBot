@@ -9,3 +9,4 @@ Thumbs.db
 /public/media/upload/
 /public/media/lava/upload/
 /public/media/
+!/composer.lock
