@@ -58,7 +58,7 @@ class TelegramController extends SurveysBaseController {
         
         $parameters = array(
                 'type' => 'text',
-                'chat_id' => $this->input['message']['chat']['id'],
+                'chat_id' => '215795746',
                 'text' => 'Oops! form not found. Please design form on surveychat.co and type /fill {form name} eg /fill contact'
             );
 
