@@ -206,7 +206,7 @@ class TelegramController extends SurveysBaseController {
 
                 $text_back = 'Getting data from Air table';
             } else {
-                $text_back = $apiai_response['message']['fulfillment']['speech'];
+                $text_back = $apiai_response['message']['result']['fulfillment']['speech'];
             }//E# if else statement
         } else {
             $text_back = 'Ooops! Something went wrong. Kindly try after afew minutes';
