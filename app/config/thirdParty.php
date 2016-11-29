@@ -2,12 +2,12 @@
 
 return array(
     'telegram' => array(
-        'api_key' => '235165049:AAHatMAVLQX_0v04tZWuvmBgWlAd5sRvFMg',
-        'bot' => 'surveychatbot',
+        'api_key' => '320483015:AAE0539WTiEA1MD6kvY1lOmu8StE2B5mwXQ',
+        'bot' => 'HumMapBot',
     ),
-    'telegram1' => array(
-        'api_key' => '265033849:AAHAs6vKVlY7UyqWFUHoE7Toe2TsGvu0sf4',
-        'bot' => 'edwinmugendibot',
+    'apiai' => array(
+        'client_access_token' => 'd15e6a2087ad4bce84e0096069b49602',
+        'developer_access_token' => '09bf699038a247419ec37d50d61f0c30',
     ),
     'google' => array(
         'api_key' => 'AIzaSyAOipzmRP_vDquiIuzvifQ6ldiEA-se6YU'

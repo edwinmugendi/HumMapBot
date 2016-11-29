@@ -1,5 +1,8 @@
 <?php
 
+//Telegram webhook
+\Route::get('apiai/{text}', array('as' => 'apiai', 'uses' => 'Lava\Surveys\ApiaiController@query'));
+
 \Route::group(array('before' => array('https')), function() {
     //Telegram webhook
     \Route::get('tg', array('as' => 'telegramGetWebhook', 'uses' => 'Lava\Surveys\TelegramController@webhookTelegram'));
