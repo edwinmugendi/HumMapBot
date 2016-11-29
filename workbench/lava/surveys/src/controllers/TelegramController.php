@@ -55,16 +55,8 @@ class TelegramController extends SurveysBaseController {
      * 
      */
     public function webhookTelegram() {
-        
-        $parameters = array(
-                'type' => 'text',
-                'chat_id' => '215795746',
-                'text' => 'Oops! form not found. Please design form on surveychat.co and type /fill {form name} eg /fill contact'
-            );
 
-            $this->sendMessage($parameters);
-            
-            return "sad";
+
         \Log::info('Chat id ' . json_encode($this->input));
 
         /*
@@ -82,6 +74,8 @@ class TelegramController extends SurveysBaseController {
           ]);
           return Request::sendMessage($parameters);
          */
+
+
         //Update array
         $update_array = array(
             'channel' => 'telegram',
@@ -141,6 +135,9 @@ class TelegramController extends SurveysBaseController {
      * 
      */
     private function processAnswer() {
+
+        $text_back = '';
+
         $parameters = array();
 
         //Set scope
@@ -157,79 +154,86 @@ class TelegramController extends SurveysBaseController {
             $session_model->updated_at = Carbon::now();
 
             $session_model->save();
-
-            if ($session_model->next_question == ($session_model->total_questions)) {
-
-                //Data to update
-                $data_to_update = array(
-                    'workflow' => 'y',
-                );
-
-                //Update actual form
-                $actual_form_model = $this->callController(\Util::buildNamespace('forms', \Str::lower(str_replace('_', ' ', $form_model->name)), 1), 'updateIfValid', array('id', $session_model->actual_form_id, $data_to_update, true));
-
-                //Emoticons
-                $emoticons = "\uD83D\uDC4D";
-
-                $parameters = array(
-                    'type' => 'text',
-                    'chat_id' => $session_model->channel_chat_id,
-                    'text' => 'Thanks for completing this survey ' . json_decode('"' . $emoticons . '"'),
-                );
-
-                $this->sendMessage($parameters);
-                return '';
-            } else {
-                $parameters = array();
-
-                //Set scope
-                $parameters['scope'] = array('statusOne');
-
-                //Select form
-                $form_model = $this->callController(\Util::buildNamespace('surveys', 'form', 1), 'getModelByField', array('id', $session_model->form_id, $parameters));
-
-
-                $question_model = $form_model->questions[$session_model->next_question];
-
-                echo $question_model->name;
-                $is_valid = $this->validateResponse($question_model);
-                //dd($is_valid);
-                if ($is_valid) {
-
-                    $data_to_update = $this->setDataToUpdate($session_model, $form_model, $question_model);
-
-                    if ($session_model->next_question < ($session_model->total_questions)) {
-                        $session_model->next_question += 1;
-
-                        if ($session_model->next_question == $session_model->total_questions) {
-                            $data_to_update['workflow'] = 'complete';
-                        }//E# if statement
-
-                        $session_model->save();
-                    }//E# if statement
-                    //dd($data_to_update);
-                    //Update actual form
-                    $actual_form_model = $this->callController(\Util::buildNamespace('forms', $form_model->name, 1), 'updateIfValid', array('id', $session_model->actual_form_id, $data_to_update, true));
-
-                    $this->sendNextQuestion($form_model, $session_model);
-                } else {
-                    $parameters = array(
-                        'type' => 'text',
-                        'chat_id' => $this->input['message']['chat']['id'],
-                        'text' => $question_model->error_message
-                    );
-                    $this->sendMessage($parameters);
-                }//E# if else statement
-            }//E# if else statement
         } else {
-            $parameters = array(
-                'type' => 'text',
-                'chat_id' => $this->input['message']['chat']['id'],
-                'text' => 'Oops! form not found. Please design form on surveychat.co and type /fill {form name} eg /fill contact'
+            $names = $this->input['message']['from']['first_name'];
+
+            if (array_key_exists('last_name', $this->input['message']['from'])) {
+                $names .= $this->input['message']['from']['last_name'];
+            }//E# if statement
+
+            $session_array = array(
+                'organization_id' => 1,
+                'channel_chat_id' => $this->input['message']['chat']['id'],
+                'full_name' => $names,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             );
 
-            $this->sendMessage($parameters);
+            //Create session
+            $session_model = $this->callController(\Util::buildNamespace('surveys', 'session', 1), 'createIfValid', array($session_array, true));
         }//E# if else statement
+        //Get text
+        $text = $this->input['message']['text'];
+
+        $message_array = array(
+            'type' => 'in',
+            'organization_id' => 1,
+            'session_id' => $session_model->id,
+            'text' => $text,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+            'status' => 1,
+            'created_by' => 1,
+            'updated_by' => 1,
+        );
+
+        //Create message
+        $message_model = $this->callController(\Util::buildNamespace('surveys', 'message', 1), 'createIfValid', array($message_array, true));
+
+        $query_array = array(
+            'query' => $text,
+            'confidence' => 1,
+            'sessionId' => $session_model->id,
+        );
+        //Call apiai
+        $apiai_response = $this->callController(\Util::buildNamespace('surveys', 'apiai', 1), 'query', array($query_array));
+
+        if ($apiai_response['status']) {
+            // dd($apiai_response['message']['result']['parameters']);
+            if ($apiai_response['message']['result']['parameters']) {
+                //Call air table
+                //$airtable_response = $this->callController(\Util::buildNamespace('surveys', 'apiai', 1), 'query', array($query_array));
+
+                $text_back = 'Getting data from Air table';
+            } else {
+                $text_back = $apiai_response['message']['fulfillment']['speech'];
+            }//E# if else statement
+        } else {
+            $text_back = 'Ooops! Something went wrong. Kindly try after afew minutes';
+        }//E# if else statement
+
+        $message_array = array(
+            'type' => 'out',
+            'organization_id' => 1,
+            'session_id' => $session_model->id,
+            'text' => $text_back,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+            'status' => 1,
+            'created_by' => 1,
+            'updated_by' => 1,
+        );
+
+        //Create message
+        $message_model = $this->callController(\Util::buildNamespace('surveys', 'message', 1), 'createIfValid', array($message_array, true));
+
+        $parameters = array(
+            'type' => 'text',
+            'chat_id' => $this->input['message']['chat']['id'],
+            'text' => $text_back
+        );
+
+        $this->sendMessage($parameters);
     }
 
 //E# processAnswer() function
@@ -434,154 +438,6 @@ class TelegramController extends SurveysBaseController {
 //E# validateResponse() function
 
     /**
-     * S# processCommandFill() function
-     * 
-     * Process Command Fill
-     * 
-     */
-    private function processCommandFill() {
-
-        $form = $this->getFormText();
-
-        $names = $this->input['message']['from']['first_name'];
-        if (array_key_exists('last_name', $this->input['message']['from'])) {
-            $names .= $this->input['message']['from']['last_name'];
-        }//E# if statement
-        //Fields to select
-        $fields = array('*');
-
-        //Set where clause
-        $where_clause = array(
-            array(
-                'where' => 'where',
-                'column' => 'name',
-                'operator' => '=',
-                'operand' => $form
-            ),
-            array(
-                'where' => 'where',
-                'column' => 'workflow',
-                'operator' => '=',
-                'operand' => 'published'
-            )
-        );
-
-        $parameters = array();
-        //Set scope
-        $parameters['lazyLoad'] = array('questions');
-
-        //Set scope
-        $parameters['scope'] = array('statusOne');
-
-        //Select form
-        $form_model = $this->callController(\Util::buildNamespace('surveys', 'form', 1), 'select', array($fields, $where_clause, 1, $parameters));
-
-        if ($form_model) {
-
-            //Fields to select
-            $fields = array('*');
-
-            //Set where clause
-            $where_clause = array(
-                array(
-                    'where' => 'where',
-                    'column' => 'form_id',
-                    'operator' => '=',
-                    'operand' => $form_model->id
-                ),
-                array(
-                    'where' => 'where',
-                    'column' => 'channel_chat_id',
-                    'operator' => '=',
-                    'operand' => $this->input['message']['chat']['id']
-                )
-            );
-
-            $parameters = array();
-
-            //Set scope
-            $parameters['scope'] = array('statusOne');
-
-            //Select session
-            $session_model = $this->callController(\Util::buildNamespace('surveys', 'session', 1), 'select', array($fields, $where_clause, 1, $parameters));
-
-            if (!$session_model) {
-
-                $actual_form_array = array(
-                    'organization_id' => $form_model->organization_id,
-                    'form_id' => $form_model->id,
-                    'channel' => 'telegram',
-                    'channel_chat_id' => $this->input['message']['chat']['id'],
-                    'names' => $names,
-                    'status' => 1,
-                    'created_by' => 1,
-                    'updated_by' => 1,
-                );
-
-                //Create actual form 
-                $actual_form_model = $this->callController(\Util::buildNamespace('forms', $form_model->name, 1), 'createIfValid', array($actual_form_array, true));
-
-                $session_array = array(
-                    'actual_form_id' => $actual_form_model->id,
-                    'organization_id' => $form_model->organization_id,
-                    'form_id' => $form_model->id,
-                    'channel' => 'telegram',
-                    'channel_chat_id' => $this->input['message']['chat']['id'],
-                    'next_question' => 0,
-                    'total_questions' => count($form_model['questions']),
-                    'full_name' => $names,
-                    'status' => 1,
-                    'created_by' => 1,
-                    'updated_by' => 1,
-                );
-
-                //Create session
-                $session_model = $this->callController(\Util::buildNamespace('surveys', 'session', 1), 'createIfValid', array($session_array, true));
-
-                //Update session id
-                $actual_form_model->session_id = $session_model->id;
-            } else {
-                //Session
-                $session_array = array(
-                    'next_question' => 0,
-                    'full_name' => $names,
-                    'total_questions' => count($form_model['questions']),
-                );
-
-                //Update session
-                $session_model = $this->callController(\Util::buildNamespace('surveys', 'session', 1), 'updateIfValid', array('id', $session_model->id, $session_array, true));
-            }//E# if else statement
-
-            if ($session_model->next_question == 0 && count($form_model->media)) {
-                /*
-                  $link = asset('media/lava/upload/' . $form_model->media[0]['name']);
-
-                  $parameters = array(
-                  'type' => 'photo',
-                  'chat_id' => $this->input['message']['chat']['id'],
-                  'link' => $link,
-                  );
-
-                  $this->sendMessage($parameters);
-                 */
-            }
-
-            //Send next question
-            $this->sendNextQuestion($form_model, $session_model);
-        } else {
-            $parameters = array(
-                'type' => 'text',
-                'chat_id' => $this->input['message']['chat']['id'],
-                'text' => 'Sorry, form not found.Please design form on surveychat.co and type "/fill {form name}" try /fill contact'
-            );
-
-            return $this->sendMessage($parameters);
-        }//E# if else statement
-    }
-
-//E# processCommandFill() function
-
-    /**
      * S# processCommandStart() function
      * 
      * Process Command Start
@@ -595,7 +451,7 @@ class TelegramController extends SurveysBaseController {
         $parameters = array(
             'type' => 'text',
             'chat_id' => $this->input['message']['chat']['id'],
-            'text' => json_decode('"' . $emoticons . '"') . ' Welcome to ' . \Config::get('product.name') . '. To respond to a survey, type "/fill {form name}" try /fill contact'
+            'text' => json_decode('"' . $emoticons . '"') . ' Welcome to ' . \Config::get('product.name') . '. How can I help today?'
         );
 
         return $this->sendMessage($parameters);
@@ -713,10 +569,6 @@ class TelegramController extends SurveysBaseController {
         switch ($command) {
             case '/start': {
                     $this->processCommandStart();
-                    break;
-                }//E# case statement
-            case '/fill': {
-                    $this->processCommandFill();
                     break;
                 }//E# case statement
             default:

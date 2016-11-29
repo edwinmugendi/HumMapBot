@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSurveysSessionsTable extends Migration {
+class CreateSurveysMessagesTable extends Migration {
 
     /**
      * Run the migrations.
@@ -11,11 +11,12 @@ class CreateSurveysSessionsTable extends Migration {
      * @return void
      */
     public function up() {
-        Schema::create('svy_sessions', function(Blueprint $table) {
+        Schema::create('svy_messages', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('organization_id')->unsigned();
-            $table->string('channel_chat_id', 255);
-            $table->string('full_name', 255);
+            $table->integer('session_id')->unsigned();
+            $table->string('text', 255);
+            $table->string('type', 255);
 
             $table->string('agent', 255);
             $table->string('ip', 255);
@@ -32,7 +33,7 @@ class CreateSurveysSessionsTable extends Migration {
      * @return void
      */
     public function down() {
-        Schema::drop('svy_sessions');
+        Schema::drop('svy_messages');
     }
 
 }

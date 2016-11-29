@@ -8,10 +8,10 @@
         <?php endif; ?>
                          
                                         <td><?php echo $view_data['singleModel']['id']; ?></td>
+                                                                        <td><?php echo $view_data['singleModel']['type_text']; ?></td>
+                                                                        <td><?php echo $view_data['singleModel']['session_id_text']; ?></td>
                                  
-                                        <td><?php echo $view_data['singleModel']['full_name']; ?></td>
-                                 
-                                        <td><?php echo $view_data['singleModel']['channel_chat_id']; ?></td>
+                                        <td><?php echo $view_data['singleModel']['text']; ?></td>
                                  
                                         <td><?php echo $view_data['singleModel']['created_at']; ?></td>
                                  
@@ -29,10 +29,10 @@
     <td colspan="100%">
                      
                                         <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.id') .': '.$view_data['singleModel']['id']; ?> </div>
+                                                            <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.type') .': '.$view_data['singleModel']['type_text']; ?> </div>
+                                                            <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.session_id') .': '.$view_data['singleModel']['session_id_text']; ?> </div>
                      
-                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.full_name') .': '.$view_data['singleModel']['full_name']; ?> </div>
-                     
-                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.channel_chat_id') .': '.$view_data['singleModel']['channel_chat_id']; ?> </div>
+                                        <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.text') .': '.$view_data['singleModel']['text']; ?> </div>
                      
                                         <div class="commonClearBoth commonFloatLeft"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.view.field.created_at') .': '.$view_data['singleModel']['created_at']; ?> </div>
                      

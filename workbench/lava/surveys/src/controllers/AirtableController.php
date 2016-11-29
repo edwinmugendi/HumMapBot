@@ -2,18 +2,15 @@
 
 namespace Lava\Surveys;
 
-use Carbon\Carbon;
-use ApiAi\Client as ApiaiClient;
-
 /**
- * S# ApiaiController() function
- * Apiai controller
+ * S# AirtableController() function
+ * Airtable controller
  * @author Edwin Mugendi
  */
-class ApiaiController extends SurveysBaseController {
+class AirtableController extends SurveysBaseController {
 
     //Controller
-    public $controller = 'apiai';
+    public $controller = 'airtable';
     private $service;
     private $configs;
     private $request;
@@ -27,15 +24,15 @@ class ApiaiController extends SurveysBaseController {
     public function __construct() {
         parent::__construct();
         //Get configs
-        $this->configs = \Config::get('thirdParty.apiai');
+        $this->configs = \Config::get('thirdParty.airtable');
 
-        //dd($this->configs['client_access_token']);
-        // Create Apiai API object
-        $this->service = new ApiaiClient($this->configs['developer_access_token']);
+        // Create Airtable API object
+        $this->service = new AirtableClient($this->configs['developer_access_token']);
     }
 
 //E# __contruct() function
     
+
     /**
      * S# query() function
      * 
@@ -66,6 +63,8 @@ class ApiaiController extends SurveysBaseController {
     }
 
 //E# query() function
+    
+    
 }
 
-//E# ApiaiController() function
+//E# AirtableController() function

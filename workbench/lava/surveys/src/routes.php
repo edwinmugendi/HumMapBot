@@ -61,6 +61,30 @@
 
     //Un-Delete session
     \Route::post('surveys/undelete/session', array('as' => 'surveysUndeleteSession', 'uses' => 'Lava\Surveys\SessionController@postUndelete'));
+    
+    /**
+     * Message routes
+     */
+    //Detailed message
+    \Route::get('surveys/detailed/message/{id}', array('as' => 'surveysDetailedMessage', 'uses' => 'Lava\Surveys\MessageController@getDetailed'));
+
+    //List message
+    \Route::get('surveys/list/message', array('as' => 'surveysListMessage', 'uses' => 'Lava\Surveys\MessageController@getList'));
+
+    //Post message
+    \Route::get('surveys/post/message/{id?}', array('as' => 'surveysPostMessage', 'uses' => 'Lava\Surveys\MessageController@getPost'));
+
+    //Create a message
+    \Route::post('surveys/create/message', array('as' => 'surveysCreateMessage', 'before' => 'csrf', 'uses' => 'Lava\Surveys\MessageController@postCreate'));
+
+    //Update a message
+    \Route::post('surveys/update/message', array('as' => 'surveysUpdateMessage', 'before' => 'csrf', 'uses' => 'Lava\Surveys\MessageController@postUpdate'));
+
+    //Delete message
+    \Route::post('surveys/delete/message', array('as' => 'surveysDeleteMessage', 'uses' => 'Lava\Surveys\MessageController@postDelete'));
+
+    //Un-Delete message
+    \Route::post('surveys/undelete/message', array('as' => 'surveysUndeleteMessage', 'uses' => 'Lava\Surveys\MessageController@postUndelete'));
 
 
     /**
