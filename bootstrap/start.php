@@ -25,9 +25,9 @@ $app = new Illuminate\Foundation\Application;
  */
 
 $env = $app->detectEnvironment(array(
-    'prod' => array('*sapamatech.com*'),
+    'prod' => array('*ubuntu-512mb-nyc3-01*'),
     'local' => array('*sapama*'),
-    ));
+        ));
 
 /*
   |--------------------------------------------------------------------------

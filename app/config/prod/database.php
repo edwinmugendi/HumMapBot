@@ -48,9 +48,9 @@ return array(
         'mysql' => array(
             'driver' => 'mysql',
             'host' => '127.0.0.1',
-            'database' => 'bot',
+            'database' => 'hummapbot',
             'username' => 'root',
-            'password' => 'lavasapama54321',
+            'password' => 'hum123',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => 'sp_',
