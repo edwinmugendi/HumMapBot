@@ -1,7 +1,13 @@
 <?php
 
-//Telegram webhook
+//API.AI
 \Route::get('apiai/{text}', array('as' => 'apiai', 'uses' => 'Lava\Surveys\ApiaiController@query'));
+
+//Airtable test
+\Route::get('airtable', array('as' => 'airtable', 'uses' => 'Lava\Surveys\AirtableController@findRecords'));
+
+//Airtable test
+\Route::get('airtable1', array('as' => 'airtable1', 'uses' => 'Lava\Surveys\AirtableController@findSingleRecord'));
 
 \Route::group(array('before' => array('https')), function() {
     //Telegram webhook
@@ -61,7 +67,7 @@
 
     //Un-Delete session
     \Route::post('surveys/undelete/session', array('as' => 'surveysUndeleteSession', 'uses' => 'Lava\Surveys\SessionController@postUndelete'));
-    
+
     /**
      * Message routes
      */

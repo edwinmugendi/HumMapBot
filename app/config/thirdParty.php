@@ -1,6 +1,10 @@
 <?php
 
 return array(
+    'airtable' => array(
+        'api_key' => 'keynV6afutzQzbthI',
+        'base_id' => 'appTXVQC0zLE67Peo',
+    ),
     'telegram' => array(
         'api_key' => '320483015:AAE0539WTiEA1MD6kvY1lOmu8StE2B5mwXQ',
         'bot' => 'HumMapBot',

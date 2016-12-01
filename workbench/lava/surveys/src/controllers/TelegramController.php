@@ -201,10 +201,24 @@ class TelegramController extends SurveysBaseController {
         if ($apiai_response['status']) {
             // dd($apiai_response['message']['result']['parameters']);
             if ($apiai_response['message']['result']['parameters']) {
-                //Call air table
-                //$airtable_response = $this->callController(\Util::buildNamespace('surveys', 'apiai', 1), 'query', array($query_array));
+                $table = 'Facets';
 
-                $text_back = 'Getting data from Air table';
+                $apiai_response['message']['result']['parameters']['challenge'] = 'Finance Transparency';
+                $criteria = array(
+                    //'maxRecords' => 1,
+                    'filterByFormula' => '({Name} = \'' . $apiai_response['message']['result']['parameters']['challenge'] . '\')',
+                );
+                //Call air table
+                $solution = $this->callController(\Util::buildNamespace('surveys', 'airtable', 1), 'getSolutions', array($table, $criteria));
+
+                $text_back = $solution;
+                /*
+                  if ($airtable_response['status']) {
+                  $fields = $airtable_response['message'][0]->getFields();
+                  $text_back = $fields['Description'];
+                  }//E# if statement
+                 * 
+                 */
             } else {
                 $text_back = $apiai_response['message']['result']['fulfillment']['speech'];
             }//E# if else statement

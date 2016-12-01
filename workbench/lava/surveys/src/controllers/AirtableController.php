@@ -2,6 +2,8 @@
 
 namespace Lava\Surveys;
 
+use Armetiz\AirtableSDK\Airtable;
+
 /**
  * S# AirtableController() function
  * Airtable controller
@@ -27,30 +29,26 @@ class AirtableController extends SurveysBaseController {
         $this->configs = \Config::get('thirdParty.airtable');
 
         // Create Airtable API object
-        $this->service = new AirtableClient($this->configs['developer_access_token']);
+        $this->service = new Airtable($this->configs['api_key'], $this->configs['base_id']);
     }
 
 //E# __contruct() function
-    
 
     /**
-     * S# query() function
+     * S# listRecords() function
      * 
-     * Query
+     * List Records
      * 
-     * @param array $query_array Query array
+     * @param array 
      */
-    public function query($query_array) {
+    public function findRecords($table, $criteria) {
+
         try {
-            $query = $this->service->get('query', $query_array/* [
-                      'query' => $text,
-                      'confidence' => 1,
-                      'sessionId' => '1234567890',
-                      ] */);
+            $response = $this->service->findRecords($table, $criteria);
 
             $this->response = array(
                 'status' => 1,
-                'message' => json_decode((string) $query->getBody(), true)
+                'message' => $response
             );
         } catch (\Exception $error) {
             $this->response = array(
@@ -62,9 +60,88 @@ class AirtableController extends SurveysBaseController {
         return $this->response;
     }
 
-//E# query() function
-    
-    
+//E# findRecords() function
+
+    /**
+     * S# findRecords() function
+     * 
+     * Find Single Records
+     * 
+     * @param array 
+     */
+    public function findSingleRecord($table, $criteria) {
+        /*
+          $table = 'Facets';
+
+          $criteria = array(
+          'id' => 'recZKiX8HvjEjxDTd',
+          ); */
+        try {
+            $response = $this->service->findRecord($table, $criteria);
+
+            $this->response = array(
+                'status' => 1,
+                'message' => $response
+            );
+        } catch (\Exception $error) {
+            $this->response = array(
+                'status' => 0,
+                'message' => $error->getMessage()
+            );
+        }//E# try catch block
+
+        return $this->response;
+    }
+
+//E# findRecords() function
+
+    public function getSolutions($table, $criteria) {
+        $facet_response = $this->findRecords($table, $criteria);
+
+        $solution_answer = 'Facet Description:' . "\n";
+        if ($facet_response['status']) {
+            $fields = $facet_response['message'][0]->getFields();
+
+            $solution_answer .= $fields['Description'];
+            //Get Solutions
+            $this->getSolutionsOrTools($solution_answer, $fields['Solutions'], 'Solutions', 'Solution');
+            //Get Tools
+            $this->getSolutionsOrTools($solution_answer, $fields['Tools'], 'Tools', 'Tool');
+        }//E# if statement
+
+        return $solution_answer;
+    }
+
+    private function getSolutionsOrTools(&$solution_answer, $field_ids, $field_name, $title) {
+
+
+        if ($field_ids) {
+            $index = 1;
+            foreach ($field_ids as $single_field_id) {
+                $table = $field_name;
+
+                $criteria = array(
+                    'id' => $single_field_id,
+                );
+
+                $field_response = $this->findSingleRecord($table, $criteria);
+
+                if ($field_response['status']) {
+                    // dd($solution_response);
+                    $fields = $field_response['message'][0]->getFields();
+
+                    $solution_answer .= "\n\n" . '' . $title . ' ' . $index . ': ' . $fields[$table] . "\n";
+
+                    if (array_key_exists('Description', $fields)) {
+                        $solution_answer .= "\n" . 'Description:' . "\n" . $fields['Description'];
+                    }//E# if statement
+                }//E# if statement
+
+                $index++;
+            }//E# foreach statement;
+        }
+    }
+
 }
 
 //E# AirtableController() function

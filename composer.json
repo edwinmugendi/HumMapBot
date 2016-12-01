@@ -13,7 +13,8 @@
         "imagine/imagine": "v0.5.0",
         "longman/telegram-bot": "*",
         "intervention/image": "^2.3",
-        "iboldurev/api-ai-php": "^0.2.5"
+        "iboldurev/api-ai-php": "^0.2.5",
+        "armetiz/airtable-php": "dev-master"
     },
     "autoload": {
         "classmap": [
