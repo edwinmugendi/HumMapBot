@@ -203,7 +203,6 @@ class TelegramController extends SurveysBaseController {
             if ($apiai_response['message']['result']['parameters']) {
                 $table = 'Facets';
 
-                $apiai_response['message']['result']['parameters']['challenge'] = 'Finance Transparency';
                 $criteria = array(
                     //'maxRecords' => 1,
                     'filterByFormula' => '({Name} = \'' . $apiai_response['message']['result']['parameters']['challenge'] . '\')',
