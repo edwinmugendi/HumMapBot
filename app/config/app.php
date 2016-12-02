@@ -119,8 +119,6 @@ return array(
         'FormLibraryServiceProvider',
         //Register Accounts Service Provider
         'Lava\Accounts\AccountsServiceProvider',
-        //Register Docs Service Provider
-        'Lava\Docs\DocsServiceProvider',
         //Register Organizations Service Provider
         'Lava\Organizations\OrganizationsServiceProvider',
         //Register Messages Service Provider
@@ -131,8 +129,6 @@ return array(
         'Lava\Locations\LocationsServiceProvider',
         //Register Surveys Service Provider
         'Lava\Surveys\SurveysServiceProvider',
-        //Register Forms Service Provider
-        'Lava\Forms\FormsServiceProvider',
     ),
     /*
       |--------------------------------------------------------------------------
