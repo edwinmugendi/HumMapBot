@@ -3,6 +3,8 @@ Humanitarian Response Knowledge
 
 HumMapBot is a Telegram Bot that humanitarian workers can ask question and get answers on potential solution and tools that they could use.
 
+To test the bot, install instagram and go to <strong>@HumMapBot</strong>
+
 It uses API.AI for Natural Language Processing and then the data is retrieved from https://airtable.com/tblUipcy7ixUIEjYF
 
 HumMapBot is built using Laravel 4.2 PHP framework.
