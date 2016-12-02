@@ -10,7 +10,7 @@ return array(
         'bot' => 'HumMapBot',
     ),
     'apiai' => array(
-        'client_access_token' => 'd15e6a2087ad4bce84e0096069b49602',
-        'developer_access_token' => '09bf699038a247419ec37d50d61f0c30',
+        'client_access_token' => '8358602ee45144b581359f3ed9f0b249',
+        'developer_access_token' => 'b69b1a1ee8d5471894a6a9f21dd77c83',
     ),
 );
