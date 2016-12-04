@@ -1,4 +1,4 @@
-<h1 class="text-center">HumMapBot</h1>
+<h1 class="text-center commonMarginTop20 commonColorRed">HumMapBot</h1>
 <div class="">
     <a class="hiddenanchor" id="toregister"></a>
     <a class="hiddenanchor" id="tologin"></a>
