@@ -164,6 +164,9 @@ class TelegramController extends SurveysBaseController {
                 'organization_id' => 1,
                 'channel_chat_id' => $this->input['message']['chat']['id'],
                 'full_name' => $names,
+                'status'=>1,
+                'created_by'=>1,
+                'updated_by'=>1,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             );

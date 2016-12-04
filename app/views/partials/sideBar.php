@@ -26,9 +26,7 @@
                     <p>&nbsp;</p>
                     <ul class="nav side-menu">
                         <li class="<?php echo (array_key_exists(0, $view_data['segments']) && $view_data['segments'][0] == 'dashboard') ? 'current-page' : '' ?>"><a href="<?php echo \URL::route('dashboard'); ?>"><i class="fa fa-map-marker"></i>  Dashboard</a></li>
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'session') ? 'current-page' : '' ?>"><a href="<?php echo \URL::route('surveysListSession'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('surveys::session.view.menu'); ?></a></li>
                         <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'message') ? 'current-page' : '' ?>"><a href="<?php echo \URL::route('surveysListMessage'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('surveys::message.view.menu'); ?></a></li>
-                        <li class="<?php echo (array_key_exists(2, $view_data['segments']) && $view_data['segments'][2] == 'update') ? 'current-page' : '' ?>"><a href="<?php echo \URL::route('surveysListUpdate'); ?>"><i class="fa fa-map-marker"></i>  <?php echo \Lang::get('surveys::update.view.menu'); ?></a></li>
                     </ul>
                 </div>
             </div>
