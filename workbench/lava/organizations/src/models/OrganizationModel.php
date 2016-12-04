@@ -207,6 +207,39 @@ class OrganizationModel extends \BaseModel {
     }
 
 //E# getCountryIdTextAttribute() function
+
+    /**
+     * S# sessions() function
+     * Set one to many relationship to Session Model
+     */
+    public function sessions() {
+        return $this->hasMany(\Util::buildNamespace('surveys', 'session', 2), 'organization_id')
+                        ->where('status', '=', 1);
+    }
+
+//E# sessions() function
+    
+     /**
+     * S# messages() function
+     * Set one to many relationship to Message Model
+     */
+    public function messages() {
+        return $this->hasMany(\Util::buildNamespace('surveys', 'message', 2), 'organization_id')
+                        ->where('status', '=', 1);
+    }
+
+//E# messages() function
+    
+     /**
+     * S# updates() function
+     * Set one to many relationship to Update Model
+     */
+    public function updates() {
+        return $this->hasMany(\Util::buildNamespace('surveys', 'update', 2), 'organization_id')
+                        ->where('status', '=', 1);
+    }
+
+//E# updates() function
 }
 
 //E# OrganizationModel() Class

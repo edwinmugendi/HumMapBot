@@ -76,6 +76,7 @@ class TelegramController extends SurveysBaseController {
 
         //Update array
         $update_array = array(
+            'organization_id' => 1,
             'channel' => 'telegram',
             'type' => 'incoming',
             'update_id' => $this->input['update_id'],

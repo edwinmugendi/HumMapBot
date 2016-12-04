@@ -30,8 +30,11 @@ class DashboardController extends AccountsBaseController {
         //Prepare view data
         $this->view_data = $this->prepareViewData('dashboard');
 
-        //Get form details
-        $this->getFormDetails();
+        $parameters = array();
+
+        $parameters['lazyLoad'] = array('sessions', 'messages', 'updates');
+
+        $this->view_data['org_model'] = $this->callController(\Util::buildNamespace('organizations', 'organization', 1), 'getModelByField', array('id', $this->org['id'], $parameters));
 
         //Set list side bar
         $this->view_data['sideBar'] = '';
@@ -66,60 +69,6 @@ class DashboardController extends AccountsBaseController {
     }
 
 //E# getDashboard() function
-
-    /**
-     * S# getFormDetails() function
-     * 
-     * Get form details
-     * 
-     * 
-     */
-    private function getFormDetails() {
-        //Fields to select
-        $fields = array('*');
-
-        //Build where clause
-        $where_clause = array(
-            array(
-                'where' => 'where',
-                'column' => 'user_id',
-                'operator' => '=',
-                'operand' => $this->user['id']
-            ),
-            array(
-                'where' => 'where',
-                'column' => 'status',
-                'operator' => '=',
-                'operand' => 1
-            )
-        );
-
-        //Select form model
-        $form_model = $this->callController(\Util::buildNamespace('surveys', 'form', 1), 'select', array($fields, $where_clause, 2));
-
-        //Form count
-        $this->view_data['form_count'] = count($form_model);
-
-        $this->view_data['forms'] = array();
-        if ($form_model) {
-            foreach ($form_model as $single_form) {
-                $fields = array('*');
-                $where_clause = array();
-                $parameters['count'] = true;
-
-                $form_controller = \Str::lower(str_replace(' ', '_', $single_form->name));
-                //Select form model
-                $form_model_count = $this->callController(\Util::buildNamespace('forms', $form_controller, 1), 'select', array($fields, $where_clause, 2, $parameters));
-
-                $this->view_data['forms'][] = array(
-                    'name' => $single_form->name,
-                    'count' => $form_model_count,
-                );
-            }//E# foreach statement   
-        }//E# if statement
-    }
-
-//E# getFormDetails() function
 }
 
 //E# DashboardController() function

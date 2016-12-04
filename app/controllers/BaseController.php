@@ -1923,32 +1923,6 @@ class BaseController extends Controller {
      * @return view the side bar partial view
      */
     public function getSideBarPartialView() {
-        $fields = array('*');
-
-        //Build where clause
-        $where_clause = array(
-            array(
-                'where' => 'where',
-                'column' => 'user_id',
-                'operator' => '=',
-                'operand' => $this->user['id']
-            ),
-            array(
-                'where' => 'where',
-                'column' => 'workflow',
-                'operator' => '=',
-                'operand' => 'published'
-            ),
-            array(
-                'where' => 'where',
-                'column' => 'status',
-                'operator' => '=',
-                'operand' => 1
-            )
-        );
-
-        //Form model
-        $this->view_data['user_form_model'] = $this->callController(\Util::buildNamespace('surveys', 'form', 1), 'select', array($fields, $where_clause, 2));
 
         //Get and return the global side bar partial
         return \View::make('partials.sideBar')

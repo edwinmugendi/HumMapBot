@@ -22,12 +22,6 @@ class SessionController extends SurveysBaseController {
     public function injectDataSources() {
         //Get and set channel options to data source
         $this->view_data['dataSource']['channel'] = \Lang::get($this->package . '::' . $this->controller . '.data.channel');
-
-        //Get this organization form id
-        $this->view_data['dataSource']['form_id'] = $this->callController(\Util::buildNamespace('surveys', 'form', 1), 'getOrganizationsHtmlSelect', array($this->org['id'], 'id', array('name'), \Lang::get('common.select')));
-
-        //Get this organization question id
-        $this->view_data['dataSource']['question_id'] = $this->callController(\Util::buildNamespace('surveys', 'question', 1), 'getOrganizationsHtmlSelect', array($this->org['id'], 'id', array('name'), \Lang::get('common.select')));
     }
 
 //E# injectDataSources() function
