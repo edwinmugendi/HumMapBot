@@ -1,6 +1,4 @@
-<div class="img-responsive" style="margin-top: 30px;">
-    <a href="<?php echo \URL::to('/'); ?>"><img src="<?php echo asset('img/logo.png'); ?>" width="300" style=" display: block;margin: 0 auto;"></a>
-</div>
+<h1 class="text-center">HumMapBot</h1>
 <div class="">
     <a class="hiddenanchor" id="toregister"></a>
     <a class="hiddenanchor" id="tologin"></a>
@@ -48,7 +46,7 @@
                     <a class="reset_pass to_forgot" href="#toforgot"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.login.field.forgotPassword'); ?></a>
                 </div>
                 <div class="clearfix"></div>
-                <div class="separator">
+                <div class="separator commonDisplayNone">
                     <p class="change_link">Don't have an account?
                         <a href="#toregister" class="to_register"> <?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.register.submit'); ?> </a>
                     </p>
@@ -224,7 +222,6 @@
         <?php endif; ?>
         <div id="verify" class="animate form">
             <section class="login_content">
-
                 <?php if (\Session::get('verify_status_code') == 1): ?>
                     <h4 class="commonColor"><?php echo \Lang::get($view_data['package'] . '::' . $view_data['controller'] . '.' . $view_data['page'] . '.' . $view_data['view'] . '.form.verify.statusCode.1', array('name' => \Config::get('product.name'))); ?></h4>
                 <?php elseif (\Session::get('verify_status_code') == 2): ?>
